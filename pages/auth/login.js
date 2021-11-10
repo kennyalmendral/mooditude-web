@@ -24,7 +24,7 @@ export default function Login() {
     if (loading && authUser) {
       router.push('/account')
     }
-  }, [authUser, loading])
+  }, [authUser, loading, router])
 
   const handleLogin = e => {
     e.preventDefault()
@@ -50,7 +50,8 @@ export default function Login() {
             <Image 
               src="/mooditude-logo.png" 
               width="113" 
-              height="113"
+              height="113" 
+              alt="Mooditude"
             />
 
             <div className={styles.headingContainer}>

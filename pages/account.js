@@ -19,7 +19,7 @@ export default function Account() {
     if (!loading && !authUser) {
       router.push('/auth/login')
     }
-  }, [authUser, loading])
+  }, [authUser, loading, router])
 
   return (
     <Layout title={`Account | ${SITE_NAME}`}>

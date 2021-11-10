@@ -53,7 +53,8 @@ export default function SignUp() {
             <Image 
               src="/mooditude-logo.png" 
               width="113" 
-              height="113"
+              height="113" 
+              alt="Mooditude"
             />
 
             <div className={styles.headingContainer}>
