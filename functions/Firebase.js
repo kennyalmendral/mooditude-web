@@ -2,9 +2,9 @@ import Firebase from 'Firebase/app'
 import 'Firebase/auth'
 
 const firebaseCredentials = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_PUBLIC_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
+  apiKey: "AIzaSyAo3hvhWT6BFurFr6ws4ERzVnb4L17M2OU",
+  authDomain: "mooditudetrial.web.app",
+  projectId: "mooditudetesting"
 }
 
 if (!Firebase.apps.length) {
