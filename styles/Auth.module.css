@@ -1,0 +1,179 @@
+.container {
+  width: 100%;
+  display: flex;
+}
+
+.authBg {
+  background: url('/auth-bg.png') left top no-repeat;
+  width: 50%;
+  height: 100vh;
+  background-size: cover;
+}
+
+.error {
+  margin-top: 5px;
+  font-size: 10px;
+  line-height: 14px;
+  color: #D6443F;
+}
+
+.errorAlert {
+  margin-bottom: 17px;
+  background: #D6443F;
+  color: #fff;
+  padding: 11px 15px;
+  border-radius: 4px;
+}
+
+.authForm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  color: #072B4F;
+  font-size: 14px;
+}
+
+.authForm input[type="text"],
+.authForm input[type="email"], 
+.authForm input[type="password"] {
+  color: #072B4F;
+}
+
+.authForm a,
+.link {
+  color: #1CA566;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+.authForm a:hover,
+.link:hover {
+  color: #178351;
+}
+
+.authForm .authFormInner {
+  width: 300px;
+}
+
+.authForm .headingContainer {
+    display: flex;
+    align-items: center;
+    margin: 20px 0 45px;
+}
+
+.authForm .headingContainer > div {
+  box-sizing: border-box;
+}
+
+.authForm .headingContainer > div:first-of-type {
+  width: 70%;
+  padding: 5px 30px 5px 0;
+  border-right: 2px solid #F8E71C;
+}
+
+.authForm .headingContainer > div:last-of-type {
+  width: 30%;
+  padding-left: 30px;
+}
+
+.authForm .heading {
+  margin-bottom: 5px;
+  margin-top: 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.authForm .subHeading {
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+  margin: 0;
+}
+
+.authForm .field {
+  margin-bottom: 17px;
+}
+
+.authForm .field input {
+  border: 1px solid #eaeaea;
+  border-radius: 4px;
+  padding: 11px 15px;
+  width: 100%;
+}
+
+.authForm .field input.hasError {
+  border: 1px solid #D6443F;
+}
+
+.authForm button {
+  margin-top: 20px;
+  margin-bottom: 15px;
+  background: #1CA566;
+  border: none;
+  padding: 10px 30px;
+  color: #fff;
+  border-radius: 4px;
+  font-weight: 700;
+  line-height: 18px;
+}
+
+.authForm button:hover {
+  background: #21bb74;
+  cursor: pointer;
+}
+
+.authForm button:disabled {
+  opacity: 0.3;
+  cursor: default !important;
+  background: #1CA566 !important;
+}
+
+.authForm .passwordNotice {
+  font-size: 10px;
+  line-height: 14px;
+  padding: 12px 12px;
+  border-radius: 4px;
+  background: #F3F4F6;
+  color: #516B84;
+  margin-bottom: 17px;
+}
+
+.authForm .privacyPolicy {
+  margin-bottom: 12px;
+}
+
+.authForm .privacyPolicy input {
+  position: relative;
+  top: 1px;
+  margin-right: 12px;
+}
+
+.account {
+  background: url('/auth-bg.png') left top no-repeat;
+  background-size: cover;
+}
+
+.account > div {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 100vh;
+  width: 300px;
+  margin: 0 auto;
+}
+
+.account > div > div {
+  background: #fff;
+  padding: 30px;
+  border-radius: 4px;
+  line-height: 1.6;
+  color: #072B4F;
+}
+
+.account h1 {
+  margin-bottom: 10px;
+  margin-top: 0;
+  font-size: 24px;
+  font-weight: 700;
+}
