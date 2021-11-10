@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import Image from 'next/image'
 
 import styles from '@/styles/Auth.module.css'
 
@@ -47,7 +46,7 @@ export default function Login() {
 
         <div className={styles.authForm}>
           <div className={styles.authFormInner}>
-            <Image 
+            <img 
               src="/mooditude-logo.png" 
               width="113" 
               height="113" 
