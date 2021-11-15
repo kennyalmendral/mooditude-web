@@ -14,3 +14,149 @@ a {
 * {
   box-sizing: border-box;
 }
+
+
+.body-wrapper{
+  display: flex;
+}
+
+.body-wrapper > div{
+  width: 100%;
+}
+
+@font-face {
+    font-family: 'Circular Std';
+    src: url('/fonts/CircularStd-Black.woff2') format('woff2'),
+        url('/fonts/CircularStd-Black.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Circular Std Book';
+    src: url('/fonts/CircularStd-BookItalic.woff2') format('woff2'),
+        url('/fonts/CircularStd-BookItalic.woff') format('woff');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Circular Std';
+    src: url('/fonts/CircularStd-Bold.woff2') format('woff2'),
+        url('/fonts/CircularStd-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Circular Std Book';
+    src: url('/fonts/CircularStd-Book.woff2') format('woff2'),
+        url('/fonts/CircularStd-Book.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Circular Std';
+    src: url('/fonts/CircularStd-Medium.woff2') format('woff2'),
+        url('/fonts/CircularStd-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Font Awesome 5 Pro Solid';
+    src: url('/fonts/FontAwesome5Pro-Solid.woff2') format('woff2'),
+        url('/fonts/FontAwesome5Pro-Solid.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+.mb_0{
+  margin-bottom: 0!important;
+}
+
+img{
+  max-width: 100%;
+}
+
+.custom_stepper_wrap .MuiStepLabel-labelContainer{
+  display: none!important;
+}
+
+.custom_stepper_wrap .Mui-active{
+  color: #F8E71C;
+
+}
+
+.custom_stepper_wrap .Mui-active text{
+  fill: #F8E71C;
+
+}
+
+.custom_stepper_wrap .Mui-disabled,
+.custom_stepper_wrap .Mui-disabled svg{
+  color: #A8B5C1;
+}
+
+.custom_stepper_wrap .Mui-disabled text{
+  fill: #A8B5C1;
+}
+
+
+.custom_stepper_wrap .Mui-completed .MuiStepLabel-iconContainer{
+  color: #F8E71C;
+  position: relative;
+}
+
+.custom_stepper_wrap .Mui-completed .MuiStepLabel-iconContainer svg{
+  color: #F8E71C;
+}
+
+.custom_stepper_wrap .Mui-completed .MuiStepLabel-iconContainer:before{
+    content: '';
+    width: 20px;
+    height: 80%;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #072B4F;
+    position: absolute;
+    border-radius: 50%;
+    z-index: 2;
+}
+.custom_stepper_wrap .MuiStepLabel-iconContainer svg{
+  position: relative;
+  z-index: 3;
+}
+
+.radio_option_text_wrap{
+  font-family: 'Circular Std';
+  background: #F3F4F6;
+  border-radius: 4px;
+  width: 300px;
+  padding: 12px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 13px;
+
+  /* Secondary */
+
+  color: #516B84;
+}
+
+@media(max-width: 767px){
+  .body-wrapper{
+    display: block;
+  }
+}

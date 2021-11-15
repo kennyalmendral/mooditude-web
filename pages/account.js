@@ -16,7 +16,7 @@ export default function Account() {
   const { authUser, loading, signOut } = useAuth()
 
   useEffect(() => {
-    if (!loading && !authUser) {
+    if (!loading && !authUser) { 
       router.push('/auth/login')
     }
   }, [authUser, loading, router])

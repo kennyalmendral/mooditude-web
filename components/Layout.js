@@ -15,6 +15,7 @@ export default function Layout({ title, keywords, description, children }) {
       </Head>
 
       <main>
+        
         {children}
       </main>
     </div>

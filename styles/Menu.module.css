@@ -1,0 +1,79 @@
+.main_menu_wrap{
+  width: 207px;
+  max-width: 207px;
+  padding-left: 0;
+  top: 0;
+  transition: all 0.3s ease;
+  min-height: 100vh;
+  position: relative;
+  padding: 26px 23px 40px 34.5px;
+  background: #F8E71C;
+}
+
+.main_menu_logo{
+  display: block;
+  margin-top: 34px;
+}
+
+.main_menu_btn{
+  text-align: right;
+}
+
+.main_menu_logout{
+  position: absolute;
+  left: 34.5px;
+  bottom: 40px;
+}
+
+.main_menu_logout a{
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 18px;
+  /* identical to box height */
+
+
+  /* Primary */
+
+  color: #072B4F;
+}
+
+.main_menu_btn svg{
+  cursor: pointer!important;
+}
+
+.main_menu_wrap.main_menu_wrap_collapse{
+  width: 55px;
+  padding: 26px 15px;
+}
+
+@media(max-width: 767px){
+  .main_menu_wrap{
+    max-width: 100%;
+    min-height: 0;
+    padding: 12px 10px;
+
+  }
+
+
+  .main_menu_logo,
+  .main_menu_logout{
+    display: none!important;
+  }
+
+  .mobile_main_menu_logo{
+    padding: 20px 30px;
+  }
+  
+  .mobile_main_menu_logout{
+    text-align: center;
+  }
+
+  /*background: url('/auth-bg.png') left top no-repeat;*/
+  
+  /*.mobile_drawer .MuiDrawer-paperAnchorLeft{
+    background: url('/auth-bg.png') left top no-repeat;
+  }*/
+
+  
+}

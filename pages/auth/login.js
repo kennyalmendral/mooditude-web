@@ -52,6 +52,7 @@ export default function Login() {
               width="113" 
               height="113" 
               alt="Mooditude"
+              className={styles.login_logo}
             />
 
             <div className={styles.headingContainer}>
