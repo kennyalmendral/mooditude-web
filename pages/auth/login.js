@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import Image from 'next/image'
 
 import styles from '@/styles/Auth.module.css'
 
@@ -17,6 +16,7 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
 
   const { authUser, loading, signInWithEmailAndPassword } = useAuth()
 
@@ -29,13 +29,16 @@ export default function Login() {
   const handleLogin = e => {
     e.preventDefault()
 
+    setIsLoggingIn(true)
     setError(null)
 
     signInWithEmailAndPassword(email, password)
       .then(authUser => {
+        setIsLoggingIn(false)
         router.push('/account')
       })
       .catch(error => {
+        setIsLoggingIn(false)
         setError(error.message)
       })
   }
@@ -47,7 +50,7 @@ export default function Login() {
 
         <div className={styles.authForm}>
           <div className={styles.authFormInner}>
-            <Image 
+            <img  
               src="/mooditude-logo.png" 
               width="113" 
               height="113" 
@@ -101,16 +104,23 @@ export default function Login() {
 
                 <div>
                   <button
-                    type="submit"
+                    type="submit" 
+                    disabled={isLoggingIn && true}
                   >
-                    LOG IN
+                    {isLoggingIn && (
+                      <>PLEASE WAIT</>
+                    )}
+
+                    {!isLoggingIn && (
+                      <>SUBMIT</>
+                    )}
                   </button>
                 </div>
 
                 <div>
                   <span>Forgot password? Rest it</span>
                   {' '}
-                  <Link href="#">
+                  <Link href="/auth/reset-password">
                     <a>here.</a>
                   </Link>
                 </div>

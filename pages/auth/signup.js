@@ -2,7 +2,6 @@ import { useState } from 'react'
 
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import Image from 'next/image'
 
 import styles from '@/styles/Auth.module.css'
 
@@ -20,12 +19,14 @@ export default function SignUp() {
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
   const [isPrivacyPolicyChecked, setIsPrivacyPolicyChecked] = useState(false)
   const [error, setError] = useState(null)
+  const [isSigningUp, setIsSigningUp] = useState(false)
 
   const { createUserWithEmailAndPassword } = useAuth()
 
   const handleSignUp = e => {
     e.preventDefault()
 
+    setIsSigningUp(true)
     setError(null)
 
     if (password === passwordConfirmation) {
@@ -33,13 +34,17 @@ export default function SignUp() {
         .then(authUser => {
           console.log('Success! The user has been created.')
 
+          setIsSigningUp(false)
+
           router.push('/account')
         })
         .catch(error => {
+          setIsSigningUp(false)
           setError(error.message)
         })
     } else {
       setError('Passwords do not match.')
+      setIsSigningUp(false)
     }
   }
 
@@ -50,7 +55,7 @@ export default function SignUp() {
 
         <div className={styles.authForm}>
           <div className={styles.authFormInner}>
-            <Image 
+            <img  
               src="/mooditude-logo.png" 
               width="113" 
               height="113" 
@@ -148,9 +153,15 @@ export default function SignUp() {
                 <div>
                   <button 
                     type="submit" 
-                    disabled={!isPrivacyPolicyChecked && true}
+                    disabled={!isPrivacyPolicyChecked || isSigningUp && true}
                   >
-                    SIGN UP
+                    {isSigningUp && (
+                      <>PLEASE WAIT</>
+                    )}
+
+                    {!isSigningUp && (
+                      <>SIGN UP</>
+                    )}
                   </button>
                 </div>
               </form>
