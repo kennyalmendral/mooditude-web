@@ -35,8 +35,6 @@ export default function OnboardingGetStartedPage() {
           
           <p>The next step in our journey is to assess the pulse of your mental wellbeing. It will show your risk of mental health conditions. We use this score in guiding your towards appropriate actions and show progress over time.</p>
 
-          
-
           <div className={styles.btn_wrap}>
             <Stack direction="row" spacing={2}>
               <Button 

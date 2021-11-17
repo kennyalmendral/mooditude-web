@@ -39,7 +39,7 @@ export default function SignUp() {
           setError(error.message)
         })
     } else {
-      setError('Password do not match.')
+      setError('Passwords do not match.')
     }
   }
 
@@ -114,7 +114,7 @@ export default function SignUp() {
                 </div>
 
                 <div className={styles.passwordNotice}>
-                  Password should be 8 characters long and include a Capital letter, a number, and a special character.
+                  Password should be 8 characters long and include a capital letter, a number, and a special character.
                 </div>
 
                 <div className={styles.field}>

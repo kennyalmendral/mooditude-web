@@ -1,6 +1,6 @@
 import { createContext, useContext, Context } from 'react'
 
-import useFirebaseAuth from '@/functions/useFirebaseAuth'
+import useFirebaseAuth from 'lib/useFirebaseAuth'
 
 const AuthUserContext = createContext({
   authUser: null,
