@@ -1,0 +1,69 @@
+{
+  "rules": {
+    "sessions": {
+      ".read": "true",
+      ".write": "true"
+    },
+    "some_public_data": {
+      ".read": "true",
+      ".write": "auth !== null"
+    },
+    "users": {
+      "$uid": {
+        ".write": "$uid === auth.uid",
+        ".read": "$uid === auth.uid"
+      }
+    },
+    "postCategories": {
+      ".read": true
+    },
+    "homeBanners": {
+      ".read": true
+    },
+    "journalPrompts": {
+      ".read": true
+    },
+    "journalPromptCategories": {
+      ".read": true
+    },
+    "meditationInfo": {
+      ".read": true,
+      ".write": true
+    },
+    "meditationCategories": {
+      ".read": true,
+      ".write": true
+    },
+    "rewards": {
+      ".read": true,
+      ".write": true
+    },
+    "configurations": {
+      ".read": true
+    },
+    "invitationCodes": {
+      ".read": true
+    },
+    "courses": {
+      ".read": true,
+      ".write": true
+    },
+    "m3Assessment": {
+      ".read": true,
+      ".write": true
+    },
+    "practices": {
+      ".read": true,
+      ".write": true
+    },
+    "states": {
+      ".read": true
+    },
+    "articles": {
+      ".read": true
+    },
+    "allMoodituderWeeklyProgress": {
+      ".read": true
+    }
+  }
+}

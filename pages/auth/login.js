@@ -22,7 +22,7 @@ export default function Login() {
 
   useEffect(() => {
     if (loading && authUser) {
-      router.push('/account')
+      router.push('/onboarding/welcome')
     }
   }, [authUser, loading, router])
 
@@ -35,7 +35,7 @@ export default function Login() {
     signInWithEmailAndPassword(email, password)
       .then(authUser => {
         setIsLoggingIn(false)
-        router.push('/account')
+        router.push('/onboarding/welcome')
       })
       .catch(error => {
         setIsLoggingIn(false)

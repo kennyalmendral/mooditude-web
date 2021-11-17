@@ -24,14 +24,18 @@ export default function OnboardingGetStartedPage() {
     }
   }, [authUser, loading, router])
 
+  const handleFind = () => {
+    alert('Coming soon...')
+  }
+
   return (
-    <Layout title={`Welcome | ${SITE_NAME}`}>
+    <Layout title={`Get Started | ${SITE_NAME}`}>
       <div className={styles.onboarding_wrapper}>
         <div className={`${styles.onboarding_inner_wrapper} ${styles.get_started_page}`}>
           <div>
             <img src="/get-started.png" alt="" className={styles.onboarding_inner_logo}/>
           </div>
-          <h1>Let’s Find out Your <br/>Wellbeing Score</h1>  
+          <h1>Let’s find out your <br/>well-being score</h1>  
           
           <p>The next step in our journey is to assess the pulse of your mental wellbeing. It will show your risk of mental health conditions. We use this score in guiding your towards appropriate actions and show progress over time.</p>
 
@@ -40,8 +44,7 @@ export default function OnboardingGetStartedPage() {
               <Button 
                 size="large" 
                 variant="contained"
-                onClick={() => {router.push(`/onboarding/1`)}}
-
+                onClick={handleFind}
               >FIND YOUR WELLBEING SCORE</Button>
             </Stack>
           </div>

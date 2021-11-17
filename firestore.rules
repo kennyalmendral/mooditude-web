@@ -1,0 +1,154 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+  
+  	// Courses -- public can read
+    match /Courses/{document=**} {
+      allow read: if true;
+    }
+    
+    //FeedPosts
+    match /FeedPosts/{document=**} {
+      allow read: if true;
+      allow write: if true;
+    }
+    
+    //FeedPostsTest
+    match /FeedPostsTest/{document=**} {
+      allow read: if true;
+      allow write: if true;
+    }
+    
+    //FeedComments
+    match /FeedComments/{document=**} {
+      allow read: if true;
+      allow write: if true;
+    }
+    
+    //FeedReactions
+     match /FeedReactions/{document=**} {
+      allow read: if true;
+      allow write: if true;
+    }
+    
+    // CourseReviews
+    match /CourseReviews/{document=**}{
+    	allow read: if true;
+      allow write: if true
+    }
+    
+     // CourseProgress
+    match /CourseProgress/{userId}/{document=**}{
+    	allow read: if request.auth != null && request.auth.uid == userId
+      allow write: if request.auth != null && request.auth.uid == userId
+    }
+    
+    // Users
+    match /Users/{userId}/{document=**}{
+    	allow read: if true;
+      allow update: if true;
+      allow write: if request.auth != null && request.auth.uid == userId
+    }
+    
+    // Users
+    match /MentalHealth/{userId}/{document=**}{
+    	allow read: if true;
+      allow update: if true;
+      allow write: if request.auth != null && request.auth.uid == userId
+    }
+    
+    //IAdAttributions
+    match /IAdAttributions/{document=**}{
+      allow write
+    }
+    
+    // Subscribers
+    match /Subscribers/{userId}/{document=**}{
+    	allow read: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    //JournalDelete
+    match /Journal/{document=**}{
+    allow delete: if true
+    }
+    
+    // Journal
+    match /Journal/{userId}/{document=**}{
+    	allow read: if request.auth != null && request.auth.uid == userId
+      allow write: if request.auth != null && request.auth.uid == userId
+    }
+    
+    // Goals
+    match /Goals/{userId}/{document=**}{
+    	allow read: if request.auth != null && request.auth.uid == userId
+      allow write: if request.auth != null && request.auth.uid == userId
+    }
+    
+     // GoalProgress
+    match /GoalProgress/{userId}/{document=**}{
+    	allow read: if request.auth != null && request.auth.uid == userId
+      allow write: if request.auth != null && request.auth.uid == userId
+    }
+    
+    // GoalsStatistics
+    match /GoalsStatistics/{document=**}{
+    	allow read: if true;
+      allow write: if true
+    }
+    
+     // Routines
+    match /Routines/{userId}/{document=**}{
+    	allow read: if request.auth != null && request.auth.uid == userId
+      allow write: if request.auth != null && request.auth.uid == userId
+    }
+    
+     // RoutineProgress
+    match /RoutineProgress/{userId}/{document=**}{
+    	allow read: if request.auth != null && request.auth.uid == userId
+      allow write: if request.auth != null && request.auth.uid == userId
+    }
+    
+     // Badges
+    match /Badges/{userId}/{document=**}{
+    	allow read: if request.auth != null && request.auth.uid == userId
+      allow write: if request.auth != null && request.auth.uid == userId
+    }
+    
+     // Coping Activities
+    match /CopingSkills/{userId}/{document=**}{
+    	allow read: if request.auth != null && request.auth.uid == userId
+      allow write: if request.auth != null && request.auth.uid == userId
+    }
+    
+     // Reminders
+    match /Reminders/{userId}/{document=**}{
+    	allow read: if request.auth != null && request.auth.uid == userId
+      allow write: if request.auth != null && request.auth.uid == userId
+    }
+    
+    // M3Assessment
+    match /M3Assessment/{userId}/{document=**}{
+    	allow read: if request.auth != null && request.auth.uid == userId
+      allow write: if request.auth != null && request.auth.uid == userId
+    }
+    
+    // SignupWithNameEmail
+    match /SignupWithNameEmail/{uid}/{document=**}{
+    	allow read: if request.auth != null
+      allow write: if true
+    }
+    
+    // TherapistRequest
+    match /TherapistRequest/{uid}/{document=**}{
+    	allow read: if request.auth != null
+      allow write: if true
+    }
+    
+    // UserActivities
+    match /UserActivities/{uid}/{document=**}{
+    	allow read: if request.auth != null
+      allow write: if true
+    }
+    
+  }
+}

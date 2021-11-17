@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -9,6 +9,11 @@ import Layout from '@/components/Layout'
 import { SITE_NAME } from '@/config/index'
 
 import { useAuth } from '@/context/AuthUserContext'
+
+import Firebase from 'lib/Firebase'
+
+const firebaseStore = Firebase.firestore()
+const firebaseAuth = Firebase.auth()
 
 export default function SignUp() {
   const router = useRouter()
@@ -36,7 +41,34 @@ export default function SignUp() {
 
           setIsSigningUp(false)
 
-          router.push('/account')
+          let usersRef
+          let usersRefUnsubscribe
+          
+          firebaseAuth.onAuthStateChanged(user => {
+            if (user) {
+              usersRef = firebaseStore.collection('Users')
+
+              usersRef.add({
+                uid: user.uid,
+                authId: user.uid,
+                name: name,
+                email: email,
+                customerType: 'free',
+                onboardingCurrentStep: 0,
+                onboardingStep1Answer: '',
+                onboardingStep2Answer: '',
+                onboardingStep3Answer: '',
+                onboardingStep4Answer: '',
+                onboardingStep5Answer: '',
+                onboardingStep6Answer: '',
+                onboardingStep7Answer: ''
+              })
+            } else {
+              usersRefUnsubscribe && unsubscribe()
+            }
+          })
+
+          router.push('/onboarding/welcome')
         })
         .catch(error => {
           setIsSigningUp(false)
