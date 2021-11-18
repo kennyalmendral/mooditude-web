@@ -155,6 +155,10 @@ img{
   color: #516B84;
 }
 
+.MuiRadio-root.Mui-checked ~.MuiFormControlLabel-label > div > div{
+  display: block;
+}
+
 @media(max-width: 767px){
   .body-wrapper{
     display: block;

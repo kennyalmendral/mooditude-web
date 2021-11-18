@@ -26,7 +26,6 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Checkbox from '@mui/material/Checkbox';
-
 import Grow from '@mui/material/Fade';
 
 export default function Onboarding4() {
@@ -42,6 +41,7 @@ export default function Onboarding4() {
   const [isHealthChecked, setIsHealthChecked] = useState(false)
   const [isMoneyChecked, setIsMoneyChecked] = useState(false)
   const [isMeChecked, setIsMeChecked] = useState(false)
+  const [formError, setFormError] = useState(false)
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -124,12 +124,13 @@ export default function Onboarding4() {
   }
 
   const handleNextStep = () => {
+    setFormError(false)
     if (profileStep4Answer.length > 0) {
       localStorage.setItem('profileStep4Answer', profileStep4Answer.join(','))
       
       router.push('/onboarding/5')
     } else {
-      alert('Please select answers.')
+      setFormError(true)
     }
   }
   
@@ -157,14 +158,14 @@ export default function Onboarding4() {
           </div>
           <Grow in={true} timeout={1000}>
             <div>
-              <h1 className={`mb_0`}>What’s the biggest roadblock in your way?</h1>  
+              <h1 className={`mb_0`}>What's the biggest roadblock in your way?</h1>  
               <p className={styles.onboarding_sub_title}>Select one or more</p>
             </div>
           </Grow>
           <div className={styles.form_wrap}>
             <Grow in={true} timeout={1000}>
           
-              <FormControl component="fieldset">
+              <FormControl component="fieldset" error={formError} onChange={() => {setFormError(false)}}>
                 <FormGroup>
                   <FormControlLabel
                     control={
@@ -202,7 +203,10 @@ export default function Onboarding4() {
                     value="me"
                   />
                 </FormGroup>
-
+                {
+                  formError ? 
+                  <FormHelperText>Please select 1 or more items.</FormHelperText> : ''
+                }
                 </FormControl>
               </Grow>
           </div>

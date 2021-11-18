@@ -25,7 +25,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-
+import FormHelperText from '@mui/material/FormHelperText';
 import Grow from '@mui/material/Fade';
 
 export default function Onboarding5() {
@@ -35,6 +35,7 @@ export default function Onboarding5() {
   const steps = [1, 2, 3, 4, 5, 6, 7]
 
   const [profileStep5Answer, setProfileStep5Answer] = useState(null)
+  const [formError, setFormError] = useState(false)
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -59,12 +60,13 @@ export default function Onboarding5() {
   }, [profileStep5Answer])
 
   const handleNextStep = () => {
+    setFormError(false)
     if (profileStep5Answer !== null) {
       localStorage.setItem('profileStep5Answer', profileStep5Answer)
       
       router.push('/onboarding/6')
     } else {
-      alert('Please select an answer.')
+      setFormError(true)
     }
   }
 
@@ -91,7 +93,7 @@ export default function Onboarding5() {
           </Grow>
           <div className={styles.form_wrap}>
             <Grow in={true} timeout={1000}>
-              <FormControl component="fieldset">
+              <FormControl component="fieldset" error={formError} onChange={() => {setFormError(false)}}>
                 <RadioGroup>
                   <FormControlLabel 
                     value={true} 
@@ -107,6 +109,11 @@ export default function Onboarding5() {
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `No <div>That’s okay. You can use Mooditude’s self-paced programs to learn life-changing skills.</div>`}} />} 
                   />
                 </RadioGroup>
+
+                {
+                  formError ? 
+                  <FormHelperText>Please choose an answer.</FormHelperText> : ''
+                }
               </FormControl>
             </Grow>
           </div>

@@ -25,7 +25,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-
+import FormHelperText from '@mui/material/FormHelperText';
 import Grow from '@mui/material/Fade';
 
 export default function Onboarding3() {
@@ -36,6 +36,7 @@ export default function Onboarding3() {
   const current_step = 2
 
   const [profileStep3Answer, setProfileStep3Answer] = useState('')
+  const [formError, setFormError] = useState(false)
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -60,12 +61,13 @@ export default function Onboarding3() {
   }, [profileStep3Answer])
 
   const handleNextStep = () => {
+    setFormError(false)
     if (profileStep3Answer !== '') {
       localStorage.setItem('profileStep3Answer', profileStep3Answer)
       
       router.push('/onboarding/4')
     } else {
-      alert('Please select an answer.')
+      setFormError(true)
     }
   }
 
@@ -94,7 +96,7 @@ export default function Onboarding3() {
           <div className={styles.form_wrap}>
             <Grow in={true} timeout={1000}>
           
-              <FormControl component="fieldset">
+              <FormControl component="fieldset" error={formError} onChange={() => {setFormError(false)}}>
                 
                 <RadioGroup>
                   
@@ -111,6 +113,10 @@ export default function Onboarding3() {
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Feel Happier <div>Find your rose-tinted glasses. We’ll introduce you to the skills needed to deal with people, handle unforeseeable events, and build a mind-body connection for a fulfilling life.</div>`}} />} />
 
                 </RadioGroup>
+                {
+                  formError ? 
+                  <FormHelperText>Please choose an answer.</FormHelperText> : ''
+                }
                 </FormControl>
               </Grow>
           </div>

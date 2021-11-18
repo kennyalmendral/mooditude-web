@@ -10,7 +10,7 @@
 
 
 .onboarding_inner_wrapper{
-	height: 90vh;
+	min-height: 900px;
 	display: flex;
     flex-direction: column;
 }
@@ -123,9 +123,11 @@
 	line-height: 13px;
 	margin-top: 8px;
 	/* Secondary */
-
+	display: none;
 	color: #516B84;
 }
+
+
 
 .with_text_wrap{
 	vertical-align: top;
@@ -228,5 +230,15 @@
   
   .onboarding_wrapper h1{
   	font-size: 28px;
+  }
+
+  .onboarding_inner_wrapper{
+  	min-height: auto;
+  	display: flex;
+      flex-direction: column;
+  }
+
+  .custom_stepper_wrapper{
+  	margin-bottom: 30px;
   }
 }

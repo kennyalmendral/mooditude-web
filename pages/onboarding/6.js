@@ -25,7 +25,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-
+import FormHelperText from '@mui/material/FormHelperText';
 import Grow from '@mui/material/Fade';
 
 export default function Onboarding6() {
@@ -36,7 +36,7 @@ export default function Onboarding6() {
   const current_step = 2
 
   const [profileStep6Answer, setProfileStep6Answer] = useState(null)
-
+  const [formError, setFormError] = useState(false)
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/auth/login')
@@ -60,12 +60,13 @@ export default function Onboarding6() {
   }, [profileStep6Answer])
 
   const handleNextStep = () => {
+    setFormError(false)
     if (profileStep6Answer !== null) {
       localStorage.setItem('profileStep6Answer', profileStep6Answer)
       
       router.push('/onboarding/7')
     } else {
-      alert('Please select an answer.')
+      setFormError(true)
     }
   }
 
@@ -93,7 +94,7 @@ export default function Onboarding6() {
           <div className={styles.form_wrap}>
             <Grow in={true} timeout={1000}>
           
-              <FormControl component="fieldset">
+              <FormControl component="fieldset" error={formError} onChange={() => {setFormError(false)}}>
                 
                 <RadioGroup>
                   
@@ -111,6 +112,10 @@ export default function Onboarding6() {
                       label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `No <div>No worries, we recommend you go through the Free 7-Day Program, which will explain how Mooditude and CBT works.</div>`}} />} 
                     />
                 </RadioGroup>
+                {
+                  formError ? 
+                  <FormHelperText>Please choose an answer.</FormHelperText> : ''
+                }
                 </FormControl>
               </Grow>
           </div>

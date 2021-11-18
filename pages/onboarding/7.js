@@ -25,7 +25,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-
+import FormHelperText from '@mui/material/FormHelperText';
 import Grow from '@mui/material/Fade';
 
 import Firebase from 'lib/Firebase'
@@ -41,6 +41,7 @@ export default function Onboarding7() {
   const current_step = 2
 
   const [profileStep7Answer, setProfileStep7Answer] = useState(null)
+  const [formError, setFormError] = useState(false)
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -65,6 +66,7 @@ export default function Onboarding7() {
   }, [profileStep7Answer])
 
   const handleNextStep = () => {
+    setFormError(false)
     if (profileStep7Answer !== null) {
       localStorage.setItem('profileStep7Answer', profileStep7Answer)
 
@@ -89,7 +91,7 @@ export default function Onboarding7() {
         }
       })
     } else {
-      alert('Please select an answer.')
+      setFormError(true)
     }
   }
 
@@ -118,7 +120,7 @@ export default function Onboarding7() {
           <div className={styles.form_wrap}>
             <Grow in={true} timeout={1000}>
           
-              <FormControl component="fieldset">
+              <FormControl component="fieldset" error={formError} onChange={() => {setFormError(false)}}>
                 
                 <RadioGroup>
                   <FormControlLabel 
@@ -136,6 +138,10 @@ export default function Onboarding7() {
                   />
 
                 </RadioGroup>
+                {
+                  formError ? 
+                  <FormHelperText>Please choose an answer.</FormHelperText> : ''
+                }
                 </FormControl>
               </Grow>
           </div>

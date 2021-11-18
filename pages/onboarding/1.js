@@ -24,6 +24,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import FormHelperText from '@mui/material/FormHelperText';
 
 import Grow from '@mui/material/Fade';
 
@@ -33,7 +34,8 @@ export default function Onboarding1() {
   const { authUser, loading, signOut } = useAuth()
   const steps = [1, 2, 3, 4, 5, 6, 7]
 
-  const [profileStep1Answer, setProfileStep1Answer] = useState(0)
+  const [profileStep1Answer, setProfileStep1Answer] = useState('')
+  const [formError, setFormError] = useState(false)
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -58,12 +60,13 @@ export default function Onboarding1() {
   }, [profileStep1Answer])
 
   const handleNextStep = () => {
+    setFormError(false)
     if (profileStep1Answer !== '') {
       localStorage.setItem('profileStep1Answer', parseInt(profileStep1Answer))
       
       router.push('/onboarding/2')
     } else {
-      alert('Please select an answer.')
+      setFormError(true)
     }
   }
 
@@ -89,7 +92,7 @@ export default function Onboarding1() {
           
           <div className={styles.form_wrap}>
             <Grow in={true} timeout={1000}>
-            <FormControl component="fieldset">
+            <FormControl component="fieldset" error={formError} onChange={() => {setFormError(false)}}>
               
               <RadioGroup>
                 <FormControlLabel 
@@ -103,6 +106,11 @@ export default function Onboarding1() {
                 <FormControlLabel value="4" control={<Radio checked={profileStep1Answer == 4} onChange={(event) => setProfileStep1Answer(event.target.value)} />} label="40 — 59" />
                 <FormControlLabel value="5" control={<Radio checked={profileStep1Answer == 5} onChange={(event) => setProfileStep1Answer(event.target.value)} />} label="> 60" />
               </RadioGroup>
+              {
+                formError ? 
+                <FormHelperText>Please choose an answer.</FormHelperText> : ''
+              }
+
             </FormControl>
             </Grow>
           </div>
