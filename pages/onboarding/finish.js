@@ -15,104 +15,62 @@ import Stack from '@mui/material/Stack';
 
 import Firebase from 'lib/Firebase'
 
-const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
+const firebaseDatabase = Firebase.database()
 
 export default function OnboardingFinishPage() {
   const router = useRouter()
 
   const { authUser, loading, signOut } = useAuth()
 
-  const [onboardingCurrentStep, setOnboardingCurrentStep] = useState(8)
-
   useEffect(() => {
-    if (!loading && !authUser) { 
+    if (!loading && !authUser) {
       router.push('/auth/login')
     }
   }, [authUser, loading, router])
 
   useEffect(() => {
-    switch (onboardingCurrentStep) {
-      case 0:
-        router.push('/onboarding/welcome')
-        break
-      case 1:
-        router.push('/onboarding/1')
-        break
-      case 2:
-        router.push('/onboarding/2')
-        break
-      case 3:
-        router.push('/onboarding/3')
-        break
-      case 4:
-        router.push('/onboarding/4')
-        break
-      case 5:
-        router.push('/onboarding/5')
-        break
-      case 6:
-        router.push('/onboarding/6')
-        break
-      case 7:
-        router.push('/onboarding/7')
-        break
-      case 8:
-        router.push('/onboarding/finish')
-        break
-      case 9:
-        router.push('/onboarding/get-started')
-        break
-      default:
-        router.push('/onboarding/welcome')
-        break
+    if (localStorage.getItem('currentProfileStep') !== null) {
+      localStorage.setItem('currentProfileStep', 8)
+
+      console.log(`Current profile step: ${localStorage.getItem('currentProfileStep')}`)
     }
-  }, [onboardingCurrentStep])
-  
-  useEffect(() => {
-    let usersRef
-    let usersRefUnsubscribe
-
-    firebaseAuth.onAuthStateChanged(user => {
-      if (user) {
-        usersRef = firebaseStore.collection('Users')
-
-        usersRefUnsubscribe = usersRef
-          .where('uid', '==', user.uid)
-          .onSnapshot(querySnapshot => {
-            querySnapshot.docs.map(doc => {
-              let userData = doc.data()
-              console.log(userData)
-
-              setOnboardingCurrentStep(userData.onboardingCurrentStep)
-            })
-          })
-      } else {
-        usersRefUnsubscribe && unsubscribe()
-      }
-    })
-  }, [firebaseStore, firebaseAuth])
+  }, [])
 
   const handleContinue = () => {
-    let usersRef
-    let usersRefUnsubscribe
-
     firebaseAuth.onAuthStateChanged(user => {
       if (user) {
-        usersRef = firebaseStore.collection('Users')
-
-        usersRef
-          .where('uid', '==', user.uid)
-          .get()
-          .then(function(querySnapshot) {
-            querySnapshot.forEach(function(doc) {
-              doc.ref.update({
-                onboardingCurrentStep: 9
-              })
-            })
+        firebaseDatabase
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .update({
+            ageGroup: parseInt(localStorage.profileStep1Answer) || 0,
+            gender: parseInt(localStorage.profileStep2Answer) || 0,
+            topGoal: localStorage.profileStep3Answer || '',
+            topChallenges: localStorage.profileStep4Answer || '',
+            goingToTherapy: localStorage.profileStep5Answer || false,
+            knowCbt: localStorage.profileStep6Answer || false,
+            committedToSelfhelp: localStorage.profileStep7Answer || false,
+            onboardingStep: 1 || 0
           })
-      } else {
-        usersRefUnsubscribe && unsubscribe()
+
+        // firebaseDatabase
+        //   .ref()
+        //   .child('users')
+        //   .child(user.uid)
+        //   .set({
+        //     ageGroup: 0, // step 1
+        //     gender: 0, // step 2
+        //     topGoal: '', // step 3
+        //     topChallenges: '', // step 4
+        //     goingToTherapy: false, // step 5
+        //     knowCbt: false, // step 6
+        //     committedToSelfhelp: false, // step 7
+        //     onboardingStep: 1
+        //   })
+
+        router.push('/onboarding/get-started')
       }
     })
   }

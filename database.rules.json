@@ -10,8 +10,8 @@
     },
     "users": {
       "$uid": {
-        ".write": "$uid === auth.uid",
-        ".read": "$uid === auth.uid"
+        ".write": "true",
+        ".read": "true"
       }
     },
     "postCategories": {

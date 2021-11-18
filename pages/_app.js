@@ -6,23 +6,22 @@ import Router from 'next/router';
 import '../styles/globals.css'
 
 const theme = createTheme({
-    palette: {
-        primary: {
-            main: '#1CA566'
-        },
-        secondary:{
-            main: '#516B84'
-        }
+  palette: {
+    primary: {
+      main: '#1CA566'
+    },
+    secondary:{
+      main: '#516B84'
     }
+  }
 }); 
 
-
-function App({ Component, pageProps }) {
-  
+function App({ Component, pageProps }) {  
   const [checkAuth, setCheckAuth] = React.useState(true);
   
   useEffect(() => {
     urlChecker(Router.pathname)
+
     Router.events.on('routeChangeComplete', url => {
       urlChecker(url)
     })
@@ -38,10 +37,10 @@ function App({ Component, pageProps }) {
   return (
     <ThemeProvider theme={theme}>
       <AuthUserProvider> 
-            <div className={`body-wrapper`}>
-              { checkAuth ? <MainMenu /> : '' }
-              <Component {...pageProps} />
-            </div>
+        <div className={`body-wrapper`}>
+          { checkAuth ? <MainMenu /> : '' }
+          <Component {...pageProps} />
+        </div>
       </AuthUserProvider>
     </ThemeProvider>
   )

@@ -14,6 +14,7 @@ import Firebase from 'lib/Firebase'
 
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
+const firebaseDatabase = Firebase.database()
 
 export default function SignUp() {
   const router = useRouter()
@@ -37,37 +38,67 @@ export default function SignUp() {
     if (password === passwordConfirmation) {
       createUserWithEmailAndPassword(email, password)
         .then(authUser => {
-          console.log('Success! The user has been created.')
-
           setIsSigningUp(false)
-
-          let usersRef
-          let usersRefUnsubscribe
           
           firebaseAuth.onAuthStateChanged(user => {
             if (user) {
-              usersRef = firebaseStore.collection('Users')
+              const serverTimeStamp = Firebase.firestore.Timestamp.fromDate(new Date())
 
-              usersRef.add({
-                uid: user.uid,
-                authId: user.uid,
-                name: name,
-                email: email,
-                customerType: 'free',
-                onboardingCurrentStep: 0,
-                onboardingStep1Answer: '',
-                onboardingStep2Answer: '',
-                onboardingStep3Answer: '',
-                onboardingStep4Answer: '',
-                onboardingStep5Answer: '',
-                onboardingStep6Answer: '',
-                onboardingStep7Answer: ''
-              })
-            } else {
-              usersRefUnsubscribe && unsubscribe()
+              firebaseStore
+                .collection('Users')
+                .doc(user.uid)
+                .set({
+                  name: name,
+                  photo: '',
+                  badges: {
+                    ticks: 0,
+                    crowns: 0,
+                    starts: 0
+                  },
+                  customerType: 'free',
+                })
+              
+              firebaseDatabase
+                .ref()
+                .child('users')
+                .child(user.uid)
+                .set({
+                  email: email,
+                  userId: user.uid,
+                  name: name,
+                  photo: '',
+                  topGoal: '',
+                  topChallenges: '',
+                  memberSince: serverTimeStamp.seconds,
+                  committedToSelfhelp: false,
+                  activatedReminderAtStartup: false,
+                  knowCbt: false,
+                  ageGroup: 0,
+                  gender: 0,
+                  veteranStatus: '',
+                  ethnicity: '',
+                  religion: '',
+                  isParent: null,
+                  isLGBTQ: null,
+                  phone: '',
+                  userAddress: null,
+                  culturalValues: null,
+                  companyInfo: null,
+                  goingToTherapy: false,
+                  isAdmin: false,
+                  freshChatRestoreID: null,
+                  customerType: 'free',
+                  paymentType: null,
+                  expiryDate: null,
+                  stats: null,
+                  nps: 0,
+                  onboardingStep: 0,
+                  lastAssessmentScore: null,
+                  lastAssessmentDate: null
+                })
             }
           })
-
+          
           router.push('/onboarding/welcome')
         })
         .catch(error => {
