@@ -94,6 +94,13 @@ export default function SignUp() {
                   lastAssessmentScore: null,
                   lastAssessmentDate: null
                 })
+
+              if (
+                (localStorage.getItem('currentProfileStep') !== null) || 
+                (localStorage.getItem('currentProfileStep') !== '')
+              ) {
+                localStorage.removeItem('currentProfileStep')
+              }
             }
           })
           
