@@ -42,8 +42,6 @@ export default function SignUp() {
           
           firebaseAuth.onAuthStateChanged(user => {
             if (user) {
-              const serverTimeStamp = Firebase.firestore.Timestamp.fromDate(new Date())
-
               firebaseStore
                 .collection('Users')
                 .doc(user.uid)
@@ -69,7 +67,7 @@ export default function SignUp() {
                   photo: '',
                   topGoal: '',
                   topChallenges: '',
-                  memberSince: serverTimeStamp.seconds,
+                  memberSince: new Date().getTime(),
                   committedToSelfhelp: false,
                   activatedReminderAtStartup: false,
                   knowCbt: false,

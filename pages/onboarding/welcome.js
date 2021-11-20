@@ -17,6 +17,7 @@ import Firebase from 'lib/Firebase'
 
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
+const firebaseDatabase = Firebase.database()
 
 export default function OnboardingWelcomePage() {
   const router = useRouter()
@@ -32,11 +33,23 @@ export default function OnboardingWelcomePage() {
       console.log(`Current profile step: ${localStorage.getItem('currentProfileStep')}`)
 
       if (localStorage.getItem('currentProfileStep') > 0) {
-        if (localStorage.getItem('currentProfileStep') == 8) {
-          router.push('/onboarding/finish')
-        } else {
-          router.push(`/onboarding/${localStorage.getItem('currentProfileStep')}`)
-        }
+        firebaseAuth.onAuthStateChanged(user => {
+          if (user) {
+            firebaseDatabase
+              .ref()
+              .child('users')
+              .child(user.uid)
+              .on('value', snapshot => {
+                if (snapshot.val().onboardingStep == 1) {
+                  router.push('/onboarding/get-started')
+                } else {
+                  router.push(`/onboarding/${localStorage.getItem('currentProfileStep')}`)
+                }
+              }, error => {
+                console.log(error)
+              })
+          }
+        })
       }
     }
 

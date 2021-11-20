@@ -86,6 +86,14 @@ export default function Onboarding7() {
               committedToSelfhelp: localStorage.profileStep7Answer || false,
               onboardingStep: 1 || 0
             })
+
+          localStorage.removeItem('profileStep1Answer')
+          localStorage.removeItem('profileStep2Answer')
+          localStorage.removeItem('profileStep3Answer')
+          localStorage.removeItem('profileStep4Answer')
+          localStorage.removeItem('profileStep5Answer')
+          localStorage.removeItem('profileStep6Answer')
+          localStorage.removeItem('profileStep7Answer')
   
           router.push('/onboarding/finish')
         }
