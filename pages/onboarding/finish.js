@@ -58,7 +58,7 @@ export default function OnboardingFinishPage() {
             <Button 
             size="large" 
             variant="contained"
-            onClick={() => router.push(`/onboarding/get-started`)}
+            onClick={() => router.push(`/`)}
           >CONTINUE</Button>
           </Stack>
           </div>

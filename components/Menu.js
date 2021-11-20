@@ -38,7 +38,7 @@ export default function MainMenu(props) {
                 </div>
                 <Grow in={mainMenuCollapse}>
                     <div className={`${styles.main_menu_logo}`}>
-                        <img src={`/logo.png`}  />    
+                        <a href="/"><img src={`/logo.png`}  />    </a>
                     </div>
                 </Grow>
                 

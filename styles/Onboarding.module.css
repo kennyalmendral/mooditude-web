@@ -1,7 +1,6 @@
 .onboarding_wrapper{
 	padding: 30px 63px;
 	display: flex;
-
 	flex-direction: column;
 	justify-content: center;
 	min-height: 100vh;
@@ -13,6 +12,7 @@
 	min-height: 900px;
 	display: flex;
     flex-direction: column;
+    overflow: hidden
 }
 
 .onboarding_wrapper h1{
@@ -217,6 +217,33 @@
 	max-width: 400px;
 }
 
+
+.breather_wrap{
+	padding: 150px 0;
+}
+
+
+.custom_loader{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	flex-direction: column;
+}
+
+.custom_loader p{
+	font-family: 'Circular Std';
+	font-style: normal;
+	font-weight: normal;
+	font-size: 16px;
+	line-height: 20px;
+	text-align: center;
+
+	/* Primary */
+	margin-top: 30px;
+	color: #072B4F;
+
+}
 
 @media(max-width: 767px){
   .onboarding_wrapper{

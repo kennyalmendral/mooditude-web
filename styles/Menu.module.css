@@ -8,6 +8,8 @@
   position: relative;
   padding: 26px 23px 40px 34.5px;
   background: #F8E71C;
+  position: fixed;
+  height: 100%;
 }
 
 .main_menu_logo{
@@ -75,5 +77,8 @@
     background: url('/auth-bg.png') left top no-repeat;
   }*/
 
-  
+  .main_menu_wrap{
+    position: relative;
+  }
+
 }
