@@ -27,46 +27,36 @@ export default function OnboardingWelcomePage() {
   const [name, setName] = useState('')
   
   useEffect(() => {
-    if (localStorage.getItem('currentProfileStep') === null) {
-      localStorage.setItem('currentProfileStep', 0)
-    } else {
-      console.log(`Current profile step: ${localStorage.getItem('currentProfileStep')}`)
-
-      if (localStorage.getItem('currentProfileStep') > 0) {
-        firebaseAuth.onAuthStateChanged(user => {
-          if (user) {
-            firebaseDatabase
-              .ref()
-              .child('users')
-              .child(user.uid)
-              .on('value', snapshot => {
-                if (snapshot.val().onboardingStep == 1) {
-                  router.push('/onboarding/get-started')
-                } else {
-                  router.push(`/onboarding/${localStorage.getItem('currentProfileStep')}`)
-                }
-              }, error => {
-                console.log(error)
-              })
-          }
-        })
-      }
-    }
-
     let usersRef
-    let usersRefUnsubscribe
+    let unsubscribe
 
     firebaseAuth.onAuthStateChanged(user => {
       if (user) {
+        firebaseDatabase
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .on('value', snapshot => {
+            console.log(snapshot.val())
+
+            if (snapshot.val().onboardingStep == 1) {
+              router.push('/')
+            } else if ((snapshot.val().onboardingStep == 0) && (localStorage.getItem('currentProfileStep') !== null)) {
+              router.push(`/onboarding/${localStorage.getItem('currentProfileStep')}`)
+            }
+          }, error => {
+            console.log(error)
+          })
+
         usersRef = firebaseStore.collection('Users').doc(user.uid)
 
-        usersRefUnsubscribe = usersRef
+        unsubscribe = usersRef
           .get()
           .then(doc => {
             setName(doc.data().name)
           })
       } else {
-        usersRefUnsubscribe && usersRefUnsubscribe()
+        unsubscribe && unsubscribe()
       }
     })
   }, [])
@@ -77,26 +67,11 @@ export default function OnboardingWelcomePage() {
     }
   }, [authUser, loading, router])
 
-  useEffect(() => {
-    let usersRef
-    let usersRefUnsubscribe
+  const handlePersonalize = () => {
+    localStorage.getItem('currentProfileStep') === null && localStorage.setItem('currentProfileStep', 0) 
 
-    firebaseAuth.onAuthStateChanged(user => {
-      if (user) {
-        usersRef = firebaseStore.collection('Users')
-
-        usersRefUnsubscribe = usersRef
-          .where('uid', '==', user.uid)
-          .onSnapshot(querySnapshot => {
-            querySnapshot.docs.map(doc => {
-              setName(doc.data().name)
-            })
-          })
-      } else {
-        usersRefUnsubscribe && usersRefUnsubscribe()
-      }
-    })
-  }, [firebaseStore, firebaseAuth])
+    router.push(`/onboarding/1`)
+  }
 
   return (
     <Layout title={`Welcome | ${SITE_NAME}`}>
@@ -123,7 +98,8 @@ export default function OnboardingWelcomePage() {
               <Button 
                 size="large" 
                 variant="contained" 
-                onClick={() => router.push(`/onboarding/1`)}
+                onClick={handlePersonalize}
+                // onClick={() => router.push(`/onboarding/1`)}
               >
                 PERSONALIZE MOODITUDE
               </Button>
