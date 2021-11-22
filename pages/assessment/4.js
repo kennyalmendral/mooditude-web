@@ -28,13 +28,13 @@ import FormHelperText from '@mui/material/FormHelperText';
 
 import Animation from '@mui/material/Grow';
 
-export default function Assessment1() {
+export default function Assessment4() {
   const router = useRouter()
 
   const { authUser, loading, signOut } = useAuth()
   const steps = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28 ,29]
 
-  const [profileStep1Answer, setProfileStep1Answer] = useState('')
+  const [assessmentStep4Answer, setAssessmentStep4Answer] = useState('')
   const [formError, setFormError] = useState(false)
 
   useEffect(() => {
@@ -44,24 +44,26 @@ export default function Assessment1() {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    // if (localStorage.getItem('currentProfileStep') !== null) {
-    //   localStorage.setItem('currentProfileStep', 1)
-    //   console.log(`Current profile step: ${localStorage.getItem('currentProfileStep')}`)
-    // }
+    if (localStorage.getItem('currentAssessmentStep') !== null) {
+      localStorage.setItem('currentAssessmentStep', 4)
 
-    // if (localStorage.getItem('profileStep1Answer') > 0) {
-    //   setProfileStep1Answer(localStorage.getItem('profileStep1Answer'))
-    // }
+      console.log(`Current assessment step: ${localStorage.getItem('currentAssessmentStep')}`)
+    }
+
+    if (localStorage.getItem('assessmentStep4Answer') > 0) {
+      setAssessmentStep4Answer(localStorage.getItem('assessmentStep4Answer'))
+    }
   }, [])
 
-  // useEffect(() => {
-  //   profileStep1Answer > 0 && console.log(`Profile step 1 answer: ${profileStep1Answer}`)
-  // }, [profileStep1Answer])
+  useEffect(() => {
+    assessmentStep4Answer > 0 && console.log(`Assessment step 4 answer: ${assessmentStep4Answer}`)
+  }, [assessmentStep4Answer])
 
   const handleNextStep = () => {
     setFormError(false)
-    if (profileStep1Answer !== '') {
-      // localStorage.setItem('profileStep1Answer', parseInt(profileStep1Answer))
+
+    if (assessmentStep4Answer !== '') {
+      localStorage.setItem('assessmentStep4Answer', parseInt(assessmentStep4Answer))
       
       router.push('/assessment/5')
     } else {
@@ -100,13 +102,13 @@ export default function Assessment1() {
                 <FormControlLabel 
                   value="1" 
                   className={styles.with_text_wrap}
-                  control={<Radio checked={profileStep1Answer == 1} onChange={(event) => setProfileStep1Answer(event.target.value)} />} 
+                  control={<Radio checked={assessmentStep4Answer == 1} onChange={(event) => setAssessmentStep4Answer(event.target.value)} />} 
                   label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Not at all <div>Since you are under 18, get permission from your parents before using this app. </div>`}} />} />
                 
-                <FormControlLabel value="2" control={<Radio checked={profileStep1Answer == 2} onChange={(event) => setProfileStep1Answer(event.target.value)} />} label="Rarely" />
-                <FormControlLabel value="3" control={<Radio checked={profileStep1Answer == 3} onChange={(event) => setProfileStep1Answer(event.target.value)} />} label="Sometimes" />
-                <FormControlLabel value="4" control={<Radio checked={profileStep1Answer == 4} onChange={(event) => setProfileStep1Answer(event.target.value)} />} label="Often" />
-                <FormControlLabel value="5" control={<Radio checked={profileStep1Answer == 5} onChange={(event) => setProfileStep1Answer(event.target.value)} />} label="Most of the time" />
+                <FormControlLabel value="2" control={<Radio checked={assessmentStep4Answer == 2} onChange={(event) => setAssessmentStep4Answer(event.target.value)} />} label="Rarely" />
+                <FormControlLabel value="3" control={<Radio checked={assessmentStep4Answer == 3} onChange={(event) => setAssessmentStep4Answer(event.target.value)} />} label="Sometimes" />
+                <FormControlLabel value="4" control={<Radio checked={assessmentStep4Answer == 4} onChange={(event) => setAssessmentStep4Answer(event.target.value)} />} label="Often" />
+                <FormControlLabel value="5" control={<Radio checked={assessmentStep4Answer == 5} onChange={(event) => setAssessmentStep4Answer(event.target.value)} />} label="Most of the time" />
               </RadioGroup>
               {
                 formError ? 

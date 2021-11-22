@@ -15,14 +15,10 @@ import Stack from '@mui/material/Stack'
 
 import Firebase from 'lib/Firebase'
 
-const firebaseStore = Firebase.firestore()
-const firebaseAuth = Firebase.auth()
-
-export default function OnboardingWelcomePage() {
+export default function AssessmentWelcomePage() {
   const router = useRouter()
 
   const { authUser, loading, signOut } = useAuth()
-
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -30,7 +26,11 @@ export default function OnboardingWelcomePage() {
     }
   }, [authUser, loading, router])
 
+  const handleStart = () => {
+    localStorage.getItem('currentAssessmentStep') === null && localStorage.setItem('currentAssessmentStep', 0) 
 
+    router.push(`/assessment/1`)
+  }
 
   return (
     <Layout title={`Get Started | ${SITE_NAME}`}>
@@ -44,9 +44,7 @@ export default function OnboardingWelcomePage() {
            <h1>Assess Your <br/>Wellbeing Score</h1>
             
             <p>You are about to take a 3-minute mental health assessment that effectively measures the pulse of your mental wellbeing.</p>
-
             <p>Please read each statement carefully and select a choice that indicates how that statement applied to you OVER THE PAST TWO WEEKS. </p>
-
             <p>There are no right or wrong answers.  Take your time</p>
 
             <div className={styles.btn_wrap}>
@@ -54,7 +52,8 @@ export default function OnboardingWelcomePage() {
                 <Button 
                   size="large" 
                   variant="contained" 
-                  onClick={() => router.push(`/assessment/1`)}
+                  // onClick={() => router.push(`/assessment/1`)}
+                  onClick={handleStart}
                 >
                   Start Now
                 </Button>

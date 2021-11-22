@@ -84,7 +84,7 @@ export default function Onboarding7() {
               goingToTherapy: localStorage.profileStep5Answer || false,
               knowCbt: localStorage.profileStep6Answer || false,
               committedToSelfhelp: localStorage.profileStep7Answer || false,
-              onboardingStep: 1 || 0
+              onboardingStep: 1
             })
 
           localStorage.removeItem('profileStep1Answer')

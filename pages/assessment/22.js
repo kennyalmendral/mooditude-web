@@ -28,15 +28,14 @@ import FormHelperText from '@mui/material/FormHelperText';
 
 import Animation from '@mui/material/Grow';
 
-export default function Assessment1() {
+export default function Assessment22() {
   const router = useRouter()
 
   const { authUser, loading, signOut } = useAuth()
   const steps = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28 ,29]
 
-  const [profileStep1Answer, setProfileStep1Answer] = useState('')
   const [formError, setFormError] = useState(false)
-
+  
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/auth/login')
@@ -44,23 +43,12 @@ export default function Assessment1() {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    // if (localStorage.getItem('currentProfileStep') !== null) {
-    //   localStorage.setItem('currentProfileStep', 1)
-    //   console.log(`Current profile step: ${localStorage.getItem('currentProfileStep')}`)
-    // }
+    if (localStorage.getItem('currentAssessmentStep') !== null) {
+      localStorage.setItem('currentAssessmentStep', 22)
 
-    // if (localStorage.getItem('profileStep1Answer') > 0) {
-    //   setProfileStep1Answer(localStorage.getItem('profileStep1Answer'))
-    // }
+      console.log(`Current assessment step: ${localStorage.getItem('currentAssessmentStep')}`)
+    }
   }, [])
-
-  // useEffect(() => {
-  //   profileStep1Answer > 0 && console.log(`Profile step 1 answer: ${profileStep1Answer}`)
-  // }, [profileStep1Answer])
-
-  const handleNextStep = () => {
-    router.push('/assessment/23')
-  }
 
   return (
     <Layout title={`Take a breather | ${SITE_NAME}`}>
@@ -74,8 +62,6 @@ export default function Assessment1() {
             </div>
           </Animation>
           
-          
-
           <div className={styles.btn_wrap}>
             <Stack direction="row" spacing={2}>
               <Button 
@@ -92,8 +78,8 @@ export default function Assessment1() {
                 size="large" 
                 className={styles.onboarding_btn} 
                 variant="contained" 
-                onClick={handleNextStep} 
-                // onClick={() => {router.push(`/onboarding/2`)}}
+                // onClick={handleNextStep} 
+                onClick={() => {router.push(`/assessment/23`)}}
               >
                 Next
               </Button>

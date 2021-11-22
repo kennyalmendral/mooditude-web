@@ -17,12 +17,12 @@ import Firebase from 'lib/Firebase'
 
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
+const firebaseDatabase = Firebase.database()
 
 export default function OnboardingWelcomePage() {
   const router = useRouter()
 
   const { authUser, loading, signOut } = useAuth()
-
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -30,7 +30,19 @@ export default function OnboardingWelcomePage() {
     }
   }, [authUser, loading, router])
 
-
+  useEffect(() => {
+    firebaseAuth.onAuthStateChanged(user => {
+      if (user) {
+        firebaseDatabase
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .update({
+            onboardingStep: 2
+          })
+      }
+    })
+  }, [])
 
   return (
     <Layout title={`Get Started | ${SITE_NAME}`}>
@@ -50,20 +62,22 @@ export default function OnboardingWelcomePage() {
 
             <h2>High Risk</h2>
             <p>Score of 76 shows that you have high risk of mental health condition. </p>
+
             <div className={styles.scale_img_wrap}>
               <img src="/Scale.png" />
             </div>
           </div>
+
           <div className={styles.report_right_wrap}>
             <div className={styles.report_btns_wrapper}>
                 <a href="#" className={styles.active} onClick={() => {setContentShow()}}>REPORT</a>
 
-
-                {/*
-                use for later w functions
+                {/* use for later w functions
                 <a href="#" onClick={() => {setContentShow('report_content_paid_scores_wrap')}}>SCORES</a>
-                <a href="#" onClick={() => {setContentShow('report_content_download_wrap')}}>DOWNLOAD</a>*/}
+                <a href="#" onClick={() => {setContentShow('report_content_download_wrap')}}>DOWNLOAD</a>
+                */}
             </div>
+            
             <div className={styles.report_content_wrap}>
               <div className={`${styles.report_content_item} ${styles.active}`} key={'report_content_free_wrap'}>
 
@@ -79,13 +93,13 @@ export default function OnboardingWelcomePage() {
                   <p>Get your complete report that shows your risk for Depression, an Anxiety Disorder, Bipolar Disorder, and Post Traumatic Stress Disorder. And track your symptoms overtime to get a complete picture of your mental health.</p>
                 </div>
 
-
                 <Button 
                   size="large" 
                   className={styles.report_btn} 
-                  variant="contained" 
-                  
-                >BUY MOODITUDE PREMIUM</Button>
+                  variant="contained"   
+                >
+                  BUY MOODITUDE PREMIUM
+                </Button>
 
                 <div className={styles.download_app_wrap}>
                   <h4>Download</h4>
@@ -111,8 +125,6 @@ export default function OnboardingWelcomePage() {
 
               <div className={styles.report_content_item} key={'report_content_download_wrap'}>
               </div> */}
-
-
             </div> 
           </div>
         </div>
