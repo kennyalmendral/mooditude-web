@@ -101,6 +101,13 @@ export default function SignUp() {
               ) {
                 localStorage.removeItem('currentProfileStep')
               }
+
+              if (
+                (localStorage.getItem('currentAssessmentStep') !== null) || 
+                (localStorage.getItem('currentAssessmentStep') !== '')
+              ) {
+                localStorage.removeItem('currentAssessmentStep')
+              }
             }
           })
           

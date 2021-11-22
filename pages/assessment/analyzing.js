@@ -60,7 +60,39 @@ export default function AssessmentAnalyzing() {
       localStorage.getItem('assessmentStep28Answer'),
       localStorage.getItem('assessmentStep29Answer'),
       localStorage.getItem('assessmentStep30Answer'),
-      localStorage.getItem('assessmentStep31Answer'),
+      localStorage.getItem('assessmentStep31Answer')
+    ]
+
+    let assessmentTimes = [
+      localStorage.getItem('assessmentStep1Time'),
+      localStorage.getItem('assessmentStep2Time'),
+      localStorage.getItem('assessmentStep3Time'),
+      localStorage.getItem('assessmentStep4Time'),
+      localStorage.getItem('assessmentStep5Time'),
+      localStorage.getItem('assessmentStep6Time'),
+      localStorage.getItem('assessmentStep7Time'),
+      localStorage.getItem('assessmentStep8Time'),
+      localStorage.getItem('assessmentStep9Time'),
+      localStorage.getItem('assessmentStep10Time'),
+      localStorage.getItem('assessmentStep11Time'),
+      localStorage.getItem('assessmentStep12Time'),
+      localStorage.getItem('assessmentStep13Time'),
+      localStorage.getItem('assessmentStep14Time'),
+      localStorage.getItem('assessmentStep15Time'),
+      localStorage.getItem('assessmentStep16Time'),
+      localStorage.getItem('assessmentStep17Time'),
+      localStorage.getItem('assessmentStep18Time'),
+      localStorage.getItem('assessmentStep19Time'),
+      localStorage.getItem('assessmentStep20Time'),
+      localStorage.getItem('assessmentStep21Time'),
+      localStorage.getItem('assessmentStep23Time'),
+      localStorage.getItem('assessmentStep24Time'),
+      localStorage.getItem('assessmentStep25Time'),
+      localStorage.getItem('assessmentStep26Time'),
+      localStorage.getItem('assessmentStep28Time'),
+      localStorage.getItem('assessmentStep29Time'),
+      localStorage.getItem('assessmentStep30Time'),
+      localStorage.getItem('assessmentStep31Time')
     ]
 
     firebaseAuth.onAuthStateChanged(user => {
@@ -71,7 +103,8 @@ export default function AssessmentAnalyzing() {
           .collection('scores')
           .doc(new Date().getTime().toString())
           .set({
-            rawData: assessmentAnswers.join(',')
+            rawData: assessmentAnswers.join(','),
+            rawTimeToAnswer: assessmentTimes.join(',')
           })
           .then(response => {
             localStorage.removeItem('assessmentStep1Answer')
@@ -103,6 +136,36 @@ export default function AssessmentAnalyzing() {
             localStorage.removeItem('assessmentStep29Answer')
             localStorage.removeItem('assessmentStep30Answer')
             localStorage.removeItem('assessmentStep31Answer')
+
+            localStorage.removeItem('assessmentStep1Time')
+            localStorage.removeItem('assessmentStep2Time')
+            localStorage.removeItem('assessmentStep3Time')
+            localStorage.removeItem('assessmentStep4Time')
+            localStorage.removeItem('assessmentStep5Time')
+            localStorage.removeItem('assessmentStep6Time')
+            localStorage.removeItem('assessmentStep7Time')
+            localStorage.removeItem('assessmentStep8Time')
+            localStorage.removeItem('assessmentStep9Time')
+            localStorage.removeItem('assessmentStep10Time')
+            localStorage.removeItem('assessmentStep11Time')
+            localStorage.removeItem('assessmentStep12Time')
+            localStorage.removeItem('assessmentStep13Time')
+            localStorage.removeItem('assessmentStep14Time')
+            localStorage.removeItem('assessmentStep15Time')
+            localStorage.removeItem('assessmentStep16Time')
+            localStorage.removeItem('assessmentStep17Time')
+            localStorage.removeItem('assessmentStep18Time')
+            localStorage.removeItem('assessmentStep19Time')
+            localStorage.removeItem('assessmentStep20Time')
+            localStorage.removeItem('assessmentStep21Time')
+            localStorage.removeItem('assessmentStep23Time')
+            localStorage.removeItem('assessmentStep24Time')
+            localStorage.removeItem('assessmentStep25Time')
+            localStorage.removeItem('assessmentStep26Time')
+            localStorage.removeItem('assessmentStep28Time')
+            localStorage.removeItem('assessmentStep29Time')
+            localStorage.removeItem('assessmentStep30Time')
+            localStorage.removeItem('assessmentStep31Time')
 
             router.push('/assessment/report')
           })

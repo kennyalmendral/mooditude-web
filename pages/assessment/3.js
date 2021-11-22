@@ -37,6 +37,9 @@ export default function Assessment3() {
   const [assessmentStep3Answer, setAssessmentStep3Answer] = useState('')
   const [formError, setFormError] = useState(false)
 
+  const [assessmentStep3Time, setAssessmentStep3Time] = useState(0)
+  const [timer, setTimer] = useState(null)
+
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/auth/login')
@@ -53,11 +56,24 @@ export default function Assessment3() {
     if (localStorage.getItem('assessmentStep3Answer') > 0) {
       setAssessmentStep3Answer(localStorage.getItem('assessmentStep3Answer'))
     }
+
+    setTimer(setInterval(() => {
+      console.log(`Time to answer: ${assessmentStep3Time}`)
+      setAssessmentStep3Time(assessmentStep3Time++)
+    }, 1000))
   }, [])
 
   useEffect(() => {
     assessmentStep3Answer > 0 && console.log(`Assessment step 3 answer: ${assessmentStep3Answer}`)
   }, [assessmentStep3Answer])
+
+  const handleChange = (e) => {
+    clearInterval(timer)
+    localStorage.setItem('assessmentStep3Time', assessmentStep3Time)
+    console.log(`Timer cleared at ${assessmentStep3Time} second(s)`)
+
+    setAssessmentStep3Answer(e.target.value)
+  }
 
   const handleNextStep = () => {
     setFormError(false)
@@ -102,13 +118,13 @@ export default function Assessment3() {
                 <FormControlLabel 
                   value="1" 
                   className={styles.with_text_wrap}
-                  control={<Radio checked={assessmentStep3Answer == 1} onChange={(event) => setAssessmentStep3Answer(event.target.value)} />} 
+                  control={<Radio checked={assessmentStep3Answer == 1} onChange={handleChange} />} 
                   label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Not at all <div>Since you are under 18, get permission from your parents before using this app. </div>`}} />} />
                 
-                <FormControlLabel value="2" control={<Radio checked={assessmentStep3Answer == 2} onChange={(event) => setAssessmentStep3Answer(event.target.value)} />} label="Rarely" />
-                <FormControlLabel value="3" control={<Radio checked={assessmentStep3Answer == 3} onChange={(event) => setAssessmentStep3Answer(event.target.value)} />} label="Sometimes" />
-                <FormControlLabel value="4" control={<Radio checked={assessmentStep3Answer == 4} onChange={(event) => setAssessmentStep3Answer(event.target.value)} />} label="Often" />
-                <FormControlLabel value="5" control={<Radio checked={assessmentStep3Answer == 5} onChange={(event) => setAssessmentStep3Answer(event.target.value)} />} label="Most of the time" />
+                <FormControlLabel value="2" control={<Radio checked={assessmentStep3Answer == 2} onChange={handleChange} />} label="Rarely" />
+                <FormControlLabel value="3" control={<Radio checked={assessmentStep3Answer == 3} onChange={handleChange} />} label="Sometimes" />
+                <FormControlLabel value="4" control={<Radio checked={assessmentStep3Answer == 4} onChange={handleChange} />} label="Often" />
+                <FormControlLabel value="5" control={<Radio checked={assessmentStep3Answer == 5} onChange={handleChange} />} label="Most of the time" />
               </RadioGroup>
               {
                 formError ? 

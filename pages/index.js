@@ -33,10 +33,10 @@ export default function Home() {
           .on('value', snapshot => {
             console.log(snapshot.val())
 
-            if (snapshot.val().onboardingStep == 2) {
-              router.push('/')
-            } else if ((snapshot.val().onboardingStep == 1) && (localStorage.getItem('currentAssessmentStep') !== null)) {
+            if ((snapshot.val().onboardingStep == 1) && (localStorage.getItem('currentAssessmentStep') !== null)) {
               router.push(`/assessment/${localStorage.getItem('currentAssessmentStep')}`)
+            } else if (snapshot.val().onboardingStep == 2) {
+              router.push('/assessment/report')
             }
           }, error => {
             console.log(error)

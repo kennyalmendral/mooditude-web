@@ -39,10 +39,12 @@ export default function OnboardingWelcomePage() {
           .on('value', snapshot => {
             console.log(snapshot.val())
 
-            if (snapshot.val().onboardingStep == 1) {
-              router.push('/')
-            } else if ((snapshot.val().onboardingStep == 0) && (localStorage.getItem('currentProfileStep') !== null)) {
+            if ((snapshot.val().onboardingStep == 0) && (localStorage.getItem('currentProfileStep') !== null)) {
               router.push(`/onboarding/${localStorage.getItem('currentProfileStep')}`)
+            } else if (snapshot.val().onboardingStep == 1) {
+              router.push('/')
+            } else if (snapshot.val().onboardingStep == 2) {
+              router.push('/assessment/report')
             }
           }, error => {
             console.log(error)
