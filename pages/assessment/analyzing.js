@@ -17,7 +17,7 @@ import Firebase from 'lib/Firebase'
 
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
-const firebaseDatabase = Firebase.database()
+// const firebaseDatabase = Firebase.database()
 
 export default function AssessmentAnalyzing() {
   const router = useRouter()
@@ -97,14 +97,27 @@ export default function AssessmentAnalyzing() {
 
     firebaseAuth.onAuthStateChanged(user => {
       if (user) {
+        let epochMilliseconds = new Date().getTime().toString()
+
         firebaseStore
           .collection('M3Assessment')
           .doc(user.uid)
           .collection('scores')
-          .doc(new Date().getTime().toString())
+          .doc(epochMilliseconds)
           .set({
+            id: epochMilliseconds,
+            createDate: new Date(),
             rawData: assessmentAnswers.join(','),
-            rawTimeToAnswer: assessmentTimes.join(',')
+            rawTimeToAnswer: assessmentTimes.join(','),
+            allScore: 0,
+            bipolarScore: 0,
+            depressionScore: 0,
+            gadScore: 0,
+            gatewayScore: 0,
+            ocdScore: 0,
+            panicScore: 0,
+            ptsdScore: 0,
+            pdfDoc: null,
           })
           .then(response => {
             localStorage.removeItem('assessmentStep1Answer')
@@ -182,7 +195,7 @@ export default function AssessmentAnalyzing() {
         <div className={styles.onboarding_inner_wrapper}>
           <Animation direction="right" in={true} timeout={1000}>
             <div className={styles.custom_loader}>
-              <RingLoader color={'#f8e71c'} loading={true}  size={250} />
+              <RingLoader color={'#f8e71c'} loading={true} size={250} />
               
               <p>Analyzing your responses...</p>
             </div>
