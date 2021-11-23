@@ -7,11 +7,14 @@ import Layout from '@/components/Layout'
 import { SITE_NAME } from '@/config/index'
 
 import styles from '@/styles/Assessment.module.css'
+import onboardingStyles from '@/styles/Onboarding.module.css'
 
 import { useAuth } from '@/context/AuthUserContext'
 
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+
+import RingLoader from "react-spinners/RingLoader"
 
 import Firebase from 'lib/Firebase'
 
@@ -95,7 +98,24 @@ export default function OnboardingWelcomePage() {
 
   return (
     <Layout title={`Get Started | ${SITE_NAME}`}>
-      <div className={`${styles.onboarding_wrapper}`}>
+      <div className={`${styles.onboarding_wrapper}`} style={{ position: 'relative' }}>
+        {riskScore === 0 && (
+          <div 
+            className={onboardingStyles.custom_loader} 
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100vh',
+              background: '#fff',
+              zIndex: 10
+            }}
+          >
+            <RingLoader color={'#f8e71c'} loading={true} size={250} />
+            
+            <p>Analyzing your responses...</p>
+          </div>
+        )}
+
         <div className={`${styles.assessment_wrap} ${styles.report_page}`}>
           <div className={styles.white_wrap}>
             <h1>Your Mental <br/>Wellbeing Score</h1>
@@ -143,13 +163,9 @@ export default function OnboardingWelcomePage() {
                 )}
     
                 <div className={styles.scale_img_wrap}>
-                  <img src="/Scale.png" />
+                  <img src="/scale.png" />
                 </div>
               </>
-            )}
-
-            {riskScore === 0 && (
-              <p>Please wait&hellip;</p>
             )}
           </div>
 
@@ -227,10 +243,6 @@ export default function OnboardingWelcomePage() {
                     </div>
                   </>
                 )}
-
-                {riskScore === 0 && (
-                  <p>Please wait&hellip;</p>
-                )}  
               </div> 
 
               {/*<div className={styles.report_content_item} key={'report_content_paid_wrap'}>
