@@ -5,7 +5,8 @@ import MainMenu from '@/components/menu.js'
 import Router from 'next/router';
 import '../styles/globals.css'
 import GridLoader from "react-spinners/GridLoader";
-
+import Firebase from 'lib/Firebase'
+const firebaseAuth = Firebase.auth()
 
 const theme = createTheme({
   palette: {
@@ -23,23 +24,20 @@ function App({ Component, pageProps }) {
   const [pageLoader, setPageLoader] = React.useState(true);
   
   useEffect(() => {
-
-    urlChecker(Router.pathname)
-
-    Router.events.on('routeChangeComplete', url => {
-      urlChecker(url)
-
+    firebaseAuth.onAuthStateChanged(user => {
+      if (user) {
+        setCheckAuth(true)
+        removePageLoader()
+      }else{
+        setCheckAuth(false)
+      }
     })
   })
 
-  const urlChecker = (url) => {
-    if (url.indexOf('/auth') !== -1) {
-      setCheckAuth(false)
-    }else{
-      setCheckAuth(true)
-    }
+  const removePageLoader = () => {
     setPageLoader(false)
   }
+
   return (
     <ThemeProvider theme={theme}>
       <AuthUserProvider> 
@@ -49,7 +47,10 @@ function App({ Component, pageProps }) {
         }
         <div className={`body-wrapper ${checkAuth ? 'logged' : ''}`}>
           { checkAuth ? <MainMenu /> : '' }
-          <Component {...pageProps} />
+          <Component 
+            {...pageProps} 
+            removePageLoader={removePageLoader}
+          />
         </div>
       </AuthUserProvider>
     </ThemeProvider>

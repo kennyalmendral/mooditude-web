@@ -10,7 +10,7 @@ import { SITE_NAME } from '@/config/index'
 
 import { useAuth } from '@/context/AuthUserContext'
 
-export default function Login() {
+export default function Login(props) {
   const router = useRouter()
 
   const [email, setEmail] = useState('')
@@ -21,6 +21,9 @@ export default function Login() {
   const { authUser, loading, signInWithEmailAndPassword } = useAuth()
 
   useEffect(() => {
+    setTimeout(() => {
+      props.removePageLoader()
+    },300)
     if (loading && authUser) {
       router.push('/onboarding/welcome')
     }

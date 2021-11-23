@@ -16,7 +16,7 @@ const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
 
-export default function SignUp() {
+export default function SignUp(props) {
   const router = useRouter()
 
   const [name, setName] = useState('')
@@ -122,6 +122,13 @@ export default function SignUp() {
       setIsSigningUp(false)
     }
   }
+
+  useEffect(() => {
+    setTimeout(() => {
+      props.removePageLoader()
+    },300)
+    
+  }, [])
 
   return (
     <Layout title={`Join ${SITE_NAME} | ${SITE_NAME}`}>

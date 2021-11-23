@@ -10,7 +10,7 @@ import { SITE_NAME } from '@/config/index'
 
 import { useAuth } from '@/context/AuthUserContext'
 
-export default function ResetPassword() {
+export default function ResetPassword(props) {
   const router = useRouter()
 
   const [email, setEmail] = useState('')
@@ -19,6 +19,14 @@ export default function ResetPassword() {
   const [isResetPasswordEmailSent, setIsResetPasswordEmailSent] = useState(false)
 
   const { sendPasswordResetEmail } = useAuth()
+
+  useEffect(() => {
+    setTimeout(() => {
+      props.removePageLoader()
+    },300)
+    
+  }, [])
+
 
   const handleResetPassword = e => {
     e.preventDefault()

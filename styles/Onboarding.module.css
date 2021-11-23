@@ -9,7 +9,7 @@
 
 
 .onboarding_inner_wrapper{
-	min-height: 900px;
+	min-height: 95vh;
 	display: flex;
     flex-direction: column;
     overflow: hidden
@@ -148,6 +148,12 @@
 .btn_wrap{
 	margin-top: auto;
 	margin-bottom: 0;
+
+}
+
+
+.btn_wrap > div{
+	margin-top: 30px;
 
 }
 
