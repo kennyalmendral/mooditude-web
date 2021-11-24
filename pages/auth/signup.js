@@ -293,7 +293,7 @@ export default function SignUp(props) {
                     <FormControlLabel 
 
                       control={<Checkbox 
-                          className={styles.privacyPolicyLabel}
+                          className={`${styles.privacyPolicyLabel} no_bg`}
                           type="checkbox" 
                           id="privacy-policy" 
                           checked={isPrivacyPolicyChecked} 

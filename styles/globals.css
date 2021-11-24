@@ -217,6 +217,10 @@ img{
   bottom: 0;
 }
 
+.no_bg:before{
+  display: none!important;
+}
+
 @media(min-width: 1025px) and (max-width: 1500px){
   .custom_stepper_wrap .Mui-completed .MuiStepLabel-iconContainer:before{
       width: 12px;
