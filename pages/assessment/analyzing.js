@@ -116,6 +116,7 @@ export default function AssessmentAnalyzing() {
             gatewayScore: 0,
             ocdScore: 0,
             panicScore: 0,
+            socialAnxietyScore: 0,
             ptsdScore: 0,
             pdfDoc: null,
           })
