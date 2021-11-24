@@ -170,6 +170,7 @@ export default function SignUp(props) {
     } else {
       setError('Passwords do not match.')
       setIsSigningUp(false)
+      setBtnDisabled(password, passwordConfirmation, isPrivacyPolicyChecked)
     }
   }
 
