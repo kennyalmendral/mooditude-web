@@ -37,7 +37,10 @@ export default function OnboardingFinishPage() {
       <div className={styles.onboarding_wrapper}>
         <div className={`${styles.onboarding_inner_wrapper} ${styles.finish_page}`}>
           <div className={styles.lottie_alternative}>
-            <img src="/lottie_alternative.png" alt=""/>
+            <div dangerouslySetInnerHTML={{__html: `<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+            <lottie-player src="https://assets5.lottiefiles.com/datafiles/zc3XRzudyWE36ZBJr7PIkkqq0PFIrIBgp4ojqShI/newAnimation.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop autoplay></lottie-player>`}} />
+
+
           </div>
           <h1 className={`mb_0`}>Congratulations</h1>  
           
@@ -50,7 +53,7 @@ export default function OnboardingFinishPage() {
           </div>
 
           <div className={styles.high_five}>
-            <img src="/high_five.png" alt="" />
+            🙌 <span>High five!</span>
           </div>
 
           <div className={styles.btn_wrap}>

@@ -180,6 +180,50 @@ img{
   z-index: 10;
 }
 
+.grayCheck .MuiFormControlLabel-label{
+  font-family: 'Circular Std';
+  white-space: nowrap;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  /* identical to box height */
+
+
+  /* Primary */
+
+  color: #072B4F;
+}
+
+.grayIsChecked .MuiCheckbox-root,
+.MuiRadio-root.Mui-checked,
+.MuiCheckbox-root.Mui-checked{
+  position: relative;
+}
+
+.grayIsChecked .MuiCheckbox-root:before,
+.MuiCheckbox-root.Mui-checked:before,
+.MuiRadio-root.Mui-checked:before{
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 10px;
+  background: #072B4F;
+  z-index: -1;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+@media(min-width: 1025px) and (max-width: 1500px){
+  .custom_stepper_wrap .Mui-completed .MuiStepLabel-iconContainer:before{
+      width: 12px;
+      height: 10px;
+  }
+}
+
 @media(max-width: 767px){
   .body-wrapper{
     display: block;
@@ -188,4 +232,13 @@ img{
   .body-wrapper > div:last-child{
     padding-left: 0;
   }
+
+  .body-wrapper.logged > div:last-child{
+    padding-left: 0;
+  }
+
+  .custom_stepper_wrap .MuiStepConnector-horizontal{
+    left: calc(-92% + 20px);
+  }
 }
+

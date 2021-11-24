@@ -27,6 +27,8 @@ import FormLabel from '@mui/material/FormLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 
 import Animation from '@mui/material/Grow';
+import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
 export default function Assessment11() {
   const router = useRouter()
@@ -50,7 +52,7 @@ export default function Assessment11() {
     if (localStorage.getItem('currentAssessmentStep') !== null) {
       localStorage.setItem('currentAssessmentStep', 11)
 
-      console.log(`Current assessment step: ${localStorage.getItem('currentAssessmentStep')}`)
+      
     }
 
     if (localStorage.getItem('assessmentStep11Answer') > 0) {
@@ -58,20 +60,19 @@ export default function Assessment11() {
     }
 
     setTimer(setInterval(() => {
-      console.log(`Time to answer: ${assessmentStep11Time}`)
+      
       setAssessmentStep11Time(assessmentStep11Time++)
     }, 1000))
   }, [])
 
   useEffect(() => {
-    assessmentStep11Answer > 0 && console.log(`Assessment step 11 answer: ${assessmentStep11Answer}`)
+    // console.log('asd')
+    // assessmentStep11Answer > 0 && console.log(`Assessment step 11 answer: ${assessmentStep11Answer}`)
   }, [assessmentStep11Answer])
 
   const handleChange = (e) => {
     clearInterval(timer)
     localStorage.setItem('assessmentStep11Time', assessmentStep11Time)
-    console.log(`Timer cleared at ${assessmentStep11Time} second(s)`)
-
     setAssessmentStep11Answer(e.target.value)
   }
 
@@ -89,7 +90,7 @@ export default function Assessment11() {
 
   return (
     <Layout title={`Question 11 | ${SITE_NAME}`}>
-      <div className={styles.onboarding_wrapper}>
+      <div className={`${styles.onboarding_wrapper} ${styles.on_assessment_wrapper}`}>
         <div className={styles.onboarding_inner_wrapper}>
           <h2>Assess Your Wellbeing Score</h2>
           <p className={styles.step_text}>Question 11 of 29</p>
@@ -118,13 +119,13 @@ export default function Assessment11() {
                 <FormControlLabel 
                   value="1" 
                   className={styles.with_text_wrap}
-                  control={<Radio checked={assessmentStep11Answer == 1} onChange={handleChange} />} 
+                  control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep11Answer == 1} onChange={handleChange} />} 
                   label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Not at all <div>Since you are under 18, get permission from your parents before using this app. </div>`}} />} />
                 
-                <FormControlLabel value="2" control={<Radio checked={assessmentStep11Answer == 2} onChange={handleChange} />} label="Rarely" />
-                <FormControlLabel value="3" control={<Radio checked={assessmentStep11Answer == 3} onChange={handleChange} />} label="Sometimes" />
-                <FormControlLabel value="4" control={<Radio checked={assessmentStep11Answer == 4} onChange={handleChange} />} label="Often" />
-                <FormControlLabel value="5" control={<Radio checked={assessmentStep11Answer == 5} onChange={handleChange} />} label="Most of the time" />
+                <FormControlLabel value="2" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep11Answer == 2} onChange={handleChange} />} label="Rarely" />
+                <FormControlLabel value="3" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep11Answer == 3} onChange={handleChange} />} label="Sometimes" />
+                <FormControlLabel value="4" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep11Answer == 4} onChange={handleChange} />} label="Often" />
+                <FormControlLabel value="5" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep11Answer == 5} onChange={handleChange} />} label="Most of the time" />
               </RadioGroup>
               {
                 formError ? 

@@ -27,6 +27,8 @@ import FormLabel from '@mui/material/FormLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 
 import Animation from '@mui/material/Grow';
+import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
 export default function Assessment22() {
   const router = useRouter()
@@ -52,7 +54,7 @@ export default function Assessment22() {
 
   return (
     <Layout title={`Take a breather | ${SITE_NAME}`}>
-      <div className={styles.onboarding_wrapper}>
+      <div className={`${styles.onboarding_wrapper} ${styles.on_assessment_wrapper}`}>
         <div className={styles.onboarding_inner_wrapper}>
           <h2>Assess Your Wellbeing Score</h2>
         

@@ -95,13 +95,13 @@
   margin-bottom: 17px;
 }
 
-.authForm .field input {
+/*.authForm .field input {
   border: 1px solid #eaeaea;
   border-radius: 4px;
   padding: 11px 15px;
   width: 100%;
 }
-
+*/
 .authForm .field input.hasError {
   border: 1px solid #D6443F;
 }
@@ -176,6 +176,35 @@
   margin-top: 0;
   font-size: 24px;
   font-weight: 700;
+}
+
+
+.privacyPolicyLabel{
+  padding-left: 0;
+}
+
+.privacyPolicyText,
+.privacyPolicyText span span{
+  font-family: 'Circular Std';
+  white-space: nowrap;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  /* identical to box height */
+
+
+  /* Primary */
+
+  color: #072B4F;
+}
+
+.privacyPolicyTextInput,
+.privacyPolicyTextInput input,
+.privacyPolicyTextInput svg,
+.privacyPolicyTextInput span{
+  pointer-events: none!important;
+  user-select: none!important;
 }
 
 

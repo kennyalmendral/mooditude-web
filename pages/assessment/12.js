@@ -27,6 +27,8 @@ import FormLabel from '@mui/material/FormLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 
 import Animation from '@mui/material/Grow';
+import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
 export default function Assessment12() {
   const router = useRouter()
@@ -89,7 +91,7 @@ export default function Assessment12() {
 
   return (
     <Layout title={`Question 12 | ${SITE_NAME}`}>
-      <div className={styles.onboarding_wrapper}>
+      <div className={`${styles.onboarding_wrapper} ${styles.on_assessment_wrapper}`}>
         <div className={styles.onboarding_inner_wrapper}>
           <h2>Assess Your Wellbeing Score</h2>
           <p className={styles.step_text}>Question 12 of 29</p>
@@ -118,13 +120,13 @@ export default function Assessment12() {
                 <FormControlLabel 
                   value="1" 
                   className={styles.with_text_wrap}
-                  control={<Radio checked={assessmentStep12Answer == 1} onChange={handleChange} />} 
+                  control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep12Answer == 1} onChange={handleChange} />} 
                   label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Not at all <div>Since you are under 18, get permission from your parents before using this app. </div>`}} />} />
                 
-                <FormControlLabel value="2" control={<Radio checked={assessmentStep12Answer == 2} onChange={handleChange} />} label="Rarely" />
-                <FormControlLabel value="3" control={<Radio checked={assessmentStep12Answer == 3} onChange={handleChange} />} label="Sometimes" />
-                <FormControlLabel value="4" control={<Radio checked={assessmentStep12Answer == 4} onChange={handleChange} />} label="Often" />
-                <FormControlLabel value="5" control={<Radio checked={assessmentStep12Answer == 5} onChange={handleChange} />} label="Most of the time" />
+                <FormControlLabel value="2" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep12Answer == 2} onChange={handleChange} />} label="Rarely" />
+                <FormControlLabel value="3" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep12Answer == 3} onChange={handleChange} />} label="Sometimes" />
+                <FormControlLabel value="4" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep12Answer == 4} onChange={handleChange} />} label="Often" />
+                <FormControlLabel value="5" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep12Answer == 5} onChange={handleChange} />} label="Most of the time" />
               </RadioGroup>
               {
                 formError ? 

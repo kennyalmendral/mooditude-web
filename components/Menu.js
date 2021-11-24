@@ -17,8 +17,9 @@ export default function MainMenu(props) {
 
 
     const collapseMenu = () => {
-        console.log(width)
+        
         if (width <= 767) {
+            console.log('asd')
             setOpen(open ? false : true)
         }else{
             setMainMenuCollapse(mainMenuCollapse ? false : true)
@@ -38,7 +39,7 @@ export default function MainMenu(props) {
                 </div>
                 <Grow in={mainMenuCollapse}>
                     <div className={`${styles.main_menu_logo}`}>
-                        <a href="/"><img src={`/logo.png`}  />    </a>
+                        <a href="/"><img src={`/logo_inner.svg`}  /></a>
                     </div>
                 </Grow>
                 
@@ -67,7 +68,7 @@ export default function MainMenu(props) {
                 >
                     <Grow in={mainMenuCollapse}>
                         <div className={`${styles.mobile_main_menu_logo}`}>
-                            <img src={`/logo.png`}  />    
+                            <img src={`/logo_inner.svg`}  />   
                         </div>
                     </Grow>
 

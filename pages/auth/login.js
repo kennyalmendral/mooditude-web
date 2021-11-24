@@ -9,6 +9,8 @@ import Layout from '@/components/Layout'
 import { SITE_NAME } from '@/config/index'
 
 import { useAuth } from '@/context/AuthUserContext'
+import TextField from '@mui/material/TextField';
+
 
 export default function Login(props) {
   const router = useRouter()
@@ -54,7 +56,7 @@ export default function Login(props) {
         <div className={styles.authForm}>
           <div className={styles.authFormInner}>
             <img  
-              src="/mooditude-logo.png" 
+              src="/logo_svg.svg" 
               width="113" 
               height="113" 
               alt="Mooditude"
@@ -77,32 +79,44 @@ export default function Login(props) {
             <div>
               <form onSubmit={handleLogin}>
                 <div className={styles.field}>
-                  <input 
+
+                  <TextField 
+                    label="Email address" 
+                    variant="outlined" 
                     type="email" 
                     id="email" 
-                    placeholder="Email address" 
+                    
                     value={email} 
                     onChange={e => setEmail(e.target.value)} 
                     required
+                    fullWidth={true}
+                    size={"small"}
+                    
                   />
+ 
                 </div>
 
                 <div className={styles.field}>
-                  <input 
+
+                  <TextField 
                     type="password" 
                     id="password" 
-                    className={error && styles.hasError} 
-                    placeholder="Password" 
+                    label="Password" 
                     value={password} 
                     onChange={e => setPassword(e.target.value)} 
                     required
+                    fullWidth={true}
+                    size={"small"}
+                    error={error}
+                    helperText={error ? 'Invalid email or password' : ''}
                   />
+                  
 
-                  {error && (
+                  {/*{error && (
                     <div className={styles.error}>
                       {error && <span>{error}</span>}
                     </div>
-                  )}
+                  )}*/}
                 </div>
 
                 <div>

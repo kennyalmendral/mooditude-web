@@ -11,6 +11,8 @@ import styles from '@/styles/Onboarding.module.css'
 import { useAuth } from '@/context/AuthUserContext'
 
 import Animation from '@mui/material/Grow';
+import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import RingLoader from "react-spinners/RingLoader"
 
 import Firebase from 'lib/Firebase'
@@ -191,7 +193,7 @@ export default function AssessmentAnalyzing() {
 
   return (
     <Layout title={`Analyzing your results | ${SITE_NAME}`}>
-      <div className={styles.onboarding_wrapper}>
+      <div className={`${styles.onboarding_wrapper} ${styles.on_assessment_wrapper}`}>
         <div className={styles.onboarding_inner_wrapper}>
           <Animation direction="right" in={true} timeout={1000}>
             <div className={styles.custom_loader}>
