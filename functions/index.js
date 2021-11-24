@@ -9,16 +9,33 @@ exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) =>
   let depressionScore = 0;
   let gadScore = 0;
   let panicScore = 0;
+  let socialAnxietyScore = 0;
   let ptsdScore = 0;
   let ocdScore = 0;
   let bipolarScore = 0;
+  let anxietyScore = 0;
+  let overallScore = 0;
+
+  let realDepressionScore = 0;
+  let realAnxietyScore = 0;
+  let realOcdSCore = 0;
+  let realPtsdScore = 0;
+  let realBipolarScore = 0;
+
+  let allRiskLevel = '';
+  let depressionRiskLevel = '';
+  let anxietyRiskLevel = '';
+  let ptsdRiskLevel = '';
+  let bipolarRiskLevel = '';
+
+  let hasSuicidalThoughts = false;
+  let usedDrug = false;
+  let usedAlcohol = false;
 
   const questions = data.rawData.split(',').map(question => parseInt(question));
 
   questions.forEach((value, index) => {
-    let questionIndex = index + 1;
-
-    if ((questionIndex == 7) || (questionIndex == 9)) {
+    if ((index == 7) || (index == 9)) {
       return;
     }
 
@@ -26,34 +43,122 @@ exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) =>
     
     let scaledValue = getRiskScoringValue(value);
 
-    if (questionIndex <= 9) {
+    if (index <= 9) {
       depressionScore += scaledValue;
+      realDepressionScore += value;
     }
 
-    if ((questionIndex >= 10) && (questionIndex <= 11)) {
+    if ((index >= 10) && (index <= 11)) {
       gadScore += scaledValue;
+      realAnxietyScore += value;
     }
 
-    if ((questionIndex >= 12) && (questionIndex <= 13)) {
+    if ((index >= 12) && (index <= 13)) {
       panicScore += scaledValue;
+      realAnxietyScore += value;
     }
 
-    if ((questionIndex >= 15) && (questionIndex <= 18)) {
+    if (index == 14) {
+      socialAnxietyScore += scaledValue;
+      realAnxietyScore += value;
+    }
+
+    if ((index >= 15) && (index <= 18)) {
       ptsdScore += scaledValue;
+      realPtsdScore += value;
     }
 
-    if ((questionIndex >= 19) && (questionIndex <= 21)) {
+    if ((index >= 19) && (index <= 21)) {
       ocdScore += scaledValue;
+      realOcdSCore += value;
     }
 
-    if ((questionIndex >= 22) && (questionIndex <= 25)) {
+    if ((index >= 22) && (index <= 25)) {
       bipolarScore += scaledValue;
+      realBipolarScore += value;
     }
     
-    if ((questionIndex == 5) || (questionIndex > 25)) {
-      gatewayScore += getGatewayScoringValue(questionIndex, value);
+    if ((index == 5) || (index > 25)) {
+      gatewayScore += getGatewayScoringValue(index, value);
+    }
+
+    if (index == 4) {
+      if (value > 0) {
+        hasSuicidalThoughts = true;
+      } else {
+        hasSuicidalThoughts = false;
+      }
+    }
+
+    if (index == 27) {
+      if (value > 0) {
+        usedAlcohol = true;
+      } else {
+        usedAlcohol = false;
+      }
+    }
+
+    if (index == 28) {
+      if (value > 0) {
+        usedDrug = true;
+      } else {
+        usedDrug = false;
+      }
     }
   });
+
+  anxietyScore = gadScore + panicScore + socialAnxietyScore + ptsdScore + ocdScore;
+  overallScore = allScore + gatewayScore;
+
+  if (allScore <= 1) {
+    allRiskLevel = 'unlikely';
+  } else if ((allScore >= 2) && (allScore <= 32)) {
+    allRiskLevel = 'low';
+  } else if ((allScore >= 33) && (allScore <= 50)) {
+    allRiskLevel = 'medium';
+  } else if ((allScore >= 51) && (allScore <= 108)) {
+    allRiskLevel = 'high';
+  }
+
+  if (depressionScore <= 4) {
+    depressionRiskLevel = 'unlikely';
+  } else if ((depressionScore >= 5) && (depressionScore <= 7)) {
+    depressionRiskLevel = 'low';
+  } else if ((depressionScore >= 8) && (depressionScore <= 10)) {
+    depressionRiskLevel = 'medium';
+  } else if (depressionScore > 10) {
+    depressionRiskLevel = 'high';
+  }
+
+  if (anxietyScore <= 2) {
+    anxietyRiskLevel = 'unlikely';
+  } else if ((anxietyScore >= 3) && (anxietyScore <= 5)) {
+    anxietyRiskLevel = 'low';
+  } else if ((anxietyScore >= 6) && (anxietyScore <= 11)) {
+    anxietyRiskLevel = 'medium';
+  } else if (anxietyScore > 11) {
+    anxietyRiskLevel = 'high';
+  }
+
+  if (ptsdScore <= 1) {
+    ptsdRiskLevel = 'unlikely';
+  } else if ((ptsdScore >= 2) && (ptsdScore <= 3)) {
+    ptsdRiskLevel = 'low';
+  } else if ((ptsdScore >= 4) && (ptsdScore <= 5)) {
+    ptsdRiskLevel = 'medium';
+  } else if (ptsdScore > 5) {
+    ptsdRiskLevel = 'high';
+  }
+
+  if (bipolarScore <= 1) {
+    bipolarRiskLevel = 'unlikely';
+  } else if ((bipolarScore >= 2) && (bipolarScore <= 3)) {
+    bipolarRiskLevel = 'low';
+  } else if ((bipolarScore >= 4) && (bipolarScore <= 6)) {
+    bipolarRiskLevel = 'medium';
+  } else if (bipolarScore > 6) {
+    bipolarRiskLevel = 'high';
+  }
 
   function getRiskScoringValue(value) {
     if ((value == 0) || (value == 1)) return 0;
@@ -74,9 +179,6 @@ exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) =>
 
   const fireStore = admin.firestore();
 
-  console.log(data);
-  console.log(fireStore);
-
   fireStore
     .collection('M3Assessment')
     .doc(data.userId)
@@ -90,17 +192,29 @@ exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) =>
       gatewayScore: gatewayScore,
       ocdScore: ocdScore,
       panicScore: panicScore,
+      socialAnxietyScore: socialAnxietyScore,
       ptsdScore: ptsdScore
     });
 
   return {
     allScore,
+    overallScore,
+    anxietyScore,
     gatewayScore,
     depressionScore,
     gadScore,
     panicScore,
+    socialAnxietyScore,
     ptsdScore,
     ocdScore,
-    bipolarScore
+    bipolarScore,
+    allRiskLevel,
+    depressionRiskLevel,
+    anxietyRiskLevel,
+    ptsdRiskLevel,
+    bipolarRiskLevel,
+    hasSuicidalThoughts,
+    usedAlcohol,
+    usedDrug
   };
 });

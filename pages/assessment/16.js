@@ -118,15 +118,15 @@ export default function Assessment16() {
               
               <RadioGroup>
                 <FormControlLabel 
-                  value="1" 
+                  value="0" 
                   className={styles.with_text_wrap}
-                  control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep16Answer == 1} onChange={handleChange} />} 
+                  control={<Radio checked={assessmentStep16Answer == 0} onChange={handleChange} />} 
                   label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Not at all <div>Since you are under 18, get permission from your parents before using this app. </div>`}} />} />
                 
-                <FormControlLabel value="2" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep16Answer == 2} onChange={handleChange} />} label="Rarely" />
-                <FormControlLabel value="3" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep16Answer == 3} onChange={handleChange} />} label="Sometimes" />
-                <FormControlLabel value="4" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep16Answer == 4} onChange={handleChange} />} label="Often" />
-                <FormControlLabel value="5" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep16Answer == 5} onChange={handleChange} />} label="Most of the time" />
+                <FormControlLabel value="1" control={<Radio checked={assessmentStep16Answer == 1} onChange={handleChange} />} label="Rarely" />
+                <FormControlLabel value="2" control={<Radio checked={assessmentStep16Answer == 2} onChange={handleChange} />} label="Sometimes" />
+                <FormControlLabel value="3" control={<Radio checked={assessmentStep16Answer == 3} onChange={handleChange} />} label="Often" />
+                <FormControlLabel value="4" control={<Radio checked={assessmentStep16Answer == 4} onChange={handleChange} />} label="Most of the time" />
               </RadioGroup>
               {
                 formError ? 
