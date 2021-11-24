@@ -165,12 +165,13 @@ export default function SignUp(props) {
         })
         .catch(error => {
           setIsSigningUp(false)
+          checkPass(password, passwordConfirmation, isPrivacyPolicyChecked)
           setError(error.message)
         })
     } else {
       setError('Passwords do not match.')
       setIsSigningUp(false)
-      setBtnDisabled(password, passwordConfirmation, isPrivacyPolicyChecked)
+      checkPass(password, passwordConfirmation, isPrivacyPolicyChecked)
     }
   }
 
