@@ -35,13 +35,29 @@ export default function AssessmentReport() {
   const [assessmentScores, setAssessmentScores] = useState({})
   const [riskScore, setRiskScore] = useState(0)
   const [allRiskLevel, setAllRiskLevel] = useState('')
+  const [depressionRiskScore, setDepressionRiskScore] = useState(0)
   const [depressionRiskLevel, setDepressionRiskLevel] = useState('')
+  const [anxietyRiskScore, setAnxietyRiskScore] = useState(0)
   const [anxietyRiskLevel, setAnxietyRiskLevel] = useState('')
+  const [ptsdRiskScore, setPtsdRiskScore] = useState(0)
   const [ptsdRiskLevel, setPtsdRiskLevel] = useState('')
+  const [bipolarRiskScore, setBipolarRiskScore] = useState(0)
   const [bipolarRiskLevel, setBipolarRiskLevel] = useState('')
   const [hasSuicidalThoughts, setHasSuicidalThoughts] = useState(false)
   const [usedAlcohol, setUsedAlcohol] = useState(false)
   const [usedDrug, setUsedDrug] = useState(false)
+
+  const [thoughtsOfSuicideAnswer, setThoughtsOfSuicideAnswer] = useState(0)
+  const [impairsWorkSchoolAnswer, setImpairsWorkSchoolAnswer] = useState(0)
+  const [impairsFriendsFamilyAnswer, setImpairsFriendsFamilyAnswer] = useState(0)
+  const [ledToUsingAlcoholAnswer, setLedToUsingAlcoholAnswer] = useState(0)
+  const [ledToUsingDrugAnswer, setLedToUsingDrugAnswer] = useState(0)
+
+  const [mostOfTheTimeAnswerCount, setMostOfTheTimeAnswerCount] = useState(0)
+  const [oftenAnswerCount, setOftenAnswerCount] = useState(0)
+  const [sometimesAnswerCount, setSometimesAnswerCount] = useState(0)
+  const [rarelyAnswerCount, setRarelyAnswerCount] = useState(0)
+  const [noneAnswerCount, setNoneAnswerCount] = useState(0)
 
   const [assessmentDate, setAssessmentDate] = useState(null)
   const [customerType, setCustomerType] = useState('free')
@@ -51,12 +67,6 @@ export default function AssessmentReport() {
       router.push('/auth/login')
     }
   }, [authUser, loading, router])
-
-  useEffect(() => {
-    console.log('hasSuicidalThoughts', hasSuicidalThoughts)
-    console.log('usedAlcohol', usedAlcohol)
-    console.log('usedDrug', usedDrug)
-  }, [hasSuicidalThoughts, usedAlcohol, usedDrug])
 
   useEffect(() => {
     if (Object.keys(assessmentScores).length > 0) {
@@ -73,13 +83,22 @@ export default function AssessmentReport() {
 
         setRiskScore(result.data.allScore)
         setAllRiskLevel(result.data.allRiskLevel)
+        setDepressionRiskScore(result.data.depressionScore)
         setDepressionRiskLevel(result.data.depressionRiskLevel)
+        setAnxietyRiskScore(result.data.anxietyScore)
         setAnxietyRiskLevel(result.data.anxietyRiskLevel)
+        setPtsdRiskScore(result.data.ptsdScore)
         setPtsdRiskLevel(result.data.ptsdRiskLevel)
+        setBipolarRiskScore(result.data.bipolarScore)
         setBipolarRiskLevel(result.data.bipolarRiskLevel)
         setHasSuicidalThoughts(result.data.hasSuicidalThoughts)
         setUsedAlcohol(result.data.usedAlcohol)
         setUsedDrug(result.data.usedDrug)
+        setThoughtsOfSuicideAnswer(result.data.thoughtsOfSuicideAnswer)
+        setImpairsWorkSchoolAnswer(result.data.impairsWorkSchoolAnswer)
+        setImpairsFriendsFamilyAnswer(result.data.impairsFriendsFamilyAnswer)
+        setLedToUsingAlcoholAnswer(result.data.ledToUsingAlcoholAnswer)
+        setLedToUsingDrugAnswer(result.data.ledToUsingDrugAnswer)
 
         setAssessmentDate(new Date(assessmentScores.createDate.seconds * 1000).toLocaleString('en-US', {
           month: 'long',
@@ -117,7 +136,17 @@ export default function AssessmentReport() {
         unsubscribe = usersM3AssessmentScoresRef
           .get()
           .then(doc => {
-            doc.docs[0] !== undefined && setAssessmentScores(doc.docs[0].data())
+            if (doc.docs[0] !== undefined) {
+              let docData = doc.docs[0].data()
+
+              setAssessmentScores(docData)
+
+              setMostOfTheTimeAnswerCount(docData.rawData.split(',').filter(x => x == 4).length)
+              setOftenAnswerCount(docData.rawData.split(',').filter(x => x == 3).length)
+              setSometimesAnswerCount(docData.rawData.split(',').filter(x => x == 2).length)
+              setRarelyAnswerCount(docData.rawData.split(',').filter(x => x == 1).length)
+              setNoneAnswerCount(docData.rawData.split(',').filter(x => x == 0).length)
+            }
           })
 
         usersRef = firebaseStore
@@ -134,6 +163,10 @@ export default function AssessmentReport() {
       }
     })
   }, [])
+
+  useEffect(() => {
+    console.log(mostOfTheTimeAnswerCount) 
+  }, [mostOfTheTimeAnswerCount])
 
   return (
     <Layout title={`Assessment Full Report | ${SITE_NAME}`}>
@@ -210,17 +243,23 @@ export default function AssessmentReport() {
 
           <div className={styles.report_right_wrap}>
             <div className={styles.report_btns_wrapper}>
-                <a href="#" className={styles.active} onClick={() => {
-                  setIsScoresVisible(false)
-                  setIsDownloadVisible(false)
-                  setIsReportVisible(true)
-                }}>REPORT</a>
+                <a
+                  href="#" 
+                  className={isReportVisible && styles.active} 
+                  onClick={() => {
+                    setIsScoresVisible(false)
+                    setIsDownloadVisible(false)
+                    setIsReportVisible(true)
+                  }}>REPORT</a>
 
-                <a href="#" onClick={() => {
-                  setIsReportVisible(false)
-                  setIsDownloadVisible(false)
-                  setIsScoresVisible(true)
-                }}>SCORES</a>
+                <a 
+                  href="#" 
+                  className={isScoresVisible && styles.active} 
+                  onClick={() => {
+                    setIsReportVisible(false)
+                    setIsDownloadVisible(false)
+                    setIsScoresVisible(true)
+                  }}>SCORES</a>
 
                 {/* <a href="#" onClick={() => {setContentShow('report_content_download_wrap')}}>DOWNLOAD</a> */}
             </div>
@@ -337,7 +376,9 @@ export default function AssessmentReport() {
                               variant="contained" 
                               style={{
                                 marginBottom: '15px',
-                                fontSize: '14px'
+                                fontSize: '14px',
+                                fontWeight: '300',
+                                fontFamily: 'Circular STD'
                               }} 
                             >
                               BUY MOODITUDE PREMIUM
@@ -347,7 +388,8 @@ export default function AssessmentReport() {
                               <Link href="#">
                                 <a style={{
                                   fontSize: '14px',
-                                  fontWeight: '500'
+                                  fontWeight: '300',
+                                  fontFamily: 'Circular STD'
                                 }}>NO THANKS</a>
                               </Link>
                             </div>
@@ -633,7 +675,161 @@ export default function AssessmentReport() {
 
               {isScoresVisible && (
                 <div className={styles.report_content_item} key={'report_content_paid_wrap'}>
-                  <p>Hello</p>
+                  <div className={styles.scores_section} style={{ width: '370px' }}>
+                    <h2 style={{ fontWeight: '500' }}>Diagnosis Risks</h2>
+
+                    <div className={styles.diagnosis_risks}>
+                      <div>
+                        {depressionRiskLevel == 'high' && <div className={styles.risk_level_high}>{depressionRiskScore}</div>}
+                        {depressionRiskLevel == 'medium' && <div className={styles.risk_level_medium}>{depressionRiskScore}</div>}
+                        {depressionRiskLevel == 'low' && <div className={styles.risk_level_low}>{depressionRiskScore}</div>}
+                        {depressionRiskLevel == 'unlikely' && <div className={styles.risk_level_unlikely}>{depressionRiskScore}</div>}
+                        <h3>Depression Risks</h3>
+                        <h3>{depressionRiskLevel.charAt(0).toUpperCase() + depressionRiskLevel.slice(1)}</h3>
+                      </div>
+
+                      <div>
+                        {anxietyRiskLevel == 'high' && <div className={styles.risk_level_high}>{anxietyRiskScore}</div>}
+                        {anxietyRiskLevel == 'medium' && <div className={styles.risk_level_medium}>{anxietyRiskScore}</div>}
+                        {anxietyRiskLevel == 'low' && <div className={styles.risk_level_low}>{anxietyRiskScore}</div>}
+                        {anxietyRiskLevel == 'unlikely' && <div className={styles.risk_level_unlikely}>{anxietyRiskScore}</div>}
+                        <h3>Anxiety Risks</h3>
+                        <h3>{anxietyRiskLevel.charAt(0).toUpperCase() + anxietyRiskLevel.slice(1)}</h3>
+                      </div>
+
+                      <div>
+                        {ptsdRiskLevel == 'high' && <div className={styles.risk_level_high}>{ptsdRiskScore}</div>}
+                        {ptsdRiskLevel == 'medium' && <div className={styles.risk_level_medium}>{ptsdRiskScore}</div>}
+                        {ptsdRiskLevel == 'low' && <div className={styles.risk_level_low}>{ptsdRiskScore}</div>}
+                        {ptsdRiskLevel == 'unlikely' && <div className={styles.risk_level_unlikely}>{ptsdRiskScore}</div>}
+                        <h3>PTSD Risks</h3>
+                        <h3>{ptsdRiskLevel.charAt(0).toUpperCase() + ptsdRiskLevel.slice(1)}</h3>
+                      </div>
+
+                      <div>
+                        {bipolarRiskLevel == 'high' && <div className={styles.risk_level_high}>{bipolarRiskScore}</div>}
+                        {bipolarRiskLevel == 'medium' && <div className={styles.risk_level_medium}>{bipolarRiskScore}</div>}
+                        {bipolarRiskLevel == 'low' && <div className={styles.risk_level_low}>{bipolarRiskScore}</div>}
+                        {bipolarRiskLevel == 'unlikely' && <div className={styles.risk_level_unlikely}>{bipolarRiskScore}</div>}
+                        <h3>Bipolar Risks</h3>
+                        <h3>{bipolarRiskLevel.charAt(0).toUpperCase() + bipolarRiskLevel.slice(1)}</h3>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={styles.scores_section} style={{ width: '370px' }}>
+                    <h2 style={{ fontWeight: '500' }}>Functional Impairments</h2>
+
+                    <div className={styles.functional_impairments}>
+                      <div>
+                        {thoughtsOfSuicideAnswer == 0 && <div className={styles.risk_level_unlikely}></div>}
+                        {thoughtsOfSuicideAnswer == 1 && <div className={styles.risk_level_unlikely}></div>}
+                        {thoughtsOfSuicideAnswer == 2 && <div className={styles.risk_level_low}></div>}
+                        {thoughtsOfSuicideAnswer == 3 && <div className={styles.risk_level_medium}></div>}
+                        {thoughtsOfSuicideAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                        
+                        <p>Thoughts of suicide</p>
+
+                        {thoughtsOfSuicideAnswer == 0 && <p>None</p>}
+                        {thoughtsOfSuicideAnswer == 1 && <p>Rarely</p>}
+                        {thoughtsOfSuicideAnswer == 2 && <p>Sometimes</p>}
+                        {thoughtsOfSuicideAnswer == 3 && <p>Often</p>}
+                        {thoughtsOfSuicideAnswer == 4 && <p>Most of the time</p>}
+                      </div>
+
+                      <div>
+                        {impairsWorkSchoolAnswer == 0 && <div className={styles.risk_level_unlikely}></div>}
+                        {impairsWorkSchoolAnswer == 1 && <div className={styles.risk_level_unlikely}></div>}
+                        {impairsWorkSchoolAnswer == 2 && <div className={styles.risk_level_low}></div>}
+                        {impairsWorkSchoolAnswer == 3 && <div className={styles.risk_level_medium}></div>}
+                        {impairsWorkSchoolAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                        
+                        <p>Impairs work/school</p>
+
+                        {impairsWorkSchoolAnswer == 0 && <p>None</p>}
+                        {impairsWorkSchoolAnswer == 1 && <p>Rarely</p>}
+                        {impairsWorkSchoolAnswer == 2 && <p>Sometimes</p>}
+                        {impairsWorkSchoolAnswer == 3 && <p>Often</p>}
+                        {impairsWorkSchoolAnswer == 4 && <p>Most of the time</p>}
+                      </div>
+
+                      <div>
+                        {impairsFriendsFamilyAnswer == 0 && <div className={styles.risk_level_unlikely}></div>}
+                        {impairsFriendsFamilyAnswer == 1 && <div className={styles.risk_level_unlikely}></div>}
+                        {impairsFriendsFamilyAnswer == 2 && <div className={styles.risk_level_low}></div>}
+                        {impairsFriendsFamilyAnswer == 3 && <div className={styles.risk_level_medium}></div>}
+                        {impairsFriendsFamilyAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                        
+                        <p>Impairs friends/family</p>
+
+                        {impairsFriendsFamilyAnswer == 0 && <p>None</p>}
+                        {impairsFriendsFamilyAnswer == 1 && <p>Rarely</p>}
+                        {impairsFriendsFamilyAnswer == 2 && <p>Sometimes</p>}
+                        {impairsFriendsFamilyAnswer == 3 && <p>Often</p>}
+                        {impairsFriendsFamilyAnswer == 4 && <p>Most of the time</p>}
+                      </div>
+
+                      <div>
+                        {ledToUsingAlcoholAnswer == 0 && <div className={styles.risk_level_unlikely}></div>}
+                        {ledToUsingAlcoholAnswer == 1 && <div className={styles.risk_level_unlikely}></div>}
+                        {ledToUsingAlcoholAnswer == 2 && <div className={styles.risk_level_low}></div>}
+                        {ledToUsingAlcoholAnswer == 3 && <div className={styles.risk_level_medium}></div>}
+                        {ledToUsingAlcoholAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                        
+                        <p>Led to using alcohol</p>
+
+                        {ledToUsingAlcoholAnswer == 0 && <p>None</p>}
+                        {ledToUsingAlcoholAnswer == 1 && <p>Rarely</p>}
+                        {ledToUsingAlcoholAnswer == 2 && <p>Sometimes</p>}
+                        {ledToUsingAlcoholAnswer == 3 && <p>Often</p>}
+                        {ledToUsingAlcoholAnswer == 4 && <p>Most of the time</p>}
+                      </div>
+
+                      <div>
+                        {ledToUsingDrugAnswer == 0 && <div className={styles.risk_level_unlikely}></div>}
+                        {ledToUsingDrugAnswer == 1 && <div className={styles.risk_level_unlikely}></div>}
+                        {ledToUsingDrugAnswer == 2 && <div className={styles.risk_level_low}></div>}
+                        {ledToUsingDrugAnswer == 3 && <div className={styles.risk_level_medium}></div>}
+                        {ledToUsingDrugAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                        
+                        <p>Led to using drugs</p>
+
+                        {ledToUsingDrugAnswer == 0 && <p>None</p>}
+                        {ledToUsingDrugAnswer == 1 && <p>Rarely</p>}
+                        {ledToUsingDrugAnswer == 2 && <p>Sometimes</p>}
+                        {ledToUsingDrugAnswer == 3 && <p>Often</p>}
+                        {ledToUsingDrugAnswer == 4 && <p>Most of the time</p>}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={styles.scores_section} style={{ width: '370px' }}>
+                    <h2 style={{ fontWeight: '500', marginBottom: '35px' }}>Questions</h2>
+
+                    <div className={styles.questions}>
+                      <div>
+                        <div>
+                          <h3>Most of the time ({mostOfTheTimeAnswerCount})</h3>
+                        </div>
+
+                        <div>
+                          <h3>Often ({oftenAnswerCount})</h3>
+                        </div>
+
+                        <div>
+                          <h3>Sometimes ({sometimesAnswerCount})</h3>
+                        </div>
+
+                        <div>
+                          <h3>Rarely ({rarelyAnswerCount})</h3>
+                        </div>
+
+                        <div>
+                          <h3>None ({noneAnswerCount})</h3>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div> 
               )}
 

@@ -202,7 +202,7 @@
 	color: #516B84;
 	padding: 5px 10px;
 	/* Primary */
-	border-bottom: 3px solid transparent;
+	border-bottom: 2px solid #F3F4F6;
 	
 }
 
@@ -311,6 +311,107 @@
 
 .download_app_wrap .app_btns a img{
 	max-width: 100%;
+}
+
+.scores_section {
+	border-bottom: 1px solid #516B84;
+}
+
+.scores_section:last-of-type {
+	border-bottom: none;
+}
+
+.scores_section h2 {
+	margin-top: 40px;
+	margin-bottom: 10px;
+}
+
+.scores_section .diagnosis_risks > div,
+.scores_section .functional_impairments > div {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	font-family: 'Circular STD';
+}
+
+.scores_section .diagnosis_risks > div:last-of-type,
+.scores_section .functional_impairments > div:last-of-type {
+	margin-bottom: 10px;
+}
+
+.scores_section .diagnosis_risks > div > div:first-of-type,
+.scores_section .functional_impairments > div > div:first-of-type {
+	width: 25px;
+	height: 25px;
+	margin-right: 12px;
+	margin-left: 15px;
+	border-radius: 50%;
+	background: #072B4F;
+	color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 13px;
+}
+
+.scores_section .functional_impairments > div > div:first-of-type {
+	width: 10px;
+	height: 10px;
+	margin-right: 16px;
+	margin-left: 23px;
+}
+
+.scores_section .diagnosis_risks > div > div.risk_level_unlikely,
+.scores_section .functional_impairments > div > div.risk_level_unlikely {
+	background: #F8E71C !important;
+	color: #072B4F !important;
+}
+
+.scores_section .diagnosis_risks > div > div.risk_level_low,
+.scores_section .functional_impairments > div > div.risk_level_low {
+	background: #22A1D1 !important;
+}
+
+.scores_section .diagnosis_risks > div > div.risk_level_medium,
+.scores_section .functional_impairments > div > div.risk_level_medium {
+	background: #F9982C !important;
+}
+
+.scores_section .diagnosis_risks > div > div.risk_level_high,
+.scores_section .functional_impairments > div > div.risk_level_high {
+	background: #EB5757 !important;
+}
+
+.scores_section .diagnosis_risks > div > h3,
+.scores_section .functional_impairments > div > p {
+	margin: 8px 0;
+}
+
+.scores_section .diagnosis_risks > div > h3:first-of-type,
+.scores_section .functional_impairments > div > p:first-of-type {
+	width: 230px;
+	font-weight: 500;
+	color: #072B4F;
+}
+
+.scores_section .diagnosis_risks > div > h3:last-of-type,
+.scores_section .functional_impairments > div > p:last-of-type {
+	font-weight: 500;
+	color: #516B84;
+}
+
+.scores_section .questions {
+	font-family: 'Circular STD';
+}
+
+.scores_section .questions h3 {
+	font-size: 18px;
+	font-weight: 500;
+	color: #072B4F;
+}
+
+.scores_section .questions > div > div {
+	margin-left: 15px;
 }
 
 @media(max-width:  991px) and (min-width:  768px){

@@ -32,6 +32,12 @@ exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) =>
   let usedDrug = false;
   let usedAlcohol = false;
 
+  let thoughtsOfSuicideAnswer = 0;
+  let impairsWorkSchoolAnswer = 0;
+  let impairsFriendsFamilyAnswer = 0;
+  let ledToUsingAlcoholAnswer = 0;
+  let ledToUsingDrugAnswer = 0;
+
   const questions = data.rawData.split(',').map(question => parseInt(question));
 
   questions.forEach((value, index) => {
@@ -88,6 +94,16 @@ exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) =>
       } else {
         hasSuicidalThoughts = false;
       }
+
+      thoughtsOfSuicideAnswer = value;
+    }
+
+    if (index == 25) {
+      impairsWorkSchoolAnswer = value;
+    }
+
+    if (index == 26) {
+      impairsFriendsFamilyAnswer = value;
     }
 
     if (index == 27) {
@@ -96,6 +112,8 @@ exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) =>
       } else {
         usedAlcohol = false;
       }
+
+      ledToUsingAlcoholAnswer = value;
     }
 
     if (index == 28) {
@@ -104,6 +122,8 @@ exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) =>
       } else {
         usedDrug = false;
       }
+
+      ledToUsingDrugAnswer = value
     }
   });
 
@@ -215,6 +235,11 @@ exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) =>
     bipolarRiskLevel,
     hasSuicidalThoughts,
     usedAlcohol,
-    usedDrug
+    usedDrug,
+    thoughtsOfSuicideAnswer,
+    impairsWorkSchoolAnswer,
+    impairsFriendsFamilyAnswer,
+    ledToUsingAlcoholAnswer,
+    ledToUsingDrugAnswer
   };
 });
