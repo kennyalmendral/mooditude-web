@@ -108,7 +108,7 @@ export default function Assessment12() {
           <Animation direction="right" in={true} timeout={1000}>
             <div>
               <p className={styles.top_sub_title}>Over the past two weeks...</p>
-              <h1 className={`mt_0`}>I have attack of anxiety or panic</h1>  
+              <h1 className={`mt_0`}>I have attacks of anxiety or panic</h1>  
             </div>
           </Animation>
           

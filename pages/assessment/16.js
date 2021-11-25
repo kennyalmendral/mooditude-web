@@ -108,7 +108,7 @@ export default function Assessment16() {
           <Animation direction="right" in={true} timeout={1000}>
             <div>
               <p className={styles.top_sub_title}>Over the past two weeks...</p>
-              <h1 className={`mt_0`}>I feel jumpy or feel startled easily</h1>  
+              <h1 className={`mt_0`}>I am jumpy or feel startled easily</h1>  
             </div>
           </Animation>
           

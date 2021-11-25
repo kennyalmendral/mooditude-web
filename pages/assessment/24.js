@@ -108,7 +108,7 @@ export default function Assessment24() {
           <Animation direction="right" in={true} timeout={1000}>
             <div>
               <p className={styles.top_sub_title}>Over the past two weeks...</p>
-              <h1 className={`mt_0`}>I felt unsually irritable or angry</h1>  
+              <h1 className={`mt_0`}>I felt unusually irritable or angry</h1>  
             </div>
           </Animation>
           

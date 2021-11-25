@@ -108,7 +108,7 @@ export default function Assessment17() {
           <Animation direction="right" in={true} timeout={1000}>
             <div>
               <p className={styles.top_sub_title}>Over the past two weeks...</p>
-              <h1 className={`mt_0`}>I avoid places that strongly remind me of a bad experience </h1>  
+              <h1 className={`mt_0`}>I avoid places that remind me of a bad experience</h1>  
             </div>
           </Animation>
           
