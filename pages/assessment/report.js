@@ -419,7 +419,7 @@ export default function AssessmentReport() {
                             <h2 style={{ marginTop: '-8px', marginBottom: '30px' }}>Disorder Risks</h2>
 
                             <div style={{ marginBottom: '32px' }}>
-                              <h3 style={{ fontSize: '18px', marginBottom: '-5px', color: '#072B4F' }}>Depression — {depressionRiskLevel.charAt(0).toUpperCase() + depressionRiskLevel.slice(1)} Risk</h3>
+                              <h3 style={{ fontSize: '18px', fontFamily: 'Circular STD', marginBottom: '-5px', color: '#072B4F' }}>Depression — {depressionRiskLevel.charAt(0).toUpperCase() + depressionRiskLevel.slice(1)} Risk</h3>
 
                               {depressionRiskLevel == 'unlikely' && (
                                 <>
@@ -451,7 +451,7 @@ export default function AssessmentReport() {
                             </div>
 
                             <div style={{ marginBottom: '32px' }}>
-                              <h3 style={{ fontSize: '18px', marginBottom: '-5px', color: '#072B4F' }}>Anxiety — {anxietyRiskLevel.charAt(0).toUpperCase() + anxietyRiskLevel.slice(1)} Risk</h3>
+                              <h3 style={{ fontSize: '18px', fontFamily: 'Circular STD', marginBottom: '-5px', color: '#072B4F' }}>Anxiety — {anxietyRiskLevel.charAt(0).toUpperCase() + anxietyRiskLevel.slice(1)} Risk</h3>
 
                               {anxietyRiskLevel == 'unlikely' && (
                                 <>
@@ -483,7 +483,7 @@ export default function AssessmentReport() {
                             </div>
 
                             <div style={{ marginBottom: '32px' }}>
-                              <h3 style={{ fontSize: '18px', marginBottom: '-5px', color: '#072B4F' }}>PTSD — {ptsdRiskLevel.charAt(0).toUpperCase() + ptsdRiskLevel.slice(1)} Risk</h3>
+                              <h3 style={{ fontSize: '18px', fontFamily: 'Circular STD', marginBottom: '-5px', color: '#072B4F' }}>PTSD — {ptsdRiskLevel.charAt(0).toUpperCase() + ptsdRiskLevel.slice(1)} Risk</h3>
 
                               {ptsdRiskLevel == 'unlikely' && (
                                 <>
@@ -515,7 +515,7 @@ export default function AssessmentReport() {
                             </div>
 
                             <div style={{ marginBottom: '50px' }}>
-                              <h3 style={{ fontSize: '18px', marginBottom: '-5px', color: '#072B4F' }}>Bipolar — {bipolarRiskLevel.charAt(0).toUpperCase() + bipolarRiskLevel.slice(1)} Risk</h3>
+                              <h3 style={{ fontSize: '18px', fontFamily: 'Circular STD', marginBottom: '-5px', color: '#072B4F' }}>Bipolar — {bipolarRiskLevel.charAt(0).toUpperCase() + bipolarRiskLevel.slice(1)} Risk</h3>
 
                               {bipolarRiskLevel == 'unlikely' && (
                                 <>
@@ -597,7 +597,9 @@ export default function AssessmentReport() {
                               variant="contained" 
                               style={{
                                 marginTop: '10px',
-                                marginBottom: '60px'
+                                marginBottom: '60px',
+                                fontFamily: 'Circular STD',
+                                
                               }} 
                               onClick={() => alert('Coming soon...')}
                             >
