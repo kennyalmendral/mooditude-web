@@ -33,7 +33,7 @@ export default function Home() {
           .on('value', snapshot => {
             console.log(snapshot.val())
 
-            if ((snapshot.val().onboardingStep == 1) && (localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) !== null)) {
+            if ((snapshot.val().onboardingStep == 1) && (authUser && localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) !== null)) {
               router.push(`/assessment/${localStorage.getItem(`${authUser.uid}_currentAssessmentStep`)}`)
             } else if (snapshot.val().onboardingStep == 2) {
               router.push('/assessment/report')

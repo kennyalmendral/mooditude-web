@@ -124,6 +124,7 @@ export default function Onboarding1() {
               className={styles.onboarding_btn} 
               variant="contained" 
               onClick={handleNextStep} 
+              disabled={profileStepAnswer == '' ? true : false}
               // onClick={() => {router.push(`/onboarding/2`)}}
             >
               Next

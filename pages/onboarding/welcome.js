@@ -19,7 +19,7 @@ const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
 
-export default function OnboardingWelcomePage() {
+export default function OnboardingWelcomePage(props) {
   const router = useRouter()
 
   const { authUser, loading, signOut } = useAuth()
@@ -44,12 +44,15 @@ export default function OnboardingWelcomePage() {
               (localStorage.getItem(`${user.uid}_currentProfileStep`) != null)
             ) {
               if (localStorage.getItem(`${user.uid}_currentProfileStep`) > 0) {
-                router.push(`/onboarding/${localStorage.getItem(`${user.uid}_currentProfileStep`)}`)
+                props.loginLoaderHandler(true)
+                location.href = `/onboarding/${localStorage.getItem(`${user.uid}_currentProfileStep`)}`
               }
             } else if (snapshot.val().onboardingStep == 1) {
-              router.push('/')
+              props.loginLoaderHandler(true)
+              location.href = '/'
             } else if (snapshot.val().onboardingStep == 2) {
-              router.push('/assessment/report')
+              props.loginLoaderHandler(true)
+              location.href = '/assessment/report'
             }
           }, error => {
             console.log(error)

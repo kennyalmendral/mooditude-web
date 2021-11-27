@@ -138,6 +138,7 @@ export default function Onboarding3() {
                 size="large" 
                 variant="contained" 
                 onClick={handleNextStep}
+                disabled={profileStepAnswer == '' ? true : false}
                 // onClick={() => {router.push(`/onboarding/4`)}}
               >Next</Button>
             </Stack>

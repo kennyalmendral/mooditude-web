@@ -220,12 +220,14 @@ export default function Onboarding4() {
                 color="secondary"
                 variant="outlined"
                 onClick={() => {router.push(`/onboarding/3`)}}
+                
                 // onClick={handlePrevStep}
               >Back</Button>
 
               <Button 
                 size="large" 
                 variant="contained"
+                disabled={profileStepAnswer.length == 0 ? true : false}
                 // onClick={() => {router.push(`/onboarding/5`)}}
                 onClick={handleNextStep}
               >Next</Button>
