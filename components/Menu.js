@@ -16,22 +16,15 @@ export default function MainMenu(props) {
 
     useEffect(() => {
       setWidth(window.innerWidth)
-      
-    }, [])
-
-    useEffect(() => {
-        console.log('asd12')
-      if (loading && authUser) {
+      if (authUser) {
         if (authUser && localStorage.getItem(`${authUser.uid}_onboardingStep`) == 0) {
             setShowMenu(false)
-            console.log('asd11')
         } else{
             setShowMenu(true)
-            console.log('asd')
         }
       }
-      
-    }, [localStorage])
+    }, [])
+
 
 
     const collapseMenu = () => {
@@ -77,7 +70,7 @@ export default function MainMenu(props) {
                                 <div>
                                     <Link href="/assessment/dashboard"> 
                                     <a className={styles.menu_item} >
-                                        PROFILE
+                                        SCORES
                                     </a>
                                     </Link>
                                 </div>
@@ -123,31 +116,35 @@ export default function MainMenu(props) {
                             <div className={`${styles.mobile_main_menu_logo}`}>
                                 <img src={`/logo_inner.svg`}  />   
                             </div>
-                            <div className={styles.menu_items_wrap}>
-                                <div>
-                                    <Link href="/"> 
-                                    <a className={styles.menu_item} >
-                                        HOME
-                                    </a>
-                                    </Link>
-                                </div>
+                            {
+                                showMenu ? 
+                                    <div className={styles.menu_items_wrap}>
+                                        <div>
+                                            <Link href="/"> 
+                                            <a className={styles.menu_item} >
+                                                HOME
+                                            </a>
+                                            </Link>
+                                        </div>
 
-                                <div>
-                                    <Link href="/assessment/dashboard"> 
-                                    <a className={styles.menu_item} >
-                                        PROFILE
-                                    </a>
-                                    </Link>
-                                </div>
+                                        <div>
+                                            <Link href="/assessment/dashboard"> 
+                                            <a className={styles.menu_item} >
+                                                SCORES
+                                            </a>
+                                            </Link>
+                                        </div>
 
-                                <div>
-                                    <Link href="/buy"> 
-                                    <a className={styles.menu_item} >
-                                        BUY
-                                    </a>
-                                    </Link>
-                                </div>
-                            </div>
+                                        <div>
+                                            <Link href="/buy"> 
+                                            <a className={styles.menu_item} >
+                                                BUY
+                                            </a>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                : ''
+                            }
                         </div>
                     </Grow>
 

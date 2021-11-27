@@ -47,7 +47,8 @@ export default function OnboardingWelcomePage() {
         unsubscribe = usersRef
           .get()
           .then(doc => {
-            setName(doc.data().name)
+
+            doc.data() && setName(doc.data().name)
           })
       } else {
         unsubscribe && unsubscribe()
