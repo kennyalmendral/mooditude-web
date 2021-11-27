@@ -21,6 +21,7 @@ export default function AssessmentWelcomePage() {
 
   const { authUser, loading, signOut } = useAuth()
   const [riskScore, setRiskScore] = useState(76)
+  const [dummy, setDummy] = useState('expired')
   const [allRiskLevel, setAllRiskLevel] = useState('high')
 
   useEffect(() => {
@@ -43,61 +44,83 @@ export default function AssessmentWelcomePage() {
             
             
            <h1>Your Mental<br/> Wellbeing Score</h1>
-            <p className={styles.date_text}>July 12, 2021</p> 
-            
 
-            {riskScore > 0 && (
-              <>
-                <div className={styles.rating_wrap}>
-                  <div className={styles.rating_outer_wrap}>
-                    <div className={styles.rating_inner_wrap}>
-                      {riskScore}
-                    </div> 
-                  </div> 
-                </div>
+           {
+            dummy == 'expired' ? 
+              <div className={styles.dashboard_expired}>
+                <div className={styles.dashboard_expired_img}><img src="/premium.svg" /></div>
+                <h3>Assess Your <br/>Mental Wellbeing<br/> Score</h3>
+                <p>Your wellbeing score is outdated. </p>
 
-                {allRiskLevel == 'unlikely' && (
-                  <>
-                    <h2>Unlikely Risk</h2>
-                    <p>Score of {riskScore} shows that it is unlikely you are suffering from a mental health condition at this time.</p>
-                  </>
-                )}
-
-                {allRiskLevel == 'low' && (
-                  <>
-                    <h2>Low Risk</h2>
-                    <p>Score of {riskScore} suggests that you have a low risk of a mental health condition.</p>
-                  </>
-                )}
-
-                {allRiskLevel == 'medium' && (
-                  <>
-                    <h2>Medium Risk</h2>
-                    <p>Score of {riskScore} suggests that you have a medium risk of a mental health condition.</p>
-                  </>
-                )}
-
-                {allRiskLevel == 'high' && (
-                  <>
-                    <h2>High Risk</h2>
-                    <p>Score of {riskScore} suggests that you have a high risk of a mental health condition.</p>
-                  </>
-                )}
-    
-                <div className={styles.scale_img_wrap}>
-                  <img src="/scale.svg" />
-                </div>
-              </>
-            )}
-
-            <Button 
-              size="large" 
-              className={styles.full_report_btn} 
-              variant="contained" 
+                <Button 
+                  size="large" 
+                  className={styles.take_assessment_btn} 
+                  variant="contained" 
+                  
+                >
+                  TAKE ASSESSMENT
+                </Button>
+              </div>
+            : 
+            <>
+              <p className={styles.date_text}>July 12, 2021</p> 
               
-            >
-              FULL REPORT
-            </Button>
+
+              {riskScore > 0 && (
+                <>
+                  <div className={styles.rating_wrap}>
+                    <div className={styles.rating_outer_wrap}>
+                      <div className={styles.rating_inner_wrap}>
+                        {riskScore}
+                      </div> 
+                    </div> 
+                  </div>
+
+                  {allRiskLevel == 'unlikely' && (
+                    <>
+                      <h2>Unlikely Risk</h2>
+                      <p>Score of {riskScore} shows that it is unlikely you are suffering from a mental health condition at this time.</p>
+                    </>
+                  )}
+
+                  {allRiskLevel == 'low' && (
+                    <>
+                      <h2>Low Risk</h2>
+                      <p>Score of {riskScore} suggests that you have a low risk of a mental health condition.</p>
+                    </>
+                  )}
+
+                  {allRiskLevel == 'medium' && (
+                    <>
+                      <h2>Medium Risk</h2>
+                      <p>Score of {riskScore} suggests that you have a medium risk of a mental health condition.</p>
+                    </>
+                  )}
+
+                  {allRiskLevel == 'high' && (
+                    <>
+                      <h2>High Risk</h2>
+                      <p>Score of {riskScore} suggests that you have a high risk of a mental health condition.</p>
+                    </>
+                  )}
+              
+                  <div className={styles.scale_img_wrap}>
+                    <img src="/scale.svg" />
+                  </div>
+                </>
+              )}
+
+              <Button 
+                size="large" 
+                className={styles.full_report_btn} 
+                variant="contained" 
+                
+              >
+                FULL REPORT
+              </Button>
+            </>
+           }
+            
           </div>
           <div className={styles.dashboard_right}>
             <div>
