@@ -149,6 +149,7 @@ export default function SignUp(props) {
                 })
 
               localStorage.setItem(`${user.uid}_currentProfileStep`, 0)
+              localStorage.setItem(`${user.uid}_onboardingStep`, 0)
             }
           })
           

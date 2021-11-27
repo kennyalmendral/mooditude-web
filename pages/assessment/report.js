@@ -237,6 +237,8 @@ export default function AssessmentReport() {
                   localStorage.removeItem(`${authUser.uid}_assessmentStep29Time`)
                   localStorage.removeItem(`${authUser.uid}_assessmentStep30Time`)
                   localStorage.removeItem(`${authUser.uid}_assessmentStep31Time`)
+
+                  localStorage.setItem(`${authUser.uid}_onboardingStep`, 2)
                 })
                 .catch(error => {
                   console.log('error:', error)

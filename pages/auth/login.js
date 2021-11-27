@@ -27,7 +27,7 @@ export default function Login(props) {
       props.removePageLoader()
     },300)
     if (loading && authUser) {
-      router.push('/onboarding/welcome')
+      // router.push('/onboarding/welcome')
     }
   }, [authUser, loading, router])
 
@@ -38,11 +38,17 @@ export default function Login(props) {
     setIsLoggingIn(true)
     setError(null) 
     signInWithEmailAndPassword(email, password)
-      .then(authUser => {
+      .then(user => {
         // setIsLoggingIn(false)
         // router.push('/onboarding/welcome')
 
-        location.href='/onboarding/welcome'
+        if (user && localStorage.getItem(`${user.uid}_onboardingStep`) == 0) {
+          location.href='/onboarding/welcome'
+        } else if (user && localStorage.getItem(`${user.uid}_onboardingStep`) == 1) {
+          location.href='/'
+        } else if (user && localStorage.getItem(`${user.uid}_onboardingStep`) == 2) {
+          location.href = '/assessment/report'
+        }
       })
       .catch(error => {
         props.loginLoaderHandler(false)

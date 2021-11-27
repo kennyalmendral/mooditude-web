@@ -32,31 +32,31 @@ export default function OnboardingWelcomePage(props) {
 
     firebaseAuth.onAuthStateChanged(user => {
       if (user) {
-        firebaseDatabase
-          .ref()
-          .child('users')
-          .child(user.uid)
-          .on('value', snapshot => {
-            console.log(snapshot.val())
+        // firebaseDatabase
+        //   .ref()
+        //   .child('users')
+        //   .child(user.uid)
+        //   .on('value', snapshot => {
+        //     console.log(snapshot.val())
 
-            if (
-              (snapshot.val().onboardingStep == 0) && 
-              (localStorage.getItem(`${user.uid}_currentProfileStep`) != null)
-            ) {
-              if (localStorage.getItem(`${user.uid}_currentProfileStep`) > 0) {
-                props.loginLoaderHandler(true)
-                location.href = `/onboarding/${localStorage.getItem(`${user.uid}_currentProfileStep`)}`
-              }
-            } else if (snapshot.val().onboardingStep == 1) {
-              props.loginLoaderHandler(true)
-              location.href = '/'
-            } else if (snapshot.val().onboardingStep == 2) {
-              props.loginLoaderHandler(true)
-              location.href = '/assessment/report'
-            }
-          }, error => {
-            console.log(error)
-          })
+        //     if (
+        //       (snapshot.val().onboardingStep == 0) && 
+        //       (localStorage.getItem(`${user.uid}_currentProfileStep`) != null)
+        //     ) {
+        //       if (localStorage.getItem(`${user.uid}_currentProfileStep`) > 0) {
+        //         props.loginLoaderHandler(true)
+        //         location.href = `/onboarding/${localStorage.getItem(`${user.uid}_currentProfileStep`)}`
+        //       }
+        //     } else if (snapshot.val().onboardingStep == 1) {
+        //       props.loginLoaderHandler(true)
+        //       location.href = '/'
+        //     } else if (snapshot.val().onboardingStep == 2) {
+        //       props.loginLoaderHandler(true)
+        //       location.href = '/assessment/report'
+        //     }
+        //   }, error => {
+        //     console.log(error)
+        //   })
 
         usersRef = firebaseStore.collection('Users').doc(user.uid)
 

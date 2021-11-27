@@ -29,9 +29,12 @@ export default function OnboardingFinishPage() {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    if (localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
+    if (authUser && localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
       localStorage.setItem(`${authUser.uid}_currentProfileStep`, 8)
 
+    }
+    if (authUser && localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
+      localStorage.setItem(`${authUser.uid}_onboardingStep`, 1)
     }
   }, [])
 
