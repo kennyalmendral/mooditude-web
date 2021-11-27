@@ -11,7 +11,7 @@ import { SITE_NAME } from '@/config/index'
 import { useAuth } from '@/context/AuthUserContext'
 import TextField from '@mui/material/TextField';
 
-export default function ResetPassword(props) {
+export default function ForgotPassword(props) {
   const router = useRouter()
 
   const [email, setEmail] = useState('')
@@ -29,7 +29,7 @@ export default function ResetPassword(props) {
   }, [])
 
 
-  const handleResetPassword = e => {
+  const handleForgotPassword = e => {
     e.preventDefault()
 
     setIsSending(true)
@@ -48,7 +48,7 @@ export default function ResetPassword(props) {
 
   return (
     <Layout title={`Forgot Password | ${SITE_NAME}`}>
-      <div className={`${styles.container} auth_page_wrapper`}>
+      <div className={styles.container}>
         <div className={styles.authBg}></div>
 
         <div className={styles.authForm}>
@@ -71,7 +71,7 @@ export default function ResetPassword(props) {
             </div>
 
             <div>
-              <form onSubmit={handleResetPassword}>
+              <form onSubmit={handleForgotPassword}>
                 {!isResetPasswordEmailSent && (
                   <>
                     <div 
@@ -84,6 +84,7 @@ export default function ResetPassword(props) {
                         type="email" 
                         id="email" 
                         className={error && styles.hasError} 
+                        placeholder="Email address" 
                         value={email} 
                         onChange={e => setEmail(e.target.value)} 
                         fullWidth={true}
