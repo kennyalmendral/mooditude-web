@@ -246,3 +246,73 @@ img{
   }
 }
 
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  font-family: 'Circular Std';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 18px;
+    /* identical to box height */
+
+
+    /* Placeholder */
+
+    color: #A8B5C1;
+}
+::-moz-placeholder { /* Firefox 19+ */
+  font-family: 'Circular Std';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 18px;
+    /* identical to box height */
+
+
+    /* Placeholder */
+
+    color: #A8B5C1;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  font-family: 'Circular Std';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 18px;
+    /* identical to box height */
+
+
+    /* Placeholder */
+
+    color: #A8B5C1;
+}
+:-moz-placeholder { /* Firefox 18- */
+  font-family: 'Circular Std';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 18px;
+    /* identical to box height */
+
+
+    /* Placeholder */
+
+    color: #A8B5C1;
+}
+
+
+
+.auth_page_wrapper .MuiTextField-root,
+.auth_page_wrapper .MuiTextField-root span,
+.auth_page_wrapper .MuiInputLabel-formControl{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 24px;
+  /* identical to box height */
+
+
+  /* Placeholder */
+
+  color: #A8B5C1;
+}

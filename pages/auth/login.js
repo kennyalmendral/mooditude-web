@@ -50,7 +50,7 @@ export default function Login(props) {
 
   return (
     <Layout title={`Login | ${SITE_NAME}`}>
-      <div className={styles.container}>
+      <div className={`${styles.container} auth_page_wrapper`}>
         <div className={styles.authBg}></div>
 
         <div className={styles.authForm}>
@@ -137,7 +137,7 @@ export default function Login(props) {
                 <div>
                   <span>Forgot password? Rest it</span>
                   {' '}
-                  <Link href="/auth/reset-password">
+                  <Link href="/auth/forgot-password">
                     <a>here.</a>
                   </Link>
                 </div>

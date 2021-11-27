@@ -47,7 +47,7 @@ export default function ResetPassword(props) {
   }
 
   return (
-    <Layout title={`Reset Password | ${SITE_NAME}`}>
+    <Layout title={`Forgot Password | ${SITE_NAME}`}>
       <div className={styles.container}>
         <div className={styles.authBg}></div>
 
