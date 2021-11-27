@@ -46,12 +46,7 @@ function App({ Component, pageProps }) {
     if (status) {
       setTimeout(function(){
         Router.events.on('routeChangeComplete', () => setLogoutLoader(false) )
-      }, 300)
-      firebaseAuth.onAuthStateChanged(user => {
-        // if (!user) {
-          setLogoutLoader(false) 
-        // }
-      })
+      }, 1000)
       
     }
   }
