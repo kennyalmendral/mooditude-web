@@ -43,13 +43,32 @@ export default function MainMenu(props) {
                         <div className={`${styles.main_menu_logo}`}>
                             <a href="/"><img src={`/logo_inner.svg`}  /></a>
                         </div>
-                        {/*<div>
-                            <Link href="/assessment/dashboard"> 
-                            <a className={styles.menu_item} >
-                                Assessments
-                            </a>
-                            </Link>
-                        </div>*/}
+
+                        <div className={styles.menu_items_wrap}>
+                            <div>
+                                <Link href="/"> 
+                                <a className={styles.menu_item} >
+                                    HOME
+                                </a>
+                                </Link>
+                            </div>
+
+                            <div>
+                                <Link href="/assessment/dashboard"> 
+                                <a className={styles.menu_item} >
+                                    PROFILE
+                                </a>
+                                </Link>
+                            </div>
+
+                            <div>
+                                <Link href="/buy"> 
+                                <a className={styles.menu_item} >
+                                    BUY
+                                </a>
+                                </Link>
+                            </div>
+                        </div>
                     </div>
                 </Grow>
                 
@@ -77,16 +96,34 @@ export default function MainMenu(props) {
                 >
                     <Grow in={mainMenuCollapse}>
                         <div>
-                        <div className={`${styles.mobile_main_menu_logo}`}>
-                            <img src={`/logo_inner.svg`}  />   
-                        </div>
-                        {/*<div>
-                            <Link href="/assessment/dashboard"> 
-                            <a className={styles.menu_item} >
-                                Assessments
-                            </a>
-                            </Link>
-                        </div>*/}
+                            <div className={`${styles.mobile_main_menu_logo}`}>
+                                <img src={`/logo_inner.svg`}  />   
+                            </div>
+                            <div className={styles.menu_items_wrap}>
+                                <div>
+                                    <Link href="/"> 
+                                    <a className={styles.menu_item} >
+                                        HOME
+                                    </a>
+                                    </Link>
+                                </div>
+
+                                <div>
+                                    <Link href="/assessment/dashboard"> 
+                                    <a className={styles.menu_item} >
+                                        PROFILE
+                                    </a>
+                                    </Link>
+                                </div>
+
+                                <div>
+                                    <Link href="/buy"> 
+                                    <a className={styles.menu_item} >
+                                        BUY
+                                    </a>
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
                     </Grow>
 

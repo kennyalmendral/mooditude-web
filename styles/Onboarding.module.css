@@ -273,6 +273,76 @@
 	padding-left: 0;
 }
 
+
+
+.download_app_wrap{
+	background: rgba(248, 231, 28, 0.2);
+	border-radius: 4px;
+	padding: 16px;
+	max-width: 323px;
+}
+
+.download_app_wrap h4{
+	font-family: 'Circular Std';
+	font-style: normal;
+	font-weight: bold;
+	font-size: 24px;
+	line-height: 30px;
+	margin-top: 0;
+	margin-bottom: 16px;
+	/* Primary */
+
+	color: #072B4F;
+
+}
+
+.download_app_wrap p{
+	font-family: 'Circular Std';
+	font-style: normal;
+	font-weight: normal;
+	font-size: 14px;
+	line-height: 18px;
+
+	/* Primary */
+	margin-bottom: 21px;
+	color: #072B4F;
+}
+
+.download_app_wrap .app_btns{
+
+	display: flex;
+}
+
+.download_app_wrap{
+	background: #FEFDE8;
+	border: 1px solid #F8E71C;
+	box-sizing: border-box;
+	border-radius: 4px;
+	padding: 16px;
+	max-width: 400px;
+}
+
+.download_app_wrap .app_btns{
+
+	display: flex;
+
+}
+
+.download_app_wrap .app_btns a{
+	border-radius: 50%;
+	margin-right: 20px;
+	display: inline-flex;
+	background: #1CA566;
+	height: 44px;
+	width: 44px;
+	justify-content: center;
+	align-items: center;
+}
+
+.download_app_wrap .app_btns a img{
+	max-width: 100%;
+}
+
 @media(min-width: 1025px) and (max-width: 1500px){
 	.on_assessment_wrapper .custom_stepper_wrapper svg{
 			width: 16px;
