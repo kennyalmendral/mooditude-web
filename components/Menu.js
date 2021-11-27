@@ -43,13 +43,13 @@ export default function MainMenu(props) {
                         <div className={`${styles.main_menu_logo}`}>
                             <a href="/"><img src={`/logo_inner.svg`}  /></a>
                         </div>
-                        <div>
+                        {/*<div>
                             <Link href="/assessment/dashboard"> 
                             <a className={styles.menu_item} >
                                 Assessments
                             </a>
                             </Link>
-                        </div>
+                        </div>*/}
                     </div>
                 </Grow>
                 
@@ -80,13 +80,13 @@ export default function MainMenu(props) {
                         <div className={`${styles.mobile_main_menu_logo}`}>
                             <img src={`/logo_inner.svg`}  />   
                         </div>
-                        <div>
+                        {/*<div>
                             <Link href="/assessment/dashboard"> 
                             <a className={styles.menu_item} >
                                 Assessments
                             </a>
                             </Link>
-                        </div>
+                        </div>*/}
                         </div>
                     </Grow>
 
