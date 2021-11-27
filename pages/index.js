@@ -23,27 +23,27 @@ export default function Home() {
 
   const { authUser, loading, signOut } = useAuth()
 
-  useEffect(() => {
-    firebaseAuth.onAuthStateChanged(user => {
-      if (user) {
-        firebaseDatabase
-          .ref()
-          .child('users')
-          .child(user.uid)
-          .on('value', snapshot => {
-            console.log(snapshot.val())
+  // useEffect(() => {
+  //   firebaseAuth.onAuthStateChanged(user => {
+  //     if (user) {
+  //       firebaseDatabase
+  //         .ref()
+  //         .child('users')
+  //         .child(user.uid)
+  //         .on('value', snapshot => {
+  //           console.log(snapshot.val())
 
-            if ((snapshot.val().onboardingStep == 1) && (authUser && localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) !== null)) {
-              router.push(`/assessment/${localStorage.getItem(`${authUser.uid}_currentAssessmentStep`)}`)
-            } else if (snapshot.val().onboardingStep == 2) {
-              router.push('/assessment/report')
-            }
-          }, error => {
-            console.log(error)
-          })
-      }
-    })
-  }, [])
+  //           if ((snapshot.val().onboardingStep == 1) && (authUser && localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) !== null)) {
+  //             router.push(`/assessment/${localStorage.getItem(`${authUser.uid}_currentAssessmentStep`)}`)
+  //           } else if (snapshot.val().onboardingStep == 2) {
+  //             router.push('/assessment/report')
+  //           }
+  //         }, error => {
+  //           console.log(error)
+  //         })
+  //     }
+  //   })
+  // }, [])
 
   useEffect(() => {
     if (!loading && !authUser) { 

@@ -49,7 +49,7 @@ export default function Onboarding3() {
   useEffect(() => {
     if (authUser && localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
       localStorage.setItem(`${authUser.uid}_currentProfileStep`, 3)
-
+      console.log(profileStepAnswer)
       console.log(`Current profile step: ${localStorage.getItem(`${authUser.uid}_currentProfileStep`)}`)
     }
 
@@ -138,7 +138,7 @@ export default function Onboarding3() {
                 size="large" 
                 variant="contained" 
                 onClick={handleNextStep}
-                disabled={profileStepAnswer == '' ? true : false}
+                disabled={profileStepAnswer == '' || profileStepAnswer == null ? true : false}
                 // onClick={() => {router.push(`/onboarding/4`)}}
               >Next</Button>
             </Stack>

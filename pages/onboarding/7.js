@@ -95,8 +95,11 @@ export default function Onboarding7() {
           localStorage.removeItem(`${authUser.uid}_profileStep5Answer`)
           localStorage.removeItem(`${authUser.uid}_profileStep6Answer`)
           localStorage.removeItem(`${authUser.uid}_profileStep7Answer`)
-  
-          router.push('/onboarding/finish')
+          if (authUser && localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
+            localStorage.setItem(`${authUser.uid}_onboardingStep`, 1)
+          }
+          // router.push('/onboarding/finish')
+          location.href='/onboarding/finish'
         }
       })
     } else {

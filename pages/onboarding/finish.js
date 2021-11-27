@@ -33,9 +33,7 @@ export default function OnboardingFinishPage() {
       localStorage.setItem(`${authUser.uid}_currentProfileStep`, 8)
 
     }
-    if (authUser && localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
-      localStorage.setItem(`${authUser.uid}_onboardingStep`, 1)
-    }
+    
   }, [])
 
   return (

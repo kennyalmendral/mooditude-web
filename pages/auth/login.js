@@ -28,6 +28,13 @@ export default function Login(props) {
     },300)
     if (loading && authUser) {
       // router.push('/onboarding/welcome')
+      if (authUser && localStorage.getItem(`${authUser.uid}_onboardingStep`) == 0) {
+        location.href='/onboarding/welcome'
+      } else if (authUser && localStorage.getItem(`${authUser.uid}_onboardingStep`) == 1) {
+        location.href='/'
+      } else if (authUser && localStorage.getItem(`${authUser.uid}_onboardingStep`) == 2) {
+        location.href = '/assessment/report'
+      }
     }
   }, [authUser, loading, router])
 
@@ -51,6 +58,7 @@ export default function Login(props) {
         }
       })
       .catch(error => {
+        console.log('error')
         props.loginLoaderHandler(false)
         setIsLoggingIn(false)
         setError(error.message)

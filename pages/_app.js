@@ -73,7 +73,7 @@ function App({ Component, pageProps }) {
 
         {
           loginLoader ? 
-          <div className="page-loader logout-loader"><GridLoader color={'#1CA566'} loading={true} size={10} /></div> : ''
+          <div className="page-loader login-loader"><GridLoader color={'#1CA566'} loading={true} size={10} /></div> : ''
         }
 
         <div className={`body-wrapper ${checkAuth ? 'logged' : ''} ${checkMenuCollapse ? 'menu_collapsed' : ''}`}>
