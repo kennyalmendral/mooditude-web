@@ -71,67 +71,67 @@ export default function AssessmentReport() {
 
   useEffect(() => {
     let assessmentAnswers = [
-      localStorage.getItem(`${authUser.uid}_assessmentStep1Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep2Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep3Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep4Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep5Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep6Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep7Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep8Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep9Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep10Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep11Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep12Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep13Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep14Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep15Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep16Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep17Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep18Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep19Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep20Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep21Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep23Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep24Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep25Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep26Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep28Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep29Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep30Answer`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep31Answer`)
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep1Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep2Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep3Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep4Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep5Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep6Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep7Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep8Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep9Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep10Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep11Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep12Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep13Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep14Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep15Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep16Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep17Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep18Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep19Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep20Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep21Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep23Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep24Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep25Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep26Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep28Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep29Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep30Answer`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep31Answer`)
     ]
 
     let assessmentTimes = [
-      localStorage.getItem(`${authUser.uid}_assessmentStep1Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep2Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep3Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep4Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep5Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep6Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep7Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep8Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep9Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep10Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep11Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep12Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep13Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep14Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep15Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep16Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep17Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep18Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep19Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep20Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep21Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep23Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep24Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep25Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep26Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep28Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep29Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep30Time`),
-      localStorage.getItem(`${authUser.uid}_assessmentStep31Time`)
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep1Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep2Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep3Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep4Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep5Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep6Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep7Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep8Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep9Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep10Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep11Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep12Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep13Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep14Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep15Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep16Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep17Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep18Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep19Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep20Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep21Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep23Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep24Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep25Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep26Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep28Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep29Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep30Time`),
+      authUser && localStorage.getItem(`${authUser.uid}_assessmentStep31Time`)
     ]
 
     firebaseAuth.onAuthStateChanged(user => {
@@ -296,7 +296,7 @@ export default function AssessmentReport() {
         unsubscribe = usersRef
           .get()
           .then(doc => {
-            setCustomerType(doc.data().customerType)
+            doc.data() && setCustomerType(doc.data().customerType)
           })
       } else {
         unsubscribe && unsubscribe()
@@ -555,6 +555,7 @@ export default function AssessmentReport() {
                                 size="large" 
                                 className={styles.report_btn} 
                                 variant="contained" 
+                                href={'/buy'}
                                 style={{
                                   marginBottom: '15px',
                                   fontSize: '14px',
