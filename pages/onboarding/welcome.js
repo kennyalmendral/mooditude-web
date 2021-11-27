@@ -39,15 +39,21 @@ export default function OnboardingWelcomePage() {
           .on('value', snapshot => {
             console.log(snapshot.val())
 
-            if ((snapshot.val().onboardingStep == 0) && (localStorage.getItem('currentProfileStep') !== null)) {
-              router.push(`/onboarding/${localStorage.getItem('currentProfileStep')}`)
-            } else if (localStorage.getItem('currentProfileStep') == 8) {
-              router.push('/')
-            } else if (snapshot.val().onboardingStep == 1) {
-              router.push('/')
-            } else if (snapshot.val().onboardingStep == 2) {
-              router.push('/assessment/report')
+            if (
+              (snapshot.val().onboardingStep == 0) && 
+              (localStorage.getItem(`${user.uid}_currentProfileStep`) != null)
+            ) {
+              if (localStorage.getItem(`${user.uid}_currentProfileStep`) > 0) {
+                router.push(`/onboarding/${localStorage.getItem(`${user.uid}_currentProfileStep`)}`)
+              }
             }
+            // } else if (localStorage.getItem(`${user.uid}_currentProfileStep`) == 8) {
+            //   router.push('/')
+            // } else if (snapshot.val().onboardingStep == 1) {
+            //   router.push('/')
+            // } else if (snapshot.val().onboardingStep == 2) {
+            //   router.push('/assessment/report')
+            // }
           }, error => {
             console.log(error)
           })
@@ -72,7 +78,7 @@ export default function OnboardingWelcomePage() {
   }, [authUser, loading, router])
 
   const handlePersonalize = () => {
-    localStorage.getItem('currentProfileStep') === null && localStorage.setItem('currentProfileStep', 0) 
+    localStorage.getItem(`${authUser.uid}_currentProfileStep`) == null && localStorage.setItem(`${authUser.uid}_currentProfileStep`, 0) 
 
     router.push(`/onboarding/1`)
   }

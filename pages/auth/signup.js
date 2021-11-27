@@ -41,7 +41,7 @@ export default function SignUp(props) {
   const [btnDisabled, setBtnDisabled] = useState(true)
 
 
-  const { createUserWithEmailAndPassword } = useAuth()
+  const { authUser, createUserWithEmailAndPassword } = useAuth()
 
   const checkPass = (p1 = '', p2 = '', policy = false) => {
     
@@ -146,19 +146,7 @@ export default function SignUp(props) {
                   lastAssessmentDate: null
                 })
 
-              if (
-                (localStorage.getItem('currentProfileStep') !== null) || 
-                (localStorage.getItem('currentProfileStep') !== '')
-              ) {
-                localStorage.removeItem('currentProfileStep')
-              }
-
-              if (
-                (localStorage.getItem('currentAssessmentStep') !== null) || 
-                (localStorage.getItem('currentAssessmentStep') !== '')
-              ) {
-                localStorage.removeItem('currentAssessmentStep')
-              }
+              localStorage.setItem(`${user.uid}_currentProfileStep`, 0)
             }
           })
           
