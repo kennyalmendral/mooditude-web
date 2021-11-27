@@ -70,47 +70,6 @@ export default function AssessmentReport() {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    if (Object.keys(assessmentScores).length > 0) {
-      console.log('assessmentScores', assessmentScores)
-
-      const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
-
-      updateUserM3AssessmentScores({
-        userId: authUser.uid,
-        epochId: assessmentScores.id,
-        rawData: assessmentScores.rawData,
-      }).then(result => {
-        console.log('updateUserM3AssessmentScores', result.data)
-
-        setRiskScore(result.data.allScore)
-        setAllRiskLevel(result.data.allRiskLevel)
-        setDepressionRiskScore(result.data.depressionScore)
-        setDepressionRiskLevel(result.data.depressionRiskLevel)
-        setAnxietyRiskScore(result.data.anxietyScore)
-        setAnxietyRiskLevel(result.data.anxietyRiskLevel)
-        setPtsdRiskScore(result.data.ptsdScore)
-        setPtsdRiskLevel(result.data.ptsdRiskLevel)
-        setBipolarRiskScore(result.data.bipolarScore)
-        setBipolarRiskLevel(result.data.bipolarRiskLevel)
-        setHasSuicidalThoughts(result.data.hasSuicidalThoughts)
-        setUsedAlcohol(result.data.usedAlcohol)
-        setUsedDrug(result.data.usedDrug)
-        setThoughtsOfSuicideAnswer(result.data.thoughtsOfSuicideAnswer)
-        setImpairsWorkSchoolAnswer(result.data.impairsWorkSchoolAnswer)
-        setImpairsFriendsFamilyAnswer(result.data.impairsFriendsFamilyAnswer)
-        setLedToUsingAlcoholAnswer(result.data.ledToUsingAlcoholAnswer)
-        setLedToUsingDrugAnswer(result.data.ledToUsingDrugAnswer)
-
-        setAssessmentDate(new Date(assessmentScores.createDate.seconds * 1000).toLocaleString('en-US', {
-          month: 'long',
-          day: 'numeric',
-          year: 'numeric'
-        }))
-      })
-    }
-  }, [assessmentScores])
-
-  useEffect(() => {
     let assessmentAnswers = [
       localStorage.getItem('assessmentStep1Answer'),
       localStorage.getItem('assessmentStep2Answer'),
@@ -176,96 +135,116 @@ export default function AssessmentReport() {
     ]
 
     firebaseAuth.onAuthStateChanged(user => {
-      if (user) {
-        let epochMilliseconds = new Date().getTime().toString()
+      let usersM3AssessmentScoresRef
+      let unsubscribe
 
-        firebaseStore
+      if (user) {
+        usersM3AssessmentScoresRef = firebaseStore
           .collection('M3Assessment')
           .doc(user.uid)
           .collection('scores')
-          .doc(epochMilliseconds)
-          .set({
-            id: epochMilliseconds,
-            createDate: new Date(),
-            rawData: assessmentAnswers.join(','),
-            rawTimeToAnswer: assessmentTimes.join(','),
-            allScore: 0,
-            bipolarScore: 0,
-            depressionScore: 0,
-            gadScore: 0,
-            gatewayScore: 0,
-            ocdScore: 0,
-            panicScore: 0,
-            socialAnxietyScore: 0,
-            ptsdScore: 0,
-            pdfDoc: null,
-          })
-          .then(response => {
-            localStorage.removeItem('assessmentStep1Answer')
-            localStorage.removeItem('assessmentStep2Answer')
-            localStorage.removeItem('assessmentStep3Answer')
-            localStorage.removeItem('assessmentStep4Answer')
-            localStorage.removeItem('assessmentStep5Answer')
-            localStorage.removeItem('assessmentStep6Answer')
-            localStorage.removeItem('assessmentStep7Answer')
-            localStorage.removeItem('assessmentStep8Answer')
-            localStorage.removeItem('assessmentStep9Answer')
-            localStorage.removeItem('assessmentStep10Answer')
-            localStorage.removeItem('assessmentStep11Answer')
-            localStorage.removeItem('assessmentStep12Answer')
-            localStorage.removeItem('assessmentStep13Answer')
-            localStorage.removeItem('assessmentStep14Answer')
-            localStorage.removeItem('assessmentStep15Answer')
-            localStorage.removeItem('assessmentStep16Answer')
-            localStorage.removeItem('assessmentStep17Answer')
-            localStorage.removeItem('assessmentStep18Answer')
-            localStorage.removeItem('assessmentStep19Answer')
-            localStorage.removeItem('assessmentStep20Answer')
-            localStorage.removeItem('assessmentStep21Answer')
-            localStorage.removeItem('assessmentStep23Answer')
-            localStorage.removeItem('assessmentStep24Answer')
-            localStorage.removeItem('assessmentStep25Answer')
-            localStorage.removeItem('assessmentStep26Answer')
-            localStorage.removeItem('assessmentStep28Answer')
-            localStorage.removeItem('assessmentStep29Answer')
-            localStorage.removeItem('assessmentStep30Answer')
-            localStorage.removeItem('assessmentStep31Answer')
 
-            localStorage.removeItem('assessmentStep1Time')
-            localStorage.removeItem('assessmentStep2Time')
-            localStorage.removeItem('assessmentStep3Time')
-            localStorage.removeItem('assessmentStep4Time')
-            localStorage.removeItem('assessmentStep5Time')
-            localStorage.removeItem('assessmentStep6Time')
-            localStorage.removeItem('assessmentStep7Time')
-            localStorage.removeItem('assessmentStep8Time')
-            localStorage.removeItem('assessmentStep9Time')
-            localStorage.removeItem('assessmentStep10Time')
-            localStorage.removeItem('assessmentStep11Time')
-            localStorage.removeItem('assessmentStep12Time')
-            localStorage.removeItem('assessmentStep13Time')
-            localStorage.removeItem('assessmentStep14Time')
-            localStorage.removeItem('assessmentStep15Time')
-            localStorage.removeItem('assessmentStep16Time')
-            localStorage.removeItem('assessmentStep17Time')
-            localStorage.removeItem('assessmentStep18Time')
-            localStorage.removeItem('assessmentStep19Time')
-            localStorage.removeItem('assessmentStep20Time')
-            localStorage.removeItem('assessmentStep21Time')
-            localStorage.removeItem('assessmentStep23Time')
-            localStorage.removeItem('assessmentStep24Time')
-            localStorage.removeItem('assessmentStep25Time')
-            localStorage.removeItem('assessmentStep26Time')
-            localStorage.removeItem('assessmentStep28Time')
-            localStorage.removeItem('assessmentStep29Time')
-            localStorage.removeItem('assessmentStep30Time')
-            localStorage.removeItem('assessmentStep31Time')
+        unsubscribe = usersM3AssessmentScoresRef
+          .get()
+          .then(doc => {
+            if (doc.docs.length < 1) {
+              const d = new Date()
+              const year = d.getUTCFullYear()
+              const month = d.getUTCMonth()
+              const day = d.getUTCDate()
+              const startTime = Date.UTC(year, month, day, 0, 0, 0, 0)
 
-            router.push('/assessment/report')
+              let epochMilliseconds = startTime.toString()
+
+              firebaseStore
+                .collection('M3Assessment')
+                .doc(user.uid)
+                .collection('scores')
+                .doc(epochMilliseconds)
+                .set({
+                  id: epochMilliseconds,
+                  createDate: new Date(),
+                  rawData: assessmentAnswers.join(','),
+                  rawTimeToAnswer: assessmentTimes.join(','),
+                  allScore: 0,
+                  bipolarScore: 0,
+                  depressionScore: 0,
+                  gadScore: 0,
+                  gatewayScore: 0,
+                  ocdScore: 0,
+                  panicScore: 0,
+                  socialAnxietyScore: 0,
+                  ptsdScore: 0,
+                  pdfDoc: null,
+                })
+                .then(response => {
+                  localStorage.removeItem('assessmentStep1Answer')
+                  localStorage.removeItem('assessmentStep2Answer')
+                  localStorage.removeItem('assessmentStep3Answer')
+                  localStorage.removeItem('assessmentStep4Answer')
+                  localStorage.removeItem('assessmentStep5Answer')
+                  localStorage.removeItem('assessmentStep6Answer')
+                  localStorage.removeItem('assessmentStep7Answer')
+                  localStorage.removeItem('assessmentStep8Answer')
+                  localStorage.removeItem('assessmentStep9Answer')
+                  localStorage.removeItem('assessmentStep10Answer')
+                  localStorage.removeItem('assessmentStep11Answer')
+                  localStorage.removeItem('assessmentStep12Answer')
+                  localStorage.removeItem('assessmentStep13Answer')
+                  localStorage.removeItem('assessmentStep14Answer')
+                  localStorage.removeItem('assessmentStep15Answer')
+                  localStorage.removeItem('assessmentStep16Answer')
+                  localStorage.removeItem('assessmentStep17Answer')
+                  localStorage.removeItem('assessmentStep18Answer')
+                  localStorage.removeItem('assessmentStep19Answer')
+                  localStorage.removeItem('assessmentStep20Answer')
+                  localStorage.removeItem('assessmentStep21Answer')
+                  localStorage.removeItem('assessmentStep23Answer')
+                  localStorage.removeItem('assessmentStep24Answer')
+                  localStorage.removeItem('assessmentStep25Answer')
+                  localStorage.removeItem('assessmentStep26Answer')
+                  localStorage.removeItem('assessmentStep28Answer')
+                  localStorage.removeItem('assessmentStep29Answer')
+                  localStorage.removeItem('assessmentStep30Answer')
+                  localStorage.removeItem('assessmentStep31Answer')
+
+                  localStorage.removeItem('assessmentStep1Time')
+                  localStorage.removeItem('assessmentStep2Time')
+                  localStorage.removeItem('assessmentStep3Time')
+                  localStorage.removeItem('assessmentStep4Time')
+                  localStorage.removeItem('assessmentStep5Time')
+                  localStorage.removeItem('assessmentStep6Time')
+                  localStorage.removeItem('assessmentStep7Time')
+                  localStorage.removeItem('assessmentStep8Time')
+                  localStorage.removeItem('assessmentStep9Time')
+                  localStorage.removeItem('assessmentStep10Time')
+                  localStorage.removeItem('assessmentStep11Time')
+                  localStorage.removeItem('assessmentStep12Time')
+                  localStorage.removeItem('assessmentStep13Time')
+                  localStorage.removeItem('assessmentStep14Time')
+                  localStorage.removeItem('assessmentStep15Time')
+                  localStorage.removeItem('assessmentStep16Time')
+                  localStorage.removeItem('assessmentStep17Time')
+                  localStorage.removeItem('assessmentStep18Time')
+                  localStorage.removeItem('assessmentStep19Time')
+                  localStorage.removeItem('assessmentStep20Time')
+                  localStorage.removeItem('assessmentStep21Time')
+                  localStorage.removeItem('assessmentStep23Time')
+                  localStorage.removeItem('assessmentStep24Time')
+                  localStorage.removeItem('assessmentStep25Time')
+                  localStorage.removeItem('assessmentStep26Time')
+                  localStorage.removeItem('assessmentStep28Time')
+                  localStorage.removeItem('assessmentStep29Time')
+                  localStorage.removeItem('assessmentStep30Time')
+                  localStorage.removeItem('assessmentStep31Time')
+                })
+                .catch(error => {
+                  console.log('error:', error)
+                })
+            }
           })
-          .catch(error => {
-            console.log('error:', error)
-          })
+      } else {
+        unsubscribe && unsubscribe()
       }
     })
 
@@ -324,8 +303,47 @@ export default function AssessmentReport() {
   }, [])
 
   useEffect(() => {
-    
-  }, [mostOfTheTimeAnswerCount])
+    if (Object.keys(assessmentScores).length > 0) {
+      firebaseAuth.onAuthStateChanged(user => {
+        if (user) {
+          const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
+  
+          updateUserM3AssessmentScores({
+            userId: user.uid,
+            epochId: assessmentScores.id,
+            rawData: assessmentScores.rawData,
+          }).then(result => {
+            console.log('updateUserM3AssessmentScores', result.data)
+  
+            setRiskScore(result.data.allScore)
+            setAllRiskLevel(result.data.allRiskLevel)
+            setDepressionRiskScore(result.data.depressionScore)
+            setDepressionRiskLevel(result.data.depressionRiskLevel)
+            setAnxietyRiskScore(result.data.anxietyScore)
+            setAnxietyRiskLevel(result.data.anxietyRiskLevel)
+            setPtsdRiskScore(result.data.ptsdScore)
+            setPtsdRiskLevel(result.data.ptsdRiskLevel)
+            setBipolarRiskScore(result.data.bipolarScore)
+            setBipolarRiskLevel(result.data.bipolarRiskLevel)
+            setHasSuicidalThoughts(result.data.hasSuicidalThoughts)
+            setUsedAlcohol(result.data.usedAlcohol)
+            setUsedDrug(result.data.usedDrug)
+            setThoughtsOfSuicideAnswer(result.data.thoughtsOfSuicideAnswer)
+            setImpairsWorkSchoolAnswer(result.data.impairsWorkSchoolAnswer)
+            setImpairsFriendsFamilyAnswer(result.data.impairsFriendsFamilyAnswer)
+            setLedToUsingAlcoholAnswer(result.data.ledToUsingAlcoholAnswer)
+            setLedToUsingDrugAnswer(result.data.ledToUsingDrugAnswer)
+  
+            setAssessmentDate(new Date(assessmentScores.createDate.seconds * 1000).toLocaleString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric'
+            }))
+          })
+        }
+      })
+    }
+  }, [assessmentScores])
 
   return (
     <Layout title={`Assessment Full Report | ${SITE_NAME}`}>

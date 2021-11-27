@@ -8,15 +8,16 @@ import styles from '@/styles/Auth.module.css'
 import Layout from '@/components/Layout'
 import { SITE_NAME } from '@/config/index'
 
-import { useAuth } from '@/context/AuthUserContext'
-
-import Firebase from 'lib/Firebase'
 import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+
+import { useAuth } from '@/context/AuthUserContext'
+
+import Firebase from 'lib/Firebase'
 
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()

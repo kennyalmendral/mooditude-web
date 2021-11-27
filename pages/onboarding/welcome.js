@@ -41,6 +41,8 @@ export default function OnboardingWelcomePage() {
 
             if ((snapshot.val().onboardingStep == 0) && (localStorage.getItem('currentProfileStep') !== null)) {
               router.push(`/onboarding/${localStorage.getItem('currentProfileStep')}`)
+            } else if (localStorage.getItem('currentProfileStep') == 8) {
+              router.push('/')
             } else if (snapshot.val().onboardingStep == 1) {
               router.push('/')
             } else if (snapshot.val().onboardingStep == 2) {
@@ -55,7 +57,7 @@ export default function OnboardingWelcomePage() {
         unsubscribe = usersRef
           .get()
           .then(doc => {
-            setName(doc.data().name)
+            doc.data() && setName(doc.data().name)
           })
       } else {
         unsubscribe && unsubscribe()

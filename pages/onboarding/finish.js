@@ -55,7 +55,7 @@ export default function OnboardingFinishPage() {
           <div className={styles.list_wrap}>
             <p><img src="/check.png"/> You have priortized your mental health goals</p>
             <p><img src="/check.png"/> You identified the obstacles to your happiness </p>
-            <p><img src="/check.png"/> You comitted to take care of yourself</p>
+            <p><img src="/check.png"/> You committed to take care of yourself</p>
           </div>
 
           <div className={styles.high_five}>
