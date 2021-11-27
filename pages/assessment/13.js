@@ -150,7 +150,7 @@ export default function Assessment13() {
                 className={styles.onboarding_btn} 
                 variant="contained" 
                 onClick={handleNextStep} 
-                disabled={assessmentStep15Answer == '' || parseInt(assessmentStep15Answer) > 4 ? true : false} 
+                disabled={assessmentStep13Answer == '' || parseInt(assessmentStep13Answer) > 4 ? true : false} 
                 // onClick={() => {router.push(`/onboarding/2`)}}
               >
                 Next

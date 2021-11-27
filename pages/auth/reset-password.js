@@ -9,7 +9,13 @@ import Layout from '@/components/Layout'
 import { SITE_NAME } from '@/config/index'
 
 import { useAuth } from '@/context/AuthUserContext'
+
 import TextField from '@mui/material/TextField';
+import Checkbox from '@mui/material/Checkbox';
+import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 export default function ResetPassword(props) {
   const router = useRouter()
@@ -85,8 +91,9 @@ export default function ResetPassword(props) {
   }
 
   const checkPass = (p1 = '', p2 = '') => {  
-    p1 = p1 == '' ? newPassword : p1
-    p2 = p2 == '' ? confirmNewPassword : p2
+    p1 = p1 == '' ? password : p1
+    p2 = p2 == '' ? passwordConfirmation : p2
+
     if (p1.length >= 8) {
       setIsMinChar(true)
     }else{
@@ -160,7 +167,7 @@ export default function ResetPassword(props) {
                         value={password} 
                         onChange={e => {
                           setPassword(e.target.value)
-                          checkPass(e.target.value, password)
+                          checkPass(e.target.value, passwordConfirmation)
                         }} 
                         fullWidth={true}
                         size={"small"}
@@ -180,11 +187,11 @@ export default function ResetPassword(props) {
                         type="password" 
                         id="new-password" 
                         className={error && styles.hasError} 
-                        placeholder="Enter new password" 
+                        placeholder="Enter new password confirmation" 
                         value={passwordConfirmation} 
                         onChange={e => {
-                          setPassword(e.target.value)
-                          checkPass(e.target.value, passwordConfirmation)
+                          setPasswordConfirmation(e.target.value)
+                          checkPass(password, e.target.value)
                         }} 
                         fullWidth={true}
                         size={"small"}
