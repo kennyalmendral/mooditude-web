@@ -49,30 +49,26 @@ export default function Assessment11() {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    if (localStorage.getItem('currentAssessmentStep') !== null) {
-      localStorage.setItem('currentAssessmentStep', 11)
-
-      
+    if (authUser && localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) !== null) {
+      localStorage.setItem(`${authUser.uid}_currentAssessmentStep`, 11)
     }
 
-    if (localStorage.getItem('assessmentStep11Answer') > 0) {
-      setAssessmentStep11Answer(localStorage.getItem('assessmentStep11Answer'))
+    if (authUser && localStorage.getItem(`${authUser.uid}_assessmentStep11Answer`) > 0) {
+      setAssessmentStep11Answer(localStorage.getItem(`${authUser.uid}_assessmentStep11Answer`))
     }
 
     setTimer(setInterval(() => {
-      
       setAssessmentStep11Time(assessmentStep11Time++)
     }, 1000))
   }, [])
 
   useEffect(() => {
-    // console.log('asd')
     // assessmentStep11Answer > 0 && console.log(`Assessment step 11 answer: ${assessmentStep11Answer}`)
   }, [assessmentStep11Answer])
 
   const handleChange = (e) => {
     clearInterval(timer)
-    localStorage.setItem('assessmentStep11Time', assessmentStep11Time)
+    localStorage.setItem(`${authUser.uid}_assessmentStep11Time`, assessmentStep11Time)
     setAssessmentStep11Answer(e.target.value)
   }
 
@@ -80,7 +76,7 @@ export default function Assessment11() {
     setFormError(false)
 
     if (assessmentStep11Answer !== '') {
-      localStorage.setItem('assessmentStep11Answer', parseInt(assessmentStep11Answer))
+      localStorage.setItem(`${authUser.uid}_assessmentStep11Answer`, parseInt(assessmentStep11Answer))
       
       router.push('/assessment/12')
     } else {

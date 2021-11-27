@@ -26,16 +26,14 @@ export default function OnboardingWelcomePage() {
   const [name, setName] = useState('')
   
   useEffect(() => {
-    if (localStorage.getItem('currentProfileStep') === null) {
-      localStorage.setItem('currentProfileStep', 0)
+    if (authUser && localStorage.getItem(`${authUser.uid}_currentProfileStep`) === null) {
+      localStorage.setItem(`${authUser.uid}_currentProfileStep`, 0)
     } else {
-      console.log(`Current profile step: ${localStorage.getItem('currentProfileStep')}`)
-
-      if (localStorage.getItem('currentProfileStep') > 0) {
-        if (localStorage.getItem('currentProfileStep') == 8) {
+      if (authUser && localStorage.getItem(`${authUser.uid}_currentProfileStep`) > 0) {
+        if (localStorage.getItem(`${authUser.uid}_currentProfileStep`) == 8) {
           router.push('/onboarding/finish')
         } else {
-          router.push(`/onboarding/${localStorage.getItem('currentProfileStep')}`)
+          router.push(`/onboarding/${localStorage.getItem(`${authUser.uid}_currentProfileStep`)}`)
         }
       }
     }

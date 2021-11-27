@@ -33,8 +33,8 @@ export default function Home() {
           .on('value', snapshot => {
             console.log(snapshot.val())
 
-            if ((snapshot.val().onboardingStep == 1) && (localStorage.getItem('currentAssessmentStep') !== null)) {
-              router.push(`/assessment/${localStorage.getItem('currentAssessmentStep')}`)
+            if ((snapshot.val().onboardingStep == 1) && (localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) !== null)) {
+              router.push(`/assessment/${localStorage.getItem(`${authUser.uid}_currentAssessmentStep`)}`)
             } else if (snapshot.val().onboardingStep == 2) {
               router.push('/assessment/report')
             }
@@ -52,7 +52,7 @@ export default function Home() {
   }, [authUser, loading, router])
 
   const handleFind = () => {
-    localStorage.getItem('currentAssessmentStep') === null && localStorage.setItem('currentAssessmentStep', 0) 
+    localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) === null && localStorage.setItem(`${authUser.uid}_currentAssessmentStep`, 0) 
 
     router.push('/assessment')
   }

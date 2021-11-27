@@ -46,14 +46,11 @@ export default function OnboardingWelcomePage() {
               if (localStorage.getItem(`${user.uid}_currentProfileStep`) > 0) {
                 router.push(`/onboarding/${localStorage.getItem(`${user.uid}_currentProfileStep`)}`)
               }
+            } else if (snapshot.val().onboardingStep == 1) {
+              router.push('/')
+            } else if (snapshot.val().onboardingStep == 2) {
+              router.push('/assessment/report')
             }
-            // } else if (localStorage.getItem(`${user.uid}_currentProfileStep`) == 8) {
-            //   router.push('/')
-            // } else if (snapshot.val().onboardingStep == 1) {
-            //   router.push('/')
-            // } else if (snapshot.val().onboardingStep == 2) {
-            //   router.push('/assessment/report')
-            // }
           }, error => {
             console.log(error)
           })
