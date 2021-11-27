@@ -45,6 +45,10 @@ export default function Assessment24() {
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/auth/login')
+    } else {
+      if (authUser && localStorage.getItem(`${authUser.uid}_assessmentStep24Answer`) !== null) {
+        setAssessmentStep24Answer(localStorage.getItem(`${authUser.uid}_assessmentStep24Answer`))
+      }
     }
   }, [authUser, loading, router])
 
@@ -117,11 +121,11 @@ export default function Assessment24() {
             <FormControl component="fieldset" error={formError} onChange={() => {setFormError(false)}}>
               
               <RadioGroup>
-                <FormControlLabel value="0" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep24Answer == 0} onChange={handleChange} />} label="Not at all" />
-                <FormControlLabel value="1" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep24Answer == 1} onChange={handleChange} />} label="Rarely" />
-                <FormControlLabel value="2" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep24Answer == 2} onChange={handleChange} />} label="Sometimes" />
-                <FormControlLabel value="3" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep24Answer == 3} onChange={handleChange} />} label="Often" />
-                <FormControlLabel value="4" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep24Answer == 4} onChange={handleChange} />} label="Most of the time" />
+                <FormControlLabel value="0" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep24Answer == '0'} onChange={handleChange} />} label="Not at all" />
+                <FormControlLabel value="1" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep24Answer == '1'} onChange={handleChange} />} label="Rarely" />
+                <FormControlLabel value="2" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep24Answer == '2'} onChange={handleChange} />} label="Sometimes" />
+                <FormControlLabel value="3" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep24Answer == '3'} onChange={handleChange} />} label="Often" />
+                <FormControlLabel value="4" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep24Answer == '4'} onChange={handleChange} />} label="Most of the time" />
               </RadioGroup>
               {
                 formError ? 

@@ -45,18 +45,14 @@ export default function Assessment3() {
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/auth/login')
-    }else{
-      
-      if (authUser && localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) !== null) {
-        var a = localStorage.getItem(`${authUser.uid}_assessmentStep3Answer`) 
-        setAssessmentStep3Answer(a)
+    } else {
+      if (authUser && localStorage.getItem(`${authUser.uid}_assessmentStep3Answer`) !== null) {
+        setAssessmentStep3Answer(localStorage.getItem(`${authUser.uid}_assessmentStep3Answer`))
       }
     }
   }, [authUser, loading, router])
 
   useEffect(() => {
-
-
     if (authUser && localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) !== null) {
       localStorage.setItem(`${authUser.uid}_currentAssessmentStep`, 3)
     }
@@ -66,7 +62,6 @@ export default function Assessment3() {
     }
 
     setTimer(setInterval(() => {
-      
       setAssessmentStep3Time(assessmentStep3Time++)
     }, 1000))
   }, [])

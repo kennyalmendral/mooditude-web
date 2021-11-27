@@ -45,14 +45,16 @@ export default function Assessment1() {
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/auth/login')
+    } else {
+      if (authUser && localStorage.getItem(`${authUser.uid}_assessmentStep1Answer`) !== null) {
+        setAssessmentStep1Answer(localStorage.getItem(`${authUser.uid}_assessmentStep1Answer`))
+      }
     }
   }, [authUser, loading, router])
 
   useEffect(() => {
     if (authUser && localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) !== null) {
       localStorage.setItem(`${authUser.uid}_currentAssessmentStep`, 1)
-
-      
     }
 
     if (authUser && localStorage.getItem(`${authUser.uid}_assessmentStep1Answer`) > 0) {

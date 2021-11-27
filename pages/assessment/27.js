@@ -41,6 +41,10 @@ export default function Assessment27() {
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/auth/login')
+    } else {
+      if (authUser && localStorage.getItem(`${authUser.uid}_assessmentStep27Answer`) !== null) {
+        setAssessmentStep27Answer(localStorage.getItem(`${authUser.uid}_assessmentStep27Answer`))
+      }
     }
   }, [authUser, loading, router])
 
