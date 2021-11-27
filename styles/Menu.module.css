@@ -66,8 +66,27 @@ a.menu_item{
   color: #072B4F;
 }
 
+.menu_items_wrap{
+  margin-top: 50px;
+}
+
+.menu_items_wrap a{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 32px;
+  /* or 229% */
+
+  text-transform: uppercase;
+
+  /* Primary */
+
+  color: #072B4F;
+}
+
 @media(max-width: 767px){
-  
+
   .main_menu_wrap{
     max-width: 100%;
     min-height: 0;

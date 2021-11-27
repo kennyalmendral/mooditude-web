@@ -34,15 +34,18 @@ export default function Login(props) {
   const handleLogin = e => {
     e.preventDefault()
 
+    props.loginLoaderHandler(true)
     setIsLoggingIn(true)
-    setError(null)
-
+    setError(null) 
     signInWithEmailAndPassword(email, password)
       .then(authUser => {
-        setIsLoggingIn(false)
-        router.push('/onboarding/welcome')
+        // setIsLoggingIn(false)
+        // router.push('/onboarding/welcome')
+
+        location.href='/onboarding/welcome'
       })
       .catch(error => {
+        props.loginLoaderHandler(false)
         setIsLoggingIn(false)
         setError(error.message)
       })
