@@ -137,7 +137,7 @@ export default function Login(props) {
                 <div>
                   <span>Forgot password? Rest it</span>
                   {' '}
-                  <Link href="/auth/forgot-password">
+                  <Link href="/auth/forgot">
                     <a>here.</a>
                   </Link>
                 </div>

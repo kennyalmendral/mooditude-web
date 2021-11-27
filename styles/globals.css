@@ -28,6 +28,11 @@ a {
 
 .body-wrapper.logged > div:last-child{
   padding-left: 207px;
+  transition: all .3s ease-in;
+}
+
+.menu_collapsed.body-wrapper.logged > div:last-child{
+  padding-left: 15px;
 }
 
 @font-face {
@@ -214,6 +219,7 @@ img{
   top: 0;
   left: 0;
   right: 0;
+  border-radius: 50%;
   bottom: 0;
 }
 

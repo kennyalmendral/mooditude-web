@@ -80,7 +80,7 @@ export default function Assessment27() {
                 size="large" 
                 className={styles.onboarding_btn} 
                 variant="contained" 
-                // onClick={handleNextStep} 
+              
                 onClick={() => {router.push(`/assessment/28`)}}
               >
                 Next

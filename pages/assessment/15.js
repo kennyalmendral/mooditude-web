@@ -117,16 +117,11 @@ export default function Assessment15() {
             <FormControl component="fieldset" error={formError} onChange={() => {setFormError(false)}}>
               
               <RadioGroup>
-                <FormControlLabel 
-                  value="0" 
-                  className={styles.with_text_wrap}
-                  control={<Radio checked={assessmentStep15Answer == 0} onChange={handleChange} />} 
-                  label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Not at all <div>Since you are under 18, get permission from your parents before using this app. </div>`}} />} />
-                
-                <FormControlLabel value="1" control={<Radio checked={assessmentStep15Answer == 1} onChange={handleChange} />} label="Rarely" />
-                <FormControlLabel value="2" control={<Radio checked={assessmentStep15Answer == 2} onChange={handleChange} />} label="Sometimes" />
-                <FormControlLabel value="3" control={<Radio checked={assessmentStep15Answer == 3} onChange={handleChange} />} label="Often" />
-                <FormControlLabel value="4" control={<Radio checked={assessmentStep15Answer == 4} onChange={handleChange} />} label="Most of the time" />
+                <FormControlLabel value="0" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep15Answer == 0} onChange={handleChange} />} label="Not at all" />
+                <FormControlLabel value="1" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep15Answer == 1} onChange={handleChange} />} label="Rarely" />
+                <FormControlLabel value="2" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep15Answer == 2} onChange={handleChange} />} label="Sometimes" />
+                <FormControlLabel value="3" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep15Answer == 3} onChange={handleChange} />} label="Often" />
+                <FormControlLabel value="4" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep15Answer == 4} onChange={handleChange} />} label="Most of the time" />
               </RadioGroup>
               {
                 formError ? 
@@ -154,6 +149,7 @@ export default function Assessment15() {
                 className={styles.onboarding_btn} 
                 variant="contained" 
                 onClick={handleNextStep} 
+                disabled={assessmentStep15Answer == '' || parseInt(assessmentStep15Answer) > 4 ? true : false} 
                 // onClick={() => {router.push(`/onboarding/2`)}}
               >
                 Next

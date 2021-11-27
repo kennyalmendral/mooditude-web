@@ -21,6 +21,7 @@ const theme = createTheme({
 
 function App({ Component, pageProps }) {  
   const [checkAuth, setCheckAuth] = React.useState(false);
+  const [checkMenuCollapse, setCheckMenuCollapse] = React.useState(false);
   const [pageLoader, setPageLoader] = React.useState(true);
   
   useEffect(() => {
@@ -34,8 +35,12 @@ function App({ Component, pageProps }) {
     })
   })
 
-  const removePageLoader = () => {
-    setPageLoader(false)
+  const removePageLoader = (status = false) => {
+    setPageLoader(status)
+  }
+
+  const menuCollapseHandler = (status = false) => {
+    setCheckMenuCollapse(status)
   }
 
   return (
@@ -45,8 +50,8 @@ function App({ Component, pageProps }) {
           pageLoader ? 
           <div className="page-loader"><GridLoader color={'#1CA566'} loading={pageLoader} size={10} /></div> : ''
         }
-        <div className={`body-wrapper ${checkAuth ? 'logged' : ''}`}>
-          { checkAuth ? <MainMenu /> : '' }
+        <div className={`body-wrapper ${checkAuth ? 'logged' : ''} ${checkMenuCollapse ? 'menu_collapsed' : ''}`}>
+          { checkAuth ? <MainMenu menuCollapseHandler={menuCollapseHandler} /> : '' }
           <Component 
             {...pageProps} 
             removePageLoader={removePageLoader}

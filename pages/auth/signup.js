@@ -184,7 +184,7 @@ export default function SignUp(props) {
 
   return (
     <Layout title={`Join ${SITE_NAME} | ${SITE_NAME}`}>
-      <div className={styles.container}>
+      <div className={`${styles.container} auth_page_wrapper`}>
         <div className={styles.authBg}></div>
 
         <div className={styles.authForm}>

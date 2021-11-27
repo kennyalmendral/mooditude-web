@@ -19,10 +19,10 @@ export default function MainMenu(props) {
     const collapseMenu = () => {
         
         if (width <= 767) {
-            console.log('asd')
             setOpen(open ? false : true)
         }else{
             setMainMenuCollapse(mainMenuCollapse ? false : true)
+            props.menuCollapseHandler(mainMenuCollapse ? true : false)
         }
     }
     return (

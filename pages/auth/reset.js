@@ -13,7 +13,8 @@ import TextField from '@mui/material/TextField';
 
 export default function ResetPassword(props) {
   const router = useRouter()
-
+  const specialChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+  const hasNumber = /\d/;  
   const [email, setEmail] = useState('')
   const [error, setError] = useState(null)
   const [isSending, setIsSending] = useState(false)
@@ -23,6 +24,50 @@ export default function ResetPassword(props) {
   const [confirmNewPassword, setConfirmNewPassword] = useState('')
 
   const { sendPasswordResetEmail } = useAuth()
+  const [isMinChar, setIsMinChar] = useState(false)
+  const [isOneDigit, setIsOneDigit] = useState(false)
+  const [isSpecialChar, setIsSpecialChar] = useState(false)
+  const [isMatch, setIsMatch] = useState(false)
+  const [btnDisabled, setBtnDisabled] = useState(true)
+
+
+  const checkPass = (p1 = '', p2 = '') => {
+    
+    p1 = p1 == '' ? newPassword : p1
+    p2 = p2 == '' ? confirmNewPassword : p2
+    if (p1.length >= 8) {
+      setIsMinChar(true)
+    }else{
+      setIsMinChar(false)
+    }
+
+    if (hasNumber.test(p1)) {
+      setIsOneDigit(true)
+    }else{
+      setIsOneDigit(false)
+    }
+
+    if (specialChars.test(p1)) {
+      setIsSpecialChar(true)
+    }else{
+      setIsSpecialChar(false)
+    }
+
+
+    if (p1.length > 1 && p1 == p2) {
+      setIsMatch(true)
+    }else{
+      setIsMatch(false)
+    }
+
+    if (p1.length >= 8 && hasNumber.test(p1) && specialChars.test(p1) && p1 == p2 ) {
+      setBtnDisabled(false)
+    }else{
+      setBtnDisabled(true)
+    }
+      
+  }
+
 
   useEffect(() => {
     setTimeout(() => {
@@ -34,7 +79,7 @@ export default function ResetPassword(props) {
 
   const handleResetPassword = e => {
     e.preventDefault()
-
+    setBtnDisabled(true)
     if (newPassword != confirmNewPassword) {
       setError('Your new password does not match.')
       return false
@@ -46,17 +91,19 @@ export default function ResetPassword(props) {
       .then(response => {
         setIsSending(false)
         setIsResetPasswordEmailSent(true)
+        checkPass()
       })
       .catch(error => {
         setIsSending(false)
         setIsResetPasswordEmailSent(false)
         setError(error.message)
+        checkPass()
       })
   }
 
   return (
     <Layout title={`Reset Password | ${SITE_NAME}`}>
-      <div className={styles.container}>
+      <div className={`${styles.container} auth_page_wrapper`}>
         <div className={styles.authBg}></div>
 
         <div className={styles.authForm}>
@@ -117,7 +164,7 @@ export default function ResetPassword(props) {
                         id="n_password" 
                         label="New Password" 
                         value={newPassword} 
-                        onChange={e => setNewPassword(e.target.value)} 
+                        onChange={e => {setNewPassword(e.target.value);checkPass(e.target.value, newPassword)}} 
                         required
                         fullWidth={true}
                         size={"small"}
@@ -144,7 +191,7 @@ export default function ResetPassword(props) {
                         id="c_n_password" 
                         label="Confirm New Password" 
                         value={confirmNewPassword} 
-                        onChange={e => setConfirmNewPassword(e.target.value)} 
+                        onChange={e => {setConfirmNewPassword(e.target.value);checkPass(e.target.value, confirmNewPassword)}} 
                         required
                         fullWidth={true}
                         size={"small"}
@@ -160,10 +207,49 @@ export default function ResetPassword(props) {
                       )}*/}
                     </div>
 
+                    {
+                      newPassword.length > 0 ? 
+
+                      <div className={styles.passwordChecker}>
+
+                        <FormGroup>
+                          <FormControlLabel 
+                            className={`${styles.privacyPolicyText} ${styles.privacyPolicyTextInput} grayCheck ${isMinChar ? 'grayIsChecked' : ''}`}
+                            control={<Checkbox  checked={isMinChar} onChange={checkPass} icon={<CheckCircleRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{color: '##A8B5C1', '&.Mui-checked': {color: '#F8E71C'}}} />} 
+                            label={"Minimum 8 characters long"}
+                          />
+
+                          <FormControlLabel 
+
+                            className={`${styles.privacyPolicyText} ${styles.privacyPolicyTextInput} grayCheck ${isOneDigit ? 'grayIsChecked' : ''}`}
+                            control={<Checkbox checked={isOneDigit} onChange={checkPass} icon={<CheckCircleRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{color: '##A8B5C1', '&.Mui-checked': {color: '#F8E71C'}}} />} 
+                            label={"1 Digit"}
+                          />
+
+                          <FormControlLabel
+
+                            className={`${styles.privacyPolicyText} ${styles.privacyPolicyTextInput} grayCheck ${isSpecialChar ? 'grayIsChecked' : ''}`}
+                            control={<Checkbox checked={isSpecialChar} onChange={checkPass} icon={<CheckCircleRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{color: '##A8B5C1', '&.Mui-checked': {color: '#F8E71C'}}} />} 
+                            label={"1 special character (%$#@!&*)"}
+                          />
+
+                          <FormControlLabel
+
+                            className={`${styles.privacyPolicyText} ${styles.privacyPolicyTextInput} grayCheck ${isMatch ? 'grayIsChecked' : ''}`}
+                            control={<Checkbox checked={isMatch} onChange={checkPass} icon={<CheckCircleRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{color: '##A8B5C1', '&.Mui-checked': {color: '#F8E71C'}}} />} 
+                            label={"Confirm password matches"}
+                          />
+
+                        </FormGroup>
+                        
+                      </div> : ''
+                    }
+
+
                     <div>
                       <button
                         type="submit" 
-                        disabled={isSending && true}
+                        disabled={btnDisabled}
                       >
                         {isSending && (
                           <>PLEASE WAIT</>

@@ -28,6 +28,7 @@ export default function AssessmentReport() {
 
   const { authUser, loading, signOut } = useAuth()
 
+  const [buyPremium, setBuyPremium] = useState(true)
   const [isReportVisible, setIsReportVisible] = useState(true)
   const [isScoresVisible, setIsScoresVisible] = useState(false)
   const [isDownloadVisible, setIsDownloadVisible] = useState(false)
@@ -110,6 +111,164 @@ export default function AssessmentReport() {
   }, [assessmentScores])
 
   useEffect(() => {
+    let assessmentAnswers = [
+      localStorage.getItem('assessmentStep1Answer'),
+      localStorage.getItem('assessmentStep2Answer'),
+      localStorage.getItem('assessmentStep3Answer'),
+      localStorage.getItem('assessmentStep4Answer'),
+      localStorage.getItem('assessmentStep5Answer'),
+      localStorage.getItem('assessmentStep6Answer'),
+      localStorage.getItem('assessmentStep7Answer'),
+      localStorage.getItem('assessmentStep8Answer'),
+      localStorage.getItem('assessmentStep9Answer'),
+      localStorage.getItem('assessmentStep10Answer'),
+      localStorage.getItem('assessmentStep11Answer'),
+      localStorage.getItem('assessmentStep12Answer'),
+      localStorage.getItem('assessmentStep13Answer'),
+      localStorage.getItem('assessmentStep14Answer'),
+      localStorage.getItem('assessmentStep15Answer'),
+      localStorage.getItem('assessmentStep16Answer'),
+      localStorage.getItem('assessmentStep17Answer'),
+      localStorage.getItem('assessmentStep18Answer'),
+      localStorage.getItem('assessmentStep19Answer'),
+      localStorage.getItem('assessmentStep20Answer'),
+      localStorage.getItem('assessmentStep21Answer'),
+      localStorage.getItem('assessmentStep23Answer'),
+      localStorage.getItem('assessmentStep24Answer'),
+      localStorage.getItem('assessmentStep25Answer'),
+      localStorage.getItem('assessmentStep26Answer'),
+      localStorage.getItem('assessmentStep28Answer'),
+      localStorage.getItem('assessmentStep29Answer'),
+      localStorage.getItem('assessmentStep30Answer'),
+      localStorage.getItem('assessmentStep31Answer')
+    ]
+
+    let assessmentTimes = [
+      localStorage.getItem('assessmentStep1Time'),
+      localStorage.getItem('assessmentStep2Time'),
+      localStorage.getItem('assessmentStep3Time'),
+      localStorage.getItem('assessmentStep4Time'),
+      localStorage.getItem('assessmentStep5Time'),
+      localStorage.getItem('assessmentStep6Time'),
+      localStorage.getItem('assessmentStep7Time'),
+      localStorage.getItem('assessmentStep8Time'),
+      localStorage.getItem('assessmentStep9Time'),
+      localStorage.getItem('assessmentStep10Time'),
+      localStorage.getItem('assessmentStep11Time'),
+      localStorage.getItem('assessmentStep12Time'),
+      localStorage.getItem('assessmentStep13Time'),
+      localStorage.getItem('assessmentStep14Time'),
+      localStorage.getItem('assessmentStep15Time'),
+      localStorage.getItem('assessmentStep16Time'),
+      localStorage.getItem('assessmentStep17Time'),
+      localStorage.getItem('assessmentStep18Time'),
+      localStorage.getItem('assessmentStep19Time'),
+      localStorage.getItem('assessmentStep20Time'),
+      localStorage.getItem('assessmentStep21Time'),
+      localStorage.getItem('assessmentStep23Time'),
+      localStorage.getItem('assessmentStep24Time'),
+      localStorage.getItem('assessmentStep25Time'),
+      localStorage.getItem('assessmentStep26Time'),
+      localStorage.getItem('assessmentStep28Time'),
+      localStorage.getItem('assessmentStep29Time'),
+      localStorage.getItem('assessmentStep30Time'),
+      localStorage.getItem('assessmentStep31Time')
+    ]
+
+    firebaseAuth.onAuthStateChanged(user => {
+      if (user) {
+        let epochMilliseconds = new Date().getTime().toString()
+
+        firebaseStore
+          .collection('M3Assessment')
+          .doc(user.uid)
+          .collection('scores')
+          .doc(epochMilliseconds)
+          .set({
+            id: epochMilliseconds,
+            createDate: new Date(),
+            rawData: assessmentAnswers.join(','),
+            rawTimeToAnswer: assessmentTimes.join(','),
+            allScore: 0,
+            bipolarScore: 0,
+            depressionScore: 0,
+            gadScore: 0,
+            gatewayScore: 0,
+            ocdScore: 0,
+            panicScore: 0,
+            socialAnxietyScore: 0,
+            ptsdScore: 0,
+            pdfDoc: null,
+          })
+          .then(response => {
+            localStorage.removeItem('assessmentStep1Answer')
+            localStorage.removeItem('assessmentStep2Answer')
+            localStorage.removeItem('assessmentStep3Answer')
+            localStorage.removeItem('assessmentStep4Answer')
+            localStorage.removeItem('assessmentStep5Answer')
+            localStorage.removeItem('assessmentStep6Answer')
+            localStorage.removeItem('assessmentStep7Answer')
+            localStorage.removeItem('assessmentStep8Answer')
+            localStorage.removeItem('assessmentStep9Answer')
+            localStorage.removeItem('assessmentStep10Answer')
+            localStorage.removeItem('assessmentStep11Answer')
+            localStorage.removeItem('assessmentStep12Answer')
+            localStorage.removeItem('assessmentStep13Answer')
+            localStorage.removeItem('assessmentStep14Answer')
+            localStorage.removeItem('assessmentStep15Answer')
+            localStorage.removeItem('assessmentStep16Answer')
+            localStorage.removeItem('assessmentStep17Answer')
+            localStorage.removeItem('assessmentStep18Answer')
+            localStorage.removeItem('assessmentStep19Answer')
+            localStorage.removeItem('assessmentStep20Answer')
+            localStorage.removeItem('assessmentStep21Answer')
+            localStorage.removeItem('assessmentStep23Answer')
+            localStorage.removeItem('assessmentStep24Answer')
+            localStorage.removeItem('assessmentStep25Answer')
+            localStorage.removeItem('assessmentStep26Answer')
+            localStorage.removeItem('assessmentStep28Answer')
+            localStorage.removeItem('assessmentStep29Answer')
+            localStorage.removeItem('assessmentStep30Answer')
+            localStorage.removeItem('assessmentStep31Answer')
+
+            localStorage.removeItem('assessmentStep1Time')
+            localStorage.removeItem('assessmentStep2Time')
+            localStorage.removeItem('assessmentStep3Time')
+            localStorage.removeItem('assessmentStep4Time')
+            localStorage.removeItem('assessmentStep5Time')
+            localStorage.removeItem('assessmentStep6Time')
+            localStorage.removeItem('assessmentStep7Time')
+            localStorage.removeItem('assessmentStep8Time')
+            localStorage.removeItem('assessmentStep9Time')
+            localStorage.removeItem('assessmentStep10Time')
+            localStorage.removeItem('assessmentStep11Time')
+            localStorage.removeItem('assessmentStep12Time')
+            localStorage.removeItem('assessmentStep13Time')
+            localStorage.removeItem('assessmentStep14Time')
+            localStorage.removeItem('assessmentStep15Time')
+            localStorage.removeItem('assessmentStep16Time')
+            localStorage.removeItem('assessmentStep17Time')
+            localStorage.removeItem('assessmentStep18Time')
+            localStorage.removeItem('assessmentStep19Time')
+            localStorage.removeItem('assessmentStep20Time')
+            localStorage.removeItem('assessmentStep21Time')
+            localStorage.removeItem('assessmentStep23Time')
+            localStorage.removeItem('assessmentStep24Time')
+            localStorage.removeItem('assessmentStep25Time')
+            localStorage.removeItem('assessmentStep26Time')
+            localStorage.removeItem('assessmentStep28Time')
+            localStorage.removeItem('assessmentStep29Time')
+            localStorage.removeItem('assessmentStep30Time')
+            localStorage.removeItem('assessmentStep31Time')
+
+            router.push('/assessment/report')
+          })
+          .catch(error => {
+            console.log('error:', error)
+          })
+      }
+    })
+
     firebaseAuth.onAuthStateChanged(user => {
       if (user) {
         firebaseDatabase
@@ -165,7 +324,7 @@ export default function AssessmentReport() {
   }, [])
 
   useEffect(() => {
-    console.log(mostOfTheTimeAnswerCount) 
+    
   }, [mostOfTheTimeAnswerCount])
 
   return (
@@ -296,121 +455,125 @@ export default function AssessmentReport() {
                         )}
                       </div>
                       
-                      {customerType == 'free' && (
-                        <>
-                          <div className={styles.bold_text_wrap}
-                            style={{
-                              background: '#F3F4F6',
-                              padding: '22px 18px 32px',
-                              borderRadius: '8px',
-                              marginBottom: '70px',
-                              filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))'
-                            }}
-                          >
-                            <div>
-                              <img src="/crown.svg" />
-                            </div>
-
-                            <p style={{ fontSize: '16px', fontWeight: 'normal' }}>Buy Mooditude Premium to get your complete report showing your mental health risks and recommendations to overcome those risks.</p>
-
-                            <p style={{ fontSize: '16px', fontWeight: 'normal' }}>Your purchase includes:</p>
-
-                            <ul style={{
-                              fontFamily: 'Circular STD',
-                              fontWeight: 'normal',
-                              color: '#072B4F',
-                              listStyle: 'none',
-                              paddingLeft: '0'
-                            }}>
-                              <li style={{ 
-                                marginBottom: '18px',
-                                position: 'relative',
-                                paddingLeft: '40px'
-                              }}>
-                                <img 
-                                  src="/check.svg" 
-                                  style={{
-                                    position: 'absolute',
-                                    top: '0',
-                                    left: '0'
-                                  }}
-                                />
-                                Unlimited quiz so you can track your progress over time
-                              </li>
-
-                              <li style={{ 
-                                marginBottom: '18px',
-                                position: 'relative',
-                                paddingLeft: '40px'
-                              }}>
-                                <img 
-                                  src="/check.svg" 
-                                  style={{
-                                    position: 'absolute',
-                                    top: '0',
-                                    left: '0'
-                                  }}
-                                />
-                                Access to 800+ minutes of self-care activities, and
-                              </li>
-
-                              <li style={{ 
-                                marginBottom: '18px',
-                                position: 'relative',
-                                paddingLeft: '40px'
-                              }}>
-                                <img 
-                                  src="/check.svg" 
-                                  style={{
-                                    position: 'absolute',
-                                    top: '0',
-                                    left: '0'
-                                  }}
-                                /> Goal Settings and Habit building features
-                              </li>
-                            </ul>
-
-                            <Button 
-                              size="large" 
-                              className={styles.report_btn} 
-                              variant="contained" 
+                      
+                        {customerType == 'free' && (
+                          <>
+                            { buyPremium ? 
+                            <div className={styles.bold_text_wrap}
                               style={{
-                                marginBottom: '15px',
-                                fontSize: '14px',
-                                fontWeight: '300',
-                                fontFamily: 'Circular STD'
-                              }} 
+                                background: '#F3F4F6',
+                                padding: '22px 18px 32px',
+                                borderRadius: '8px',
+                                marginBottom: '70px',
+                                filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))'
+                              }}
                             >
-                              BUY MOODITUDE PREMIUM
-                            </Button>
-                            
-                            <div>
-                              <Link href="#">
-                                <a style={{
+                              <div>
+                                <img src="/crown.svg" />
+                              </div>
+
+                              <p style={{ fontSize: '16px', fontWeight: 'normal' }}>Buy Mooditude Premium to get your complete report showing your mental health risks and recommendations to overcome those risks.</p>
+
+                              <p style={{ fontSize: '16px', fontWeight: 'normal' }}>Your purchase includes:</p>
+
+                              <ul style={{
+                                fontFamily: 'Circular STD',
+                                fontWeight: 'normal',
+                                color: '#072B4F',
+                                listStyle: 'none',
+                                paddingLeft: '0'
+                              }}>
+                                <li style={{ 
+                                  marginBottom: '18px',
+                                  position: 'relative',
+                                  paddingLeft: '40px'
+                                }}>
+                                  <img 
+                                    src="/check.svg" 
+                                    style={{
+                                      position: 'absolute',
+                                      top: '0',
+                                      left: '0'
+                                    }}
+                                  />
+                                  Unlimited quiz so you can track your progress over time
+                                </li>
+
+                                <li style={{ 
+                                  marginBottom: '18px',
+                                  position: 'relative',
+                                  paddingLeft: '40px'
+                                }}>
+                                  <img 
+                                    src="/check.svg" 
+                                    style={{
+                                      position: 'absolute',
+                                      top: '0',
+                                      left: '0'
+                                    }}
+                                  />
+                                  Access to 800+ minutes of self-care activities, and
+                                </li>
+
+                                <li style={{ 
+                                  marginBottom: '18px',
+                                  position: 'relative',
+                                  paddingLeft: '40px'
+                                }}>
+                                  <img 
+                                    src="/check.svg" 
+                                    style={{
+                                      position: 'absolute',
+                                      top: '0',
+                                      left: '0'
+                                    }}
+                                  /> Goal Settings and Habit building features
+                                </li>
+                              </ul>
+
+                              <Button 
+                                size="large" 
+                                className={styles.report_btn} 
+                                variant="contained" 
+                                style={{
+                                  marginBottom: '15px',
                                   fontSize: '14px',
                                   fontWeight: '300',
                                   fontFamily: 'Circular STD'
-                                }}>NO THANKS</a>
-                              </Link>
+                                }} 
+                              >
+                                BUY MOODITUDE PREMIUM
+                              </Button>
+                              
+                              <div>
+                                <Link href="#" >
+                                  <a onClick={e => {e.preventDefault();setBuyPremium(false)}} style={{
+                                    fontSize: '14px',
+                                    fontWeight: '300',
+                                    fontFamily: 'Circular STD'
+                                  }}>NO THANKS</a>
+                                </Link>
+                              </div>
                             </div>
-                          </div>
+                             : '' }
+                            <div className={styles.download_app_wrap}>
+                              <h4>Download</h4>
+                              <p>For the full experience download Mooditude’s mobile app and login with your credentials. </p>
 
-                          <div className={styles.download_app_wrap}>
-                            <h4>Download</h4>
-                            <p>For the full experience download Mooditude’s mobile app and login with your credentials. </p>
+                              <div className={styles.app_btns}>
+                                <a href="#">
+                                  <img src="/Apple.png" alt="" />
+                                </a>  
 
-                            <div className={styles.app_btns}>
-                              <a href="#">
-                                <img src="/Apple.png" alt="" />
-                              </a>  
-
-                              <a href="#">
-                                <img src="/Android.png" alt="" />
-                              </a>  
+                                <a href="#">
+                                  <img src="/Android.png" alt="" />
+                                </a>  
+                              </div>
                             </div>
-                          </div>
-                        </>
-                      )}
+                          </>
+                        )}
+                      
+                      
 
                       {customerType == 'premium' && (
                         <>

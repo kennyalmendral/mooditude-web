@@ -43,7 +43,7 @@ export default function Assessment9() {
   const [timer, setTimer] = useState(null)
 
   useEffect(() => {
-    if (!loading && !authUser) { 
+    if (!loading && !authUser) {
       router.push('/auth/login')
     }
   }, [authUser, loading, router])
@@ -82,7 +82,7 @@ export default function Assessment9() {
 
     if (assessmentStep9Answer !== '') {
       localStorage.setItem('assessmentStep9Answer', parseInt(assessmentStep9Answer))
-      
+
       router.push('/assessment/10')
     } else {
       setFormError(true)
@@ -108,28 +108,23 @@ export default function Assessment9() {
           <Animation direction="right" in={true} timeout={1000}>
             <div>
               <p className={styles.top_sub_title}>Over the past two weeks...</p>
-              <h1 className={`mt_0`}>I have been eating more</h1>  
+              <h1 className={`mt_0`}>I have been eating more</h1>
             </div>
           </Animation>
-          
+
           <div className={styles.form_wrap}>
             <Animation direction="right" in={true} timeout={1000}>
             <FormControl component="fieldset" error={formError} onChange={() => {setFormError(false)}}>
-              
+
               <RadioGroup>
-                <FormControlLabel 
-                  value="0" 
-                  className={styles.with_text_wrap}
-                  control={<Radio checked={assessmentStep9Answer == 0} onChange={handleChange} />} 
-                  label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Not at all <div>Since you are under 18, get permission from your parents before using this app. </div>`}} />} />
-                
-                <FormControlLabel value="1" control={<Radio checked={assessmentStep9Answer == 1} onChange={handleChange} />} label="Rarely" />
-                <FormControlLabel value="2" control={<Radio checked={assessmentStep9Answer == 2} onChange={handleChange} />} label="Sometimes" />
-                <FormControlLabel value="3" control={<Radio checked={assessmentStep9Answer == 3} onChange={handleChange} />} label="Often" />
-                <FormControlLabel value="4" control={<Radio checked={assessmentStep9Answer == 4} onChange={handleChange} />} label="Most of the time" />
+                <FormControlLabel value="0" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep9Answer == 0} onChange={handleChange} />} label="Not at all" />
+                <FormControlLabel value="1" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep9Answer == 1} onChange={handleChange} />} label="Rarely" />
+                <FormControlLabel value="2" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep9Answer == 2} onChange={handleChange} />} label="Sometimes" />
+                <FormControlLabel value="3" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep9Answer == 3} onChange={handleChange} />} label="Often" />
+                <FormControlLabel value="4" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep9Answer == 4} onChange={handleChange} />} label="Most of the time" />
               </RadioGroup>
               {
-                formError ? 
+                formError ?
                 <FormHelperText>Please choose an answer.</FormHelperText> : ''
               }
 
@@ -139,22 +134,22 @@ export default function Assessment9() {
 
           <div className={styles.btn_wrap}>
             <Stack direction="row" spacing={2}>
-              <Button 
-                size="large" 
+              <Button
+                size="large"
                 color="secondary"
-                variant="outlined" 
-                // onClick={handlePrevStep} 
+                variant="outlined"
+                // onClick={handlePrevStep}
                 onClick={() => router.push('/assessment/8')}
               >
                 Back
               </Button>
 
-              <Button 
-                size="large" 
-                className={styles.onboarding_btn} 
-                variant="contained" 
-                onClick={handleNextStep} 
-                // onClick={() => {router.push(`/onboarding/2`)}}
+              <Button
+                size="large"
+                className={styles.onboarding_btn}
+                variant="contained"
+                onClick={handleNextStep}
+                disabled={assessmentStep9Answer == '' || parseInt(assessmentStep9Answer) > 4 ? true : false} 
               >
                 Next
               </Button>

@@ -34,12 +34,12 @@
   font-size: 14px;
 }
 
-.authForm input[type="text"],
+/*.authForm input[type="text"],
 .authForm input[type="email"], 
 .authForm input[type="password"] {
   color: #072B4F;
 }
-
+*/
 .authForm a,
 .link {
   color: #1CA566;
@@ -102,10 +102,10 @@
   width: 100%;
 }
 */
-.authForm .field input.hasError {
+/*.authForm .field input.hasError {
   border: 1px solid #D6443F;
 }
-
+*/
 .authForm button {
   margin-top: 20px;
   margin-bottom: 15px;
@@ -207,6 +207,21 @@
   user-select: none!important;
 }
 
+.privacyPolicyLabel div{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  /* identical to box height */
+
+
+  /* Primary */
+
+  color: #072B4F;
+
+}
+
 
 /*Responsive*/
 
@@ -224,4 +239,6 @@
     width: 100%;
   }
 }
+
+
 

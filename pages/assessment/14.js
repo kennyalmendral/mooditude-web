@@ -51,16 +51,16 @@ export default function Assessment14() {
   useEffect(() => {
     if (localStorage.getItem('currentAssessmentStep') !== null) {
       localStorage.setItem('currentAssessmentStep', 14)
-
-      console.log(`Current assessment step: ${localStorage.getItem('currentAssessmentStep')}`)
     }
 
     if (localStorage.getItem('assessmentStep14Answer') > 0) {
       setAssessmentStep14Answer(localStorage.getItem('assessmentStep14Answer'))
     }
-
+    console.log(typeof assessmentStep14Answer)
+    if (assessmentStep14Answer == '' || assessmentStep14Answer == null || assessmentStep14Answer == undefined) {
+      console.log('asd')
+    }
     setTimer(setInterval(() => {
-      console.log(`Time to answer: ${assessmentStep14Time}`)
       setAssessmentStep14Time(assessmentStep14Time++)
     }, 1000))
   }, [])
@@ -72,8 +72,6 @@ export default function Assessment14() {
   const handleChange = (e) => {
     clearInterval(timer)
     localStorage.setItem('assessmentStep14Time', assessmentStep14Time)
-    console.log(`Timer cleared at ${assessmentStep14Time} second(s)`)
-
     setAssessmentStep14Answer(e.target.value)
   }
 
@@ -117,16 +115,11 @@ export default function Assessment14() {
             <FormControl component="fieldset" error={formError} onChange={() => {setFormError(false)}}>
               
               <RadioGroup>
-                <FormControlLabel 
-                  value="0" 
-                  className={styles.with_text_wrap}
-                  control={<Radio checked={assessmentStep14Answer == 0} onChange={handleChange} />} 
-                  label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Not at all <div>Since you are under 18, get permission from your parents before using this app. </div>`}} />} />
-                
-                <FormControlLabel value="1" control={<Radio checked={assessmentStep14Answer == 1} onChange={handleChange} />} label="Rarely" />
-                <FormControlLabel value="2" control={<Radio checked={assessmentStep14Answer == 2} onChange={handleChange} />} label="Sometimes" />
-                <FormControlLabel value="3" control={<Radio checked={assessmentStep14Answer == 3} onChange={handleChange} />} label="Often" />
-                <FormControlLabel value="4" control={<Radio checked={assessmentStep14Answer == 4} onChange={handleChange} />} label="Most of the time" />
+                <FormControlLabel value="0" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep14Answer == 0} onChange={handleChange} />} label="Not at all" />
+                <FormControlLabel value="1" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep14Answer == 1} onChange={handleChange} />} label="Rarely" />
+                <FormControlLabel value="2" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep14Answer == 2} onChange={handleChange} />} label="Sometimes" />
+                <FormControlLabel value="3" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep14Answer == 3} onChange={handleChange} />} label="Often" />
+                <FormControlLabel value="4" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={assessmentStep14Answer == 4} onChange={handleChange} />} label="Most of the time" />
               </RadioGroup>
               {
                 formError ? 
@@ -154,7 +147,8 @@ export default function Assessment14() {
                 className={styles.onboarding_btn} 
                 variant="contained" 
                 onClick={handleNextStep} 
-                // onClick={() => {router.push(`/onboarding/2`)}}
+                disabled={assessmentStep14Answer == '' || parseInt(assessmentStep14Answer) > 4 ? true : false} 
+                
               >
                 Next
               </Button>

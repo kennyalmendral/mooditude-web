@@ -29,7 +29,7 @@
 }
 
 .onboarding_wrapper p{
-	font-family: 'Circular Std Book';
+	font-family: 'Circular Std';
 	font-style: normal;
 	font-weight: normal;
 	font-size: 14px;
@@ -64,7 +64,7 @@
 	font-size: 24px;
 	line-height: 30px;
 	margin-bottom: 0;
-	/* Secondary */	
+	/* Secondary */
 
 	color: #516B84;
 }
@@ -75,10 +75,8 @@
 	font-weight: normal;
 	font-size: 14px;
 	line-height: 18px;
-	/* identical to box height */
-
 	margin-top: 5px;
-	margin-bottom: 24px;
+	margin-bottom: 25px;
 	/* Secondary */
 
 	color: #516B84;
@@ -261,6 +259,18 @@
 	margin-top: 30px;
 	color: #072B4F;
 
+}
+
+.custom_stepper_wrapper > div > div > div{
+	left: calc(-100% + 20px);;
+}
+
+.custom_stepper_wrapper > div > div > span{
+	align-items: flex-start;
+}
+
+.custom_stepper_wrapper > div > div{
+	padding-left: 0;
 }
 
 @media(min-width: 1025px) and (max-width: 1500px){
