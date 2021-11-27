@@ -26,7 +26,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import FormHelperText from '@mui/material/FormHelperText';
-
+import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import Grow from '@mui/material/Fade';
 
 export default function Onboarding2() {
@@ -97,11 +98,11 @@ export default function Onboarding2() {
               <FormControl component="fieldset" error={formError} onChange={() => {setFormError(false)}}>
                 
                 <RadioGroup >
-                  <FormControlLabel value="1" control={<Radio checked={profileStep2Answer == 1} onChange={(event) => setProfileStep2Answer(event.target.value)} />} label="Male" />
-                  <FormControlLabel value="2" control={<Radio checked={profileStep2Answer == 2} onChange={(event) => setProfileStep2Answer(event.target.value)} />} label="Female" />
-                  <FormControlLabel value="3" control={<Radio checked={profileStep2Answer == 3} onChange={(event) => setProfileStep2Answer(event.target.value)} />} label="Transgender" />
-                  <FormControlLabel value="4" control={<Radio checked={profileStep2Answer == 4} onChange={(event) => setProfileStep2Answer(event.target.value)} />} label="Non-binary" />
-                  <FormControlLabel value="5" control={<Radio checked={profileStep2Answer == 5} onChange={(event) => setProfileStep2Answer(event.target.value)} />} label="Other" />
+                  <FormControlLabel value="1" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep2Answer == 1} onChange={(event) => setProfileStep2Answer(event.target.value)} />} label="Male" />
+                  <FormControlLabel value="2" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep2Answer == 2} onChange={(event) => setProfileStep2Answer(event.target.value)} />} label="Female" />
+                  <FormControlLabel value="3" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep2Answer == 3} onChange={(event) => setProfileStep2Answer(event.target.value)} />} label="Transgender" />
+                  <FormControlLabel value="4" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep2Answer == 4} onChange={(event) => setProfileStep2Answer(event.target.value)} />} label="Non-binary" />
+                  <FormControlLabel value="5" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep2Answer == 5} onChange={(event) => setProfileStep2Answer(event.target.value)} />} label="Other" />
                 </RadioGroup>
 
                 {

@@ -11,14 +11,21 @@ import { SITE_NAME } from '@/config/index'
 import { useAuth } from '@/context/AuthUserContext'
 
 import Firebase from 'lib/Firebase'
+import TextField from '@mui/material/TextField';
+import Checkbox from '@mui/material/Checkbox';
+import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
 
-export default function SignUp() {
+export default function SignUp(props) {
   const router = useRouter()
-
+  const specialChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+  const hasNumber = /\d/;  
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -26,12 +33,55 @@ export default function SignUp() {
   const [isPrivacyPolicyChecked, setIsPrivacyPolicyChecked] = useState(false)
   const [error, setError] = useState(null)
   const [isSigningUp, setIsSigningUp] = useState(false)
+  const [isMinChar, setIsMinChar] = useState(false)
+  const [isOneDigit, setIsOneDigit] = useState(false)
+  const [isSpecialChar, setIsSpecialChar] = useState(false)
+  const [isMatch, setIsMatch] = useState(false)
+  const [btnDisabled, setBtnDisabled] = useState(true)
+
 
   const { createUserWithEmailAndPassword } = useAuth()
 
+  const checkPass = (p1 = '', p2 = '', policy = false) => {
+    
+    p1 = p1 == '' ? password : p1
+    p2 = p2 == '' ? passwordConfirmation : p2
+    if (p1.length >= 8) {
+      setIsMinChar(true)
+    }else{
+      setIsMinChar(false)
+    }
+
+    if (hasNumber.test(p1)) {
+      setIsOneDigit(true)
+    }else{
+      setIsOneDigit(false)
+    }
+
+    if (specialChars.test(p1)) {
+      setIsSpecialChar(true)
+    }else{
+      setIsSpecialChar(false)
+    }
+
+
+    if (p1.length > 1 && p1 == p2) {
+      setIsMatch(true)
+    }else{
+      setIsMatch(false)
+    }
+
+    if (p1.length >= 8 && hasNumber.test(p1) && specialChars.test(p1) && p1 == p2 && policy ) {
+      setBtnDisabled(false)
+    }else{
+      setBtnDisabled(true)
+    }
+      
+  }
+
   const handleSignUp = e => {
     e.preventDefault()
-
+    setBtnDisabled(true)
     setIsSigningUp(true)
     setError(null)
 
@@ -42,8 +92,6 @@ export default function SignUp() {
           
           firebaseAuth.onAuthStateChanged(user => {
             if (user) {
-              const serverTimeStamp = Firebase.firestore.Timestamp.fromDate(new Date())
-
               firebaseStore
                 .collection('Users')
                 .doc(user.uid)
@@ -69,7 +117,7 @@ export default function SignUp() {
                   photo: '',
                   topGoal: '',
                   topChallenges: '',
-                  memberSince: serverTimeStamp.seconds,
+                  memberSince: new Date().getTime(),
                   committedToSelfhelp: false,
                   activatedReminderAtStartup: false,
                   knowCbt: false,
@@ -96,6 +144,20 @@ export default function SignUp() {
                   lastAssessmentScore: null,
                   lastAssessmentDate: null
                 })
+
+              if (
+                (localStorage.getItem('currentProfileStep') !== null) || 
+                (localStorage.getItem('currentProfileStep') !== '')
+              ) {
+                localStorage.removeItem('currentProfileStep')
+              }
+
+              if (
+                (localStorage.getItem('currentAssessmentStep') !== null) || 
+                (localStorage.getItem('currentAssessmentStep') !== '')
+              ) {
+                localStorage.removeItem('currentAssessmentStep')
+              }
             }
           })
           
@@ -103,13 +165,22 @@ export default function SignUp() {
         })
         .catch(error => {
           setIsSigningUp(false)
+          checkPass(password, passwordConfirmation, isPrivacyPolicyChecked)
           setError(error.message)
         })
     } else {
       setError('Passwords do not match.')
       setIsSigningUp(false)
+      checkPass(password, passwordConfirmation, isPrivacyPolicyChecked)
     }
   }
+
+  useEffect(() => {
+    setTimeout(() => {
+      props.removePageLoader()
+    },300)
+    
+  }, [])
 
   return (
     <Layout title={`Join ${SITE_NAME} | ${SITE_NAME}`}>
@@ -119,7 +190,7 @@ export default function SignUp() {
         <div className={styles.authForm}>
           <div className={styles.authFormInner}>
             <img  
-              src="/mooditude-logo.png" 
+              src="/logo_svg.svg" 
               width="113" 
               height="113" 
               alt="Mooditude"
@@ -149,74 +220,141 @@ export default function SignUp() {
                 </div>
 
                 <div className={styles.field}>
-                  <input 
+
+                  <TextField 
+                    label="Name" 
+                    variant="outlined" 
                     type="text" 
                     id="name" 
-                    placeholder="Name" 
                     value={name} 
                     onChange={e => setName(e.target.value)} 
                     required
+                    fullWidth={true}
+                    size={"small"}
+                    autoComplete="new-password"
                   />
+
                 </div>
 
                 <div className={styles.field}>
-                  <input 
+
+                  <TextField 
+                    label="Email address" 
+                    variant="outlined" 
                     type="email" 
                     id="email" 
-                    placeholder="Email address" 
                     value={email} 
                     onChange={e => setEmail(e.target.value)} 
                     required
+                    fullWidth={true}
+                    size={"small"}
+                    autoComplete="new-password"
+                    
                   />
+                  
                 </div>
 
                 <div className={styles.field}>
-                  <input 
+                  <TextField 
+                    label="Password" 
+                    variant="outlined" 
                     type="password" 
                     id="password" 
-                    placeholder="Password" 
+                    autoComplete="new-password"
                     value={password} 
-                    onChange={e => setPassword(e.target.value)} 
+                    onChange={e => {setPassword(e.target.value);checkPass(e.target.value, passwordConfirmation, isPrivacyPolicyChecked)}} 
                     required
+                    fullWidth={true}
+                    size={"small"}
                   />
+   
                 </div>
 
-                <div className={styles.passwordNotice}>
-                  Password should be 8 characters long and include a capital letter, a number, and a special character.
-                </div>
+          
 
                 <div className={styles.field}>
-                  <input 
+                  <TextField 
+                    label="Confirm Password" 
+                    variant="outlined" 
                     type="password" 
                     id="password-confirmation" 
-                    placeholder="Confirm Password" 
                     value={passwordConfirmation} 
-                    onChange={e => setPasswordConfirmation(e.target.value)} 
+
+                    onChange={e => {setPasswordConfirmation(e.target.value);checkPass(password, e.target.value, isPrivacyPolicyChecked)}} 
                     required
+                    fullWidth={true}
+                    size={"small"}
+                    autoComplete="new-password"
                   />
+                  
                 </div>
 
                 <div className={styles.privacyPolicy}>
-                  <input 
-                    type="checkbox" 
-                    id="privacy-policy" 
-                    checked={isPrivacyPolicyChecked} 
-                    onChange={e => setIsPrivacyPolicyChecked(!isPrivacyPolicyChecked)}
-                  />
-                  
-                  <label htmlFor="privacy-policy">
-                    I agree with the
-                    {' '}
-                    <Link href="#">
-                      <a>Terms &amp; Privacy Policy</a>
-                    </Link>
-                  </label>
+
+                  <FormGroup>
+                    <FormControlLabel 
+
+                      control={<Checkbox 
+                          className={`${styles.privacyPolicyLabel} no_bg`}
+                          type="checkbox" 
+                          id="privacy-policy" 
+                          checked={isPrivacyPolicyChecked} 
+                          onChange={e => {setIsPrivacyPolicyChecked(e.target.checked);checkPass(password, passwordConfirmation, e.target.checked)}}
+                        />} 
+                      label={<div className={styles.privacyPolicyText} dangerouslySetInnerHTML={{__html: `I agree with the
+                      <Link href="#">
+                        <a>Terms &amp; Privacy Policy</a>
+                      </Link>`}} />}
+
+                    />
+                  </FormGroup>
+              
                 </div>
+
+                {
+                  password.length > 0 ? 
+
+                  <div className={styles.passwordChecker}>
+
+                    <FormGroup>
+                      <FormControlLabel 
+                        className={`${styles.privacyPolicyText} ${styles.privacyPolicyTextInput} grayCheck ${isMinChar ? 'grayIsChecked' : ''}`}
+                        control={<Checkbox  checked={isMinChar} onChange={checkPass} icon={<CheckCircleRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{color: '##A8B5C1', '&.Mui-checked': {color: '#F8E71C'}}} />} 
+                        label={"Minimum 8 characters long"}
+                      />
+
+                      <FormControlLabel 
+
+                        className={`${styles.privacyPolicyText} ${styles.privacyPolicyTextInput} grayCheck ${isOneDigit ? 'grayIsChecked' : ''}`}
+                        control={<Checkbox checked={isOneDigit} onChange={checkPass} icon={<CheckCircleRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{color: '##A8B5C1', '&.Mui-checked': {color: '#F8E71C'}}} />} 
+                        label={"1 Digit"}
+                      />
+
+                      <FormControlLabel
+
+                        className={`${styles.privacyPolicyText} ${styles.privacyPolicyTextInput} grayCheck ${isSpecialChar ? 'grayIsChecked' : ''}`}
+                        control={<Checkbox checked={isSpecialChar} onChange={checkPass} icon={<CheckCircleRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{color: '##A8B5C1', '&.Mui-checked': {color: '#F8E71C'}}} />} 
+                        label={"1 special character (%$#@!&*)"}
+                      />
+
+                      <FormControlLabel
+
+                        className={`${styles.privacyPolicyText} ${styles.privacyPolicyTextInput} grayCheck ${isMatch ? 'grayIsChecked' : ''}`}
+                        control={<Checkbox checked={isMatch} onChange={checkPass} icon={<CheckCircleRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{color: '##A8B5C1', '&.Mui-checked': {color: '#F8E71C'}}} />} 
+                        label={"Confirm password matches"}
+                      />
+
+                    </FormGroup>
+                    
+                  </div> : ''
+                }
+
+                
 
                 <div>
                   <button 
                     type="submit" 
-                    disabled={!isPrivacyPolicyChecked || isSigningUp && true}
+                    disabled={btnDisabled}
                   >
                     {isSigningUp && (
                       <>PLEASE WAIT</>

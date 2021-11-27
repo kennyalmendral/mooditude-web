@@ -9,8 +9,9 @@ import Layout from '@/components/Layout'
 import { SITE_NAME } from '@/config/index'
 
 import { useAuth } from '@/context/AuthUserContext'
+import TextField from '@mui/material/TextField';
 
-export default function ResetPassword() {
+export default function ResetPassword(props) {
   const router = useRouter()
 
   const [email, setEmail] = useState('')
@@ -19,6 +20,14 @@ export default function ResetPassword() {
   const [isResetPasswordEmailSent, setIsResetPasswordEmailSent] = useState(false)
 
   const { sendPasswordResetEmail } = useAuth()
+
+  useEffect(() => {
+    setTimeout(() => {
+      props.removePageLoader()
+    },300)
+    
+  }, [])
+
 
   const handleResetPassword = e => {
     e.preventDefault()
@@ -69,21 +78,28 @@ export default function ResetPassword() {
                       className={styles.field} 
                       style={{ marginBottom: '12px' }}
                     >
-                      <input 
+                      <TextField 
+                        label="Email address" 
+                        variant="outlined" 
                         type="email" 
                         id="email" 
                         className={error && styles.hasError} 
                         placeholder="Email address" 
                         value={email} 
                         onChange={e => setEmail(e.target.value)} 
-                        // required
+                        fullWidth={true}
+                        size={"small"}
+                        error={error}
+                        helperText={error ? error : ''}
+                        
                       />
 
-                      {error && (
+
+                      {/*{error && (
                         <div className={styles.error}>
                           {error && <span>{error}</span>}
                         </div>
-                      )}
+                      )}*/}
                     </div>
 
                     <div>

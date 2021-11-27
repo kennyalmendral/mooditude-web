@@ -27,7 +27,8 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grow from '@mui/material/Fade';
-
+import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import Firebase from 'lib/Firebase'
 
 const firebaseAuth = Firebase.auth()
@@ -84,8 +85,16 @@ export default function Onboarding7() {
               goingToTherapy: localStorage.profileStep5Answer || false,
               knowCbt: localStorage.profileStep6Answer || false,
               committedToSelfhelp: localStorage.profileStep7Answer || false,
-              onboardingStep: 1 || 0
+              onboardingStep: 1
             })
+
+          localStorage.removeItem('profileStep1Answer')
+          localStorage.removeItem('profileStep2Answer')
+          localStorage.removeItem('profileStep3Answer')
+          localStorage.removeItem('profileStep4Answer')
+          localStorage.removeItem('profileStep5Answer')
+          localStorage.removeItem('profileStep6Answer')
+          localStorage.removeItem('profileStep7Answer')
   
           router.push('/onboarding/finish')
         }
@@ -126,14 +135,14 @@ export default function Onboarding7() {
                   <FormControlLabel 
                     value={true}  
                     className={styles.with_text_wrap}
-                    control={<Radio checked={profileStep7Answer == 'true'} onChange={(event) => setProfileStep7Answer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep7Answer == 'true'} onChange={(event) => setProfileStep7Answer(event.target.value)} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Let’s do this! <div>Great! Stay tuned for positive changes in your mental health conditions within a few days.</div>`}} />} 
                   />
 
                   <FormControlLabel 
                     value={false} 
                     className={styles.with_text_wrap}
-                    control={<Radio checked={profileStep7Answer == 'false'} onChange={(event) => setProfileStep7Answer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep7Answer == 'false'} onChange={(event) => setProfileStep7Answer(event.target.value)} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `I’m not ready <div>Let’s start with exploring Mooditude together.</div>`}} />} 
                   />
 

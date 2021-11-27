@@ -27,15 +27,20 @@ import FormLabel from '@mui/material/FormLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 
 import Animation from '@mui/material/Grow';
+import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
-export default function Assessment1() {
+export default function Assessment12() {
   const router = useRouter()
 
-  const { authUser, loading, signOut } = useAuth()
+  const { authUser, loading } = useAuth()
   const steps = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28 ,29]
 
-  const [profileStep1Answer, setProfileStep1Answer] = useState('')
+  const [assessmentStep12Answer, setAssessmentStep12Answer] = useState('')
   const [formError, setFormError] = useState(false)
+
+  const [assessmentStep12Time, setAssessmentStep12Time] = useState(0)
+  const [timer, setTimer] = useState(null)
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -44,24 +49,39 @@ export default function Assessment1() {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    // if (localStorage.getItem('currentProfileStep') !== null) {
-    //   localStorage.setItem('currentProfileStep', 1)
-    //   console.log(`Current profile step: ${localStorage.getItem('currentProfileStep')}`)
-    // }
+    if (localStorage.getItem('currentAssessmentStep') !== null) {
+      localStorage.setItem('currentAssessmentStep', 12)
 
-    // if (localStorage.getItem('profileStep1Answer') > 0) {
-    //   setProfileStep1Answer(localStorage.getItem('profileStep1Answer'))
-    // }
+      console.log(`Current assessment step: ${localStorage.getItem('currentAssessmentStep')}`)
+    }
+
+    if (localStorage.getItem('assessmentStep12Answer') > 0) {
+      setAssessmentStep12Answer(localStorage.getItem('assessmentStep12Answer'))
+    }
+
+    setTimer(setInterval(() => {
+      console.log(`Time to answer: ${assessmentStep12Time}`)
+      setAssessmentStep12Time(assessmentStep12Time++)
+    }, 1000))
   }, [])
 
-  // useEffect(() => {
-  //   profileStep1Answer > 0 && console.log(`Profile step 1 answer: ${profileStep1Answer}`)
-  // }, [profileStep1Answer])
+  useEffect(() => {
+    assessmentStep12Answer > 0 && console.log(`Assessment step 12 answer: ${assessmentStep12Answer}`)
+  }, [assessmentStep12Answer])
+
+  const handleChange = (e) => {
+    clearInterval(timer)
+    localStorage.setItem('assessmentStep12Time', assessmentStep12Time)
+    console.log(`Timer cleared at ${assessmentStep12Time} second(s)`)
+
+    setAssessmentStep12Answer(e.target.value)
+  }
 
   const handleNextStep = () => {
     setFormError(false)
-    if (profileStep1Answer !== '') {
-      // localStorage.setItem('profileStep1Answer', parseInt(profileStep1Answer))
+
+    if (assessmentStep12Answer !== '') {
+      localStorage.setItem('assessmentStep12Answer', parseInt(assessmentStep12Answer))
       
       router.push('/assessment/13')
     } else {
@@ -71,7 +91,7 @@ export default function Assessment1() {
 
   return (
     <Layout title={`Question 12 | ${SITE_NAME}`}>
-      <div className={styles.onboarding_wrapper}>
+      <div className={`${styles.onboarding_wrapper} ${styles.on_assessment_wrapper}`}>
         <div className={styles.onboarding_inner_wrapper}>
           <h2>Assess Your Wellbeing Score</h2>
           <p className={styles.step_text}>Question 12 of 29</p>
@@ -88,7 +108,7 @@ export default function Assessment1() {
           <Animation direction="right" in={true} timeout={1000}>
             <div>
               <p className={styles.top_sub_title}>Over the past two weeks...</p>
-              <h1 className={`mt_0`}>I have attack of anxiety or panic</h1>  
+              <h1 className={`mt_0`}>I have attacks of anxiety or panic</h1>  
             </div>
           </Animation>
           
@@ -98,15 +118,15 @@ export default function Assessment1() {
               
               <RadioGroup>
                 <FormControlLabel 
-                  value="1" 
+                  value="0" 
                   className={styles.with_text_wrap}
-                  control={<Radio checked={profileStep1Answer == 1} onChange={(event) => setProfileStep1Answer(event.target.value)} />} 
+                  control={<Radio checked={assessmentStep12Answer == 0} onChange={handleChange} />} 
                   label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Not at all <div>Since you are under 18, get permission from your parents before using this app. </div>`}} />} />
                 
-                <FormControlLabel value="2" control={<Radio checked={profileStep1Answer == 2} onChange={(event) => setProfileStep1Answer(event.target.value)} />} label="Rarely" />
-                <FormControlLabel value="3" control={<Radio checked={profileStep1Answer == 3} onChange={(event) => setProfileStep1Answer(event.target.value)} />} label="Sometimes" />
-                <FormControlLabel value="4" control={<Radio checked={profileStep1Answer == 4} onChange={(event) => setProfileStep1Answer(event.target.value)} />} label="Often" />
-                <FormControlLabel value="5" control={<Radio checked={profileStep1Answer == 5} onChange={(event) => setProfileStep1Answer(event.target.value)} />} label="Most of the time" />
+                <FormControlLabel value="1" control={<Radio checked={assessmentStep12Answer == 1} onChange={handleChange} />} label="Rarely" />
+                <FormControlLabel value="2" control={<Radio checked={assessmentStep12Answer == 2} onChange={handleChange} />} label="Sometimes" />
+                <FormControlLabel value="3" control={<Radio checked={assessmentStep12Answer == 3} onChange={handleChange} />} label="Often" />
+                <FormControlLabel value="4" control={<Radio checked={assessmentStep12Answer == 4} onChange={handleChange} />} label="Most of the time" />
               </RadioGroup>
               {
                 formError ? 

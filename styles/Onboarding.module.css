@@ -9,10 +9,10 @@
 
 
 .onboarding_inner_wrapper{
-	min-height: 900px;
+	min-height: 95vh;
 	display: flex;
     flex-direction: column;
-    overflow: hidden
+   
 }
 
 .onboarding_wrapper h1{
@@ -89,6 +89,19 @@
 	margin-bottom: 93px;
 }
 
+.high_five{
+	font-size: 32px;
+}
+
+.high_five span{
+	font-family: 'Circular Std';
+	font-style: normal;
+	font-weight: bold;
+	font-size: 32px;
+	line-height: 40px;
+
+	color: #000000;
+}
 
 .form_wrap{
 	
@@ -115,14 +128,13 @@
 	font-family: 'Circular Std';
 	background: #F3F4F6;
 	border-radius: 4px;
-	width: 300px;
-	padding: 12px;
+	/* max-width: 300px; */
+	padding: 14px;
 	font-style: normal;
 	font-weight: normal;
-	font-size: 10px;
+	font-size: 12px;
 	line-height: 13px;
 	margin-top: 8px;
-	/* Secondary */
 	display: none;
 	color: #516B84;
 }
@@ -130,8 +142,8 @@
 
 
 .with_text_wrap{
-	vertical-align: top;
-	align-items: flex-start;
+	vertical-align: top!important;
+	align-items: flex-start!important;
 	font-family: 'Circular Std';
 	font-style: normal;
 	font-weight: bold;
@@ -148,6 +160,12 @@
 .btn_wrap{
 	margin-top: auto;
 	margin-bottom: 0;
+
+}
+
+
+.btn_wrap > div{
+	margin-top: 30px;
 
 }
 
@@ -245,6 +263,25 @@
 
 }
 
+@media(min-width: 1025px) and (max-width: 1500px){
+	.on_assessment_wrapper .custom_stepper_wrapper svg{
+			width: 16px;
+			height: 16px;
+	}
+}
+
+@media(max-width: 1024px){
+
+	.on_assessment_wrapper .custom_stepper_wrapper{
+			display: none;
+	}
+
+	.on_assessment_wrapper .custom_stepper_wrapper svg{
+			width: 16px;
+			height: 16px;
+	}
+}
+
 @media(max-width: 767px){
   .onboarding_wrapper{
     min-height: auto!important;
@@ -267,5 +304,17 @@
 
   .custom_stepper_wrapper{
   	margin-bottom: 30px;
+  }
+
+  .on_assessment_wrapper .custom_stepper_wrapper{
+  		display: none;
+  }
+
+  .custom_stepper_wrapper > div > div{
+  	padding: 0;
+  }
+
+  .custom_stepper_wrapper > div > div > span{
+  	align-items: flex-start;
   }
 }

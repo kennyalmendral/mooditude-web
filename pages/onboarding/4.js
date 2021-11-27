@@ -27,6 +27,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Checkbox from '@mui/material/Checkbox';
 import Grow from '@mui/material/Fade';
+import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
 export default function Onboarding4() {
   const router = useRouter()
@@ -169,35 +171,35 @@ export default function Onboarding4() {
                 <FormGroup>
                   <FormControlLabel
                     control={
-                      <Checkbox checked={isPeopleChecked} onChange={(event) => event.target.checked ? toggleIsPeopleChecked(true, event.target.value) : toggleIsPeopleChecked(false, event.target.value)} />
+                      <Checkbox icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={isPeopleChecked} onChange={(event) => event.target.checked ? toggleIsPeopleChecked(true, event.target.value) : toggleIsPeopleChecked(false, event.target.value)} />
                     }
                     label="People" 
                     value="people"
                   />
                   <FormControlLabel
                     control={
-                      <Checkbox checked={isWorkSchoolChecked} onChange={(event) => event.target.checked ? toggleIsWorkSchoolChecked(true, event.target.value) : toggleIsWorkSchoolChecked(false, event.target.value)} />
+                      <Checkbox icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={isWorkSchoolChecked} onChange={(event) => event.target.checked ? toggleIsWorkSchoolChecked(true, event.target.value) : toggleIsWorkSchoolChecked(false, event.target.value)} />
                     }
                     label="Work or School"
                     value="work"
                   />
                   <FormControlLabel
                     control={
-                      <Checkbox checked={isHealthChecked} onChange={(event) => event.target.checked ? toggleIsHealthChecked(true, event.target.value) : toggleIsHealthChecked(false, event.target.value)} />
+                      <Checkbox icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={isHealthChecked} onChange={(event) => event.target.checked ? toggleIsHealthChecked(true, event.target.value) : toggleIsHealthChecked(false, event.target.value)} />
                     }
                     label="Health"
                     value="health"
                   />
                   <FormControlLabel
                     control={
-                      <Checkbox checked={isMoneyChecked} onChange={(event) => event.target.checked ? toggleIsMoneyChecked(true, event.target.value) : toggleIsMoneyChecked(false, event.target.value)} />
+                      <Checkbox icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={isMoneyChecked} onChange={(event) => event.target.checked ? toggleIsMoneyChecked(true, event.target.value) : toggleIsMoneyChecked(false, event.target.value)} />
                     }
                     label="Money"
                     value="money"
                   />
                   <FormControlLabel
                     control={
-                      <Checkbox checked={isMeChecked} onChange={(event) => event.target.checked ? toggleIsMeChecked(true, event.target.value) : toggleIsMeChecked(false, event.target.value)} />
+                      <Checkbox icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={isMeChecked} onChange={(event) => event.target.checked ? toggleIsMeChecked(true, event.target.value) : toggleIsMeChecked(false, event.target.value)} />
                     }
                     label="Me"
                     value="me"

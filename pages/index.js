@@ -13,10 +13,37 @@ import { useAuth } from '@/context/AuthUserContext'
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 
+import Firebase from 'lib/Firebase'
+
+const firebaseAuth = Firebase.auth()
+const firebaseDatabase = Firebase.database()
+
 export default function Home() {
   const router = useRouter()
 
   const { authUser, loading, signOut } = useAuth()
+
+  useEffect(() => {
+    firebaseAuth.onAuthStateChanged(user => {
+      if (user) {
+        firebaseDatabase
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .on('value', snapshot => {
+            console.log(snapshot.val())
+
+            if ((snapshot.val().onboardingStep == 1) && (localStorage.getItem('currentAssessmentStep') !== null)) {
+              router.push(`/assessment/${localStorage.getItem('currentAssessmentStep')}`)
+            } else if (snapshot.val().onboardingStep == 2) {
+              router.push('/assessment/report')
+            }
+          }, error => {
+            console.log(error)
+          })
+      }
+    })
+  }, [])
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -25,7 +52,8 @@ export default function Home() {
   }, [authUser, loading, router])
 
   const handleFind = () => {
-    console.log('asd')
+    localStorage.getItem('currentAssessmentStep') === null && localStorage.setItem('currentAssessmentStep', 0) 
+
     router.push('/assessment')
   }
 

@@ -27,6 +27,8 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grow from '@mui/material/Fade';
+import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
 export default function Onboarding6() {
   const router = useRouter()
@@ -101,14 +103,14 @@ export default function Onboarding6() {
                   <FormControlLabel 
                       value={true} 
                       className={styles.with_text_wrap}
-                      control={<Radio checked={profileStep6Answer == 'true'} onChange={(event) => setProfileStep6Answer(event.target.value)} />} 
+                      control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep6Answer == 'true'} onChange={(event) => setProfileStep6Answer(event.target.value)} />} 
                       label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Yes <div>Great! You will fine Mooditude very intutive to use. Go through the Free 7-Day program for a refresher.</div>`}} />} 
                     />
 
                     <FormControlLabel 
                       value={false} 
                       className={styles.with_text_wrap}
-                      control={<Radio checked={profileStep6Answer == 'false'} onChange={(event) => setProfileStep6Answer(event.target.value)} />} 
+                      control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep6Answer == 'false'} onChange={(event) => setProfileStep6Answer(event.target.value)} />} 
                       label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `No <div>No worries, we recommend you go through the Free 7-Day Program, which will explain how Mooditude and CBT works.</div>`}} />} 
                     />
                 </RadioGroup>

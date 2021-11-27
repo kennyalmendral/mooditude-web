@@ -27,15 +27,20 @@ import FormLabel from '@mui/material/FormLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 
 import Animation from '@mui/material/Grow';
+import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
 export default function Assessment1() {
   const router = useRouter()
 
-  const { authUser, loading, signOut } = useAuth()
+  const { authUser, loading } = useAuth()
   const steps = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28 ,29]
 
-  const [profileStep1Answer, setProfileStep1Answer] = useState('')
+  const [assessmentStep1Answer, setAssessmentStep1Answer] = useState('')
   const [formError, setFormError] = useState(false)
+
+  const [assessmentStep1Time, setAssessmentStep1Time] = useState(0)
+  const [timer, setTimer] = useState(null);
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -44,24 +49,39 @@ export default function Assessment1() {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    // if (localStorage.getItem('currentProfileStep') !== null) {
-    //   localStorage.setItem('currentProfileStep', 1)
-    //   console.log(`Current profile step: ${localStorage.getItem('currentProfileStep')}`)
-    // }
+    if (localStorage.getItem('currentAssessmentStep') !== null) {
+      localStorage.setItem('currentAssessmentStep', 1)
 
-    // if (localStorage.getItem('profileStep1Answer') > 0) {
-    //   setProfileStep1Answer(localStorage.getItem('profileStep1Answer'))
-    // }
+      console.log(`Current assessment step: ${localStorage.getItem('currentAssessmentStep')}`)
+    }
+
+    if (localStorage.getItem('assessmentStep1Answer') > 0) {
+      setAssessmentStep1Answer(localStorage.getItem('assessmentStep1Answer'))
+    }
+
+    setTimer(setInterval(() => {
+      console.log(`Time to answer: ${assessmentStep1Time}`)
+      setAssessmentStep1Time(assessmentStep1Time++)
+    }, 1000))
   }, [])
 
-  // useEffect(() => {
-  //   profileStep1Answer > 0 && console.log(`Profile step 1 answer: ${profileStep1Answer}`)
-  // }, [profileStep1Answer])
+  useEffect(() => {
+    assessmentStep1Answer > 0 && console.log(`Assessment step 1 answer: ${assessmentStep1Answer}`)
+  }, [assessmentStep1Answer])
+
+  const handleChange = (e) => {
+    clearInterval(timer)
+    localStorage.setItem('assessmentStep1Time', assessmentStep1Time)
+    console.log(`Timer cleared at ${assessmentStep1Time} second(s)`)
+
+    setAssessmentStep1Answer(e.target.value)
+  }
 
   const handleNextStep = () => {
     setFormError(false)
-    if (profileStep1Answer !== '') {
-      // localStorage.setItem('profileStep1Answer', parseInt(profileStep1Answer))
+
+    if (assessmentStep1Answer !== '') {
+      localStorage.setItem('assessmentStep1Answer', parseInt(assessmentStep1Answer))
       
       router.push('/assessment/2')
     } else {
@@ -71,7 +91,7 @@ export default function Assessment1() {
 
   return (
     <Layout title={`Question 1 | ${SITE_NAME}`}>
-      <div className={styles.onboarding_wrapper}>
+      <div className={`${styles.onboarding_wrapper} ${styles.on_assessment_wrapper}`}>
         <div className={styles.onboarding_inner_wrapper}>
           <h2>Assess Your Wellbeing Score</h2>
           <p className={styles.step_text}>Question 1 of 29</p>
@@ -87,7 +107,7 @@ export default function Assessment1() {
           </div>
           <Animation direction="right" in={true} timeout={1000}>
             <div>
-              <p className={styles.top_sub_title}>Select one or more</p>
+              {/* <p className={styles.top_sub_title}>Select one or more</p> */}
               <h1 className={`mt_0`}>I feel sad, down in the dumps or unhappy</h1>  
             </div>
           </Animation>
@@ -98,15 +118,15 @@ export default function Assessment1() {
               
               <RadioGroup>
                 <FormControlLabel 
-                  value="1" 
+                  value="0" 
                   className={styles.with_text_wrap}
-                  control={<Radio checked={profileStep1Answer == 1} onChange={(event) => setProfileStep1Answer(event.target.value)} />} 
+                  control={<Radio checked={assessmentStep1Answer == 0} onChange={handleChange} />} 
                   label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Not at all <div>Since you are under 18, get permission from your parents before using this app. </div>`}} />} />
                 
-                <FormControlLabel value="2" control={<Radio checked={profileStep1Answer == 2} onChange={(event) => setProfileStep1Answer(event.target.value)} />} label="Rarely" />
-                <FormControlLabel value="3" control={<Radio checked={profileStep1Answer == 3} onChange={(event) => setProfileStep1Answer(event.target.value)} />} label="Sometimes" />
-                <FormControlLabel value="4" control={<Radio checked={profileStep1Answer == 4} onChange={(event) => setProfileStep1Answer(event.target.value)} />} label="Often" />
-                <FormControlLabel value="5" control={<Radio checked={profileStep1Answer == 5} onChange={(event) => setProfileStep1Answer(event.target.value)} />} label="Most of the time" />
+                <FormControlLabel value="1" control={<Radio checked={assessmentStep1Answer == 1} onChange={handleChange} />} label="Rarely" />
+                <FormControlLabel value="2" control={<Radio checked={assessmentStep1Answer == 2} onChange={handleChange} />} label="Sometimes" />
+                <FormControlLabel value="3" control={<Radio checked={assessmentStep1Answer == 3} onChange={handleChange} />} label="Often" />
+                <FormControlLabel value="4" control={<Radio checked={assessmentStep1Answer == 4} onChange={handleChange} />} label="Most of the time" />
               </RadioGroup>
               {
                 formError ? 
@@ -118,17 +138,17 @@ export default function Assessment1() {
           </div>
 
           <div className={styles.btn_wrap}>
-          <Stack direction="row" spacing={2}>
-            <Button 
-              size="large" 
-              className={styles.onboarding_btn} 
-              variant="contained" 
-              onClick={handleNextStep} 
-              // onClick={() => {router.push(`/onboarding/2`)}}
-            >
-              Next
-            </Button>
-          </Stack>
+            <Stack direction="row" spacing={2}>
+              <Button 
+                size="large" 
+                className={styles.onboarding_btn} 
+                variant="contained" 
+                onClick={handleNextStep} 
+                // onClick={() => {router.push(`/onboarding/2`)}}
+              >
+                Next
+              </Button>
+            </Stack>
           </div>
         </div>
       </div>

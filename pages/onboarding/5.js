@@ -27,6 +27,8 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grow from '@mui/material/Fade';
+import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
 export default function Onboarding5() {
   const router = useRouter()
@@ -98,14 +100,14 @@ export default function Onboarding5() {
                   <FormControlLabel 
                     value={true} 
                     className={styles.with_text_wrap}
-                    control={<Radio checked={profileStep5Answer == "true"} onChange={(event) => setProfileStep5Answer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep5Answer == "true"} onChange={(event) => setProfileStep5Answer(event.target.value)} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Yes <div>Wonderful. You can use Mooditude as a companion app between therapy sessions. Tell your therapist about Mooditude.</div>`}} />} 
                   />
 
                   <FormControlLabel 
                     value={false} 
                     className={styles.with_text_wrap}
-                    control={<Radio checked={profileStep5Answer == "false"} onChange={(event) => setProfileStep5Answer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep5Answer == "false"} onChange={(event) => setProfileStep5Answer(event.target.value)} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `No <div>That’s okay. You can use Mooditude’s self-paced programs to learn life-changing skills.</div>`}} />} 
                   />
                 </RadioGroup>
