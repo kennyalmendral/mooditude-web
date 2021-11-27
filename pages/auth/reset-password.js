@@ -14,36 +14,55 @@ import TextField from '@mui/material/TextField';
 export default function ResetPassword(props) {
   const router = useRouter()
 
-  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [isSending, setIsSending] = useState(false)
-  const [isResetPasswordEmailSent, setIsResetPasswordEmailSent] = useState(false)
+  const [isPasswordReset, setIsPasswordReset] = useState(false)
 
-  const { sendPasswordResetEmail } = useAuth()
+  const [code, setCode] = useState('')
+
+  const { verifyPasswordResetCode, confirmPasswordReset } = useAuth()
 
   useEffect(() => {
     setTimeout(() => {
       props.removePageLoader()
     },300)
-    
   }, [])
 
+  useEffect(() => {
+    if (router.query && router.query.oobCode) {
+      setCode(router.query.oobCode)
+    }
+  }, [error, router])
+
+  useEffect(() => {
+    if (isPasswordReset) {
+      setPassword('')
+      setError(null)
+      setCode('')
+    }
+  }, [isPasswordReset])
 
   const handleResetPassword = e => {
     e.preventDefault()
 
     setIsSending(true)
 
-    sendPasswordResetEmail(email)
-      .then(response => {
-        setIsSending(false)
-        setIsResetPasswordEmailSent(true)
-      })
-      .catch(error => {
-        setIsSending(false)
-        setIsResetPasswordEmailSent(false)
-        setError(error.message)
-      })
+    if ((code != '') && (password != '')) {
+      verifyPasswordResetCode(code)
+        .then(function(email) {
+          confirmPasswordReset(code, password)
+            .then(() => {
+              setIsPasswordReset(true)
+            })
+          
+          setIsSending(false)
+        })
+        .catch(function() {
+          setError('Invalid code.')
+          setIsSending(false)
+        })
+    }
   }
 
   return (
@@ -72,34 +91,27 @@ export default function ResetPassword(props) {
 
             <div>
               <form onSubmit={handleResetPassword}>
-                {!isResetPasswordEmailSent && (
+                {!isPasswordReset && (
                   <>
                     <div 
                       className={styles.field} 
                       style={{ marginBottom: '12px' }}
                     >
                       <TextField 
-                        label="Email address" 
+                        label="New password" 
                         variant="outlined" 
-                        type="email" 
-                        id="email" 
+                        type="password" 
+                        id="password" 
                         className={error && styles.hasError} 
-                        placeholder="Email address" 
-                        value={email} 
-                        onChange={e => setEmail(e.target.value)} 
+                        placeholder="Enter new password" 
+                        value={password} 
+                        onChange={e => setPassword(e.target.value)} 
                         fullWidth={true}
                         size={"small"}
                         error={error}
                         helperText={error ? error : ''}
-                        
+                        required
                       />
-
-
-                      {/*{error && (
-                        <div className={styles.error}>
-                          {error && <span>{error}</span>}
-                        </div>
-                      )}*/}
                     </div>
 
                     <div>
@@ -119,8 +131,8 @@ export default function ResetPassword(props) {
                   </>
                 )}
 
-                {isResetPasswordEmailSent && (
-                  <div style={{ marginBottom: '20px' }}>Instructions to reset password are sent to the provided email.</div>
+                {isPasswordReset && (
+                  <div style={{ marginBottom: '20px' }}>Your password has been changed successfully.</div>
                 )}
 
                 <div>
