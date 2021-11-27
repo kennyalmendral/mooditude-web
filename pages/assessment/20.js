@@ -49,14 +49,14 @@ export default function Assessment20() {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    if (localStorage.getItem('currentAssessmentStep') !== null) {
-      localStorage.setItem('currentAssessmentStep', 20)
+    if (authUser && localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) !== null) {
+      localStorage.setItem(`${authUser.uid}_currentAssessmentStep`, 20)
 
-      console.log(`Current assessment step: ${localStorage.getItem('currentAssessmentStep')}`)
+      console.log(`Current assessment step: ${localStorage.getItem(`${authUser.uid}_currentAssessmentStep`)}`)
     }
 
-    if (localStorage.getItem('assessmentStep20Answer') > 0) {
-      setAssessmentStep20Answer(localStorage.getItem('assessmentStep20Answer'))
+    if (authUser && localStorage.getItem(`${authUser.uid}_assessmentStep20Answer`) > 0) {
+      setAssessmentStep20Answer(localStorage.getItem(`${authUser.uid}_assessmentStep20Answer`))
     }
 
     setTimer(setInterval(() => {
@@ -71,7 +71,7 @@ export default function Assessment20() {
 
   const handleChange = (e) => {
     clearInterval(timer)
-    localStorage.setItem('assessmentStep20Time', assessmentStep20Time)
+    localStorage.setItem(`${authUser.uid}_assessmentStep20Time`, assessmentStep20Time)
     console.log(`Timer cleared at ${assessmentStep20Time} second(s)`)
 
     setAssessmentStep20Answer(e.target.value)
@@ -81,7 +81,7 @@ export default function Assessment20() {
     setFormError(false)
 
     if (assessmentStep20Answer !== '') {
-      localStorage.setItem('assessmentStep20Answer', parseInt(assessmentStep20Answer))
+      localStorage.setItem(`${authUser.uid}_assessmentStep20Answer`, parseInt(assessmentStep20Answer))
       
       router.push('/assessment/21')
     } else {

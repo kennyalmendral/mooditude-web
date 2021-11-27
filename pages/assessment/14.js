@@ -49,12 +49,12 @@ export default function Assessment14() {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    if (localStorage.getItem('currentAssessmentStep') !== null) {
-      localStorage.setItem('currentAssessmentStep', 14)
+    if (authUser && localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) !== null) {
+      localStorage.setItem(`${authUser.uid}_currentAssessmentStep`, 14)
     }
 
-    if (localStorage.getItem('assessmentStep14Answer') > 0) {
-      setAssessmentStep14Answer(localStorage.getItem('assessmentStep14Answer'))
+    if (authUser && localStorage.getItem(`${authUser.uid}_assessmentStep14Answer`) > 0) {
+      setAssessmentStep14Answer(localStorage.getItem(`${authUser.uid}_assessmentStep14Answer`))
     }
     console.log(typeof assessmentStep14Answer)
     if (assessmentStep14Answer == '' || assessmentStep14Answer == null || assessmentStep14Answer == undefined) {
@@ -71,7 +71,7 @@ export default function Assessment14() {
 
   const handleChange = (e) => {
     clearInterval(timer)
-    localStorage.setItem('assessmentStep14Time', assessmentStep14Time)
+    localStorage.setItem(`${authUser.uid}_assessmentStep14Time`, assessmentStep14Time)
     setAssessmentStep14Answer(e.target.value)
   }
 
@@ -79,7 +79,7 @@ export default function Assessment14() {
     setFormError(false)
 
     if (assessmentStep14Answer !== '') {
-      localStorage.setItem('assessmentStep14Answer', parseInt(assessmentStep14Answer))
+      localStorage.setItem(`${authUser.uid}_assessmentStep14Answer`, parseInt(assessmentStep14Answer))
       
       router.push('/assessment/15')
     } else {

@@ -41,7 +41,7 @@ export default function Onboarding7() {
   const steps = [1, 2, 3, 4, 5, 6, 7]
   const current_step = 2
 
-  const [profileStep7Answer, setProfileStep7Answer] = useState(null)
+  const [profileStepAnswer, setProfileStepAnswer] = useState(null)
   const [formError, setFormError] = useState(false)
 
   useEffect(() => {
@@ -51,25 +51,25 @@ export default function Onboarding7() {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    if (localStorage.getItem('currentProfileStep') !== null) {
-      localStorage.setItem('currentProfileStep', 7)
+    if (authUser && localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
+      localStorage.setItem(`${authUser.uid}_currentProfileStep`, 7)
 
-      console.log(`Current profile step: ${localStorage.getItem('currentProfileStep')}`)
+      console.log(`Current profile step: ${localStorage.getItem(`${authUser.uid}_currentProfileStep`)}`)
     }
 
-    if (localStorage.getItem('profileStep7Answer') !== null) {
-      setProfileStep7Answer(localStorage.getItem('profileStep7Answer'))
+    if (authUser && localStorage.getItem(`${authUser.uid}_profileStep7Answer`) !== null) {
+      setProfileStepAnswer(localStorage.getItem(`${authUser.uid}_profileStep7Answer`))
     }
   }, [])
 
   useEffect(() => {
-    profileStep7Answer !== null && console.log(`Profile step 7 answer: ${profileStep7Answer}`)
-  }, [profileStep7Answer])
+    profileStepAnswer !== null && console.log(`Profile step 7 answer: ${profileStepAnswer}`)
+  }, [profileStepAnswer])
 
   const handleNextStep = () => {
     setFormError(false)
-    if (profileStep7Answer !== null) {
-      localStorage.setItem('profileStep7Answer', profileStep7Answer)
+    if (profileStepAnswer !== null) {
+      localStorage.setItem(`${authUser.uid}_profileStep7Answer`, profileStepAnswer)
 
       firebaseAuth.onAuthStateChanged(user => {
         if (user) {
@@ -78,23 +78,23 @@ export default function Onboarding7() {
             .child('users')
             .child(user.uid)
             .update({
-              ageGroup: parseInt(localStorage.profileStep1Answer) || 0,
-              gender: parseInt(localStorage.profileStep2Answer) || 0,
-              topGoal: localStorage.profileStep3Answer || '',
-              topChallenges: localStorage.profileStep4Answer || '',
-              goingToTherapy: localStorage.profileStep5Answer || false,
-              knowCbt: localStorage.profileStep6Answer || false,
-              committedToSelfhelp: localStorage.profileStep7Answer || false,
+              ageGroup: parseInt(localStorage.getItem(`${authUser.uid}_profileStep1Answer`)) || 0,
+              gender: parseInt(localStorage.getItem(`${authUser.uid}_profileStep2Answer`)) || 0,
+              topGoal: localStorage.getItem(`${authUser.uid}_profileStep3Answer`) || '',
+              topChallenges: localStorage.getItem(`${authUser.uid}_profileStep4Answer`) || '',
+              goingToTherapy: localStorage.getItem(`${authUser.uid}_profileStep5Answer`) || false,
+              knowCbt: localStorage.getItem(`${authUser.uid}_profileStep6Answer`) || false,
+              committedToSelfhelp: localStorage.getItem(`${authUser.uid}_profileStep7Answer`) || false,
               onboardingStep: 1
             })
 
-          localStorage.removeItem('profileStep1Answer')
-          localStorage.removeItem('profileStep2Answer')
-          localStorage.removeItem('profileStep3Answer')
-          localStorage.removeItem('profileStep4Answer')
-          localStorage.removeItem('profileStep5Answer')
-          localStorage.removeItem('profileStep6Answer')
-          localStorage.removeItem('profileStep7Answer')
+          localStorage.removeItem(`${authUser.uid}_profileStep1Answer`)
+          localStorage.removeItem(`${authUser.uid}_profileStep2Answer`)
+          localStorage.removeItem(`${authUser.uid}_profileStep3Answer`)
+          localStorage.removeItem(`${authUser.uid}_profileStep4Answer`)
+          localStorage.removeItem(`${authUser.uid}_profileStep5Answer`)
+          localStorage.removeItem(`${authUser.uid}_profileStep6Answer`)
+          localStorage.removeItem(`${authUser.uid}_profileStep7Answer`)
   
           router.push('/onboarding/finish')
         }
@@ -135,14 +135,14 @@ export default function Onboarding7() {
                   <FormControlLabel 
                     value={true}  
                     className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep7Answer == 'true'} onChange={(event) => setProfileStep7Answer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'true'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Let’s do this! <div>Great! Stay tuned for positive changes in your mental health conditions within a few days.</div>`}} />} 
                   />
 
                   <FormControlLabel 
                     value={false} 
                     className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep7Answer == 'false'} onChange={(event) => setProfileStep7Answer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'false'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `I’m not ready <div>Let’s start with exploring Mooditude together.</div>`}} />} 
                   />
 

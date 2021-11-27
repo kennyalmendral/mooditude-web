@@ -31,7 +31,7 @@ export default function AssessmentWelcomePage() {
   }, [authUser, loading, router])
 
   const handleStart = () => {
-    localStorage.getItem('currentAssessmentStep') === null && localStorage.setItem('currentAssessmentStep', 0) 
+    localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) === null && localStorage.setItem(`${authUser.uid}_currentAssessmentStep`, 0) 
 
     router.push(`/assessment/1`)
   }

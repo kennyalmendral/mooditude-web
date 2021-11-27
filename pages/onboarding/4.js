@@ -37,7 +37,7 @@ export default function Onboarding4() {
   const steps = [1, 2, 3, 4, 5, 6, 7]
   const current_step = 2
 
-  const [profileStep4Answer, setProfileStep4Answer] = useState([])
+  const [profileStepAnswer, setProfileStepAnswer] = useState([])
   const [isPeopleChecked, setIsPeopleChecked] = useState(false)
   const [isWorkSchoolChecked, setIsWorkSchoolChecked] = useState(false)
   const [isHealthChecked, setIsHealthChecked] = useState(false)
@@ -52,83 +52,83 @@ export default function Onboarding4() {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    if (localStorage.getItem('currentProfileStep') !== null) {
-      localStorage.setItem('currentProfileStep', 4)
+    if (authUser && localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
+      localStorage.setItem(`${authUser.uid}_currentProfileStep`, 4)
 
-      console.log(`Current profile step: ${localStorage.getItem('currentProfileStep')}`)
+      console.log(`Current profile step: ${localStorage.getItem(`${authUser.uid}_currentProfileStep`)}`)
     }
 
-    if (localStorage.getItem('profileStep4Answer') != null) {
-      setProfileStep4Answer(localStorage.getItem('profileStep4Answer').split(','))
+    if (authUser && localStorage.getItem(`${authUser.uid}_profileStep4Answer`) != null) {
+      setProfileStepAnswer(localStorage.getItem(`${authUser.uid}_profileStep4Answer`).split(','))
     }
   }, [])
 
   useEffect(() => {
-    profileStep4Answer.length > 0 && console.log(`Profile step 4 answer: ${profileStep4Answer.join(',')}`)
+    profileStepAnswer.length > 0 && console.log(`Profile step 4 answer: ${profileStepAnswer.join(',')}`)
 
-    if (profileStep4Answer.length > 0) {
-      profileStep4Answer.includes('people') && setIsPeopleChecked(true)
-      profileStep4Answer.includes('work') && setIsWorkSchoolChecked(true)
-      profileStep4Answer.includes('health') && setIsHealthChecked(true)
-      profileStep4Answer.includes('money') && setIsMoneyChecked(true)
-      profileStep4Answer.includes('me') && setIsMeChecked(true)
+    if (profileStepAnswer.length > 0) {
+      profileStepAnswer.includes('people') && setIsPeopleChecked(true)
+      profileStepAnswer.includes('work') && setIsWorkSchoolChecked(true)
+      profileStepAnswer.includes('health') && setIsHealthChecked(true)
+      profileStepAnswer.includes('money') && setIsMoneyChecked(true)
+      profileStepAnswer.includes('me') && setIsMeChecked(true)
     }
-  }, [profileStep4Answer])
+  }, [profileStepAnswer])
 
   const toggleIsPeopleChecked = (isChecked, value) => {
     if (isChecked) {
       setIsPeopleChecked(true)
-      setProfileStep4Answer([...profileStep4Answer, value])
+      setProfileStepAnswer([...profileStepAnswer, value])
     } else {
       setIsPeopleChecked(false)
-      setProfileStep4Answer(removeArrItem(profileStep4Answer, value))
+      setProfileStepAnswer(removeArrItem(profileStepAnswer, value))
     }
   }
 
   const toggleIsWorkSchoolChecked = (isChecked, value) => {
     if (isChecked) {
       setIsWorkSchoolChecked(true)
-      setProfileStep4Answer([...profileStep4Answer, value])
+      setProfileStepAnswer([...profileStepAnswer, value])
     } else {
       setIsWorkSchoolChecked(false)
-      setProfileStep4Answer(removeArrItem(profileStep4Answer, value))
+      setProfileStepAnswer(removeArrItem(profileStepAnswer, value))
     }
   }
 
   const toggleIsHealthChecked = (isChecked, value) => {
     if (isChecked) {
       setIsHealthChecked(true)
-      setProfileStep4Answer([...profileStep4Answer, value])
+      setProfileStepAnswer([...profileStepAnswer, value])
     } else {
       setIsHealthChecked(false)
-      setProfileStep4Answer(removeArrItem(profileStep4Answer, value))
+      setProfileStepAnswer(removeArrItem(profileStepAnswer, value))
     }
   }
 
   const toggleIsMoneyChecked = (isChecked, value) => {
     if (isChecked) {
       setIsMoneyChecked(true)
-      setProfileStep4Answer([...profileStep4Answer, value])
+      setProfileStepAnswer([...profileStepAnswer, value])
     } else {
       setIsMoneyChecked(false)
-      setProfileStep4Answer(removeArrItem(profileStep4Answer, value))
+      setProfileStepAnswer(removeArrItem(profileStepAnswer, value))
     }
   }
 
   const toggleIsMeChecked = (isChecked, value) => {
     if (isChecked) {
       setIsMeChecked(true)
-      setProfileStep4Answer([...profileStep4Answer, value])
+      setProfileStepAnswer([...profileStepAnswer, value])
     } else {
       setIsMeChecked(false)
-      setProfileStep4Answer(removeArrItem(profileStep4Answer, value))
+      setProfileStepAnswer(removeArrItem(profileStepAnswer, value))
     }
   }
 
   const handleNextStep = () => {
     setFormError(false)
-    if (profileStep4Answer.length > 0) {
-      localStorage.setItem('profileStep4Answer', profileStep4Answer.join(','))
+    if (profileStepAnswer.length > 0) {
+      localStorage.setItem(`${authUser.uid}_profileStep4Answer`, profileStepAnswer.join(','))
       
       router.push('/onboarding/5')
     } else {

@@ -36,7 +36,7 @@ export default function Onboarding5() {
   const { authUser, loading, signOut } = useAuth()
   const steps = [1, 2, 3, 4, 5, 6, 7]
 
-  const [profileStep5Answer, setProfileStep5Answer] = useState(null)
+  const [profileStepAnswer, setProfileStepAnswer] = useState(null)
   const [formError, setFormError] = useState(false)
 
   useEffect(() => {
@@ -46,25 +46,25 @@ export default function Onboarding5() {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    if (localStorage.getItem('currentProfileStep') !== null) {
-      localStorage.setItem('currentProfileStep', 5)
+    if (authUser && localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
+      localStorage.setItem(`${authUser.uid}_currentProfileStep`, 5)
 
-      console.log(`Current profile step: ${localStorage.getItem('currentProfileStep')}`)
+      console.log(`Current profile step: ${localStorage.getItem(`${authUser.uid}_currentProfileStep`)}`)
     }
 
-    if (localStorage.getItem('profileStep5Answer') !== null) {
-      setProfileStep5Answer(localStorage.getItem('profileStep5Answer'))
+    if (authUser && localStorage.getItem(`${authUser.uid}_profileStep5Answer`) !== null) {
+      setProfileStepAnswer(localStorage.getItem(`${authUser.uid}_profileStep5Answer`))
     }
   }, [])
 
   useEffect(() => {
-    profileStep5Answer !== null && console.log(`Profile step 5 answer: ${profileStep5Answer}`)
-  }, [profileStep5Answer])
+    profileStepAnswer !== null && console.log(`Profile step 5 answer: ${profileStepAnswer}`)
+  }, [profileStepAnswer])
 
   const handleNextStep = () => {
     setFormError(false)
-    if (profileStep5Answer !== null) {
-      localStorage.setItem('profileStep5Answer', profileStep5Answer)
+    if (profileStepAnswer !== null) {
+      localStorage.setItem(`${authUser.uid}_profileStep5Answer`, profileStepAnswer)
       
       router.push('/onboarding/6')
     } else {
@@ -100,14 +100,14 @@ export default function Onboarding5() {
                   <FormControlLabel 
                     value={true} 
                     className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep5Answer == "true"} onChange={(event) => setProfileStep5Answer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == "true"} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Yes <div>Wonderful. You can use Mooditude as a companion app between therapy sessions. Tell your therapist about Mooditude.</div>`}} />} 
                   />
 
                   <FormControlLabel 
                     value={false} 
                     className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep5Answer == "false"} onChange={(event) => setProfileStep5Answer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == "false"} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `No <div>That’s okay. You can use Mooditude’s self-paced programs to learn life-changing skills.</div>`}} />} 
                   />
                 </RadioGroup>

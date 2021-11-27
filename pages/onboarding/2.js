@@ -37,7 +37,7 @@ export default function Onboarding2() {
   const steps = [1, 2, 3, 4, 5, 6, 7]
   const current_step = 2
 
-  const [profileStep2Answer, setProfileStep2Answer] = useState('')
+  const [profileStepAnswer, setProfileStepAnswer] = useState('')
   const [formError, setFormError] = useState(false)
 
   useEffect(() => {
@@ -47,25 +47,25 @@ export default function Onboarding2() {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    if (localStorage.getItem('currentProfileStep') !== null) {
-      localStorage.setItem('currentProfileStep', 2)
+    if (authUser && localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
+      localStorage.setItem(`${authUser.uid}_currentProfileStep`, 2)
 
-      console.log(`Current profile step: ${localStorage.getItem('currentProfileStep')}`)
+      console.log(`Current profile step: ${localStorage.getItem(`${authUser.uid}_currentProfileStep`)}`)
     }
 
-    if (localStorage.getItem('profileStep2Answer') > 0) {
-      setProfileStep2Answer(localStorage.getItem('profileStep2Answer'))
+    if (authUser && localStorage.getItem(`${authUser.uid}_profileStep2Answer`) > 0) {
+      setProfileStepAnswer(localStorage.getItem(`${authUser.uid}_profileStep2Answer`))
     }
   }, [])
 
   useEffect(() => {
-    profileStep2Answer > 0 && console.log(`Profile step 2 answer: ${profileStep2Answer}`)
-  }, [profileStep2Answer])
+    profileStepAnswer > 0 && console.log(`Profile step 2 answer: ${profileStepAnswer}`)
+  }, [profileStepAnswer])
 
   const handleNextStep = () => {
     setFormError(false)
-    if (profileStep2Answer !== '') {
-      localStorage.setItem('profileStep2Answer', parseInt(profileStep2Answer))
+    if (profileStepAnswer !== '') {
+      localStorage.setItem(`${authUser.uid}_profileStep2Answer`, parseInt(profileStepAnswer))
       
       router.push('/onboarding/3')
     } else {
@@ -98,11 +98,11 @@ export default function Onboarding2() {
               <FormControl component="fieldset" error={formError} onChange={() => {setFormError(false)}}>
                 
                 <RadioGroup >
-                  <FormControlLabel value="1" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep2Answer == 1} onChange={(event) => setProfileStep2Answer(event.target.value)} />} label="Male" />
-                  <FormControlLabel value="2" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep2Answer == 2} onChange={(event) => setProfileStep2Answer(event.target.value)} />} label="Female" />
-                  <FormControlLabel value="3" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep2Answer == 3} onChange={(event) => setProfileStep2Answer(event.target.value)} />} label="Transgender" />
-                  <FormControlLabel value="4" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep2Answer == 4} onChange={(event) => setProfileStep2Answer(event.target.value)} />} label="Non-binary" />
-                  <FormControlLabel value="5" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep2Answer == 5} onChange={(event) => setProfileStep2Answer(event.target.value)} />} label="Other" />
+                  <FormControlLabel value="1" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 1} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="Male" />
+                  <FormControlLabel value="2" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 2} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="Female" />
+                  <FormControlLabel value="3" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 3} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="Transgender" />
+                  <FormControlLabel value="4" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 4} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="Non-binary" />
+                  <FormControlLabel value="5" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 5} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="Other" />
                 </RadioGroup>
 
                 {

@@ -37,7 +37,7 @@ export default function Onboarding3() {
   const steps = [1, 2, 3, 4, 5, 6, 7]
   const current_step = 2
 
-  const [profileStep3Answer, setProfileStep3Answer] = useState('')
+  const [profileStepAnswer, setProfileStepAnswer] = useState('')
   const [formError, setFormError] = useState(false)
 
   useEffect(() => {
@@ -47,25 +47,25 @@ export default function Onboarding3() {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    if (localStorage.getItem('currentProfileStep') !== null) {
-      localStorage.setItem('currentProfileStep', 3)
+    if (authUser && localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
+      localStorage.setItem(`${authUser.uid}_currentProfileStep`, 3)
 
-      console.log(`Current profile step: ${localStorage.getItem('currentProfileStep')}`)
+      console.log(`Current profile step: ${localStorage.getItem(`${authUser.uid}_currentProfileStep`)}`)
     }
 
-    if (localStorage.getItem('profileStep3Answer') !== '') {
-      setProfileStep3Answer(localStorage.getItem('profileStep3Answer'))
+    if (authUser && localStorage.getItem(`${authUser.uid}_profileStep3Answer`) !== '') {
+      setProfileStepAnswer(localStorage.getItem(`${authUser.uid}_profileStep3Answer`))
     }
   }, [])
 
   useEffect(() => {
-    profileStep3Answer > 0 && console.log(`Profile step 3 answer: ${profileStep3Answer}`)
-  }, [profileStep3Answer])
+    profileStepAnswer > 0 && console.log(`Profile step 3 answer: ${profileStepAnswer}`)
+  }, [profileStepAnswer])
 
   const handleNextStep = () => {
     setFormError(false)
-    if (profileStep3Answer !== '') {
-      localStorage.setItem('profileStep3Answer', profileStep3Answer)
+    if (profileStepAnswer !== '') {
+      localStorage.setItem(`${authUser.uid}_profileStep3Answer`, profileStepAnswer)
       
       router.push('/onboarding/4')
     } else {
@@ -102,16 +102,16 @@ export default function Onboarding3() {
                 
                 <RadioGroup>
                   
-                  <FormControlLabel value="sleepBetter" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep3Answer == 'sleepBetter'} onChange={(event) => setProfileStep3Answer(event.target.value)} />} label="Sleep Better" />
-                  <FormControlLabel value="handleStress" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep3Answer == 'handleStress'} onChange={(event) => setProfileStep3Answer(event.target.value)} />} label="Handle Stress" />
-                  <FormControlLabel value="masterDepression" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep3Answer == 'masterDepression'} onChange={(event) => setProfileStep3Answer(event.target.value)} />} label="Master Depression" />
-                  <FormControlLabel value="overcomeAnxiety" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep3Answer == 'overcomeAnxiety'} onChange={(event) => setProfileStep3Answer(event.target.value)} />} label="Overcome Anxiety" />
-                  <FormControlLabel value="controlAnger" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep3Answer == 'controlAnger'} onChange={(event) => setProfileStep3Answer(event.target.value)} />} label="Control Anger" />
-                  <FormControlLabel value="boostSelfEsteem" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep3Answer == 'boostSelfEsteem'} onChange={(event) => setProfileStep3Answer(event.target.value)} />} label="Boost Self-esteem" />
+                  <FormControlLabel value="sleepBetter" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'sleepBetter'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="Sleep Better" />
+                  <FormControlLabel value="handleStress" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'handleStress'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="Handle Stress" />
+                  <FormControlLabel value="masterDepression" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'masterDepression'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="Master Depression" />
+                  <FormControlLabel value="overcomeAnxiety" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'overcomeAnxiety'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="Overcome Anxiety" />
+                  <FormControlLabel value="controlAnger" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'controlAnger'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="Control Anger" />
+                  <FormControlLabel value="boostSelfEsteem" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'boostSelfEsteem'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="Boost Self-esteem" />
                   <FormControlLabel 
                     value="liveHappier" 
                     className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStep3Answer == 'liveHappier'} onChange={(event) => setProfileStep3Answer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'liveHappier'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Feel Happier <div>Find your rose-tinted glasses. We’ll introduce you to the skills needed to deal with people, handle unforeseeable events, and build a mind-body connection for a fulfilling life.</div>`}} />} />
 
                 </RadioGroup>
