@@ -120,7 +120,7 @@ export default function Login() {
                 <div>
                   <span>Forgot password? Rest it</span>
                   {' '}
-                  <Link href="/auth/reset-password">
+                  <Link href="/auth/forgot-password">
                     <a>here.</a>
                   </Link>
                 </div>
