@@ -11,12 +11,13 @@
   position: fixed;
   height: 100%;
   z-index: 2;
-  
+
 }
 
 .main_menu_logo{
   display: block;
   margin-top: 34px;
+  margin-left: -20px;
 }
 
 .main_menu_btn{
@@ -51,7 +52,22 @@
   padding: 26px 15px;
 }
 
+.menu_item{
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+a.menu_item{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 18px;
+  color: #072B4F;
+}
+
 @media(max-width: 767px){
+  
   .main_menu_wrap{
     max-width: 100%;
     min-height: 0;

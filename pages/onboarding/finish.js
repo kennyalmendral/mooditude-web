@@ -12,11 +12,15 @@ import { useAuth } from '@/context/AuthUserContext'
 
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
+import Lottie from "lottie-react";
+import animationData from "../../src/lotties/onBoardingCompleted.json";
 
 export default function OnboardingFinishPage() {
   const router = useRouter()
 
   const { authUser, loading, signOut } = useAuth()
+
+
 
   useEffect(() => {
     if (!loading && !authUser) {
@@ -28,7 +32,6 @@ export default function OnboardingFinishPage() {
     if (localStorage.getItem('currentProfileStep') !== null) {
       localStorage.setItem('currentProfileStep', 8)
 
-      console.log(`Current profile step: ${localStorage.getItem('currentProfileStep')}`)
     }
   }, [])
 
@@ -37,9 +40,12 @@ export default function OnboardingFinishPage() {
       <div className={styles.onboarding_wrapper}>
         <div className={`${styles.onboarding_inner_wrapper} ${styles.finish_page}`}>
           <div className={styles.lottie_alternative}>
-            <div dangerouslySetInnerHTML={{__html: `<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-            <lottie-player src="https://assets5.lottiefiles.com/datafiles/zc3XRzudyWE36ZBJr7PIkkqq0PFIrIBgp4ojqShI/newAnimation.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop autoplay></lottie-player>`}} />
-
+            
+            <Lottie 
+              animationData={animationData}
+              height={400}
+              width={400}
+            />
 
           </div>
           <h1 className={`mb_0`}>Congratulations</h1>  

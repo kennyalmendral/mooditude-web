@@ -4,6 +4,7 @@ import styles from '@/styles/Menu.module.css';
 import MenuIcon from '@mui/icons-material/Menu';
 import Grow from '@mui/material/Grow';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import Link from "next/link"
 
 export default function MainMenu(props) {
     const { signOut } = useAuth()
@@ -38,20 +39,28 @@ export default function MainMenu(props) {
                     />
                 </div>
                 <Grow in={mainMenuCollapse}>
-                    <div className={`${styles.main_menu_logo}`}>
-                        <a href="/"><img src={`/logo_inner.svg`}  /></a>
+                    <div>
+                        <div className={`${styles.main_menu_logo}`}>
+                            <a href="/"><img src={`/logo_inner.svg`}  /></a>
+                        </div>
+                        <div>
+                            <Link href="/assessment/dashboard"> 
+                            <a className={styles.menu_item} >
+                                Assessments
+                            </a>
+                            </Link>
+                        </div>
                     </div>
                 </Grow>
                 
                 
                 <Grow in={mainMenuCollapse}>
                 <div className={`${styles.main_menu_logout}`}>
-                    
 
                     <a 
                         className={styles.logout} 
                         href="#" 
-                        onClick={signOut}
+                        onClick={() => {props.logoutLoaderHandler(true);signOut()}}
                     >
                         Logout
                     </a>
@@ -67,8 +76,17 @@ export default function MainMenu(props) {
                    onOpen={() => {setOpen(true)}}
                 >
                     <Grow in={mainMenuCollapse}>
+                        <div>
                         <div className={`${styles.mobile_main_menu_logo}`}>
                             <img src={`/logo_inner.svg`}  />   
+                        </div>
+                        <div>
+                            <Link href="/assessment/dashboard"> 
+                            <a className={styles.menu_item} >
+                                Assessments
+                            </a>
+                            </Link>
+                        </div>
                         </div>
                     </Grow>
 
@@ -78,7 +96,7 @@ export default function MainMenu(props) {
                         <a 
                             className={styles.logout} 
                             href="#" 
-                            onClick={signOut}
+                            onClick={() => {props.logoutLoaderHandler(true);signOut}}
                         >
                             Logout
                         </a>

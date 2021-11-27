@@ -81,6 +81,18 @@ a {
 }
 
 @font-face {
+    font-family: 'Circular Std';
+    src: url('/fonts/860c3ec7bbc5da3e97233ccecafe512e.woff2') format('woff2'),
+        url('/fonts/860c3ec7bbc5da3e97233ccecafe512e.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+
+
+@font-face {
     font-family: 'Font Awesome 5 Pro Solid';
     src: url('/fonts/FontAwesome5Pro-Solid.woff2') format('woff2'),
         url('/fonts/FontAwesome5Pro-Solid.woff') format('woff');

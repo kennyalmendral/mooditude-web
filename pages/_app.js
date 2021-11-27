@@ -23,6 +23,7 @@ function App({ Component, pageProps }) {
   const [checkAuth, setCheckAuth] = React.useState(false);
   const [checkMenuCollapse, setCheckMenuCollapse] = React.useState(false);
   const [pageLoader, setPageLoader] = React.useState(true);
+  const [logoutLoader, setLogoutLoader] = React.useState(false);
   
   useEffect(() => {
     firebaseAuth.onAuthStateChanged(user => {
@@ -39,6 +40,22 @@ function App({ Component, pageProps }) {
     setPageLoader(status)
   }
 
+  const logoutLoaderHandler = (status = false) => {
+    setLogoutLoader(status)
+
+    if (status) {
+      setTimeout(function(){
+        Router.events.on('routeChangeComplete', () => setLogoutLoader(false) )
+      }, 300)
+      firebaseAuth.onAuthStateChanged(user => {
+        // if (!user) {
+          setLogoutLoader(false) 
+        // }
+      })
+      
+    }
+  }
+
   const menuCollapseHandler = (status = false) => {
     setCheckMenuCollapse(status)
   }
@@ -50,8 +67,14 @@ function App({ Component, pageProps }) {
           pageLoader ? 
           <div className="page-loader"><GridLoader color={'#1CA566'} loading={pageLoader} size={10} /></div> : ''
         }
+
+        {
+          logoutLoader ? 
+          <div className="page-loader logout-loader"><GridLoader color={'#1CA566'} loading={true} size={10} /></div> : ''
+        }
+
         <div className={`body-wrapper ${checkAuth ? 'logged' : ''} ${checkMenuCollapse ? 'menu_collapsed' : ''}`}>
-          { checkAuth ? <MainMenu menuCollapseHandler={menuCollapseHandler} /> : '' }
+          { checkAuth ? <MainMenu menuCollapseHandler={menuCollapseHandler} logoutLoaderHandler={logoutLoaderHandler} /> : '' }
           <Component 
             {...pageProps} 
             removePageLoader={removePageLoader}
