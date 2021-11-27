@@ -165,6 +165,12 @@ img{
   z-index: 3;
 }
 
+.custom_stepper_wrap > div > div:last-child > span{
+  position: relative;
+  z-index: 2;
+  background: white;
+}
+
 .radio_option_text_wrap{
   font-family: 'Circular Std';
   background: #F3F4F6;

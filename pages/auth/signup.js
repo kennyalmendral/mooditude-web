@@ -82,15 +82,17 @@ export default function SignUp(props) {
 
   const handleSignUp = e => {
     e.preventDefault()
+
     setBtnDisabled(true)
     setIsSigningUp(true)
     setError(null)
 
     if (password === passwordConfirmation) {
+      props.loginLoaderHandler(true)
       createUserWithEmailAndPassword(email, password)
         .then(authUser => {
           setIsSigningUp(false)
-          
+          props.loginLoaderHandler(true)
           firebaseAuth.onAuthStateChanged(user => {
             if (user) {
               firebaseStore
@@ -150,9 +152,11 @@ export default function SignUp(props) {
             }
           })
           
-          router.push('/onboarding/welcome')
+          // router.push('/onboarding/welcome')
+          location.href='/onboarding/welcome'
         })
         .catch(error => {
+          props.loginLoaderHandler(false)
           setIsSigningUp(false)
           checkPass(password, passwordConfirmation, isPrivacyPolicyChecked)
           setError(error.message)
