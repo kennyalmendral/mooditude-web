@@ -136,6 +136,7 @@ export default function AssessmentReport() {
 
     firebaseAuth.onAuthStateChanged(user => {
       let usersM3AssessmentScoresRef
+      let usersRef
       let unsubscribe
 
       if (user) {
@@ -178,125 +179,143 @@ export default function AssessmentReport() {
                   pdfDoc: null,
                 })
                 .then(response => {
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep1Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep2Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep3Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep4Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep5Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep6Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep7Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep8Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep9Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep10Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep11Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep12Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep13Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep14Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep15Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep16Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep17Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep18Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep19Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep20Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep21Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep23Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep24Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep25Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep26Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep28Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep29Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep30Answer`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep31Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep1Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep2Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep3Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep4Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep5Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep6Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep7Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep8Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep9Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep10Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep11Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep12Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep13Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep14Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep15Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep16Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep17Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep18Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep19Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep20Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep21Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep23Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep24Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep25Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep26Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep28Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep29Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep30Answer`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep31Answer`)
 
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep1Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep2Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep3Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep4Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep5Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep6Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep7Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep8Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep9Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep10Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep11Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep12Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep13Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep14Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep15Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep16Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep17Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep18Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep19Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep20Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep21Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep23Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep24Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep25Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep26Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep28Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep29Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep30Time`)
-                  localStorage.removeItem(`${authUser.uid}_assessmentStep31Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep1Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep2Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep3Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep4Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep5Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep6Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep7Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep8Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep9Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep10Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep11Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep12Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep13Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep14Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep15Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep16Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep17Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep18Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep19Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep20Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep21Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep23Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep24Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep25Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep26Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep28Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep29Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep30Time`)
+                  localStorage.removeItem(`${user.uid}_assessmentStep31Time`)
 
-                  localStorage.setItem(`${authUser.uid}_onboardingStep`, 2)
+                  const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
+          
+                  updateUserM3AssessmentScores({
+                    userId: user.uid,
+                    epochId: epochMilliseconds,
+                    rawData: assessmentAnswers.join(','),
+                  }).then(result => {
+                    console.log('updateUserM3AssessmentScores', result.data)
+          
+                    setRiskScore(result.data.allScore)
+                    setAllRiskLevel(result.data.allRiskLevel)
+                    setDepressionRiskScore(result.data.depressionScore)
+                    setDepressionRiskLevel(result.data.depressionRiskLevel)
+                    setAnxietyRiskScore(result.data.anxietyScore)
+                    setAnxietyRiskLevel(result.data.anxietyRiskLevel)
+                    setPtsdRiskScore(result.data.ptsdScore)
+                    setPtsdRiskLevel(result.data.ptsdRiskLevel)
+                    setBipolarRiskScore(result.data.bipolarScore)
+                    setBipolarRiskLevel(result.data.bipolarRiskLevel)
+                    setHasSuicidalThoughts(result.data.hasSuicidalThoughts)
+                    setUsedAlcohol(result.data.usedAlcohol)
+                    setUsedDrug(result.data.usedDrug)
+                    setThoughtsOfSuicideAnswer(result.data.thoughtsOfSuicideAnswer)
+                    setImpairsWorkSchoolAnswer(result.data.impairsWorkSchoolAnswer)
+                    setImpairsFriendsFamilyAnswer(result.data.impairsFriendsFamilyAnswer)
+                    setLedToUsingAlcoholAnswer(result.data.ledToUsingAlcoholAnswer)
+                    setLedToUsingDrugAnswer(result.data.ledToUsingDrugAnswer)
+
+                    if (assessmentScores.createDate) {
+                      setAssessmentDate(new Date(assessmentScores.createDate.seconds * 1000).toLocaleString('en-US', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric'
+                      }))
+                    }
+                  })
+
+                  firebaseDatabase
+                    .ref()
+                    .child('users')
+                    .child(user.uid)
+                    .update({
+                      onboardingStep: 2
+                    })
+                  
+                  localStorage.setItem(`${user.uid}_onboardingStep`, 2)
+
+                  unsubscribe = usersM3AssessmentScoresRef
+                    .get()
+                    .then(doc => {
+                      if (doc.docs[0] !== undefined) {
+                        let docData = doc.docs[0].data()
+
+                        setAssessmentScores(docData)
+
+                        setMostOfTheTimeAnswerCount(docData.rawData.split(',').filter(x => x == 4).length)
+                        setOftenAnswerCount(docData.rawData.split(',').filter(x => x == 3).length)
+                        setSometimesAnswerCount(docData.rawData.split(',').filter(x => x == 2).length)
+                        setRarelyAnswerCount(docData.rawData.split(',').filter(x => x == 1).length)
+                        setNoneAnswerCount(docData.rawData.split(',').filter(x => x == 0).length)
+                      }
+                    })
+
+                  usersRef = firebaseStore
+                    .collection('Users')
+                    .doc(user.uid)
+                    
+                  unsubscribe = usersRef
+                    .get()
+                    .then(doc => {
+                      doc.data() && setCustomerType(doc.data().customerType)
+                    })
                 })
                 .catch(error => {
                   console.log('error:', error)
                 })
             }
-          })
-      } else {
-        unsubscribe && unsubscribe()
-      }
-    })
-
-    firebaseAuth.onAuthStateChanged(user => {
-      if (user) {
-        firebaseDatabase
-          .ref()
-          .child('users')
-          .child(user.uid)
-          .update({
-            onboardingStep: 2
-          })
-      }
-    })
-
-    let usersM3AssessmentScoresRef
-    let usersRef
-    let unsubscribe
-
-    firebaseAuth.onAuthStateChanged(user => {
-      if (user) {
-        usersM3AssessmentScoresRef = firebaseStore
-          .collection('M3Assessment')
-          .doc(user.uid)
-          .collection('scores')
-
-        unsubscribe = usersM3AssessmentScoresRef
-          .get()
-          .then(doc => {
-            if (doc.docs[0] !== undefined) {
-              let docData = doc.docs[0].data()
-
-              setAssessmentScores(docData)
-
-              setMostOfTheTimeAnswerCount(docData.rawData.split(',').filter(x => x == 4).length)
-              setOftenAnswerCount(docData.rawData.split(',').filter(x => x == 3).length)
-              setSometimesAnswerCount(docData.rawData.split(',').filter(x => x == 2).length)
-              setRarelyAnswerCount(docData.rawData.split(',').filter(x => x == 1).length)
-              setNoneAnswerCount(docData.rawData.split(',').filter(x => x == 0).length)
-            }
-          })
-
-        usersRef = firebaseStore
-          .collection('Users')
-          .doc(user.uid)
-          
-        unsubscribe = usersRef
-          .get()
-          .then(doc => {
-            doc.data() && setCustomerType(doc.data().customerType)
           })
       } else {
         unsubscribe && unsubscribe()
@@ -861,7 +880,7 @@ export default function AssessmentReport() {
 
               {isScoresVisible && (
                 <div className={styles.report_content_item} key={'report_content_paid_wrap'}>
-                  <div className={styles.scores_section} style={{ width: '370px' }}>
+                  <div className={styles.scores_section} style={{ width: '400px' }}>
                     <h2 style={{ fontWeight: '500' }}>Diagnosis Risks</h2>
 
                     <div className={styles.diagnosis_risks}>
@@ -903,7 +922,7 @@ export default function AssessmentReport() {
                     </div>
                   </div>
 
-                  <div className={styles.scores_section} style={{ width: '370px' }}>
+                  <div className={styles.scores_section} style={{ width: '400px' }}>
                     <h2 style={{ fontWeight: '500' }}>Functional Impairments</h2>
 
                     <div className={styles.functional_impairments}>

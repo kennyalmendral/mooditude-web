@@ -73,8 +73,7 @@ export default function Assessment1() {
 
   const handleChange = (e) => {
     clearInterval(timer)
-    // localStorage.setItem(`${authUser.uid}_assessmentStep1Time`, assessmentStep1Time)
-    
+    localStorage.setItem(`${authUser.uid}_assessmentStep1Time`, assessmentStep1Time)    
 
     setAssessmentStep1Answer(e.target.value)
   }

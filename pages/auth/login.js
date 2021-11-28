@@ -46,15 +46,14 @@ export default function Login(props) {
     setError(null) 
     signInWithEmailAndPassword(email, password)
       .then(user => {
-        // setIsLoggingIn(false)
-        // router.push('/onboarding/welcome')
-
         if (user && localStorage.getItem(`${user.uid}_onboardingStep`) == 0) {
           location.href='/onboarding/welcome'
         } else if (user && localStorage.getItem(`${user.uid}_onboardingStep`) == 1) {
           location.href='/'
         } else if (user && localStorage.getItem(`${user.uid}_onboardingStep`) == 2) {
           location.href = '/assessment/report'
+        } else {
+          location.href='onboarding/welcome'
         }
       })
       .catch(error => {
