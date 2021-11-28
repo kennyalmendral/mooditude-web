@@ -60,8 +60,16 @@ export default function AssessmentReport() {
   const [rarelyAnswerCount, setRarelyAnswerCount] = useState(0)
   const [noneAnswerCount, setNoneAnswerCount] = useState(0)
 
+  const [mostOfTheTimeAnswerQuestions, setMostOfTheTimeAnswerQuestions] = useState([])
+  const [oftenAnswerQuestions, setOftenAnswerQuestions] = useState([])
+  const [sometimesAnswerQuestions, setSometimesAnswerQuestions] = useState([])
+  const [rarelyAnswerQuestions, setRarelyAnswerQuestions] = useState([])
+  const [noneAnswerQuestions, setNoneAnswerQuestions] = useState([])
+
   const [assessmentDate, setAssessmentDate] = useState(null)
   const [customerType, setCustomerType] = useState('free')
+
+  const [questions, setQuestions] = useState([])
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -70,6 +78,60 @@ export default function AssessmentReport() {
   }, [authUser, loading, router])
 
   useEffect(() => {
+    Object.keys(mostOfTheTimeAnswerQuestions).length > 0 && console.log('most of the time answer questions', mostOfTheTimeAnswerQuestions)
+    Object.keys(oftenAnswerQuestions).length > 0 && console.log('often answer questions', oftenAnswerQuestions)
+    Object.keys(sometimesAnswerQuestions).length > 0 && console.log('sometimes answer questions', sometimesAnswerQuestions)
+    Object.keys(rarelyAnswerQuestions).length > 0 && console.log('rarely answer questions', rarelyAnswerQuestions)
+    Object.keys(noneAnswerQuestions).length > 0 && console.log('none answer questions', noneAnswerQuestions)
+  }, [mostOfTheTimeAnswerQuestions, oftenAnswerQuestions, sometimesAnswerQuestions, rarelyAnswerQuestions, noneAnswerQuestions])
+
+  useEffect(() => {
+    if (mostOfTheTimeAnswerCount > 0) {
+      assessmentScores.rawData.split(',').forEach((value, index) => {
+        value == 4 && setMostOfTheTimeAnswerQuestions(mostOfTheTimeAnswerQuestions => [...mostOfTheTimeAnswerQuestions, index])
+      })
+    }
+  }, [mostOfTheTimeAnswerCount])
+
+  useEffect(() => {
+    if (oftenAnswerCount > 0) {
+      assessmentScores.rawData.split(',').forEach((value, index) => {
+        value == 3 && setOftenAnswerQuestions(oftenAnswerQuestions => [...oftenAnswerQuestions, index])
+      })
+    }
+  }, [oftenAnswerCount])
+
+  useEffect(() => {
+    if (sometimesAnswerCount > 0) {
+      assessmentScores.rawData.split(',').forEach((value, index) => {
+        value == 2 && setSometimesAnswerQuestions(sometimesAnswerQuestions => [...sometimesAnswerQuestions, index])
+      })
+    }
+  }, [sometimesAnswerCount])
+
+  useEffect(() => {
+    if (rarelyAnswerCount > 0) {
+      assessmentScores.rawData.split(',').forEach((value, index) => {
+        value == 1 && setRarelyAnswerQuestions(rarelyAnswerQuestions => [...rarelyAnswerQuestions, index])
+      })
+    }
+  }, [rarelyAnswerCount])
+
+  useEffect(() => {
+    if (noneAnswerCount > 0) {
+      assessmentScores.rawData.split(',').forEach((value, index) => {
+        value == 0 && setNoneAnswerQuestions(noneAnswerQuestions => [...noneAnswerQuestions, index])
+      })
+    }
+  }, [noneAnswerCount])
+
+  useEffect(() => {
+    setMostOfTheTimeAnswerQuestions([])
+    setOftenAnswerQuestions([])
+    setSometimesAnswerQuestions([])
+    setRarelyAnswerQuestions([])
+    setNoneAnswerQuestions([])
+
     let assessmentAnswers = [
       authUser && localStorage.getItem(`${authUser.uid}_assessmentStep1Answer`),
       authUser && localStorage.getItem(`${authUser.uid}_assessmentStep2Answer`),
@@ -239,6 +301,43 @@ export default function AssessmentReport() {
                   localStorage.removeItem(`${authUser.uid}_assessmentStep31Time`)
 
                   localStorage.setItem(`${authUser.uid}_onboardingStep`, 2)
+
+                  const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
+  
+                  updateUserM3AssessmentScores({
+                    userId: user.uid,
+                    epochId: epochMilliseconds,
+                    rawData: assessmentAnswers.join(','),
+                  }).then(result => {
+                    // console.log('updateUserM3AssessmentScores', result.data)
+          
+                    setRiskScore(result.data.allScore)
+                    setAllRiskLevel(result.data.allRiskLevel)
+                    setDepressionRiskScore(result.data.depressionScore)
+                    setDepressionRiskLevel(result.data.depressionRiskLevel)
+                    setAnxietyRiskScore(result.data.anxietyScore)
+                    setAnxietyRiskLevel(result.data.anxietyRiskLevel)
+                    setPtsdRiskScore(result.data.ptsdScore)
+                    setPtsdRiskLevel(result.data.ptsdRiskLevel)
+                    setBipolarRiskScore(result.data.bipolarScore)
+                    setBipolarRiskLevel(result.data.bipolarRiskLevel)
+                    setHasSuicidalThoughts(result.data.hasSuicidalThoughts)
+                    setUsedAlcohol(result.data.usedAlcohol)
+                    setUsedDrug(result.data.usedDrug)
+                    setThoughtsOfSuicideAnswer(result.data.thoughtsOfSuicideAnswer)
+                    setImpairsWorkSchoolAnswer(result.data.impairsWorkSchoolAnswer)
+                    setImpairsFriendsFamilyAnswer(result.data.impairsFriendsFamilyAnswer)
+                    setLedToUsingAlcoholAnswer(result.data.ledToUsingAlcoholAnswer)
+                    setLedToUsingDrugAnswer(result.data.ledToUsingDrugAnswer)
+                    
+                    if (assessmentScores.createDate) {
+                      setAssessmentDate(new Date(assessmentScores.createDate.seconds * 1000).toLocaleString('en-US', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric'
+                      }))
+                    }
+                  })
                 })
                 .catch(error => {
                   console.log('error:', error)
@@ -315,7 +414,7 @@ export default function AssessmentReport() {
             epochId: assessmentScores.id,
             rawData: assessmentScores.rawData,
           }).then(result => {
-            console.log('updateUserM3AssessmentScores', result.data)
+            // console.log('updateUserM3AssessmentScores', result.data)
   
             setRiskScore(result.data.allScore)
             setAllRiskLevel(result.data.allRiskLevel)
@@ -346,6 +445,69 @@ export default function AssessmentReport() {
       })
     }
   }, [assessmentScores])
+
+  const getQuestion = (index) => {
+    switch (index) {
+      case 0:
+        return "Feel sad/unhappy"
+      case 1:
+        return "Can't concentrate/focus"
+      case 2:
+        return "Nothing gives pleasure"
+      case 3:
+        return "Tired, no energy"
+      case 4:
+        return "Suicidal thoughts"
+      case 5:
+        return "Difficulty sleeping"
+      case 6:
+        return "Sleeping too much"
+      case 7:
+        return "Decreased appetite"
+      case 8:
+        return "Increased appetite"
+      case 9:
+        return "Tense anxious can't sit"
+      case 10:
+        return "Worried or fearful"
+      case 11:
+        return "Anxiety/panic attacks"
+      case 12:
+        return "Worried about dying/losing control"
+      case 13:
+        return "Nervous in social situations"
+      case 14:
+        return "Nightmares, flashbacks"
+      case 15:
+        return "Jumpy, startled easily"
+      case 16:
+        return "Avoid places"
+      case 17:
+        return "Dull, numb, or detached"
+      case 18:
+        return "Can’t get thoughts out"
+      case 19:
+        return "Must repeat rituals"
+      case 20:
+        return "Need to check/recheck things"
+      case 21:
+        return "More energy than usual"
+      case 22:
+        return "Irritable angry"
+      case 23:
+        return "Excited revved high"
+      case 24:
+        return "Needed less sleep"
+      case 25:
+        return "Interferes with work/school"
+      case 26:
+        return "Affects friends/family relationships"
+      case 27:
+        return "Has led to alcohol to get by"
+      case 28:
+        return "Has led to using drugs"
+    }
+  }
 
   return (
     <Layout title={`Assessment Full Report | ${SITE_NAME}`}>
@@ -861,7 +1023,7 @@ export default function AssessmentReport() {
 
               {isScoresVisible && (
                 <div className={styles.report_content_item} key={'report_content_paid_wrap'}>
-                  <div className={styles.scores_section} style={{ width: '370px' }}>
+                  <div className={styles.scores_section} style={{ width: '400px' }}>
                     <h2 style={{ fontWeight: '500' }}>Diagnosis Risks</h2>
 
                     <div className={styles.diagnosis_risks}>
@@ -903,7 +1065,7 @@ export default function AssessmentReport() {
                     </div>
                   </div>
 
-                  <div className={styles.scores_section} style={{ width: '370px' }}>
+                  <div className={styles.scores_section} style={{ width: '400px' }}>
                     <h2 style={{ fontWeight: '500' }}>Functional Impairments</h2>
 
                     <div className={styles.functional_impairments}>
@@ -989,29 +1151,69 @@ export default function AssessmentReport() {
                     </div>
                   </div>
 
-                  <div className={styles.scores_section} style={{ width: '370px' }}>
+                  <div className={styles.scores_section} style={{ width: '400px' }}>
                     <h2 style={{ fontWeight: '500', marginBottom: '35px' }}>Questions</h2>
 
                     <div className={styles.questions}>
                       <div>
-                        <div>
+                        <div style={{ marginBottom: '30px' }}>
                           <h3>Most of the time ({mostOfTheTimeAnswerCount})</h3>
+
+                          {mostOfTheTimeAnswerQuestions.length > 0 && (
+                            <div style={{ marginLeft: '33px' }}>
+                              {mostOfTheTimeAnswerQuestions.map((question) => (
+                                <p>{getQuestion(parseInt(question))}</p>
+                              ))}
+                            </div>
+                          )}
                         </div>
 
-                        <div>
+                        <div style={{ marginBottom: '30px' }}>
                           <h3>Often ({oftenAnswerCount})</h3>
+
+                          {oftenAnswerQuestions.length > 0 && (
+                            <div style={{ marginLeft: '33px' }}>
+                              {oftenAnswerQuestions.map((question) => (
+                                <p>{getQuestion(parseInt(question))}</p>
+                              ))}
+                            </div>
+                          )}
                         </div>
 
-                        <div>
+                        <div style={{ marginBottom: '30px' }}>
                           <h3>Sometimes ({sometimesAnswerCount})</h3>
+
+                          {sometimesAnswerQuestions.length > 0 && (
+                            <div style={{ marginLeft: '33px' }}>
+                              {sometimesAnswerQuestions.map((question) => (
+                                <p>{getQuestion(parseInt(question))}</p>
+                              ))}
+                            </div>
+                          )}
                         </div>
 
-                        <div>
+                        <div style={{ marginBottom: '30px' }}>
                           <h3>Rarely ({rarelyAnswerCount})</h3>
+
+                          {rarelyAnswerQuestions.length > 0 && (
+                            <div style={{ marginLeft: '33px' }}>
+                              {rarelyAnswerQuestions.map((question) => (
+                                <p>{getQuestion(parseInt(question))}</p>
+                              ))}
+                            </div>
+                          )}
                         </div>
 
                         <div>
                           <h3>None ({noneAnswerCount})</h3>
+
+                          {noneAnswerQuestions.length > 0 && (
+                            <div style={{ marginLeft: '33px' }}>
+                              {noneAnswerQuestions.map((question) => (
+                                <p>{getQuestion(parseInt(question))}</p>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
