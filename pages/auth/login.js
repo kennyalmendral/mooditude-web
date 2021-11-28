@@ -11,6 +11,10 @@ import { SITE_NAME } from '@/config/index'
 import { useAuth } from '@/context/AuthUserContext'
 import TextField from '@mui/material/TextField';
 
+import Firebase from 'lib/Firebase'
+
+const firebaseAuth = Firebase.auth()
+const firebaseDatabase = Firebase.database()
 
 export default function Login(props) {
   const router = useRouter()
@@ -53,7 +57,21 @@ export default function Login(props) {
         } else if (user && localStorage.getItem(`${user.uid}_onboardingStep`) == 2) {
           location.href = '/assessment/report'
         } else {
-          location.href='onboarding/welcome'
+          firebaseDatabase
+            .ref()
+            .child('users')
+            .child(user.uid)
+            .on('value', snapshot => {
+              if (snapshot.val().onboardingStep == 0) {
+                location.href='/onboarding/welcome'
+              } else if (snapshot.val().onboardingStep == 1) {
+                location.href='/'
+              } else if (snapshot.val().onboardingStep == 2) {
+                location.href = '/assessment/report'
+              }
+            }, error => {
+              console.log(error)
+            })
         }
       })
       .catch(error => {

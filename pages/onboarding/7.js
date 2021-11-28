@@ -71,37 +71,36 @@ export default function Onboarding7() {
     if (profileStepAnswer !== null) {
       localStorage.setItem(`${authUser.uid}_profileStep7Answer`, profileStepAnswer)
 
-      firebaseAuth.onAuthStateChanged(user => {
-        if (user) {
-          firebaseDatabase
-            .ref()
-            .child('users')
-            .child(user.uid)
-            .update({
-              ageGroup: parseInt(localStorage.getItem(`${authUser.uid}_profileStep1Answer`)) || 0,
-              gender: parseInt(localStorage.getItem(`${authUser.uid}_profileStep2Answer`)) || 0,
-              topGoal: localStorage.getItem(`${authUser.uid}_profileStep3Answer`) || '',
-              topChallenges: localStorage.getItem(`${authUser.uid}_profileStep4Answer`) || '',
-              goingToTherapy: localStorage.getItem(`${authUser.uid}_profileStep5Answer`) || false,
-              knowCbt: localStorage.getItem(`${authUser.uid}_profileStep6Answer`) || false,
-              committedToSelfhelp: localStorage.getItem(`${authUser.uid}_profileStep7Answer`) || false,
-              onboardingStep: 1
-            })
+      if (authUser) {
+        firebaseDatabase
+          .ref()
+          .child('users')
+          .child(authUser.uid)
+          .update({
+            ageGroup: parseInt(localStorage.getItem(`${authUser.uid}_profileStep1Answer`)) || 0,
+            gender: parseInt(localStorage.getItem(`${authUser.uid}_profileStep2Answer`)) || 0,
+            topGoal: localStorage.getItem(`${authUser.uid}_profileStep3Answer`) || '',
+            topChallenges: localStorage.getItem(`${authUser.uid}_profileStep4Answer`) || '',
+            goingToTherapy: localStorage.getItem(`${authUser.uid}_profileStep5Answer`) || false,
+            knowCbt: localStorage.getItem(`${authUser.uid}_profileStep6Answer`) || false,
+            committedToSelfhelp: localStorage.getItem(`${authUser.uid}_profileStep7Answer`) || false,
+            onboardingStep: 1
+          })
 
-          localStorage.removeItem(`${authUser.uid}_profileStep1Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep2Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep3Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep4Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep5Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep6Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep7Answer`)
-          if (authUser && localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
-            localStorage.setItem(`${authUser.uid}_onboardingStep`, 1)
-          }
-          // router.push('/onboarding/finish')
-          location.href='/onboarding/finish'
+        localStorage.removeItem(`${authUser.uid}_profileStep1Answer`)
+        localStorage.removeItem(`${authUser.uid}_profileStep2Answer`)
+        localStorage.removeItem(`${authUser.uid}_profileStep3Answer`)
+        localStorage.removeItem(`${authUser.uid}_profileStep4Answer`)
+        localStorage.removeItem(`${authUser.uid}_profileStep5Answer`)
+        localStorage.removeItem(`${authUser.uid}_profileStep6Answer`)
+        localStorage.removeItem(`${authUser.uid}_profileStep7Answer`)
+        
+        if (localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
+          localStorage.setItem(`${authUser.uid}_onboardingStep`, 1)
         }
-      })
+        // router.push('/onboarding/finish')
+        location.href='/onboarding/finish'
+      }
     } else {
       setFormError(true)
     }

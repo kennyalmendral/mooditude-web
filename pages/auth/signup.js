@@ -93,6 +93,7 @@ export default function SignUp(props) {
         .then(authUser => {
           setIsSigningUp(false)
           props.loginLoaderHandler(true)
+
           firebaseAuth.onAuthStateChanged(user => {
             if (user) {
               firebaseStore
@@ -108,53 +109,56 @@ export default function SignUp(props) {
                   },
                   customerType: 'free',
                 })
-              
-              firebaseDatabase
-                .ref()
-                .child('users')
-                .child(user.uid)
-                .set({
-                  email: email,
-                  userId: user.uid,
-                  name: name,
-                  photo: '',
-                  topGoal: '',
-                  topChallenges: '',
-                  memberSince: new Date().getTime(),
-                  committedToSelfhelp: false,
-                  activatedReminderAtStartup: false,
-                  knowCbt: false,
-                  ageGroup: 0,
-                  gender: 0,
-                  veteranStatus: '',
-                  ethnicity: '',
-                  religion: '',
-                  isParent: null,
-                  isLGBTQ: null,
-                  phone: '',
-                  userAddress: null,
-                  culturalValues: null,
-                  companyInfo: null,
-                  goingToTherapy: false,
-                  isAdmin: false,
-                  freshChatRestoreID: null,
-                  customerType: 'free',
-                  paymentType: null,
-                  expiryDate: null,
-                  stats: null,
-                  nps: 0,
-                  onboardingStep: 0,
-                  lastAssessmentScore: null,
-                  lastAssessmentDate: null
-                })
+                .then(() => {
+                  firebaseDatabase
+                    .ref()
+                    .child('users')
+                    .child(user.uid)
+                    .set({
+                      email: email,
+                      userId: user.uid,
+                      name: name,
+                      photo: '',
+                      topGoal: '',
+                      topChallenges: '',
+                      memberSince: new Date().getTime(),
+                      committedToSelfhelp: false,
+                      activatedReminderAtStartup: false,
+                      knowCbt: false,
+                      ageGroup: 0,
+                      gender: 0,
+                      veteranStatus: '',
+                      ethnicity: '',
+                      religion: '',
+                      isParent: null,
+                      isLGBTQ: null,
+                      phone: '',
+                      userAddress: null,
+                      culturalValues: null,
+                      companyInfo: null,
+                      goingToTherapy: false,
+                      isAdmin: false,
+                      freshChatRestoreID: null,
+                      customerType: 'free',
+                      paymentType: null,
+                      expiryDate: null,
+                      stats: null,
+                      nps: 0,
+                      onboardingStep: 0,
+                      lastAssessmentScore: null,
+                      lastAssessmentDate: null
+                    })
+                    .then(() => {
+                      location.href = '/onboarding/welcome'
 
-              localStorage.setItem(`${user.uid}_currentProfileStep`, 0)
-              localStorage.setItem(`${user.uid}_onboardingStep`, 0)
+                      localStorage.setItem(`${user.uid}_currentProfileStep`, 0)
+                      localStorage.setItem(`${user.uid}_onboardingStep`, 0)
+                    })
+                })
             }
           })
           
           // router.push('/onboarding/welcome')
-          location.href='/onboarding/welcome'
         })
         .catch(error => {
           props.loginLoaderHandler(false)
