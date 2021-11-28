@@ -86,20 +86,21 @@ export default function Onboarding7() {
             committedToSelfhelp: localStorage.getItem(`${authUser.uid}_profileStep7Answer`) || false,
             onboardingStep: 1
           })
-
-        localStorage.removeItem(`${authUser.uid}_profileStep1Answer`)
-        localStorage.removeItem(`${authUser.uid}_profileStep2Answer`)
-        localStorage.removeItem(`${authUser.uid}_profileStep3Answer`)
-        localStorage.removeItem(`${authUser.uid}_profileStep4Answer`)
-        localStorage.removeItem(`${authUser.uid}_profileStep5Answer`)
-        localStorage.removeItem(`${authUser.uid}_profileStep6Answer`)
-        localStorage.removeItem(`${authUser.uid}_profileStep7Answer`)
-        
-        if (localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
-          localStorage.setItem(`${authUser.uid}_onboardingStep`, 1)
-        }
-        // router.push('/onboarding/finish')
-        location.href='/onboarding/finish'
+          .then(() => {
+            localStorage.removeItem(`${authUser.uid}_profileStep1Answer`)
+            localStorage.removeItem(`${authUser.uid}_profileStep2Answer`)
+            localStorage.removeItem(`${authUser.uid}_profileStep3Answer`)
+            localStorage.removeItem(`${authUser.uid}_profileStep4Answer`)
+            localStorage.removeItem(`${authUser.uid}_profileStep5Answer`)
+            localStorage.removeItem(`${authUser.uid}_profileStep6Answer`)
+            localStorage.removeItem(`${authUser.uid}_profileStep7Answer`)
+            
+            if (localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
+              localStorage.setItem(`${authUser.uid}_onboardingStep`, 1)
+            }
+            // router.push('/onboarding/finish')
+            location.href='/onboarding/finish'
+          })
       }
     } else {
       setFormError(true)
