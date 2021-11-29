@@ -76,9 +76,8 @@ export default function Assessment10() {
   const handleChange = (e) => {
     clearInterval(timer)
     localStorage.setItem(`${authUser.uid}_assessmentStep10Time`, assessmentStep10Time)
-    console.log(`Timer cleared at ${assessmentStep10Time} second(s)`)
-
     setAssessmentStep10Answer(e.target.value)
+    router.push('/assessment/11')
   }
 
   const handleNextStep = () => {

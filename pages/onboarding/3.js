@@ -102,17 +102,42 @@ export default function Onboarding3() {
                 
                 <RadioGroup>
                   
-                  <FormControlLabel value="sleepBetter" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'sleepBetter'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="Sleep Better" />
-                  <FormControlLabel value="handleStress" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'handleStress'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="Handle Stress" />
-                  <FormControlLabel value="masterDepression" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'masterDepression'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="Master Depression" />
-                  <FormControlLabel value="overcomeAnxiety" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'overcomeAnxiety'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="Overcome Anxiety" />
-                  <FormControlLabel value="controlAnger" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'controlAnger'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="Control Anger" />
-                  <FormControlLabel value="boostSelfEsteem" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'boostSelfEsteem'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="Boost Self-esteem" />
+                  
+                  <FormControlLabel 
+                    value="sleepBetter" 
+                    className={styles.with_text_wrap}
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'liveHappier'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Sleep Better <div>We get it; without a good night's sleep it's a struggle to get through the day. We'll help you build a routine that'll improve your sleep.</div>`}} />} />
+                  <FormControlLabel 
+                    value="handleStress" 
+                    className={styles.with_text_wrap}
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'liveHappier'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Handle Stress <div>Despite being unpleasant, stress is not an illness. But there are connections between stress and mental health conditions. We'll introduce you to self-care techniques for managing stress.</div>`}} />} />
+                  <FormControlLabel 
+                    value="masterDepression" 
+                    className={styles.with_text_wrap}
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'liveHappier'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Master Depression <div>Depression is the absence of hope. You look forward to feeling alive again. We'll introduce you to tools and techniques that inspire hope.</div>`}} />} />
+                  <FormControlLabel 
+                    value="overcomeAnxiety" 
+                    className={styles.with_text_wrap}
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'liveHappier'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Overcome Anxiety <div>Anxiety is a beast. We'll help you create a mind-body connection to change your behavior, lifestyle, and thought patterns. The result? A calmer and happier life.</div>`}} />} />
+                  <FormControlLabel 
+                    value="controlAnger" 
+                    className={styles.with_text_wrap}
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'liveHappier'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Control Anger <div>Anger is our instinctual response to a threat. Learn to escape its control. We'll give you coping activities to use when you feel hurt, annoyed, or disappointed.</div>`}} />} />
+                  <FormControlLabel 
+                    value="boostSelfEsteem" 
+                    className={styles.with_text_wrap}
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'liveHappier'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Boost Self-esteem <div>Overcome your fear of failure and pursue your dreams. We'll show you how to dismiss negative thoughts, meet your inner-self, and build rockstar self-esteem.</div>`}} />} />
                   <FormControlLabel 
                     value="liveHappier" 
                     className={styles.with_text_wrap}
                     control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'liveHappier'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
-                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Feel Happier <div>Find your rose-tinted glasses. We’ll introduce you to the skills needed to deal with people, handle unforeseeable events, and build a mind-body connection for a fulfilling life.</div>`}} />} />
+                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Feel Happier <div>Find your rose-tinted glasses. We'll introduce you to the skills needed to deal with people, handle unforeseeable events, and build a mind-body connection for a fulfilling life.</div>`}} />} />
 
                 </RadioGroup>
                 {

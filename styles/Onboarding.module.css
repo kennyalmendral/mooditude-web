@@ -2,17 +2,22 @@
 	padding: 30px 63px;
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	/*justify-content: center;*/
 	min-height: 100vh;
 }
 
 
 
 .onboarding_inner_wrapper{
-	min-height: 95vh;
+	min-height: 75vh;
 	display: flex;
-    flex-direction: column;
+  flex-direction: column;
    
+}
+
+.onboarding_inner_wrapper.get_started_page{
+	height: auto;
+	min-height: auto;
 }
 
 .onboarding_wrapper h1{
@@ -126,15 +131,18 @@
 	font-family: 'Circular Std';
 	background: #F3F4F6;
 	border-radius: 4px;
-	/* max-width: 300px; */
+	max-width: 500px; 
+
 	padding: 14px;
 	font-style: normal;
 	font-weight: normal;
-	font-size: 12px;
-	line-height: 13px;
+	font-size: 14px;
+	line-height: 16px;
 	margin-top: 8px;
 	display: none;
 	color: #516B84;
+	animation: fadeInRight .3s ease-in;
+
 }
 
 
@@ -342,6 +350,60 @@
 .download_app_wrap .app_btns a img{
 	max-width: 100%;
 }
+
+
+@-webkit-keyframes fadeInRight {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(40%, 0, 0);
+    transform: translate3d(40%, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@-webkit-keyframes bounceInRight {
+  from,
+  60%,
+  75%,
+  90%,
+  to {
+    -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(3000px, 0, 0) scaleX(3);
+    transform: translate3d(3000px, 0, 0) scaleX(3);
+  }
+
+  60% {
+    opacity: 1;
+    -webkit-transform: translate3d(-25px, 0, 0) scaleX(1);
+    transform: translate3d(-25px, 0, 0) scaleX(1);
+  }
+
+  75% {
+    -webkit-transform: translate3d(10px, 0, 0) scaleX(0.98);
+    transform: translate3d(10px, 0, 0) scaleX(0.98);
+  }
+
+  90% {
+    -webkit-transform: translate3d(-5px, 0, 0) scaleX(0.995);
+    transform: translate3d(-5px, 0, 0) scaleX(0.995);
+  }
+
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 
 @media(min-width: 1025px) and (max-width: 1500px){
 	.on_assessment_wrapper .custom_stepper_wrapper svg{

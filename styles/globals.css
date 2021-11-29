@@ -245,6 +245,31 @@ img{
   display: none!important;
 }
 
+.MuiTextField-root,
+.MuiTextField-root input{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  /* identical to box height */
+
+
+  /* Primary */
+
+  color: #072B4F;
+}
+
+.MuiTextField-root label{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  color: #A8B5C1;
+
+}
+
 @media(min-width: 1025px) and (max-width: 1500px){
   .custom_stepper_wrap .Mui-completed .MuiStepLabel-iconContainer:before{
       width: 12px;

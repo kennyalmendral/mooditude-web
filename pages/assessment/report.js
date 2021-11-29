@@ -744,11 +744,11 @@ export default function AssessmentReport() {
                               <p>For the full experience download Mooditude’s mobile app and login with your credentials. </p>
 
                               <div className={styles.app_btns}>
-                                <a href="#">
+                                <a href="https://apps.apple.com/us/app/mooditude-cbt-therapy/id1450661800" target="_blank">
                                   <img src="/Apple.png" alt="" />
                                 </a>  
 
-                                <a href="#">
+                                <a href="https://play.google.com/store/apps/details?id=com.health.mental.mooditude" target="_blank">
                                   <img src="/Android.png" alt="" />
                                 </a>  
                               </div>

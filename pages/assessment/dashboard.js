@@ -21,7 +21,7 @@ export default function AssessmentWelcomePage() {
 
   const { authUser, loading, signOut } = useAuth()
   const [riskScore, setRiskScore] = useState(76)
-  const [dummy, setDummy] = useState('expired')
+  const [dummy, setDummy] = useState('')
   const [allRiskLevel, setAllRiskLevel] = useState('high')
 
   useEffect(() => {
