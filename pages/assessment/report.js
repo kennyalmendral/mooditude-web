@@ -75,6 +75,29 @@ export default function AssessmentReport() {
     if (!loading && !authUser) { 
       router.push('/auth/login')
     }
+
+    if (authUser) {
+      let usersM3AssessmentScoresRef = firebaseStore
+        .collection('M3Assessment')
+        .doc(authUser.uid)
+        .collection('scores')
+
+      usersM3AssessmentScoresRef
+        .get()
+        .then(doc => {
+          if (doc.docs[0] !== undefined) {
+            let docData = doc.docs[0].data()
+
+            setAssessmentScores(docData)
+
+            setMostOfTheTimeAnswerCount(docData.rawData.split(',').filter(x => x == 4).length)
+            setOftenAnswerCount(docData.rawData.split(',').filter(x => x == 3).length)
+            setSometimesAnswerCount(docData.rawData.split(',').filter(x => x == 2).length)
+            setRarelyAnswerCount(docData.rawData.split(',').filter(x => x == 1).length)
+            setNoneAnswerCount(docData.rawData.split(',').filter(x => x == 0).length)
+          }
+        })
+    }
   }, [authUser, loading, router])
 
   useEffect(() => {
@@ -367,26 +390,26 @@ export default function AssessmentReport() {
 
     firebaseAuth.onAuthStateChanged(user => {
       if (user) {
-        usersM3AssessmentScoresRef = firebaseStore
-          .collection('M3Assessment')
-          .doc(user.uid)
-          .collection('scores')
+        // usersM3AssessmentScoresRef = firebaseStore
+        //   .collection('M3Assessment')
+        //   .doc(user.uid)
+        //   .collection('scores')
 
-        unsubscribe = usersM3AssessmentScoresRef
-          .get()
-          .then(doc => {
-            if (doc.docs[0] !== undefined) {
-              let docData = doc.docs[0].data()
+        // unsubscribe = usersM3AssessmentScoresRef
+        //   .get()
+        //   .then(doc => {
+        //     if (doc.docs[0] !== undefined) {
+        //       let docData = doc.docs[0].data()
 
-              setAssessmentScores(docData)
+        //       setAssessmentScores(docData)
 
-              setMostOfTheTimeAnswerCount(docData.rawData.split(',').filter(x => x == 4).length)
-              setOftenAnswerCount(docData.rawData.split(',').filter(x => x == 3).length)
-              setSometimesAnswerCount(docData.rawData.split(',').filter(x => x == 2).length)
-              setRarelyAnswerCount(docData.rawData.split(',').filter(x => x == 1).length)
-              setNoneAnswerCount(docData.rawData.split(',').filter(x => x == 0).length)
-            }
-          })
+        //       setMostOfTheTimeAnswerCount(docData.rawData.split(',').filter(x => x == 4).length)
+        //       setOftenAnswerCount(docData.rawData.split(',').filter(x => x == 3).length)
+        //       setSometimesAnswerCount(docData.rawData.split(',').filter(x => x == 2).length)
+        //       setRarelyAnswerCount(docData.rawData.split(',').filter(x => x == 1).length)
+        //       setNoneAnswerCount(docData.rawData.split(',').filter(x => x == 0).length)
+        //     }
+        //   })
 
         usersRef = firebaseStore
           .collection('Users')
@@ -1162,7 +1185,7 @@ export default function AssessmentReport() {
                           {mostOfTheTimeAnswerQuestions.length > 0 && (
                             <div style={{ marginLeft: '33px' }}>
                               {mostOfTheTimeAnswerQuestions.map((question) => (
-                                <p>{getQuestion(parseInt(question))}</p>
+                                <p key={question}>{getQuestion(parseInt(question))}</p>
                               ))}
                             </div>
                           )}
@@ -1174,7 +1197,7 @@ export default function AssessmentReport() {
                           {oftenAnswerQuestions.length > 0 && (
                             <div style={{ marginLeft: '33px' }}>
                               {oftenAnswerQuestions.map((question) => (
-                                <p>{getQuestion(parseInt(question))}</p>
+                                <p key={question}>{getQuestion(parseInt(question))}</p>
                               ))}
                             </div>
                           )}
@@ -1186,7 +1209,7 @@ export default function AssessmentReport() {
                           {sometimesAnswerQuestions.length > 0 && (
                             <div style={{ marginLeft: '33px' }}>
                               {sometimesAnswerQuestions.map((question) => (
-                                <p>{getQuestion(parseInt(question))}</p>
+                                <p key={question}>{getQuestion(parseInt(question))}</p>
                               ))}
                             </div>
                           )}
@@ -1198,7 +1221,7 @@ export default function AssessmentReport() {
                           {rarelyAnswerQuestions.length > 0 && (
                             <div style={{ marginLeft: '33px' }}>
                               {rarelyAnswerQuestions.map((question) => (
-                                <p>{getQuestion(parseInt(question))}</p>
+                                <p key={question}>{getQuestion(parseInt(question))}</p>
                               ))}
                             </div>
                           )}
@@ -1210,7 +1233,7 @@ export default function AssessmentReport() {
                           {noneAnswerQuestions.length > 0 && (
                             <div style={{ marginLeft: '33px' }}>
                               {noneAnswerQuestions.map((question) => (
-                                <p>{getQuestion(parseInt(question))}</p>
+                                <p key={question}>{getQuestion(parseInt(question))}</p>
                               ))}
                             </div>
                           )}

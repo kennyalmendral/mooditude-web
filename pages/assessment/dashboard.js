@@ -16,6 +16,11 @@ import Stack from '@mui/material/Stack'
 import Firebase from 'lib/Firebase'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
+const firebaseStore = Firebase.firestore()
+const firebaseAuth = Firebase.auth()
+const firebaseDatabase = Firebase.database()
+const firebaseFunctions = Firebase.functions()
+
 export default function AssessmentWelcomePage() {
   const router = useRouter()
 
@@ -24,11 +29,65 @@ export default function AssessmentWelcomePage() {
   const [dummy, setDummy] = useState('')
   const [allRiskLevel, setAllRiskLevel] = useState('high')
 
+  const [assessments, setAssessments] = useState([])
+
+  useEffect(() => {
+    if (assessments.length > 0) {
+      firebaseAuth.onAuthStateChanged(user => {
+        if (user) {
+          const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
+
+          assessments.forEach(value => {
+            updateUserM3AssessmentScores({
+              userId: user.uid,
+              epochId: parseInt(value.id),
+              rawData: value.rawData,
+            }).then(result => {
+              console.log(result)
+            }).catch(error => {
+              console.log('error:', error)
+            })
+          })
+        }
+      })
+    }
+  }, [assessments])
+
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/auth/login')
     }
   }, [authUser, loading, router])
+
+  useEffect(() => {
+    let usersM3AssessmentScoresRef
+    let unsubscribe
+
+    firebaseAuth.onAuthStateChanged(user => {
+      if (user) {
+        // usersM3AssessmentScoresRef = firebaseStore
+        //   .collection('M3Assessment')
+        //   .doc(user.uid)
+        //   .collection('scores')
+
+        usersM3AssessmentScoresRef = firebaseStore
+          .collection('M3Assessment/DX3aK3upPPUpfItJlfAdSY5cJko1/scores')
+        //   .doc(user.uid)
+        //   .collection('scores')
+
+        unsubscribe = usersM3AssessmentScoresRef
+          .onSnapshot(querySnapshot => {
+            querySnapshot.forEach(doc => {
+              let docData = doc.data()
+
+              setAssessments(assessments => [...assessments, docData])
+            })
+          })
+      } else {
+        unsubscribe && unsubscribe()
+      }
+    })
+  }, [])
 
   const handleStart = () => {
     localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) === null && localStorage.setItem(`${authUser.uid}_currentAssessmentStep`, 0) 
@@ -134,8 +193,39 @@ export default function AssessmentWelcomePage() {
           <h3>All Assessments</h3>
 
           <div className={styles.assessment_list_inner_wrap}>
-            {/*NON ACTIVE*/}
-            <div className={styles.assessment_item}>
+            {assessments.length > 0 && (
+              <>
+                {assessments.map(assessment => (
+                  <div className={`${styles.assessment_item} ${styles.active}`} key={assessment.id}>
+                    <div className={styles.ai_score}>
+                      <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
+                        {assessment.rawData.split(',').map((value, index) => (
+                          <>
+                            {((index != 7) || (index != 9)) && (
+                              <p>{value += parseInt(value)}</p>
+                            )}
+                          </>
+                        ))}
+                      </div>
+                    </div>
+    
+                    <div className={styles.ai_details}>
+                      
+                      <h4>High Risk</h4>
+
+                      <p>{new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}</p>
+                    </div>
+    
+                    <div className={styles.ai_action}><ArrowForwardIcon /></div>
+                  </div>
+                ))}
+              </>
+            )}
+            {/* <div className={styles.assessment_item}>
               <div className={styles.ai_score}>
                 <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
                   {riskScore}  
@@ -149,7 +239,7 @@ export default function AssessmentWelcomePage() {
 
               <div className={styles.ai_action}><ArrowForwardIcon /></div>
             </div>
-            {/*Active*/}
+            
             <div className={`${styles.assessment_item} ${styles.active}`}>
               <div className={styles.ai_score}>
                 <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
@@ -163,7 +253,7 @@ export default function AssessmentWelcomePage() {
               </div>
 
               <div className={styles.ai_action}><ArrowForwardIcon /></div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
