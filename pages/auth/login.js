@@ -31,7 +31,7 @@ export default function Login(props) {
       if (authUser && localStorage.getItem(`${authUser.uid}_onboardingStep`) == 0) {
         location.href='/onboarding/welcome'
       } else if (authUser && localStorage.getItem(`${authUser.uid}_onboardingStep`) == 1) {
-        location.href='/'
+        location.href='/onboarding/get-started'
       } else if (authUser && localStorage.getItem(`${authUser.uid}_onboardingStep`) == 2) {
         location.href = '/assessment/report'
       }
@@ -52,7 +52,7 @@ export default function Login(props) {
         if (user && localStorage.getItem(`${user.uid}_onboardingStep`) == 0) {
           location.href='/onboarding/welcome'
         } else if (user && localStorage.getItem(`${user.uid}_onboardingStep`) == 1) {
-          location.href='/'
+          location.href='/onboarding/get-started'
         } else if (user && localStorage.getItem(`${user.uid}_onboardingStep`) == 2) {
           location.href = '/assessment/report'
         }
