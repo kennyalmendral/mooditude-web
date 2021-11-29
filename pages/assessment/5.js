@@ -75,6 +75,7 @@ export default function Assessment5() {
 
   const handleChange = (e) => {
     clearInterval(timer)
+    localStorage.setItem(`${authUser.uid}_assessmentStep5Answer`, e.target.value)
     localStorage.setItem(`${authUser.uid}_assessmentStep5Time`, assessmentStep5Time)
     setAssessmentStep5Answer(e.target.value)
     router.push('/assessment/6')

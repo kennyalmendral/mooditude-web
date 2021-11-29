@@ -16,6 +16,8 @@ import Stack from '@mui/material/Stack'
 import Firebase from 'lib/Firebase'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
+import { Line } from 'react-chartjs-3'
+
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
@@ -25,9 +27,15 @@ export default function AssessmentWelcomePage() {
   const router = useRouter()
 
   const { authUser, loading, signOut } = useAuth()
-  const [riskScore, setRiskScore] = useState(76)
+
+  const [riskScore, setRiskScore] = useState(0)
+  // const [depressionScore, setDepressionScore] = useState(0)
+  const [assessmentDate, setAssessmentDate] = useState(null)
+
+  const [chartData, setChartData] = useState(null)
+
   const [dummy, setDummy] = useState('')
-  const [allRiskLevel, setAllRiskLevel] = useState('high')
+  const [allRiskLevel, setAllRiskLevel] = useState('none')
 
   const [assessments, setAssessments] = useState([])
 
@@ -40,10 +48,68 @@ export default function AssessmentWelcomePage() {
           assessments.forEach(value => {
             updateUserM3AssessmentScores({
               userId: user.uid,
-              epochId: parseInt(value.id),
+              epochId: value.id,
               rawData: value.rawData,
             }).then(result => {
-              console.log(result)
+              console.log(result.data)
+
+              setRiskScore(result.data.allScore)
+              setAllRiskLevel(result.data.allRiskLevel)
+
+              setAssessmentDate(new Date(value.createDate.seconds * 1000).toLocaleString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+              }))
+
+              const data = {
+                labels: [
+                  new Date(value.createDate.seconds * 1000).toLocaleString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric'
+                  }),
+                ],
+                datasets: [
+                  {
+                    label: 'Depression',
+                    data: [parseInt(result.data.depressionScore)],
+                    backgroundColor: '#6FCF97',
+                    // stack: 'combined',
+                    type: 'bar'
+                  },
+                  {
+                    label: 'Anxiety',
+                    data: [parseInt(result.data.anxietyScore)],
+                    backgroundColor: '#D68AFA',
+                    // stack: 'combined',
+                    type: 'bar'
+                  },
+                  {
+                    label: 'PTSD',
+                    data: [parseInt(result.data.ptsdScore)],
+                    backgroundColor: '#56CCF2',
+                    // stack: 'combined',
+                    type: 'bar'
+                  },
+                  {
+                    label: 'Bipolar',
+                    data: [parseInt(result.data.bipolarScore)],
+                    backgroundColor: '#DC957E',
+                    // stack: 'combined',
+                    type: 'bar'
+                  },
+                  {
+                    label: 'Overall Score',
+                    data: [parseInt(result.data.overallScore)],
+                    backgroundColor: '#2968EA',
+                    // stack: 'combined',
+                    type: 'bar'
+                  },
+                ]
+              }
+
+              setChartData(data)
             }).catch(error => {
               console.log('error:', error)
             })
@@ -65,22 +131,18 @@ export default function AssessmentWelcomePage() {
 
     firebaseAuth.onAuthStateChanged(user => {
       if (user) {
-        // usersM3AssessmentScoresRef = firebaseStore
-        //   .collection('M3Assessment')
-        //   .doc(user.uid)
-        //   .collection('scores')
-
         usersM3AssessmentScoresRef = firebaseStore
-          .collection('M3Assessment/DX3aK3upPPUpfItJlfAdSY5cJko1/scores')
-        //   .doc(user.uid)
-        //   .collection('scores')
+          .collection('M3Assessment')
+          .doc(user.uid)
+          .collection('scores')
 
         unsubscribe = usersM3AssessmentScoresRef
           .onSnapshot(querySnapshot => {
             querySnapshot.forEach(doc => {
-              let docData = doc.data()
-
-              setAssessments(assessments => [...assessments, docData])
+              if (doc) {
+                let docData = doc.data()
+                setAssessments(assessments => [...assessments, docData])
+              }
             })
           })
       } else {
@@ -100,8 +162,6 @@ export default function AssessmentWelcomePage() {
       <div className={`${styles.onboarding_wrapper} ${styles.with_gray}`}>
         <div className={`${styles.assessment_wrap} ${styles.dashboard_page}`}>
           <div className={styles.dashboard_left}>
-            
-            
            <h1>Your Mental<br/> Wellbeing Score</h1>
 
            {
@@ -122,8 +182,7 @@ export default function AssessmentWelcomePage() {
               </div>
             : 
             <>
-              <p className={styles.date_text}>July 12, 2021</p> 
-              
+              <p className={styles.date_text}>{assessmentDate}</p> 
 
               {riskScore > 0 && (
                 <>
@@ -173,7 +232,7 @@ export default function AssessmentWelcomePage() {
                 size="large" 
                 className={styles.full_report_btn} 
                 variant="contained" 
-                
+                onClick={() => location.href = '/assessment/report'}
               >
                 FULL REPORT
               </Button>
@@ -182,10 +241,54 @@ export default function AssessmentWelcomePage() {
             
           </div>
           <div className={styles.dashboard_right}>
-            <div>
+            {/* <div>
               <img src="/graph.svg" />
+            </div> */}
+            <div style={{
+              backgroundColor: '#F3F4F6',
+              borderRadius: '10px',
+              padding: '20px'
+            }}>
+              {chartData && (
+                <Line 
+                  data={chartData}
+                  options={{
+                    responsive: true,
+                    scales: {
+                      xAxes: [{
+                        offset: true
+                      }],
+                      yAxes: [{
+                        ticks: {
+                          min: 0,
+                          max: 100,
+                          callback: function(value) {
+                            return value + '%'
+                          }
+                        }
+                      }]
+                    },
+                    tooltips: {
+                      callbacks: {
+                        label: function(tooltipItem, data) {
+                          var index = tooltipItem.index;
+                          var currentValue = data.datasets[tooltipItem.datasetIndex].data[index];
+                          var total = 0;
+                          data.datasets.forEach(function(el){
+                            total = total + el.data[index];
+                          });
+                          var percentage = parseFloat((currentValue/total*100).toFixed(1));
+                          return currentValue + ' (' + percentage + '%)';
+                        },
+                        title: function(tooltipItem, data) {
+                          return data.datasets[tooltipItem[0].datasetIndex].label;
+                        }                        
+                      }
+                    }
+                  }}
+                />
+              )}
             </div>
-            
           </div>
         </div>
 
@@ -196,22 +299,24 @@ export default function AssessmentWelcomePage() {
             {assessments.length > 0 && (
               <>
                 {assessments.map(assessment => (
-                  <div className={`${styles.assessment_item} ${styles.active}`} key={assessment.id}>
+                  <div 
+                    className={`${styles.assessment_item} 
+                    ${styles.active}`} 
+                    style={{ 
+                      width: '100%', 
+                      alignItems: 'center', 
+                    }} 
+                    key={assessment.id}
+                  >
                     <div className={styles.ai_score}>
                       <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
-                        {assessment.rawData.split(',').map((value, index) => (
-                          <>
-                            {((index != 7) || (index != 9)) && (
-                              <p>{value += parseInt(value)}</p>
-                            )}
-                          </>
-                        ))}
+                        {assessment.allScore}
                       </div>
                     </div>
     
-                    <div className={styles.ai_details}>
+                    <div className={styles.ai_details} style={{ textAlign: 'left' }}>
                       
-                      <h4>High Risk</h4>
+                      <h4>{allRiskLevel.charAt(0).toUpperCase() + allRiskLevel.slice(1)} Risk</h4>
 
                       <p>{new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
                         month: 'long',
@@ -219,8 +324,17 @@ export default function AssessmentWelcomePage() {
                         year: 'numeric'
                       })}</p>
                     </div>
-    
-                    <div className={styles.ai_action}><ArrowForwardIcon /></div>
+                    
+                    
+                    <div 
+                      className={styles.ai_action} 
+                      onClick={() => location.href = '/assessment/report'}
+                      style={{
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <ArrowForwardIcon />
+                    </div>
                   </div>
                 ))}
               </>

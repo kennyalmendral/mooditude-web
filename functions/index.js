@@ -4,8 +4,6 @@ const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
 
 exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) => {
-  console.log(data)
-
   let allScore = 0;
   let gatewayScore = 0;
   let depressionScore = 0;
@@ -49,10 +47,10 @@ exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) =>
 
     if (index == 6) {
       let nextValue = value || 0;
-      value = (nextValue > value) ? nextValue : value;
+      value = nextValue > value ? nextValue : value;
     } else if (index == 8) {
       let nextValue = value || 0;
-      value = (nextValue > value) ? nextValue : value;
+      value = nextValue > value ? nextValue : value;
     }
 
     allScore += value;
@@ -207,24 +205,24 @@ exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) =>
     return 0;
   }
 
-  // const fireStore = admin.firestore();
+  const fireStore = admin.firestore();
 
-  // fireStore
-  //   .collection('M3Assessment')
-  //   .doc(data.userId)
-  //   .collection('scores')
-  //   .doc(data.epochId)
-  //   .update({
-  //     allScore: allScore,
-  //     bipolarScore: bipolarScore,
-  //     depressionScore: depressionScore,
-  //     gadScore: gadScore,
-  //     gatewayScore: gatewayScore,
-  //     ocdScore: ocdScore,
-  //     panicScore: panicScore,
-  //     socialAnxietyScore: socialAnxietyScore,
-  //     ptsdScore: ptsdScore
-  //   });
+  fireStore
+    .collection('M3Assessment')
+    .doc(data.userId)
+    .collection('scores')
+    .doc(data.epochId)
+    .update({
+      allScore: allScore,
+      bipolarScore: bipolarScore,
+      depressionScore: depressionScore,
+      gadScore: gadScore,
+      gatewayScore: gatewayScore,
+      ocdScore: ocdScore,
+      panicScore: panicScore,
+      socialAnxietyScore: socialAnxietyScore,
+      ptsdScore: ptsdScore
+    });
 
   return {
     allScore,
