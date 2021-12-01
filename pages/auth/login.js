@@ -37,7 +37,7 @@ export default function Login(props) {
         firebaseDatabase
           .ref()
           .child('users')
-          .child(user.user.uid)
+          .child(authUser.uid)
           .once('value')
           .then((snapshot) => {
             const snapshotValue = snapshot.val()
@@ -55,7 +55,7 @@ export default function Login(props) {
             } else if (snapshotValue.onboardingStep == 1) {
               firebaseStore
                 .collection('M3Assessment')
-                .doc(user.user.uid)
+                .doc(authUser.uid)
                 .collection('scores')
                 .get()
                 .then(doc => {
