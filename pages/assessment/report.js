@@ -28,6 +28,8 @@ export default function AssessmentReport() {
 
   const { authUser, loading, signOut } = useAuth()
 
+  const [showLoader, setShowLoader] = useState(true)
+
   const [buyPremium, setBuyPremium] = useState(true)
   const [isReportVisible, setIsReportVisible] = useState(true)
   const [isScoresVisible, setIsScoresVisible] = useState(false)
@@ -99,14 +101,6 @@ export default function AssessmentReport() {
         })
     }
   }, [authUser, loading, router])
-
-  useEffect(() => {
-    Object.keys(mostOfTheTimeAnswerQuestions).length > 0 && console.log('most of the time answer questions', mostOfTheTimeAnswerQuestions)
-    Object.keys(oftenAnswerQuestions).length > 0 && console.log('often answer questions', oftenAnswerQuestions)
-    Object.keys(sometimesAnswerQuestions).length > 0 && console.log('sometimes answer questions', sometimesAnswerQuestions)
-    Object.keys(rarelyAnswerQuestions).length > 0 && console.log('rarely answer questions', rarelyAnswerQuestions)
-    Object.keys(noneAnswerQuestions).length > 0 && console.log('none answer questions', noneAnswerQuestions)
-  }, [mostOfTheTimeAnswerQuestions, oftenAnswerQuestions, sometimesAnswerQuestions, rarelyAnswerQuestions, noneAnswerQuestions])
 
   useEffect(() => {
     if (mostOfTheTimeAnswerCount > 0) {
@@ -219,272 +213,224 @@ export default function AssessmentReport() {
       authUser && localStorage.getItem(`${authUser.uid}_assessmentStep31Time`)
     ]
 
-    firebaseAuth.onAuthStateChanged(user => {
+    if (authUser) {
       let usersM3AssessmentScoresRef
-      let unsubscribe
 
-      if (user) {
-        usersM3AssessmentScoresRef = firebaseStore
-          .collection('M3Assessment')
-          .doc(user.uid)
-          .collection('scores')
+      const d = new Date()
+      const year = d.getUTCFullYear()
+      const month = d.getUTCMonth()
+      const day = d.getUTCDate()
+      const startTime = Date.UTC(year, month, day, 0, 0, 0, 0)
 
-        unsubscribe = usersM3AssessmentScoresRef
-          .get()
-          .then(doc => {
-            if (doc.docs.length < 1) {
-              const d = new Date()
-              const year = d.getUTCFullYear()
-              const month = d.getUTCMonth()
-              const day = d.getUTCDate()
-              const startTime = Date.UTC(year, month, day, 0, 0, 0, 0)
+      let epochMilliseconds = startTime.toString()
 
-              let epochMilliseconds = startTime.toString()
+      let isNewCollection = false
 
-              firebaseStore
-                .collection('M3Assessment')
-                .doc(user.uid)
-                .collection('scores')
-                .doc(epochMilliseconds)
-                .set({
-                  id: epochMilliseconds,
-                  createDate: new Date(),
-                  rawData: assessmentAnswers.join(','),
-                  rawTimeToAnswer: assessmentTimes.join(','),
-                  allScore: 0,
-                  bipolarScore: 0,
-                  depressionScore: 0,
-                  gadScore: 0,
-                  gatewayScore: 0,
-                  ocdScore: 0,
-                  panicScore: 0,
-                  socialAnxietyScore: 0,
-                  ptsdScore: 0,
-                  pdfDoc: null,
-                })
-                .then(response => {
-                  localStorage.removeItem(`${user.uid}_assessmentStep1Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep2Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep3Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep4Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep5Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep6Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep7Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep8Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep9Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep10Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep11Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep12Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep13Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep14Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep15Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep16Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep17Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep18Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep19Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep20Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep21Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep23Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep24Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep25Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep26Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep28Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep29Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep30Answer`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep31Answer`)
+      usersM3AssessmentScoresRef = firebaseStore
+        .collection('M3Assessment')
+        .doc(authUser.uid)
+        .collection('scores')
 
-                  localStorage.removeItem(`${user.uid}_assessmentStep1Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep2Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep3Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep4Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep5Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep6Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep7Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep8Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep9Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep10Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep11Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep12Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep13Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep14Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep15Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep16Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep17Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep18Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep19Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep20Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep21Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep23Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep24Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep25Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep26Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep28Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep29Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep30Time`)
-                  localStorage.removeItem(`${user.uid}_assessmentStep31Time`)
-
-                  localStorage.setItem(`${user.uid}_onboardingStep`, 2)
-
-                  const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
-  
-                  updateUserM3AssessmentScores({
-                    userId: user.uid,
-                    epochId: epochMilliseconds,
-                    rawData: assessmentAnswers.join(','),
-                  }).then(result => {
-                    // console.log('updateUserM3AssessmentScores', result.data)
-          
-                    setRiskScore(result.data.allScore)
-                    setAllRiskLevel(result.data.allRiskLevel)
-                    setDepressionRiskScore(result.data.depressionScore)
-                    setDepressionRiskLevel(result.data.depressionRiskLevel)
-                    setAnxietyRiskScore(result.data.anxietyScore)
-                    setAnxietyRiskLevel(result.data.anxietyRiskLevel)
-                    setPtsdRiskScore(result.data.ptsdScore)
-                    setPtsdRiskLevel(result.data.ptsdRiskLevel)
-                    setBipolarRiskScore(result.data.bipolarScore)
-                    setBipolarRiskLevel(result.data.bipolarRiskLevel)
-                    setHasSuicidalThoughts(result.data.hasSuicidalThoughts)
-                    setUsedAlcohol(result.data.usedAlcohol)
-                    setUsedDrug(result.data.usedDrug)
-                    setThoughtsOfSuicideAnswer(result.data.thoughtsOfSuicideAnswer)
-                    setImpairsWorkSchoolAnswer(result.data.impairsWorkSchoolAnswer)
-                    setImpairsFriendsFamilyAnswer(result.data.impairsFriendsFamilyAnswer)
-                    setLedToUsingAlcoholAnswer(result.data.ledToUsingAlcoholAnswer)
-                    setLedToUsingDrugAnswer(result.data.ledToUsingDrugAnswer)
-                    
-                    if (assessmentScores.createDate) {
-                      setAssessmentDate(new Date(assessmentScores.createDate.seconds * 1000).toLocaleString('en-US', {
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric'
-                      }))
-                    }
-
-                    firebaseStore
-                      .collection('M3Assessment')
-                      .doc(user.uid)
-                      .collection('scores')
-                      .get()
-                      .then(doc => {
-                        if (doc.docs[0] !== undefined) {
-                          let docData = doc.docs[0].data()
-
-                          setAssessmentScores(docData)
-
-                          setMostOfTheTimeAnswerCount(docData.rawData.split(',').filter(x => x == 4).length)
-                          setOftenAnswerCount(docData.rawData.split(',').filter(x => x == 3).length)
-                          setSometimesAnswerCount(docData.rawData.split(',').filter(x => x == 2).length)
-                          setRarelyAnswerCount(docData.rawData.split(',').filter(x => x == 1).length)
-                          setNoneAnswerCount(docData.rawData.split(',').filter(x => x == 0).length)
-                        }
-                      })
-                  })
-                })
-                .catch(error => {
-                  console.log('error:', error)
-                })
+      usersM3AssessmentScoresRef
+        .get()
+        .then(doc => {
+          if (doc.docs.length > 0) {
+            for (let el of doc.docs) {
+              if (el.data().id.toString() != epochMilliseconds) {
+                isNewCollection = true
+                break
+              }
             }
-          })
-      } else {
-        unsubscribe && unsubscribe()
-      }
-    })
+          } else {
+            isNewCollection = true
+          }
 
-    firebaseAuth.onAuthStateChanged(user => {
-      if (user) {
-        firebaseDatabase
-          .ref()
-          .child('users')
-          .child(user.uid)
-          .update({
-            onboardingStep: 2
-          })
-      }
-    })
+          if (isNewCollection) {
+            usersM3AssessmentScoresRef
+              .doc(epochMilliseconds)
+              .set({
+                id: epochMilliseconds,
+                createDate: new Date(),
+                rawData: assessmentAnswers.join(','),
+                rawTimeToAnswer: assessmentTimes.join(','),
+                allScore: 0,
+                bipolarScore: 0,
+                depressionScore: 0,
+                gadScore: 0,
+                gatewayScore: 0,
+                ocdScore: 0,
+                panicScore: 0,
+                socialAnxietyScore: 0,
+                ptsdScore: 0,
+                pdfDoc: null,
+              }).then(() => {
+                const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
+  
+                updateUserM3AssessmentScores({
+                  userId: authUser.uid,
+                  epochId: epochMilliseconds,
+                  rawData: assessmentAnswers.join(','),
+                }).then(result => {
+                  console.log('updateUserM3AssessmentScores', result.data)
+        
+                  setRiskScore(result.data.allScore)
+                  setAllRiskLevel(result.data.allRiskLevel)
+                  setDepressionRiskScore(result.data.depressionScore)
+                  setDepressionRiskLevel(result.data.depressionRiskLevel)
+                  setAnxietyRiskScore(result.data.anxietyScore)
+                  setAnxietyRiskLevel(result.data.anxietyRiskLevel)
+                  setPtsdRiskScore(result.data.ptsdScore)
+                  setPtsdRiskLevel(result.data.ptsdRiskLevel)
+                  setBipolarRiskScore(result.data.bipolarScore)
+                  setBipolarRiskLevel(result.data.bipolarRiskLevel)
+                  setHasSuicidalThoughts(result.data.hasSuicidalThoughts)
+                  setUsedAlcohol(result.data.usedAlcohol)
+                  setUsedDrug(result.data.usedDrug)
+                  setThoughtsOfSuicideAnswer(result.data.thoughtsOfSuicideAnswer)
+                  setImpairsWorkSchoolAnswer(result.data.impairsWorkSchoolAnswer)
+                  setImpairsFriendsFamilyAnswer(result.data.impairsFriendsFamilyAnswer)
+                  setLedToUsingAlcoholAnswer(result.data.ledToUsingAlcoholAnswer)
+                  setLedToUsingDrugAnswer(result.data.ledToUsingDrugAnswer)
+                  
+                  if (assessmentScores.createDate) {
+                    setAssessmentDate(new Date(assessmentScores.createDate.seconds * 1000).toLocaleString('en-US', {
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric'
+                    }))
+                  }
 
-    let usersM3AssessmentScoresRef
-    let usersRef
-    let unsubscribe
+                  usersM3AssessmentScoresRef
+                    .get()
+                    .then(doc => {
+                      let docData = doc.docs[0].data()
 
-    firebaseAuth.onAuthStateChanged(user => {
-      if (user) {
-        // usersM3AssessmentScoresRef = firebaseStore
-        //   .collection('M3Assessment')
-        //   .doc(user.uid)
-        //   .collection('scores')
+                      setAssessmentScores(docData)
 
-        // unsubscribe = usersM3AssessmentScoresRef
-        //   .get()
-        //   .then(doc => {
-        //     if (doc.docs[0] !== undefined) {
-        //       let docData = doc.docs[0].data()
+                      setMostOfTheTimeAnswerCount(docData.rawData.split(',').filter(x => x == 4).length)
+                      setOftenAnswerCount(docData.rawData.split(',').filter(x => x == 3).length)
+                      setSometimesAnswerCount(docData.rawData.split(',').filter(x => x == 2).length)
+                      setRarelyAnswerCount(docData.rawData.split(',').filter(x => x == 1).length)
+                      setNoneAnswerCount(docData.rawData.split(',').filter(x => x == 0).length)
+                    })
 
-        //       setAssessmentScores(docData)
+                  setShowLoader(false)
+                })
+              })
+          } else {
+            const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
+  
+            updateUserM3AssessmentScores({
+              userId: authUser.uid,
+              epochId: epochMilliseconds,
+              rawData: assessmentAnswers.join(','),
+            }).then(result => {
+              console.log('updateUserM3AssessmentScores', result.data)
+    
+              setRiskScore(result.data.allScore)
+              setAllRiskLevel(result.data.allRiskLevel)
+              setDepressionRiskScore(result.data.depressionScore)
+              setDepressionRiskLevel(result.data.depressionRiskLevel)
+              setAnxietyRiskScore(result.data.anxietyScore)
+              setAnxietyRiskLevel(result.data.anxietyRiskLevel)
+              setPtsdRiskScore(result.data.ptsdScore)
+              setPtsdRiskLevel(result.data.ptsdRiskLevel)
+              setBipolarRiskScore(result.data.bipolarScore)
+              setBipolarRiskLevel(result.data.bipolarRiskLevel)
+              setHasSuicidalThoughts(result.data.hasSuicidalThoughts)
+              setUsedAlcohol(result.data.usedAlcohol)
+              setUsedDrug(result.data.usedDrug)
+              setThoughtsOfSuicideAnswer(result.data.thoughtsOfSuicideAnswer)
+              setImpairsWorkSchoolAnswer(result.data.impairsWorkSchoolAnswer)
+              setImpairsFriendsFamilyAnswer(result.data.impairsFriendsFamilyAnswer)
+              setLedToUsingAlcoholAnswer(result.data.ledToUsingAlcoholAnswer)
+              setLedToUsingDrugAnswer(result.data.ledToUsingDrugAnswer)
+              
+              if (assessmentScores.createDate) {
+                setAssessmentDate(new Date(assessmentScores.createDate.seconds * 1000).toLocaleString('en-US', {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric'
+                }))
+              }
 
-        //       setMostOfTheTimeAnswerCount(docData.rawData.split(',').filter(x => x == 4).length)
-        //       setOftenAnswerCount(docData.rawData.split(',').filter(x => x == 3).length)
-        //       setSometimesAnswerCount(docData.rawData.split(',').filter(x => x == 2).length)
-        //       setRarelyAnswerCount(docData.rawData.split(',').filter(x => x == 1).length)
-        //       setNoneAnswerCount(docData.rawData.split(',').filter(x => x == 0).length)
-        //     }
-        //   })
+              usersM3AssessmentScoresRef
+                .get()
+                .then(doc => {
+                  let docData = doc.docs[0].data()
 
-        usersRef = firebaseStore
-          .collection('Users')
-          .doc(user.uid)
-          
-        unsubscribe = usersRef
-          .get()
-          .then(doc => {
-            doc.data() && setCustomerType(doc.data().customerType)
-          })
-      } else {
-        unsubscribe && unsubscribe()
-      }
-    })
-  }, [])
+                  setAssessmentScores(docData)
+
+                  setMostOfTheTimeAnswerCount(docData.rawData.split(',').filter(x => x == 4).length)
+                  setOftenAnswerCount(docData.rawData.split(',').filter(x => x == 3).length)
+                  setSometimesAnswerCount(docData.rawData.split(',').filter(x => x == 2).length)
+                  setRarelyAnswerCount(docData.rawData.split(',').filter(x => x == 1).length)
+                  setNoneAnswerCount(docData.rawData.split(',').filter(x => x == 0).length)
+                })
+
+              setShowLoader(false)
+            })
+          }
+        })
+
+      firebaseDatabase
+        .ref()
+        .child('users')
+        .child(authUser.uid)
+        .update({
+          onboardingStep: 2
+        })
+
+      firebaseStore
+        .collection('Users')
+        .doc(authUser.uid)
+        .get()
+        .then(doc => {
+          doc.data() && setCustomerType(doc.data().customerType)
+        })
+    }
+  }, [authUser])
 
   useEffect(() => {
     if (Object.keys(assessmentScores).length > 0) {
-      firebaseAuth.onAuthStateChanged(user => {
-        if (user) {
-          const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
+      // firebaseAuth.onAuthStateChanged(user => {
+      //   if (user) {
+      //     const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
   
-          updateUserM3AssessmentScores({
-            userId: user.uid,
-            epochId: assessmentScores.id,
-            rawData: assessmentScores.rawData,
-          }).then(result => {
-            // console.log('updateUserM3AssessmentScores', result.data)
+      //     updateUserM3AssessmentScores({
+      //       userId: user.uid,
+      //       epochId: assessmentScores.id,
+      //       rawData: assessmentScores.rawData,
+      //     }).then(result => {
+      //       console.log('updateUserM3AssessmentScores', result.data)
   
-            setRiskScore(result.data.allScore)
-            setAllRiskLevel(result.data.allRiskLevel)
-            setDepressionRiskScore(result.data.depressionScore)
-            setDepressionRiskLevel(result.data.depressionRiskLevel)
-            setAnxietyRiskScore(result.data.anxietyScore)
-            setAnxietyRiskLevel(result.data.anxietyRiskLevel)
-            setPtsdRiskScore(result.data.ptsdScore)
-            setPtsdRiskLevel(result.data.ptsdRiskLevel)
-            setBipolarRiskScore(result.data.bipolarScore)
-            setBipolarRiskLevel(result.data.bipolarRiskLevel)
-            setHasSuicidalThoughts(result.data.hasSuicidalThoughts)
-            setUsedAlcohol(result.data.usedAlcohol)
-            setUsedDrug(result.data.usedDrug)
-            setThoughtsOfSuicideAnswer(result.data.thoughtsOfSuicideAnswer)
-            setImpairsWorkSchoolAnswer(result.data.impairsWorkSchoolAnswer)
-            setImpairsFriendsFamilyAnswer(result.data.impairsFriendsFamilyAnswer)
-            setLedToUsingAlcoholAnswer(result.data.ledToUsingAlcoholAnswer)
-            setLedToUsingDrugAnswer(result.data.ledToUsingDrugAnswer)
+      //       setRiskScore(result.data.allScore)
+      //       setAllRiskLevel(result.data.allRiskLevel)
+      //       setDepressionRiskScore(result.data.depressionScore)
+      //       setDepressionRiskLevel(result.data.depressionRiskLevel)
+      //       setAnxietyRiskScore(result.data.anxietyScore)
+      //       setAnxietyRiskLevel(result.data.anxietyRiskLevel)
+      //       setPtsdRiskScore(result.data.ptsdScore)
+      //       setPtsdRiskLevel(result.data.ptsdRiskLevel)
+      //       setBipolarRiskScore(result.data.bipolarScore)
+      //       setBipolarRiskLevel(result.data.bipolarRiskLevel)
+      //       setHasSuicidalThoughts(result.data.hasSuicidalThoughts)
+      //       setUsedAlcohol(result.data.usedAlcohol)
+      //       setUsedDrug(result.data.usedDrug)
+      //       setThoughtsOfSuicideAnswer(result.data.thoughtsOfSuicideAnswer)
+      //       setImpairsWorkSchoolAnswer(result.data.impairsWorkSchoolAnswer)
+      //       setImpairsFriendsFamilyAnswer(result.data.impairsFriendsFamilyAnswer)
+      //       setLedToUsingAlcoholAnswer(result.data.ledToUsingAlcoholAnswer)
+      //       setLedToUsingDrugAnswer(result.data.ledToUsingDrugAnswer)
   
-            setAssessmentDate(new Date(assessmentScores.createDate.seconds * 1000).toLocaleString('en-US', {
-              month: 'long',
-              day: 'numeric',
-              year: 'numeric'
-            }))
-          })
-        }
-      })
+      //       setAssessmentDate(new Date(assessmentScores.createDate.seconds * 1000).toLocaleString('en-US', {
+      //         month: 'long',
+      //         day: 'numeric',
+      //         year: 'numeric'
+      //       }))
+      //     })
+      //   }
+      // })
     }
   }, [assessmentScores])
 
@@ -554,7 +500,7 @@ export default function AssessmentReport() {
   return (
     <Layout title={`Assessment Full Report | ${SITE_NAME}`}>
       <div className={`${styles.onboarding_wrapper}`} style={{ position: 'relative' }}>
-        {riskScore === 0 && (
+        {showLoader && (
           <div 
             className={onboardingStyles.custom_loader} 
             style={{

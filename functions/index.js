@@ -46,10 +46,10 @@ exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) =>
     }
 
     if (index == 6) {
-      let nextValue = value || 0;
+      let nextValue = questions[7] || 0;
       value = nextValue > value ? nextValue : value;
     } else if (index == 8) {
-      let nextValue = value || 0;
+      let nextValue = questions[9] || 0;
       value = nextValue > value ? nextValue : value;
     }
 

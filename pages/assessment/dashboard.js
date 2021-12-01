@@ -29,11 +29,11 @@ export default function AssessmentWelcomePage() {
   const { authUser, loading, signOut } = useAuth()
 
   const [riskScore, setRiskScore] = useState(0)
-  // const [depressionScore, setDepressionScore] = useState(0)
   const [assessmentDate, setAssessmentDate] = useState(null)
 
   const [chartData, setChartData] = useState(null)
 
+  // const [dummy, setDummy] = useState('expired')
   const [dummy, setDummy] = useState('')
   const [allRiskLevel, setAllRiskLevel] = useState('none')
 
@@ -75,35 +75,30 @@ export default function AssessmentWelcomePage() {
                     label: 'Depression',
                     data: [parseInt(result.data.depressionScore)],
                     backgroundColor: '#6FCF97',
-                    // stack: 'combined',
                     type: 'bar'
                   },
                   {
                     label: 'Anxiety',
                     data: [parseInt(result.data.anxietyScore)],
                     backgroundColor: '#D68AFA',
-                    // stack: 'combined',
                     type: 'bar'
                   },
                   {
                     label: 'PTSD',
                     data: [parseInt(result.data.ptsdScore)],
                     backgroundColor: '#56CCF2',
-                    // stack: 'combined',
                     type: 'bar'
                   },
                   {
                     label: 'Bipolar',
                     data: [parseInt(result.data.bipolarScore)],
                     backgroundColor: '#DC957E',
-                    // stack: 'combined',
                     type: 'bar'
                   },
                   {
                     label: 'Overall Score',
                     data: [parseInt(result.data.overallScore)],
                     backgroundColor: '#2968EA',
-                    // stack: 'combined',
                     type: 'bar'
                   },
                 ]
@@ -157,6 +152,10 @@ export default function AssessmentWelcomePage() {
     router.push(`/assessment/1`)
   }
 
+  const handleClickAssessment = () => {
+    console.log('handleClickAssessment')
+  }
+
   return (
     <Layout title={`Assessments | ${SITE_NAME}`}>
       <div className={`${styles.onboarding_wrapper} ${styles.with_gray}`}>
@@ -175,7 +174,7 @@ export default function AssessmentWelcomePage() {
                   size="large" 
                   className={styles.take_assessment_btn} 
                   variant="contained" 
-                  
+                  onClick={() => router.push('/onboarding/get-started')}
                 >
                   TAKE ASSESSMENT
                 </Button>
@@ -306,7 +305,8 @@ export default function AssessmentWelcomePage() {
                       width: '100%', 
                       alignItems: 'center', 
                     }} 
-                    key={assessment.id}
+                    key={assessment.id} 
+                    onClick={handleClickAssessment}
                   >
                     <div className={styles.ai_score}>
                       <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
