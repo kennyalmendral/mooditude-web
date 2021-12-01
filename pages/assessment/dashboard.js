@@ -42,81 +42,6 @@ export default function AssessmentWelcomePage() {
 
   const [assessments, setAssessments] = useState([])
 
-  // useEffect(() => {
-  //   if (assessments.length > 0) {
-  //     firebaseAuth.onAuthStateChanged(user => {
-  //       if (user) {
-  //         const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
-
-  //         assessments.forEach(value => {
-  //           updateUserM3AssessmentScores({
-  //             userId: user.uid,
-  //             epochId: value.id,
-  //             rawData: value.rawData,
-  //           }).then(result => {
-  //             console.log(result.data)
-
-  //             setCurrentRiskScore(result.data.allScore)
-  //             setCurrentAllRiskLevel(result.data.currentAllRiskLevel)
-
-  //             setCurrentAssessmentDate(new Date(value.createDate.seconds * 1000).toLocaleString('en-US', {
-  //               month: 'long',
-  //               day: 'numeric',
-  //               year: 'numeric'
-  //             }))
-
-  //             const data = {
-  //               labels: [
-  //                 new Date(value.createDate.seconds * 1000).toLocaleString('en-US', {
-  //                   month: 'long',
-  //                   day: 'numeric',
-  //                   year: 'numeric'
-  //                 }),
-  //               ],
-  //               datasets: [
-  //                 {
-  //                   label: 'Depression',
-  //                   data: [parseInt(result.data.depressionScore)],
-  //                   backgroundColor: '#6FCF97',
-  //                   type: 'bar'
-  //                 },
-  //                 {
-  //                   label: 'Anxiety',
-  //                   data: [parseInt(result.data.anxietyScore)],
-  //                   backgroundColor: '#D68AFA',
-  //                   type: 'bar'
-  //                 },
-  //                 {
-  //                   label: 'PTSD',
-  //                   data: [parseInt(result.data.ptsdScore)],
-  //                   backgroundColor: '#56CCF2',
-  //                   type: 'bar'
-  //                 },
-  //                 {
-  //                   label: 'Bipolar',
-  //                   data: [parseInt(result.data.bipolarScore)],
-  //                   backgroundColor: '#DC957E',
-  //                   type: 'bar'
-  //                 },
-  //                 {
-  //                   label: 'Overall Score',
-  //                   data: [parseInt(result.data.overallScore)],
-  //                   backgroundColor: '#2968EA',
-  //                   type: 'line'
-  //                 },
-  //               ]
-  //             }
-
-  //             setCurrentChartData(data)
-  //           }).catch(error => {
-  //             console.log('error:', error)
-  //           })
-  //         })
-  //       }
-  //     })
-  //   }
-  // }, [assessments])
-
   useEffect(() => {
     if (assessments) {
       assessments[0] && setCurrentRiskScore(assessments[0].allScore)
@@ -205,12 +130,6 @@ export default function AssessmentWelcomePage() {
                   epochId: docData.id,
                   rawData: docData.rawData,
                 }).then(result => {
-                  // setCurrentAssessmentDate(new Date(value.createDate.seconds * 1000).toLocaleString('en-US', {
-                  //   month: 'long',
-                  //   day: 'numeric',
-                  //   year: 'numeric'
-                  // }))
-
                   let mergedData = {
                     ...docData,
                     ...result.data
@@ -226,6 +145,75 @@ export default function AssessmentWelcomePage() {
       }
     })
   }, [])
+
+  const handleTakeAssessment = () => {
+    if (authUser) {
+      localStorage.removeItem(`${authUser.uid}_assessmentStep1Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep2Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep3Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep4Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep5Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep6Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep7Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep8Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep9Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep10Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep11Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep12Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep13Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep14Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep15Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep16Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep17Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep18Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep19Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep20Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep21Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep23Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep24Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep25Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep26Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep28Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep29Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep30Answer`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep31Answer`)
+
+      localStorage.removeItem(`${authUser.uid}_assessmentStep1Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep2Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep3Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep4Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep5Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep6Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep7Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep8Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep9Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep10Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep11Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep12Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep13Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep14Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep15Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep16Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep17Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep18Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep19Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep20Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep21Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep23Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep24Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep25Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep26Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep28Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep29Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep30Time`)
+      localStorage.removeItem(`${authUser.uid}_assessmentStep31Time`)
+
+      localStorage.setItem(`${authUser.uid}_currentAssessmentStep`, 0)
+      localStorage.setItem(`${authUser.uid}_onboardingStep`, 1)
+
+      router.push('/onboarding/get-started')
+    }
+  }
 
   const handleStart = () => {
     localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) === null && localStorage.setItem(`${authUser.uid}_currentAssessmentStep`, 0) 
@@ -261,7 +249,7 @@ export default function AssessmentWelcomePage() {
                   size="large" 
                   className={styles.take_assessment_btn} 
                   variant="contained" 
-                  onClick={() => router.push('/onboarding/get-started')}
+                  onClick={handleTakeAssessment}
                 >
                   TAKE ASSESSMENT
                 </Button>
@@ -270,7 +258,7 @@ export default function AssessmentWelcomePage() {
             <>
               <p className={styles.date_text}>{currentAssessmentDate}</p> 
 
-              {currentRiskScore > 0 && (
+              {(currentRiskScore > -1) && (
                 <>
                   <div className={styles.rating_wrap}>
                     <div className={styles.rating_outer_wrap}>
@@ -401,7 +389,47 @@ export default function AssessmentWelcomePage() {
                         year: 'numeric'
                       }),
                       assessment.allRiskLevel,
-                      {},
+                      {
+                        labels: [
+                          new Date(assessments[0].createDate.seconds * 1000).toLocaleString('en-US', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric'
+                          }),
+                        ],
+                        datasets: [
+                          {
+                            label: 'Depression',
+                            data: [parseInt(assessments[0].depressionScore)],
+                            backgroundColor: '#6FCF97',
+                            type: 'bar'
+                          },
+                          {
+                            label: 'Anxiety',
+                            data: [parseInt(assessments[0].anxietyScore)],
+                            backgroundColor: '#D68AFA',
+                            type: 'bar'
+                          },
+                          {
+                            label: 'PTSD',
+                            data: [parseInt(assessments[0].ptsdScore)],
+                            backgroundColor: '#56CCF2',
+                            type: 'bar'
+                          },
+                          {
+                            label: 'Bipolar',
+                            data: [parseInt(assessments[0].bipolarScore)],
+                            backgroundColor: '#DC957E',
+                            type: 'bar'
+                          },
+                          {
+                            label: 'Overall Score',
+                            data: [parseInt(assessments[0].overallScore)],
+                            backgroundColor: '#2968EA',
+                            type: 'line'
+                          }
+                        ]
+                      },
                       `/assessment/report/${authUser.uid}/${assessment.id}`
                     )}
                   >

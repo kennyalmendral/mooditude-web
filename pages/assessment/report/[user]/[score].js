@@ -288,7 +288,7 @@ export default function AssessmentReport() {
               <p className={styles.date_text}>{assessmentDate}</p> 
             )}
 
-            {riskScore > 0 && (
+            {riskScore > -1 && (
               <>
                 <div className={styles.rating_wrap}>
                   <div className={styles.rating_outer_wrap}>
@@ -359,7 +359,7 @@ export default function AssessmentReport() {
             <div className={styles.report_content_wrap}>
               {isReportVisible && (
                 <div className={`${styles.report_content_item} ${styles.active}`} key={'report_content_free_wrap'}>
-                  {riskScore > 0 && (
+                  {riskScore > -1 && (
                     <>
                       <div className={styles.normal_text_wrap}>
                         {allRiskLevel == 'unlikely' && (
