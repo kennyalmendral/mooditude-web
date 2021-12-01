@@ -108,6 +108,28 @@ export default function AssessmentWelcomePage() {
     if (!loading && !authUser) { 
       router.push('/auth/login')
     }
+
+    if (authUser) {
+      firebaseDatabase
+        .ref()
+        .child('users')
+        .child(authUser.uid)
+        .child('onboardingStep')
+        .once('value')
+        .then((snapshot) => {
+          const onboardingStepValue = snapshot.val()
+
+          if (onboardingStepValue == null) {
+            location.href = '/onboarding/welcome'
+          }
+
+          if (onboardingStepValue == 0) {
+            location.href = '/onboarding/welcome'
+          } else if (onboardingStepValue == 1) {
+            location.href = '/onboarding/get-started'
+          }
+        })
+    }
   }, [authUser, loading, router])
 
   useEffect(() => {
