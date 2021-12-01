@@ -11,6 +11,10 @@ import { SITE_NAME } from '@/config/index'
 import { useAuth } from '@/context/AuthUserContext'
 import TextField from '@mui/material/TextField';
 
+import Firebase from 'lib/Firebase'
+
+const firebaseAuth = Firebase.auth()
+const firebaseDatabase = Firebase.database()
 
 export default function Login(props) {
   const router = useRouter()
@@ -26,14 +30,26 @@ export default function Login(props) {
     setTimeout(() => {
       props.removePageLoader()
     },300)
+    
     if (loading && authUser) {
-      // router.push('/onboarding/welcome')
-      if (authUser && localStorage.getItem(`${authUser.uid}_onboardingStep`) == 0) {
-        location.href='/onboarding/welcome'
-      } else if (authUser && localStorage.getItem(`${authUser.uid}_onboardingStep`) == 1) {
-        location.href='/onboarding/get-started'
-      } else if (authUser && localStorage.getItem(`${authUser.uid}_onboardingStep`) == 2) {
-        location.href = '/assessment/report'
+      if (authUser) {
+        firebaseDatabase
+          .ref()
+          .child('users')
+          .child(authUser.uid)
+          .child('onboardingStep')
+          .once('value')
+          .then((snapshot) => {
+            const onboardingStepValue = snapshot.val()
+
+            if (onboardingStepValue == 0) {
+              location.href = '/onboarding/welcome'
+            } else if (onboardingStepValue == 1) {
+              location.href = '/onboarding/get-started'
+            } else if (onboardingStepValue == 2) {
+              location.href = '/assessment/dashboard'
+            }
+          })
       }
     }
   }, [authUser, loading, router])
@@ -49,12 +65,24 @@ export default function Login(props) {
         // setIsLoggingIn(false)
         // router.push('/onboarding/welcome')
 
-        if (authUser && localStorage.getItem(`${authUser.uid}_onboardingStep`) == 0) {
-          location.href='/onboarding/welcome'
-        } else if (authUser && localStorage.getItem(`${authUser.uid}_onboardingStep`) == 1) {
-          location.href='/onboarding/get-started'
-        } else if (authUser && localStorage.getItem(`${authUser.uid}_onboardingStep`) == 2) {
-          location.href = '/assessment/report'
+        if (user) {
+          firebaseDatabase
+            .ref()
+            .child('users')
+            .child(user.user.uid)
+            .child('onboardingStep')
+            .once('value')
+            .then((snapshot) => {
+              const onboardingStepValue = snapshot.val()
+
+              if (onboardingStepValue == 0) {
+                location.href = '/onboarding/welcome'
+              } else if (onboardingStepValue == 1) {
+                location.href = '/onboarding/get-started'
+              } else if (onboardingStepValue == 2) {
+                location.href = '/assessment/dashboard'
+              }
+            })
         }
       })
       .catch(error => {

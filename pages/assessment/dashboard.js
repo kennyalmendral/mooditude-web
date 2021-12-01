@@ -13,10 +13,11 @@ import { useAuth } from '@/context/AuthUserContext'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 
-import Firebase from 'lib/Firebase'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 import { Line } from 'react-chartjs-3'
+
+import Firebase from 'lib/Firebase'
 
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
