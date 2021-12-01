@@ -33,16 +33,16 @@ function App({ Component, pageProps }) {
   const [logoutLoader, setLogoutLoader] = React.useState(false);
   const [loginLoader, setLoginLoader] = React.useState(false);
   
-  useEffect(() => {
-    firebaseAuth.onAuthStateChanged(user => {
-      if (user) {
-        setCheckAuth(true)
-        removePageLoader()
-      }else{
-        setCheckAuth(false)
-      }
-    })
-  })
+  // useEffect(() => {
+  //   firebaseAuth.onAuthStateChanged(user => {
+  //     if (user) {
+  //       setCheckAuth(true)
+  //       removePageLoader()
+  //     }else{
+  //       setCheckAuth(false)
+  //     }
+  //   })
+  // })
 
   useEffect(() => {
     if (router) {
@@ -78,15 +78,28 @@ function App({ Component, pageProps }) {
                       (snapshotValue.committedToSelfhelp == 'false'))
                     ) {
                       router.push('/')
+                      setCheckAuth(true)
+                      removePageLoader()
                     } else if (
                       (snapshotValue.committedToSelfhelp == 'true') || 
                       (snapshotValue.committedToSelfhelp == 'false')
                     ) {
                       router.push('/onboarding/get-started')
+                      setCheckAuth(true)
+                      removePageLoader()
+                    }else{
+                      setCheckAuth(true)
+                      removePageLoader()
                     }
                   })
               })
+          }else{
+            setCheckAuth(true)
+            removePageLoader()
           }
+        }else{
+          setCheckAuth(false)
+          removePageLoader()
         }
       })
     }

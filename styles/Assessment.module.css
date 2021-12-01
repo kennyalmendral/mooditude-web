@@ -604,6 +604,28 @@
 	color: #333333;
 }
 
+.custom_loader{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	flex-direction: column;
+}
+
+.custom_loader p{
+	font-family: 'Circular Std';
+	font-style: normal;
+	font-weight: normal;
+	font-size: 16px;
+	line-height: 20px;
+	text-align: center;
+
+	/* Primary */
+	margin-top: 30px;
+	color: #072B4F;
+
+}
+
 @media(max-width:  1199px) and (min-width:  768px){
 	.dashboard_left p{
 		max-width: 100%;

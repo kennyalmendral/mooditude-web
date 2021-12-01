@@ -23,6 +23,7 @@ const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
 const firebaseFunctions = Firebase.functions()
+import GridLoader from "react-spinners/GridLoader"
 
 export default function AssessmentWelcomePage() {
   const router = useRouter()
@@ -37,6 +38,7 @@ export default function AssessmentWelcomePage() {
   const [currentFullReportLink, setCurrentFullReportLink] = useState('')
 
   const [hasNoAssessment, setHasNoAssessment] = useState(true)
+  const [checking, setChecking] = useState(true)
   
   const [currentAllRiskLevel, setCurrentAllRiskLevel] = useState('none')
 
@@ -129,7 +131,7 @@ export default function AssessmentWelcomePage() {
   useEffect(() => {
     let usersM3AssessmentScoresRef
     let unsubscribe
-
+    setChecking(true)
     firebaseAuth.onAuthStateChanged(user => {
       if (user) {
         usersM3AssessmentScoresRef = firebaseStore
@@ -154,8 +156,9 @@ export default function AssessmentWelcomePage() {
                     ...docData,
                     ...result.data
                   }
-                  
+                  setChecking(false)
                   setAssessments(assessments => [...assessments, mergedData])
+
                 })
               }
             })
@@ -253,277 +256,295 @@ export default function AssessmentWelcomePage() {
 
   return (
     <Layout title={`Assessments | ${SITE_NAME}`}>
-      <div className={`${styles.onboarding_wrapper} ${styles.with_gray}`}>
-        <div className={`${styles.assessment_wrap} ${styles.dashboard_page}`}>
-          <div className={styles.dashboard_left}>
-           <h1>Your Mental<br/> Wellbeing Score</h1>
+      {
+        checking ? 
 
-           {
-            hasNoAssessment == true ? 
-              <div className={styles.dashboard_expired}>
-                <div className={styles.dashboard_expired_img}><img src="/premium.svg" /></div>
-                <h3>Assess Your <br/>Mental Wellbeing<br/> Score</h3>
+          <div 
+            className={styles.custom_loader} 
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100vh',
+              background: '#fff',
+              zIndex: 10
+            }}
+          >
+            <GridLoader color={'#1CA566'} loading={true} size={10} />
+          </div>
+        : 
+        <div className={`${styles.onboarding_wrapper} ${styles.with_gray}`}>
+          <div className={`${styles.assessment_wrap} ${styles.dashboard_page}`}>
+            <div className={styles.dashboard_left}>
+             <h1>Your Mental<br/> Wellbeing Score</h1>
 
-                {/* <p>Your wellbeing score is outdated.</p> */}
+             {
+              hasNoAssessment == true ? 
+                <div className={styles.dashboard_expired}>
+                  <div className={styles.dashboard_expired_img}><img src="/premium.svg" /></div>
+                  <h3>Assess Your <br/>Mental Wellbeing<br/> Score</h3>
+
+                  {/* <p>Your wellbeing score is outdated.</p> */}
+
+                  <Button 
+                    size="large" 
+                    className={styles.take_assessment_btn} 
+                    variant="contained" 
+                    onClick={handleTakeAssessment}
+                  >
+                    TAKE ASSESSMENT
+                  </Button>
+                </div>
+              : 
+              <>
+                <p className={styles.date_text}>{currentAssessmentDate}</p> 
+
+                {(currentRiskScore > -1) && (
+                  <>
+                    <div className={styles.rating_wrap}>
+                      <div className={styles.rating_outer_wrap}>
+                        <div className={styles.rating_inner_wrap}>
+                          {currentRiskScore}
+                        </div> 
+                      </div> 
+                    </div>
+
+                    {currentAllRiskLevel == 'unlikely' && (
+                      <>
+                        <h2>Unlikely Risk</h2>
+                        <p>Score of {currentRiskScore} shows that it is unlikely you are suffering from a mental health condition at this time.</p>
+                      </>
+                    )}
+
+                    {currentAllRiskLevel == 'low' && (
+                      <>
+                        <h2>Low Risk</h2>
+                        <p>Score of {currentRiskScore} suggests that you have a low risk of a mental health condition.</p>
+                      </>
+                    )}
+
+                    {currentAllRiskLevel == 'medium' && (
+                      <>
+                        <h2>Medium Risk</h2>
+                        <p>Score of {currentRiskScore} suggests that you have a medium risk of a mental health condition.</p>
+                      </>
+                    )}
+
+                    {currentAllRiskLevel == 'high' && (
+                      <>
+                        <h2>High Risk</h2>
+                        <p>Score of {currentRiskScore} suggests that you have a high risk of a mental health condition.</p>
+                      </>
+                    )}
+                
+                    {/* <div className={styles.scale_img_wrap}>
+                      <img src="/scale.svg" />
+                    </div> */}
+                  </>
+                )}
 
                 <Button 
                   size="large" 
-                  className={styles.take_assessment_btn} 
+                  className={styles.full_report_btn} 
                   variant="contained" 
-                  onClick={handleTakeAssessment}
+                  onClick={() => router.push(currentFullReportLink)}
                 >
-                  TAKE ASSESSMENT
+                  FULL REPORT
                 </Button>
-              </div>
-            : 
-            <>
-              <p className={styles.date_text}>{currentAssessmentDate}</p> 
-
-              {(currentRiskScore > -1) && (
-                <>
-                  <div className={styles.rating_wrap}>
-                    <div className={styles.rating_outer_wrap}>
-                      <div className={styles.rating_inner_wrap}>
-                        {currentRiskScore}
-                      </div> 
-                    </div> 
-                  </div>
-
-                  {currentAllRiskLevel == 'unlikely' && (
-                    <>
-                      <h2>Unlikely Risk</h2>
-                      <p>Score of {currentRiskScore} shows that it is unlikely you are suffering from a mental health condition at this time.</p>
-                    </>
-                  )}
-
-                  {currentAllRiskLevel == 'low' && (
-                    <>
-                      <h2>Low Risk</h2>
-                      <p>Score of {currentRiskScore} suggests that you have a low risk of a mental health condition.</p>
-                    </>
-                  )}
-
-                  {currentAllRiskLevel == 'medium' && (
-                    <>
-                      <h2>Medium Risk</h2>
-                      <p>Score of {currentRiskScore} suggests that you have a medium risk of a mental health condition.</p>
-                    </>
-                  )}
-
-                  {currentAllRiskLevel == 'high' && (
-                    <>
-                      <h2>High Risk</h2>
-                      <p>Score of {currentRiskScore} suggests that you have a high risk of a mental health condition.</p>
-                    </>
-                  )}
+              </>
+             }
               
-                  {/* <div className={styles.scale_img_wrap}>
-                    <img src="/scale.svg" />
-                  </div> */}
-                </>
+            </div>
+            <div className={styles.dashboard_right}>
+              {hasNoAssessment == true && (
+                 <div style={{ marginBottom: '40px' }}>
+                  <img src="/graph.svg" />
+                </div>
               )}
 
-              <Button 
-                size="large" 
-                className={styles.full_report_btn} 
-                variant="contained" 
-                onClick={() => router.push(currentFullReportLink)}
-              >
-                FULL REPORT
-              </Button>
-            </>
-           }
-            
-          </div>
-          <div className={styles.dashboard_right}>
-            {hasNoAssessment == true && (
-               <div style={{ marginBottom: '40px' }}>
-                <img src="/graph.svg" />
-              </div>
-            )}
-
-            {hasNoAssessment == false && (
-              <div style={{
-                backgroundColor: '#F3F4F6',
-                borderRadius: '10px',
-                padding: '20px',
-              }}>
-                {currentChartData && (
-                  <Line 
-                    data={currentChartData}
-                    options={{
-                      responsive: true,
-                      scales: {
-                        xAxes: [{
-                          offset: true
-                        }],
-                        yAxes: [{
-                          ticks: {
-                            min: 0,
-                            max: 100,
-                            callback: function(value) {
-                              return value + '%'
+              {hasNoAssessment == false && (
+                <div style={{
+                  backgroundColor: '#F3F4F6',
+                  borderRadius: '10px',
+                  padding: '20px',
+                }}>
+                  {currentChartData && (
+                    <Line 
+                      data={currentChartData}
+                      options={{
+                        responsive: true,
+                        scales: {
+                          xAxes: [{
+                            offset: true
+                          }],
+                          yAxes: [{
+                            ticks: {
+                              min: 0,
+                              max: 100,
+                              callback: function(value) {
+                                return value + '%'
+                              }
                             }
-                          }
-                        }]
-                      },
-                      tooltips: {
-                        callbacks: {
-                          label: function(tooltipItem, data) {
-                            var index = tooltipItem.index;
-                            var currentValue = data.datasets[tooltipItem.datasetIndex].data[index];
-                            var total = 0;
-                            data.datasets.forEach(function(el){
-                              total = total + el.data[index];
-                            });
-                            var percentage = parseFloat((currentValue/total*100).toFixed(1));
-                            return currentValue + ' (' + percentage + '%)';
-                          },
-                          title: function(tooltipItem, data) {
-                            return data.datasets[tooltipItem[0].datasetIndex].label;
-                          }                        
-                        }
-                      }
-                    }}
-                  />
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {Object.keys(assessments).length > 0 && (
-          <div className={styles.assessment_list_wrap}>
-            <h3>All Assessments</h3>
-
-            <div className={styles.assessment_list_inner_wrap}>
-              {assessments.length > 0 && (
-                <>
-                  {assessments.map(assessment => (
-                    <div 
-                      className={`${styles.assessment_item} 
-                      ${styles.active}`} 
-                      style={{ 
-                        width: '100%', 
-                        alignItems: 'center', 
-                      }} 
-                      key={assessment.id} 
-                      onClick={() => handleClickAssessment(
-                        assessment.allScore, 
-                        new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric'
-                        }),
-                        assessment.allRiskLevel,
-                        {
-                          labels: [
-                            new Date(assessments[0].createDate.seconds * 1000).toLocaleString('en-US', {
-                              month: 'long',
-                              day: 'numeric',
-                              year: 'numeric'
-                            }),
-                          ],
-                          datasets: [
-                            {
-                              label: 'Depression',
-                              data: [parseInt(assessments[0].depressionScore)],
-                              backgroundColor: '#6FCF97',
-                              type: 'bar'
-                            },
-                            {
-                              label: 'Anxiety',
-                              data: [parseInt(assessments[0].anxietyScore)],
-                              backgroundColor: '#D68AFA',
-                              type: 'bar'
-                            },
-                            {
-                              label: 'PTSD',
-                              data: [parseInt(assessments[0].ptsdScore)],
-                              backgroundColor: '#56CCF2',
-                              type: 'bar'
-                            },
-                            {
-                              label: 'Bipolar',
-                              data: [parseInt(assessments[0].bipolarScore)],
-                              backgroundColor: '#DC957E',
-                              type: 'bar'
-                            },
-                            {
-                              label: 'Overall Score',
-                              data: [parseInt(assessments[0].overallScore)],
-                              backgroundColor: '#2968EA',
-                              type: 'line'
-                            }
-                          ]
+                          }]
                         },
-                        `/assessment/report/${authUser.uid}/${assessment.id}`
-                      )}
-                    >
-                      <div className={styles.ai_score}>
-                        <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
-                          {assessment.allScore}
-                        </div>
-                      </div>
-      
-                      <div className={styles.ai_details} style={{ textAlign: 'left' }}>
-                        
-                        <h4>{assessment.allRiskLevel.charAt(0).toUpperCase() + assessment.allRiskLevel.slice(1)} Risk</h4>
-
-                        <p>{new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric'
-                        })}</p>
-                      </div>
-                      
-                      
-                      <div 
-                        className={styles.ai_action} 
-                        onClick={() => router.push(`/assessment/report/${authUser.uid}/${assessment.id}`)}
-                        style={{
-                          cursor: 'pointer'
-                        }}
-                      >
-                        <ArrowForwardIcon />
-                      </div>
-                    </div>
-                  ))}
-                </>
+                        tooltips: {
+                          callbacks: {
+                            label: function(tooltipItem, data) {
+                              var index = tooltipItem.index;
+                              var currentValue = data.datasets[tooltipItem.datasetIndex].data[index];
+                              var total = 0;
+                              data.datasets.forEach(function(el){
+                                total = total + el.data[index];
+                              });
+                              var percentage = parseFloat((currentValue/total*100).toFixed(1));
+                              return currentValue + ' (' + percentage + '%)';
+                            },
+                            title: function(tooltipItem, data) {
+                              return data.datasets[tooltipItem[0].datasetIndex].label;
+                            }                        
+                          }
+                        }
+                      }}
+                    />
+                  )}
+                </div>
               )}
-              {/* <div className={styles.assessment_item}>
-                <div className={styles.ai_score}>
-                  <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
-                    {currentRiskScore}  
-                  </div>
-                </div>
-
-                <div className={styles.ai_details}>
-                  <h4>High Risk</h4>
-                  <p>July 12, 2021</p>
-                </div>
-
-                <div className={styles.ai_action}><ArrowForwardIcon /></div>
-              </div>
-              
-              <div className={`${styles.assessment_item} ${styles.active}`}>
-                <div className={styles.ai_score}>
-                  <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
-                    {currentRiskScore}  
-                  </div>
-                </div>
-
-                <div className={styles.ai_details}>
-                  <h4>High Risk</h4>
-                  <p>July 12, 2021</p>
-                </div>
-
-                <div className={styles.ai_action}><ArrowForwardIcon /></div>
-              </div> */}
             </div>
           </div>
-        )}
-      </div>
+
+          {Object.keys(assessments).length > 0 && (
+            <div className={styles.assessment_list_wrap}>
+              <h3>All Assessments</h3>
+
+              <div className={styles.assessment_list_inner_wrap}>
+                {assessments.length > 0 && (
+                  <>
+                    {assessments.map(assessment => (
+                      <div 
+                        className={`${styles.assessment_item} 
+                        ${styles.active}`} 
+                        style={{ 
+                          width: '100%', 
+                          alignItems: 'center', 
+                        }} 
+                        key={assessment.id} 
+                        onClick={() => handleClickAssessment(
+                          assessment.allScore, 
+                          new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric'
+                          }),
+                          assessment.allRiskLevel,
+                          {
+                            labels: [
+                              new Date(assessments[0].createDate.seconds * 1000).toLocaleString('en-US', {
+                                month: 'long',
+                                day: 'numeric',
+                                year: 'numeric'
+                              }),
+                            ],
+                            datasets: [
+                              {
+                                label: 'Depression',
+                                data: [parseInt(assessments[0].depressionScore)],
+                                backgroundColor: '#6FCF97',
+                                type: 'bar'
+                              },
+                              {
+                                label: 'Anxiety',
+                                data: [parseInt(assessments[0].anxietyScore)],
+                                backgroundColor: '#D68AFA',
+                                type: 'bar'
+                              },
+                              {
+                                label: 'PTSD',
+                                data: [parseInt(assessments[0].ptsdScore)],
+                                backgroundColor: '#56CCF2',
+                                type: 'bar'
+                              },
+                              {
+                                label: 'Bipolar',
+                                data: [parseInt(assessments[0].bipolarScore)],
+                                backgroundColor: '#DC957E',
+                                type: 'bar'
+                              },
+                              {
+                                label: 'Overall Score',
+                                data: [parseInt(assessments[0].overallScore)],
+                                backgroundColor: '#2968EA',
+                                type: 'line'
+                              }
+                            ]
+                          },
+                          `/assessment/report/${authUser.uid}/${assessment.id}`
+                        )}
+                      >
+                        <div className={styles.ai_score}>
+                          <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
+                            {assessment.allScore}
+                          </div>
+                        </div>
+        
+                        <div className={styles.ai_details} style={{ textAlign: 'left' }}>
+                          
+                          <h4>{assessment.allRiskLevel.charAt(0).toUpperCase() + assessment.allRiskLevel.slice(1)} Risk</h4>
+
+                          <p>{new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric'
+                          })}</p>
+                        </div>
+                        
+                        
+                        <div 
+                          className={styles.ai_action} 
+                          onClick={() => router.push(`/assessment/report/${authUser.uid}/${assessment.id}`)}
+                          style={{
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <ArrowForwardIcon />
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
+                {/* <div className={styles.assessment_item}>
+                  <div className={styles.ai_score}>
+                    <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
+                      {currentRiskScore}  
+                    </div>
+                  </div>
+
+                  <div className={styles.ai_details}>
+                    <h4>High Risk</h4>
+                    <p>July 12, 2021</p>
+                  </div>
+
+                  <div className={styles.ai_action}><ArrowForwardIcon /></div>
+                </div>
+                
+                <div className={`${styles.assessment_item} ${styles.active}`}>
+                  <div className={styles.ai_score}>
+                    <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
+                      {currentRiskScore}  
+                    </div>
+                  </div>
+
+                  <div className={styles.ai_details}>
+                    <h4>High Risk</h4>
+                    <p>July 12, 2021</p>
+                  </div>
+
+                  <div className={styles.ai_action}><ArrowForwardIcon /></div>
+                </div> */}
+              </div>
+            </div>
+          )}
+        </div>
+      }
+      
     </Layout>
   )
 }

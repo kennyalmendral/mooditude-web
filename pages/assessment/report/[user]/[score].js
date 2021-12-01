@@ -479,7 +479,7 @@ export default function AssessmentReport() {
                                 BUY MOODITUDE PREMIUM
                               </Button>
                               
-                              <div>
+                              {/*<div>
                                 <Link href="#" >
                                   <a onClick={e => {e.preventDefault();setBuyPremium(false)}} style={{
                                     fontSize: '14px',
@@ -487,7 +487,7 @@ export default function AssessmentReport() {
                                     fontFamily: 'Circular STD'
                                   }}>NO THANKS</a>
                                 </Link>
-                              </div>
+                              </div>*/}
                             </div>
                              : '' }
                             <div className={styles.download_app_wrap}>
