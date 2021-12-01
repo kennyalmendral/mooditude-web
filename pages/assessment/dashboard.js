@@ -28,89 +28,150 @@ export default function AssessmentWelcomePage() {
 
   const { authUser, loading, signOut } = useAuth()
 
-  const [riskScore, setRiskScore] = useState(0)
-  const [assessmentDate, setAssessmentDate] = useState(null)
+  const [currentRiskScore, setCurrentRiskScore] = useState(0)
+  const [currentAssessmentDate, setCurrentAssessmentDate] = useState(null)
 
-  const [chartData, setChartData] = useState(null)
+  const [currentChartData, setCurrentChartData] = useState(null)
+
+  const [currentFullReportLink, setCurrentFullReportLink] = useState('')
 
   // const [dummy, setDummy] = useState('expired')
   const [dummy, setDummy] = useState('')
-  const [allRiskLevel, setAllRiskLevel] = useState('none')
+  
+  const [currentAllRiskLevel, setCurrentAllRiskLevel] = useState('none')
 
   const [assessments, setAssessments] = useState([])
 
+  // useEffect(() => {
+  //   if (assessments.length > 0) {
+  //     firebaseAuth.onAuthStateChanged(user => {
+  //       if (user) {
+  //         const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
+
+  //         assessments.forEach(value => {
+  //           updateUserM3AssessmentScores({
+  //             userId: user.uid,
+  //             epochId: value.id,
+  //             rawData: value.rawData,
+  //           }).then(result => {
+  //             console.log(result.data)
+
+  //             setCurrentRiskScore(result.data.allScore)
+  //             setCurrentAllRiskLevel(result.data.currentAllRiskLevel)
+
+  //             setCurrentAssessmentDate(new Date(value.createDate.seconds * 1000).toLocaleString('en-US', {
+  //               month: 'long',
+  //               day: 'numeric',
+  //               year: 'numeric'
+  //             }))
+
+  //             const data = {
+  //               labels: [
+  //                 new Date(value.createDate.seconds * 1000).toLocaleString('en-US', {
+  //                   month: 'long',
+  //                   day: 'numeric',
+  //                   year: 'numeric'
+  //                 }),
+  //               ],
+  //               datasets: [
+  //                 {
+  //                   label: 'Depression',
+  //                   data: [parseInt(result.data.depressionScore)],
+  //                   backgroundColor: '#6FCF97',
+  //                   type: 'bar'
+  //                 },
+  //                 {
+  //                   label: 'Anxiety',
+  //                   data: [parseInt(result.data.anxietyScore)],
+  //                   backgroundColor: '#D68AFA',
+  //                   type: 'bar'
+  //                 },
+  //                 {
+  //                   label: 'PTSD',
+  //                   data: [parseInt(result.data.ptsdScore)],
+  //                   backgroundColor: '#56CCF2',
+  //                   type: 'bar'
+  //                 },
+  //                 {
+  //                   label: 'Bipolar',
+  //                   data: [parseInt(result.data.bipolarScore)],
+  //                   backgroundColor: '#DC957E',
+  //                   type: 'bar'
+  //                 },
+  //                 {
+  //                   label: 'Overall Score',
+  //                   data: [parseInt(result.data.overallScore)],
+  //                   backgroundColor: '#2968EA',
+  //                   type: 'line'
+  //                 },
+  //               ]
+  //             }
+
+  //             setCurrentChartData(data)
+  //           }).catch(error => {
+  //             console.log('error:', error)
+  //           })
+  //         })
+  //       }
+  //     })
+  //   }
+  // }, [assessments])
+
   useEffect(() => {
-    if (assessments.length > 0) {
-      firebaseAuth.onAuthStateChanged(user => {
-        if (user) {
-          const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
+    if (assessments) {
+      assessments[0] && setCurrentRiskScore(assessments[0].allScore)
 
-          assessments.forEach(value => {
-            updateUserM3AssessmentScores({
-              userId: user.uid,
-              epochId: value.id,
-              rawData: value.rawData,
-            }).then(result => {
-              console.log(result.data)
+      assessments[0] && setCurrentAssessmentDate(new Date(assessments[0].createDate.seconds * 1000).toLocaleString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      }))
 
-              setRiskScore(result.data.allScore)
-              setAllRiskLevel(result.data.allRiskLevel)
+      assessments[0] && setCurrentAllRiskLevel(assessments[0].allRiskLevel)
 
-              setAssessmentDate(new Date(value.createDate.seconds * 1000).toLocaleString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-              }))
-
-              const data = {
-                labels: [
-                  new Date(value.createDate.seconds * 1000).toLocaleString('en-US', {
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric'
-                  }),
-                ],
-                datasets: [
-                  {
-                    label: 'Depression',
-                    data: [parseInt(result.data.depressionScore)],
-                    backgroundColor: '#6FCF97',
-                    type: 'bar'
-                  },
-                  {
-                    label: 'Anxiety',
-                    data: [parseInt(result.data.anxietyScore)],
-                    backgroundColor: '#D68AFA',
-                    type: 'bar'
-                  },
-                  {
-                    label: 'PTSD',
-                    data: [parseInt(result.data.ptsdScore)],
-                    backgroundColor: '#56CCF2',
-                    type: 'bar'
-                  },
-                  {
-                    label: 'Bipolar',
-                    data: [parseInt(result.data.bipolarScore)],
-                    backgroundColor: '#DC957E',
-                    type: 'bar'
-                  },
-                  {
-                    label: 'Overall Score',
-                    data: [parseInt(result.data.overallScore)],
-                    backgroundColor: '#2968EA',
-                    type: 'bar'
-                  },
-                ]
-              }
-
-              setChartData(data)
-            }).catch(error => {
-              console.log('error:', error)
-            })
-          })
-        }
+      assessments[0] && setCurrentChartData({
+        labels: [
+          new Date(assessments[0].createDate.seconds * 1000).toLocaleString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+          }),
+        ],
+        datasets: [
+          {
+            label: 'Depression',
+            data: [parseInt(assessments[0].depressionScore)],
+            backgroundColor: '#6FCF97',
+            type: 'bar'
+          },
+          {
+            label: 'Anxiety',
+            data: [parseInt(assessments[0].anxietyScore)],
+            backgroundColor: '#D68AFA',
+            type: 'bar'
+          },
+          {
+            label: 'PTSD',
+            data: [parseInt(assessments[0].ptsdScore)],
+            backgroundColor: '#56CCF2',
+            type: 'bar'
+          },
+          {
+            label: 'Bipolar',
+            data: [parseInt(assessments[0].bipolarScore)],
+            backgroundColor: '#DC957E',
+            type: 'bar'
+          },
+          {
+            label: 'Overall Score',
+            data: [parseInt(assessments[0].overallScore)],
+            backgroundColor: '#2968EA',
+            type: 'line'
+          }
+        ]
       })
+      
+      assessments[0] && setCurrentFullReportLink(`/assessment/report/${authUser.uid}/${assessments[0].id}`)
     }
   }, [assessments])
 
@@ -136,7 +197,27 @@ export default function AssessmentWelcomePage() {
             querySnapshot.forEach(doc => {
               if (doc) {
                 let docData = doc.data()
-                setAssessments(assessments => [...assessments, docData])
+
+                const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
+              
+                updateUserM3AssessmentScores({
+                  userId: user.uid,
+                  epochId: docData.id,
+                  rawData: docData.rawData,
+                }).then(result => {
+                  // setCurrentAssessmentDate(new Date(value.createDate.seconds * 1000).toLocaleString('en-US', {
+                  //   month: 'long',
+                  //   day: 'numeric',
+                  //   year: 'numeric'
+                  // }))
+
+                  let mergedData = {
+                    ...docData,
+                    ...result.data
+                  }
+                  
+                  setAssessments(assessments => [...assessments, mergedData])
+                })
               }
             })
           })
@@ -152,8 +233,14 @@ export default function AssessmentWelcomePage() {
     router.push(`/assessment/1`)
   }
 
-  const handleClickAssessment = () => {
-    console.log('handleClickAssessment')
+  const handleClickAssessment = (riskScore, assessmentDate, riskLevel, chartData, fullReportLink) => {
+    console.log(riskScore, assessmentDate, riskLevel, chartData, fullReportLink)
+
+    setCurrentRiskScore(riskScore)
+    setCurrentAssessmentDate(assessmentDate)
+    setCurrentAllRiskLevel(riskLevel)
+    setCurrentChartData(chartData)
+    setCurrentFullReportLink(fullReportLink)
   }
 
   return (
@@ -181,43 +268,43 @@ export default function AssessmentWelcomePage() {
               </div>
             : 
             <>
-              <p className={styles.date_text}>{assessmentDate}</p> 
+              <p className={styles.date_text}>{currentAssessmentDate}</p> 
 
-              {riskScore > 0 && (
+              {currentRiskScore > 0 && (
                 <>
                   <div className={styles.rating_wrap}>
                     <div className={styles.rating_outer_wrap}>
                       <div className={styles.rating_inner_wrap}>
-                        {riskScore}
+                        {currentRiskScore}
                       </div> 
                     </div> 
                   </div>
 
-                  {allRiskLevel == 'unlikely' && (
+                  {currentAllRiskLevel == 'unlikely' && (
                     <>
                       <h2>Unlikely Risk</h2>
-                      <p>Score of {riskScore} shows that it is unlikely you are suffering from a mental health condition at this time.</p>
+                      <p>Score of {currentRiskScore} shows that it is unlikely you are suffering from a mental health condition at this time.</p>
                     </>
                   )}
 
-                  {allRiskLevel == 'low' && (
+                  {currentAllRiskLevel == 'low' && (
                     <>
                       <h2>Low Risk</h2>
-                      <p>Score of {riskScore} suggests that you have a low risk of a mental health condition.</p>
+                      <p>Score of {currentRiskScore} suggests that you have a low risk of a mental health condition.</p>
                     </>
                   )}
 
-                  {allRiskLevel == 'medium' && (
+                  {currentAllRiskLevel == 'medium' && (
                     <>
                       <h2>Medium Risk</h2>
-                      <p>Score of {riskScore} suggests that you have a medium risk of a mental health condition.</p>
+                      <p>Score of {currentRiskScore} suggests that you have a medium risk of a mental health condition.</p>
                     </>
                   )}
 
-                  {allRiskLevel == 'high' && (
+                  {currentAllRiskLevel == 'high' && (
                     <>
                       <h2>High Risk</h2>
-                      <p>Score of {riskScore} suggests that you have a high risk of a mental health condition.</p>
+                      <p>Score of {currentRiskScore} suggests that you have a high risk of a mental health condition.</p>
                     </>
                   )}
               
@@ -231,7 +318,7 @@ export default function AssessmentWelcomePage() {
                 size="large" 
                 className={styles.full_report_btn} 
                 variant="contained" 
-                onClick={() => location.href = '/assessment/report'}
+                onClick={() => router.push(currentFullReportLink)}
               >
                 FULL REPORT
               </Button>
@@ -247,11 +334,10 @@ export default function AssessmentWelcomePage() {
               backgroundColor: '#F3F4F6',
               borderRadius: '10px',
               padding: '20px',
-              minHeight: '400px'
             }}>
-              {chartData && (
+              {currentChartData && (
                 <Line 
-                  data={chartData}
+                  data={currentChartData}
                   options={{
                     responsive: true,
                     scales: {
@@ -307,7 +393,17 @@ export default function AssessmentWelcomePage() {
                       alignItems: 'center', 
                     }} 
                     key={assessment.id} 
-                    onClick={handleClickAssessment}
+                    onClick={() => handleClickAssessment(
+                      assessment.allScore, 
+                      new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric'
+                      }),
+                      assessment.allRiskLevel,
+                      {},
+                      `/assessment/report/${authUser.uid}/${assessment.id}`
+                    )}
                   >
                     <div className={styles.ai_score}>
                       <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
@@ -317,7 +413,7 @@ export default function AssessmentWelcomePage() {
     
                     <div className={styles.ai_details} style={{ textAlign: 'left' }}>
                       
-                      <h4>{allRiskLevel.charAt(0).toUpperCase() + allRiskLevel.slice(1)} Risk</h4>
+                      <h4>{assessment.allRiskLevel.charAt(0).toUpperCase() + assessment.allRiskLevel.slice(1)} Risk</h4>
 
                       <p>{new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
                         month: 'long',
@@ -329,7 +425,7 @@ export default function AssessmentWelcomePage() {
                     
                     <div 
                       className={styles.ai_action} 
-                      onClick={() => location.href = '/assessment/report'}
+                      onClick={() => router.push(`/assessment/report/${authUser.uid}/${assessment.id}`)}
                       style={{
                         cursor: 'pointer'
                       }}
@@ -343,7 +439,7 @@ export default function AssessmentWelcomePage() {
             {/* <div className={styles.assessment_item}>
               <div className={styles.ai_score}>
                 <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
-                  {riskScore}  
+                  {currentRiskScore}  
                 </div>
               </div>
 
@@ -358,7 +454,7 @@ export default function AssessmentWelcomePage() {
             <div className={`${styles.assessment_item} ${styles.active}`}>
               <div className={styles.ai_score}>
                 <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
-                  {riskScore}  
+                  {currentRiskScore}  
                 </div>
               </div>
 
