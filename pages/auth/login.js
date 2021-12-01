@@ -30,7 +30,7 @@ export default function Login(props) {
     setTimeout(() => {
       props.removePageLoader()
     },300)
-    
+
     if (loading && authUser) {
       if (authUser) {
         firebaseDatabase
@@ -41,6 +41,10 @@ export default function Login(props) {
           .once('value')
           .then((snapshot) => {
             const onboardingStepValue = snapshot.val()
+
+            if (onboardingStepValue == null) {
+              location.href = '/onboarding/welcome'
+            }
 
             if (onboardingStepValue == 0) {
               location.href = '/onboarding/welcome'
@@ -74,6 +78,10 @@ export default function Login(props) {
             .once('value')
             .then((snapshot) => {
               const onboardingStepValue = snapshot.val()
+
+              if (onboardingStepValue == null) {
+                location.href = '/onboarding/welcome'
+              }
 
               if (onboardingStepValue == 0) {
                 location.href = '/onboarding/welcome'
