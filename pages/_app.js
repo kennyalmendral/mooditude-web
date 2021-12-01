@@ -1,12 +1,17 @@
 import React, {useState, useEffect} from 'react';
+import { useRouter } from 'next/router'
 import { AuthUserProvider } from '@/context/AuthUserContext'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import MainMenu from '@/components/menu.js'
 import Router from 'next/router';
 import '../styles/globals.css'
 import GridLoader from "react-spinners/GridLoader";
+
 import Firebase from 'lib/Firebase'
+
 const firebaseAuth = Firebase.auth()
+const firebaseDatabase = Firebase.database()
+const firebaseStore = Firebase.firestore()
 
 const theme = createTheme({
   palette: {
@@ -19,7 +24,9 @@ const theme = createTheme({
   }
 }); 
 
-function App({ Component, pageProps }) {  
+function App({ Component, pageProps }) {
+  const router = useRouter()
+
   const [checkAuth, setCheckAuth] = React.useState(false);
   const [checkMenuCollapse, setCheckMenuCollapse] = React.useState(false);
   const [pageLoader, setPageLoader] = React.useState(true);
@@ -36,6 +43,54 @@ function App({ Component, pageProps }) {
       }
     })
   })
+
+  useEffect(() => {
+    if (router) {
+      firebaseAuth.onAuthStateChanged(user => {
+        if (user) {
+          if (
+            router.pathname == '/onboarding/welcome' || 
+            router.pathname == '/onboarding/1' || 
+            router.pathname == '/onboarding/2' || 
+            router.pathname == '/onboarding/3' || 
+            router.pathname == '/onboarding/4' || 
+            router.pathname == '/onboarding/5' || 
+            router.pathname == '/onboarding/6' || 
+            router.pathname == '/onboarding/7'
+          ) {
+            firebaseDatabase
+              .ref()
+              .child('users')
+              .child(user.uid)
+              .once('value')
+              .then((snapshot) => {
+                const snapshotValue = snapshot.val()
+
+                firebaseStore
+                  .collection('M3Assessment')
+                  .doc(user.uid)
+                  .collection('scores')
+                  .get()
+                  .then(doc => {
+                    if (
+                      (doc.docs.length > 0) && 
+                      ((snapshotValue.committedToSelfhelp == 'true') || 
+                      (snapshotValue.committedToSelfhelp == 'false'))
+                    ) {
+                      router.push('/')
+                    } else if (
+                      (snapshotValue.committedToSelfhelp == 'true') || 
+                      (snapshotValue.committedToSelfhelp == 'false')
+                    ) {
+                      router.push('/onboarding/get-started')
+                    }
+                  })
+              })
+          }
+        }
+      })
+    }
+  }, [router])
 
   const removePageLoader = (status = false) => {
     setPageLoader(status)
