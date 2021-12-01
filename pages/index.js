@@ -84,11 +84,11 @@ export default function OnboardingWelcomePage() {
 
             <div className={styles.app_btns}>
               <a href="https://apps.apple.com/us/app/mooditude-cbt-therapy/id1450661800" target="_blank">
-                <img src="/Apple.png" alt="" />
+                <img src="/Apple.svg" alt="" />
               </a>  
 
               <a href="https://play.google.com/store/apps/details?id=com.health.mental.mooditude" target="_blank">
-                <img src="/Android.png" alt="" />
+                <img src="/Android.svg" alt="" />
               </a>  
             </div>
           </div>
