@@ -351,13 +351,26 @@ img{
 
 
 .auth_page_wrapper .MuiTextField-root,
-.auth_page_wrapper .MuiTextField-root span,
-.auth_page_wrapper .MuiInputLabel-formControl{
+.auth_page_wrapper .MuiTextField-root span{
   font-family: 'Circular Std';
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
   line-height: 24px;
+  /* identical to box height */
+
+
+  /* Placeholder */
+
+  color: #A8B5C1;
+}
+
+.auth_page_wrapper .MuiInputLabel-formControl{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
   /* identical to box height */
 
 

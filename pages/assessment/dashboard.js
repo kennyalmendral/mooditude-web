@@ -246,7 +246,8 @@ export default function AssessmentWelcomePage() {
             <div style={{
               backgroundColor: '#F3F4F6',
               borderRadius: '10px',
-              padding: '20px'
+              padding: '20px',
+              minHeight: '400px'
             }}>
               {chartData && (
                 <Line 

@@ -716,7 +716,7 @@ export default function AssessmentReport() {
                                 BUY MOODITUDE PREMIUM
                               </Button>
                               
-                              <div>
+                              {/*<div>
                                 <Link href="#" >
                                   <a onClick={e => {e.preventDefault();setBuyPremium(false)}} style={{
                                     fontSize: '14px',
@@ -724,7 +724,7 @@ export default function AssessmentReport() {
                                     fontFamily: 'Circular STD'
                                   }}>NO THANKS</a>
                                 </Link>
-                              </div>
+                              </div>*/}
                             </div>
                              : '' }
                             <div className={styles.download_app_wrap}>
@@ -733,11 +733,11 @@ export default function AssessmentReport() {
 
                               <div className={styles.app_btns}>
                                 <a href="https://apps.apple.com/us/app/mooditude-cbt-therapy/id1450661800" target="_blank">
-                                  <img src="/Apple.png" alt="" />
+                                  <img src="/Apple.svg" alt="" />
                                 </a>  
 
                                 <a href="https://play.google.com/store/apps/details?id=com.health.mental.mooditude" target="_blank">
-                                  <img src="/Android.png" alt="" />
+                                  <img src="/Android.svg" alt="" />
                                 </a>  
                               </div>
                             </div>
