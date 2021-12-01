@@ -14,6 +14,7 @@ import TextField from '@mui/material/TextField';
 import Firebase from 'lib/Firebase'
 
 const firebaseAuth = Firebase.auth()
+const firebaseStore = Firebase.firestore()
 const firebaseDatabase = Firebase.database()
 
 export default function Login(props) {
@@ -36,21 +37,35 @@ export default function Login(props) {
         firebaseDatabase
           .ref()
           .child('users')
-          .child(authUser.uid)
-          .child('onboardingStep')
+          .child(user.user.uid)
           .once('value')
           .then((snapshot) => {
-            const onboardingStepValue = snapshot.val()
+            const snapshotValue = snapshot.val()
 
-            if (onboardingStepValue == null) {
+            if (snapshotValue.onboardingStep == null) {
               location.href = '/onboarding/welcome'
             }
 
-            if (onboardingStepValue == 0) {
-              location.href = '/onboarding/welcome'
-            } else if (onboardingStepValue == 1) {
-              location.href = '/onboarding/get-started'
-            } else if (onboardingStepValue == 2) {
+            if (snapshotValue.onboardingStep == 0) {
+              if (snapshotValue.committedToSelfhelp == true || snapshotValue.committedToSelfhelp == false) {
+                location.href = '/onboarding/get-started'
+              } else {
+                location.href = '/onboarding/welcome'
+              }
+            } else if (snapshotValue.onboardingStep == 1) {
+              firebaseStore
+                .collection('M3Assessment')
+                .doc(user.user.uid)
+                .collection('scores')
+                .get()
+                .then(doc => {
+                  if (doc.docs.length > 0) {
+                    location.href = '/assessment/dashboard'
+                  } else {
+                    location.href = '/onboarding/get-started'
+                  }
+                })
+            } else if (snapshotValue.onboardingStep == 2) {
               location.href = '/assessment/dashboard'
             }
           })
@@ -66,28 +81,42 @@ export default function Login(props) {
     setError(null) 
     signInWithEmailAndPassword(email, password)
       .then(user => {
-        // setIsLoggingIn(false)
-        // router.push('/onboarding/welcome')
+        setIsLoggingIn(false)
+        router.push('/onboarding/welcome')
 
         if (user) {
           firebaseDatabase
             .ref()
             .child('users')
             .child(user.user.uid)
-            .child('onboardingStep')
             .once('value')
             .then((snapshot) => {
-              const onboardingStepValue = snapshot.val()
+              const snapshotValue = snapshot.val()
 
-              if (onboardingStepValue == null) {
+              if (snapshotValue.onboardingStep == null) {
                 location.href = '/onboarding/welcome'
               }
 
-              if (onboardingStepValue == 0) {
-                location.href = '/onboarding/welcome'
-              } else if (onboardingStepValue == 1) {
-                location.href = '/onboarding/get-started'
-              } else if (onboardingStepValue == 2) {
+              if (snapshotValue.onboardingStep == 0) {
+                if (snapshotValue.committedToSelfhelp == true || snapshotValue.committedToSelfhelp == false) {
+                  location.href = '/onboarding/get-started'
+                } else {
+                  location.href = '/onboarding/welcome'
+                }
+              } else if (snapshotValue.onboardingStep == 1) {
+                firebaseStore
+                  .collection('M3Assessment')
+                  .doc(user.user.uid)
+                  .collection('scores')
+                  .get()
+                  .then(doc => {
+                    if (doc.docs.length > 0) {
+                      location.href = '/assessment/dashboard'
+                    } else {
+                      location.href = '/onboarding/get-started'
+                    }
+                  })
+              } else if (snapshotValue.onboardingStep == 2) {
                 location.href = '/assessment/dashboard'
               }
             })
