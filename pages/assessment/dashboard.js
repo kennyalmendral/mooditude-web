@@ -122,12 +122,6 @@ export default function AssessmentWelcomePage() {
           if (onboardingStepValue == null) {
             location.href = '/onboarding/welcome'
           }
-
-          if (onboardingStepValue == 0) {
-            location.href = '/onboarding/welcome'
-          } else if (onboardingStepValue == 1) {
-            location.href = '/onboarding/get-started'
-          }
         })
     }
   }, [authUser, loading, router])
