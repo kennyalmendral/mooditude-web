@@ -49,11 +49,11 @@ export default function Login(props) {
         // setIsLoggingIn(false)
         // router.push('/onboarding/welcome')
 
-        if (user && localStorage.getItem(`${user.uid}_onboardingStep`) == 0) {
+        if (user && localStorage.getItem(`${user.user.uid}_onboardingStep`) == 0) {
           location.href='/onboarding/welcome'
-        } else if (user && localStorage.getItem(`${user.uid}_onboardingStep`) == 1) {
+        } else if (user.user && localStorage.getItem(`${user.user.uid}_onboardingStep`) == 1) {
           location.href='/onboarding/get-started'
-        } else if (user && localStorage.getItem(`${user.uid}_onboardingStep`) == 2) {
+        } else if (user && localStorage.getItem(`${user.user.uid}_onboardingStep`) == 2) {
           location.href = '/assessment/report'
         }
       })
