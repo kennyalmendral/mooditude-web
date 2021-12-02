@@ -127,30 +127,33 @@ export default function AssessmentWelcomePage() {
 
         unsubscribe = usersM3AssessmentScoresRef
           .onSnapshot(querySnapshot => {
-            querySnapshot.forEach(doc => {
-              if (doc) {
-                let docData = doc.data()
-
-                const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
-              
-                updateUserM3AssessmentScores({
-                  userId: user.uid,
-                  epochId: docData.id,
-                  rawData: docData.rawData,
-                }).then(result => {
-                  let mergedData = {
-                    ...docData,
-                    ...result.data
-                  }
+            if (!querySnapshot.empty) {
+              querySnapshot.forEach(doc => {
+                if (doc) {
+                  let docData = doc.data()
+  
+                  const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
+                
+                  updateUserM3AssessmentScores({
+                    userId: user.uid,
+                    epochId: docData.id,
+                    rawData: docData.rawData,
+                  }).then(result => {
+                    let mergedData = {
+                      ...docData,
+                      ...result.data
+                    }
+                    setChecking(false)
+                    setAssessments(assessments => [...assessments, mergedData])
+  
+                  })
+                } else {
                   setChecking(false)
-                  setAssessments(assessments => [...assessments, mergedData])
-
-                })
-              } 
-              else {
-                setChecking(false)
-              }
-            })
+                }
+              })
+            } else {
+              setChecking(false)
+            }
           })
       } else {
         setChecking(false)
