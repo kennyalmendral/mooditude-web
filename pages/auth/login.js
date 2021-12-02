@@ -42,31 +42,33 @@ export default function Login(props) {
           .then((snapshot) => {
             const snapshotValue = snapshot.val()
 
-            if (snapshotValue.onboardingStep == null) {
-              location.href = '/onboarding/welcome'
-            }
-
-            if (snapshotValue.onboardingStep == 0) {
-              if (snapshotValue.committedToSelfhelp == true || snapshotValue.committedToSelfhelp == false) {
-                location.href = '/onboarding/get-started'
-              } else {
+            if (snapshotValue != null) {
+              if (snapshotValue.onboardingStep == null) {
                 location.href = '/onboarding/welcome'
               }
-            } else if (snapshotValue.onboardingStep == 1) {
-              firebaseStore
-                .collection('M3Assessment')
-                .doc(authUser.uid)
-                .collection('scores')
-                .get()
-                .then(doc => {
-                  if (doc.docs.length > 0) {
-                    location.href = '/assessment/dashboard'
-                  } else {
-                    location.href = '/onboarding/get-started'
-                  }
-                })
-            } else if (snapshotValue.onboardingStep == 2) {
-              location.href = '/assessment/dashboard'
+  
+              if (snapshotValue.onboardingStep == 0) {
+                if (snapshotValue.committedToSelfhelp == true || snapshotValue.committedToSelfhelp == false) {
+                  location.href = '/onboarding/get-started'
+                } else {
+                  location.href = '/onboarding/welcome'
+                }
+              } else if (snapshotValue.onboardingStep == 1) {
+                firebaseStore
+                  .collection('M3Assessment')
+                  .doc(authUser.uid)
+                  .collection('scores')
+                  .get()
+                  .then(doc => {
+                    if (doc.docs.length > 0) {
+                      location.href = '/assessment/dashboard'
+                    } else {
+                      location.href = '/onboarding/get-started'
+                    }
+                  })
+              } else if (snapshotValue.onboardingStep == 2) {
+                location.href = '/assessment/dashboard'
+              }
             }
           })
       }
@@ -93,31 +95,35 @@ export default function Login(props) {
             .then((snapshot) => {
               const snapshotValue = snapshot.val()
 
-              if (snapshotValue.onboardingStep == null) {
-                location.href = '/onboarding/welcome'
-              }
-
-              if (snapshotValue.onboardingStep == 0) {
-                if (snapshotValue.committedToSelfhelp == true || snapshotValue.committedToSelfhelp == false) {
-                  location.href = '/onboarding/get-started'
-                } else {
+              if (snapshotValue != null) {
+                if (snapshotValue.onboardingStep == null) {
                   location.href = '/onboarding/welcome'
                 }
-              } else if (snapshotValue.onboardingStep == 1) {
-                firebaseStore
-                  .collection('M3Assessment')
-                  .doc(user.user.uid)
-                  .collection('scores')
-                  .get()
-                  .then(doc => {
-                    if (doc.docs.length > 0) {
-                      location.href = '/assessment/dashboard'
-                    } else {
-                      location.href = '/onboarding/get-started'
-                    }
-                  })
-              } else if (snapshotValue.onboardingStep == 2) {
-                location.href = '/assessment/dashboard'
+  
+                if (snapshotValue.onboardingStep == 0) {
+                  if (snapshotValue.committedToSelfhelp == true || snapshotValue.committedToSelfhelp == false) {
+                    location.href = '/onboarding/get-started'
+                  } else {
+                    location.href = '/onboarding/welcome'
+                  }
+                } else if (snapshotValue.onboardingStep == 1) {
+                  firebaseStore
+                    .collection('M3Assessment')
+                    .doc(user.user.uid)
+                    .collection('scores')
+                    .get()
+                    .then(doc => {
+                      if (doc.docs.length > 0) {
+                        location.href = '/assessment/dashboard'
+                      } else {
+                        location.href = '/onboarding/get-started'
+                      }
+                    })
+                } else if (snapshotValue.onboardingStep == 2) {
+                  location.href = '/assessment/dashboard'
+                }
+              } else {
+                location.href = '/onboarding/welcome'
               }
             })
         }

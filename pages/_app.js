@@ -33,25 +33,27 @@ function App({ Component, pageProps }) {
   const [logoutLoader, setLogoutLoader] = React.useState(false);
   const [loginLoader, setLoginLoader] = React.useState(false);
   
-  useEffect(() => {
-    firebaseAuth.onAuthStateChanged(user => {
-      if (user) {
-        firebaseDatabase
-          .ref()
-          .child('users')
-          .child(user.uid)
-          .child('onboardingStep')
-          .once('value')
-          .then((snapshot) => {
-            const onboardingStepValue = snapshot.val()
+  // useEffect(() => {
+  //   firebaseAuth.onAuthStateChanged(user => {
+  //     if (user) {
+  //       firebaseDatabase
+  //         .ref()
+  //         .child('users')
+  //         .child(user.uid)
+  //         .child('onboardingStep')
+  //         .once('value')
+  //         .then((snapshot) => {
+  //           if (snapshot) {
+  //             const onboardingStepValue = snapshot.val()
 
-            if (onboardingStepValue == null) {
-              location.href = '/onboarding/welcome'
-            }
-          })
-      }
-    })
-  }, [])
+  //             if (onboardingStepValue == null) {
+  //               // location.href = '/onboarding/welcome'
+  //             }
+  //           }
+  //         })
+  //     }
+  //   })
+  // }, [])
 
   useEffect(() => {
     if (router) {
@@ -83,15 +85,15 @@ function App({ Component, pageProps }) {
                   .then(doc => {
                     if (
                       (doc.docs.length > 0) && 
-                      ((snapshotValue.committedToSelfhelp == 'true') || 
-                      (snapshotValue.committedToSelfhelp == 'false'))
+                      ((snapshotValue != null && snapshotValue.committedToSelfhelp == 'true') || 
+                      (snapshotValue != null && snapshotValue.committedToSelfhelp == 'false'))
                     ) {
                       router.push('/')
                       setCheckAuth(true)
                       removePageLoader()
                     } else if (
-                      (snapshotValue.committedToSelfhelp == 'true') || 
-                      (snapshotValue.committedToSelfhelp == 'false')
+                      (snapshotValue != null && snapshotValue.committedToSelfhelp == 'true') || 
+                      (snapshotValue != null && snapshotValue.committedToSelfhelp == 'false')
                     ) {
                       router.push('/onboarding/get-started')
                       setCheckAuth(true)
