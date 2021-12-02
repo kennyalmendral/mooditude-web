@@ -54,7 +54,7 @@
 .gray_wrap{
 	display: inline-flex;
 	flex-direction: column;
-	justify-content: center;
+	/*justify-content: center;*/
 }
 
 .assessment_wrap.welcome_page .gray_wrap{

@@ -111,21 +111,6 @@ export default function AssessmentWelcomePage() {
       router.push('/auth/login')
     }
 
-    if (authUser) {
-      // firebaseDatabase
-      //   .ref()
-      //   .child('users')
-      //   .child(authUser.uid)
-      //   .child('onboardingStep')
-      //   .once('value')
-      //   .then((snapshot) => {
-      //     const onboardingStepValue = snapshot.val()
-
-      //     if (onboardingStepValue == null) {
-      //       location.href = '/onboarding/welcome'
-      //     }
-      //   })
-    }
   }, [authUser, loading, router])
 
   useEffect(() => {
@@ -133,7 +118,7 @@ export default function AssessmentWelcomePage() {
     let unsubscribe
     setChecking(true)
     firebaseAuth.onAuthStateChanged(user => {
-      console.log(user)
+      
       if (user) {
         usersM3AssessmentScoresRef = firebaseStore
           .collection('M3Assessment')
@@ -161,7 +146,8 @@ export default function AssessmentWelcomePage() {
                   setAssessments(assessments => [...assessments, mergedData])
 
                 })
-              } else {
+              } 
+              else {
                 setChecking(false)
               }
             })
@@ -172,7 +158,7 @@ export default function AssessmentWelcomePage() {
       }
     })
 
-    setChecking(false)
+    // setChecking(false)
   }, [])
 
   const handleTakeAssessment = () => {

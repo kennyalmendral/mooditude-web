@@ -51,7 +51,7 @@ function App({ Component, pageProps }) {
           })
       }
     })
-  })
+  }, [])
 
   useEffect(() => {
     if (router) {

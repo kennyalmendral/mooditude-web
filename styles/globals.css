@@ -17,6 +17,10 @@ a {
 }
 
 
+main{
+  position: relative;
+}
+
 .body-wrapper{
   display: flex;
 
