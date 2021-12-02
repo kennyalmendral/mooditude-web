@@ -437,7 +437,7 @@ export default function AssessmentWelcomePage() {
                           assessment.allRiskLevel,
                           {
                             labels: [
-                              new Date(assessments[0].createDate.seconds * 1000).toLocaleString('en-US', {
+                              new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
                                 month: 'long',
                                 day: 'numeric',
                                 year: 'numeric'
@@ -446,31 +446,31 @@ export default function AssessmentWelcomePage() {
                             datasets: [
                               {
                                 label: 'Depression',
-                                data: [parseInt(assessments[0].depressionScore)],
+                                data: [parseInt(assessment.depressionScore)],
                                 backgroundColor: '#6FCF97',
                                 type: 'bar'
                               },
                               {
                                 label: 'Anxiety',
-                                data: [parseInt(assessments[0].anxietyScore)],
+                                data: [parseInt(assessment.anxietyScore)],
                                 backgroundColor: '#D68AFA',
                                 type: 'bar'
                               },
                               {
                                 label: 'PTSD',
-                                data: [parseInt(assessments[0].ptsdScore)],
+                                data: [parseInt(assessment.ptsdScore)],
                                 backgroundColor: '#56CCF2',
                                 type: 'bar'
                               },
                               {
                                 label: 'Bipolar',
-                                data: [parseInt(assessments[0].bipolarScore)],
+                                data: [parseInt(assessment.bipolarScore)],
                                 backgroundColor: '#DC957E',
                                 type: 'bar'
                               },
                               {
                                 label: 'Overall Score',
-                                data: [parseInt(assessments[0].overallScore)],
+                                data: [parseInt(assessment.overallScore)],
                                 backgroundColor: '#2968EA',
                                 type: 'line'
                               }
