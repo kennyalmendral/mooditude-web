@@ -133,6 +133,7 @@ export default function AssessmentWelcomePage() {
     let unsubscribe
     setChecking(true)
     firebaseAuth.onAuthStateChanged(user => {
+      console.log(user)
       if (user) {
         usersM3AssessmentScoresRef = firebaseStore
           .collection('M3Assessment')
@@ -160,13 +161,18 @@ export default function AssessmentWelcomePage() {
                   setAssessments(assessments => [...assessments, mergedData])
 
                 })
+              } else {
+                setChecking(false)
               }
             })
           })
       } else {
+        setChecking(false)
         unsubscribe && unsubscribe()
       }
     })
+
+    setChecking(false)
   }, [])
 
   const handleTakeAssessment = () => {
