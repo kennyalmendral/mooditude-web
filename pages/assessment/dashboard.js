@@ -416,7 +416,7 @@ export default function AssessmentWelcomePage() {
                     {assessments.map(assessment => (
                       <div 
                         className={`${styles.assessment_item} 
-                        ${styles.active}`} 
+                        `} 
                         style={{ 
                           width: '100%', 
                           alignItems: 'center', 
