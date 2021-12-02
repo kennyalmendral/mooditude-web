@@ -72,7 +72,7 @@ a.menu_item{
 
 .menu_items_wrap a{
   font-family: 'Circular Std';
-  font-style: normal;
+  font-style: normal; 
   font-weight: bold;
   font-size: 14px;
   line-height: 32px;
@@ -92,6 +92,16 @@ a.menu_item{
     min-height: 0;
     padding: 12px 10px;
     padding-right: 20px;
+  }
+
+  .menu_items_wrap_desktop{
+    display: none;
+  }
+
+  .menu_items_wrap{
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 40px;
   }
 
   .main_menu_btn{

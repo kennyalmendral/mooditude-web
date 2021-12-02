@@ -58,7 +58,7 @@ export default function MainMenu(props) {
 
                         {
                             showMenu ? 
-                            <div className={styles.menu_items_wrap}>
+                            <div className={`${styles.menu_items_wrap} ${styles.menu_items_wrap_desktop}`}>
                                 <div>
                                     <Link href="/"> 
                                     <a className={styles.menu_item} >
