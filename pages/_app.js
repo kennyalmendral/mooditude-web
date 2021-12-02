@@ -33,16 +33,25 @@ function App({ Component, pageProps }) {
   const [logoutLoader, setLogoutLoader] = React.useState(false);
   const [loginLoader, setLoginLoader] = React.useState(false);
   
-  // useEffect(() => {
-  //   firebaseAuth.onAuthStateChanged(user => {
-  //     if (user) {
-  //       setCheckAuth(true)
-  //       removePageLoader()
-  //     }else{
-  //       setCheckAuth(false)
-  //     }
-  //   })
-  // })
+  useEffect(() => {
+    firebaseAuth.onAuthStateChanged(user => {
+      if (user) {
+        firebaseDatabase
+          .ref()
+          .child('users')
+          .child(user.uid)
+          .child('onboardingStep')
+          .once('value')
+          .then((snapshot) => {
+            const onboardingStepValue = snapshot.val()
+
+            if (onboardingStepValue == null) {
+              location.href = '/onboarding/welcome'
+            }
+          })
+      }
+    })
+  })
 
   useEffect(() => {
     if (router) {

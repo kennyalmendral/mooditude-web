@@ -112,19 +112,19 @@ export default function AssessmentWelcomePage() {
     }
 
     if (authUser) {
-      firebaseDatabase
-        .ref()
-        .child('users')
-        .child(authUser.uid)
-        .child('onboardingStep')
-        .once('value')
-        .then((snapshot) => {
-          const onboardingStepValue = snapshot.val()
+      // firebaseDatabase
+      //   .ref()
+      //   .child('users')
+      //   .child(authUser.uid)
+      //   .child('onboardingStep')
+      //   .once('value')
+      //   .then((snapshot) => {
+      //     const onboardingStepValue = snapshot.val()
 
-          if (onboardingStepValue == null) {
-            location.href = '/onboarding/welcome'
-          }
-        })
+      //     if (onboardingStepValue == null) {
+      //       location.href = '/onboarding/welcome'
+      //     }
+      //   })
     }
   }, [authUser, loading, router])
 
