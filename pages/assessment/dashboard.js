@@ -101,6 +101,8 @@ export default function AssessmentWelcomePage() {
       })
       
       assessments[0] && setCurrentFullReportLink(`/assessment/report/${authUser.uid}/${assessments[0].id}`)
+
+      console.log(assessments)
     } else {
       setHasNoAssessment(true)
     }
@@ -410,7 +412,10 @@ export default function AssessmentWelcomePage() {
             <div className={styles.assessment_list_wrap}>
               <h3>All Assessments</h3>
 
-              <div className={styles.assessment_list_inner_wrap}>
+              <div className={styles.assessment_list_inner_wrap} style={{
+                display: 'flex',
+                flexDirection: 'column-reverse'
+              }}>
                 {assessments.length > 0 && (
                   <>
                     {assessments.map(assessment => (
