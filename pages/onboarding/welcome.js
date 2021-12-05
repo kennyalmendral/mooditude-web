@@ -37,22 +37,22 @@ export default function OnboardingWelcomePage(props) {
           .child('users')
           .child(user.uid)
           .on('value', snapshot => {
-            console.log(snapshot.val())
-
-            if (
-              (snapshot.val().onboardingStep == 'accountCreated') && 
-              (localStorage.getItem(`${user.uid}_currentProfileStep`) != null)
-            ) {
-              if (localStorage.getItem(`${user.uid}_currentProfileStep`) > 0) {
+            if (snapshot.val() != null ) {
+              if (
+                (snapshot.val().onboardingStep == 'accountCreated') && 
+                (localStorage.getItem(`${user.uid}_currentProfileStep`) != null)
+              ) {
+                if (localStorage.getItem(`${user.uid}_currentProfileStep`) > 0) {
+                  props.loginLoaderHandler(true)
+                  location.href = `/onboarding/${localStorage.getItem(`${user.uid}_currentProfileStep`)}`
+                }
+              } else if (snapshot.val().onboardingStep == 'profileCreated') {
                 props.loginLoaderHandler(true)
-                location.href = `/onboarding/${localStorage.getItem(`${user.uid}_currentProfileStep`)}`
+                location.href = '/'
+              } else if (snapshot.val().onboardingStep == 'tookAssessment') {
+                props.loginLoaderHandler(true)
+                location.href = '/assessment/report'
               }
-            } else if (snapshot.val().onboardingStep == 'profileCreated') {
-              props.loginLoaderHandler(true)
-              location.href = '/'
-            } else if (snapshot.val().onboardingStep == 'tookAssessment') {
-              props.loginLoaderHandler(true)
-              location.href = '/assessment/report'
             }
           }, error => {
             console.log(error)
