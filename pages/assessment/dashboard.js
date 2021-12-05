@@ -229,7 +229,7 @@ export default function AssessmentWelcomePage() {
       localStorage.removeItem(`${authUser.uid}_assessmentStep31Time`)
 
       localStorage.setItem(`${authUser.uid}_currentAssessmentStep`, 0)
-      localStorage.setItem(`${authUser.uid}_onboardingStep`, 1)
+      localStorage.setItem(`${authUser.uid}_onboardingStep`, 'profileCreated')
 
       router.push('/onboarding/get-started')
     }
@@ -414,7 +414,7 @@ export default function AssessmentWelcomePage() {
 
               <div className={styles.assessment_list_inner_wrap} style={{
                 display: 'flex',
-                flexDirection: 'column-reverse'
+                flexDirection: 'row-reverse'
               }}>
                 {assessments.length > 0 && (
                   <>

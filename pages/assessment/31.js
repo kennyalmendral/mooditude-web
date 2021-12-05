@@ -215,7 +215,7 @@ export default function Assessment31() {
                     .child('users')
                     .child(authUser.uid)
                     .update({
-                      onboardingStep: 2
+                      onboardingStep: 'tookAssessment'
                     })
 
                   router.push(`/assessment/report/${authUser.uid}/${epochMilliseconds}`)
@@ -236,7 +236,7 @@ export default function Assessment31() {
                 .child('users')
                 .child(authUser.uid)
                 .update({
-                  onboardingStep: 2
+                  onboardingStep: 'tookAssessment'
                 })
 
               router.push(`/assessment/report/${authUser.uid}/${epochMilliseconds}`)
@@ -381,7 +381,7 @@ export default function Assessment31() {
                       .child('users')
                       .child(authUser.uid)
                       .update({
-                        onboardingStep: 2
+                        onboardingStep: 'tookAssessment'
                       })
 
                     router.push(`/assessment/report/${authUser.uid}/${epochMilliseconds}`)
@@ -402,7 +402,7 @@ export default function Assessment31() {
                   .child('users')
                   .child(authUser.uid)
                   .update({
-                    onboardingStep: 2
+                    onboardingStep: 'tookAssessment'
                   })
 
                 router.push(`/assessment/report/${authUser.uid}/${epochMilliseconds}`)

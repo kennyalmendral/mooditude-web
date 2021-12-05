@@ -84,7 +84,7 @@ export default function Onboarding7() {
             goingToTherapy: localStorage.getItem(`${authUser.uid}_profileStep5Answer`) || false,
             knowCbt: localStorage.getItem(`${authUser.uid}_profileStep6Answer`) || false,
             committedToSelfhelp: localStorage.getItem(`${authUser.uid}_profileStep7Answer`) || false,
-            onboardingStep: 1
+            onboardingStep: 'profileCreated'
           })
           .then(() => {
             localStorage.removeItem(`${authUser.uid}_profileStep1Answer`)
@@ -96,7 +96,7 @@ export default function Onboarding7() {
             localStorage.removeItem(`${authUser.uid}_profileStep7Answer`)
             
             if (localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
-              localStorage.setItem(`${authUser.uid}_onboardingStep`, 1)
+              localStorage.setItem(`${authUser.uid}_onboardingStep`, 'profileCreated')
             }
             // router.push('/onboarding/finish')
             location.href='/onboarding/finish'

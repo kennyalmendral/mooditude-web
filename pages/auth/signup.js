@@ -40,7 +40,6 @@ export default function SignUp(props) {
   const [isMatch, setIsMatch] = useState(false)
   const [btnDisabled, setBtnDisabled] = useState(true)
 
-
   const { authUser, createUserWithEmailAndPassword } = useAuth()
 
   const checkPass = (p1 = '', p2 = '', policy = false) => {
@@ -144,7 +143,7 @@ export default function SignUp(props) {
                       expiryDate: null,
                       stats: null,
                       nps: 0,
-                      onboardingStep: 0,
+                      onboardingStep: 'accountCreated',
                       lastAssessmentScore: null,
                       lastAssessmentDate: null
                     })
@@ -152,7 +151,7 @@ export default function SignUp(props) {
                       location.href = '/onboarding/welcome'
 
                       localStorage.setItem(`${user.uid}_currentProfileStep`, 0)
-                      localStorage.setItem(`${user.uid}_onboardingStep`, 0)
+                      localStorage.setItem(`${user.uid}_onboardingStep`, 'accountCreated')
                     })
                 })
             }

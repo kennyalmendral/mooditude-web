@@ -40,17 +40,17 @@ export default function OnboardingWelcomePage(props) {
         //     console.log(snapshot.val())
 
         //     if (
-        //       (snapshot.val().onboardingStep == 0) && 
+        //       (snapshot.val().onboardingStep == 'accountCreated') && 
         //       (localStorage.getItem(`${user.uid}_currentProfileStep`) != null)
         //     ) {
         //       if (localStorage.getItem(`${user.uid}_currentProfileStep`) > 0) {
         //         props.loginLoaderHandler(true)
         //         location.href = `/onboarding/${localStorage.getItem(`${user.uid}_currentProfileStep`)}`
         //       }
-        //     } else if (snapshot.val().onboardingStep == 1) {
+        //     } else if (snapshot.val().onboardingStep == 'profileCreated') {
         //       props.loginLoaderHandler(true)
         //       location.href = '/'
-        //     } else if (snapshot.val().onboardingStep == 2) {
+        //     } else if (snapshot.val().onboardingStep == 'tookAssessment') {
         //       props.loginLoaderHandler(true)
         //       location.href = '/assessment/report'
         //     }

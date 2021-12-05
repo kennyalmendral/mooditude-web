@@ -33,9 +33,9 @@ export default function Home() {
   //         .on('value', snapshot => {
   //           console.log(snapshot.val())
 
-  //           if ((snapshot.val().onboardingStep == 1) && (authUser && localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) !== null)) {
+  //           if ((snapshot.val().onboardingStep == 'profileCreated') && (authUser && localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) !== null)) {
   //             router.push(`/assessment/${localStorage.getItem(`${authUser.uid}_currentAssessmentStep`)}`)
-  //           } else if (snapshot.val().onboardingStep == 2) {
+  //           } else if (snapshot.val().onboardingStep == 'tookAssessment') {
   //             router.push('/assessment/report')
   //           }
   //         }, error => {

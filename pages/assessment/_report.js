@@ -378,7 +378,7 @@ export default function AssessmentReport() {
         .child('users')
         .child(authUser.uid)
         .update({
-          onboardingStep: 2
+          onboardingStep: 'tookAssessment'
         })
 
       firebaseStore

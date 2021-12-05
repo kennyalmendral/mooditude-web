@@ -56,6 +56,14 @@ function App({ Component, pageProps }) {
   // }, [])
 
   useEffect(() => {
+    const jssStyles = document.querySelector('#jss-server-side')
+
+    if (jssStyles) {
+      jssStyles.parentElement.removeChild(jssStyles)
+    }
+  }, [])
+
+  useEffect(() => {
     if (router) {
       firebaseAuth.onAuthStateChanged(user => {
         if (user) {
@@ -77,32 +85,34 @@ function App({ Component, pageProps }) {
               .then((snapshot) => {
                 const snapshotValue = snapshot.val()
 
-                firebaseStore
-                  .collection('M3Assessment')
-                  .doc(user.uid)
-                  .collection('scores')
-                  .get()
-                  .then(doc => {
-                    if (
-                      (doc.docs.length > 0) && 
-                      ((snapshotValue != null && snapshotValue.committedToSelfhelp == 'true') || 
-                      (snapshotValue != null && snapshotValue.committedToSelfhelp == 'false'))
-                    ) {
-                      router.push('/')
-                      setCheckAuth(true)
-                      removePageLoader()
-                    } else if (
-                      (snapshotValue != null && snapshotValue.committedToSelfhelp == 'true') || 
-                      (snapshotValue != null && snapshotValue.committedToSelfhelp == 'false')
-                    ) {
-                      router.push('/onboarding/get-started')
-                      setCheckAuth(true)
-                      removePageLoader()
-                    }else{
-                      setCheckAuth(true)
-                      removePageLoader()
-                    }
-                  })
+                if (snapshotValue != null) {
+                  firebaseStore
+                    .collection('M3Assessment')
+                    .doc(user.uid)
+                    .collection('scores')
+                    .get()
+                    .then(doc => {
+                      if (
+                        (doc.docs.length > 0) && 
+                        ((snapshotValue != null && snapshotValue.committedToSelfhelp == 'true') || 
+                        (snapshotValue != null && snapshotValue.committedToSelfhelp == 'false'))
+                      ) {
+                        router.push('/')
+                        setCheckAuth(true)
+                        removePageLoader()
+                      } else if (
+                        (snapshotValue != null && snapshotValue.committedToSelfhelp == 'true') || 
+                        (snapshotValue != null && snapshotValue.committedToSelfhelp == 'false')
+                      ) {
+                        router.push('/onboarding/get-started')
+                        setCheckAuth(true)
+                        removePageLoader()
+                      }else{
+                        setCheckAuth(true)
+                        removePageLoader()
+                      }
+                    })
+                }
               })
           }else{
             setCheckAuth(true)

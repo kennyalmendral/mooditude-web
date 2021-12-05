@@ -47,13 +47,13 @@ export default function Login(props) {
                 location.href = '/onboarding/welcome'
               }
   
-              if (snapshotValue.onboardingStep == 0) {
+              if (snapshotValue.onboardingStep == 'accountCreated') {
                 if (snapshotValue.committedToSelfhelp == true || snapshotValue.committedToSelfhelp == false) {
                   location.href = '/onboarding/get-started'
                 } else {
                   location.href = '/onboarding/welcome'
                 }
-              } else if (snapshotValue.onboardingStep == 1) {
+              } else if (snapshotValue.onboardingStep == 'profileCreated') {
                 firebaseStore
                   .collection('M3Assessment')
                   .doc(authUser.uid)
@@ -66,7 +66,7 @@ export default function Login(props) {
                       location.href = '/onboarding/get-started'
                     }
                   })
-              } else if (snapshotValue.onboardingStep == 2) {
+              } else if (snapshotValue.onboardingStep == 'tookAssessment') {
                 location.href = '/assessment/dashboard'
               }
             }
@@ -100,13 +100,13 @@ export default function Login(props) {
                   location.href = '/onboarding/welcome'
                 }
   
-                if (snapshotValue.onboardingStep == 0) {
+                if (snapshotValue.onboardingStep == 'accountCreated') {
                   if (snapshotValue.committedToSelfhelp == true || snapshotValue.committedToSelfhelp == false) {
                     location.href = '/onboarding/get-started'
                   } else {
                     location.href = '/onboarding/welcome'
                   }
-                } else if (snapshotValue.onboardingStep == 1) {
+                } else if (snapshotValue.onboardingStep == 'profileCreated') {
                   firebaseStore
                     .collection('M3Assessment')
                     .doc(user.user.uid)
@@ -119,7 +119,7 @@ export default function Login(props) {
                         location.href = '/onboarding/get-started'
                       }
                     })
-                } else if (snapshotValue.onboardingStep == 2) {
+                } else if (snapshotValue.onboardingStep == 'tookAssessment') {
                   location.href = '/assessment/dashboard'
                 }
               } else {
