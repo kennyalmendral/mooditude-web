@@ -112,6 +112,8 @@ function App({ Component, pageProps }) {
                         removePageLoader()
                       }
                     })
+                } else {
+                  removePageLoader()
                 }
               })
           }else{
