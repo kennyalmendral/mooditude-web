@@ -23,7 +23,7 @@ export default function Login(props) {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState(null)
+  const [error, setError] = useState(false)
   const [isLoggingIn, setIsLoggingIn] = useState(false)
   const [showLoader, setShowLoader] = useState(false)
 
@@ -36,7 +36,10 @@ export default function Login(props) {
     // },300)
 
     if (loading && authUser) {
+      setError(false)
+      setShowLoader(true)
       if (authUser) {
+        setError(false)
         firebaseDatabase
           .ref()
           .child('users')
@@ -83,14 +86,14 @@ export default function Login(props) {
 
     
     setIsLoggingIn(true)
-    setError(null) 
+    setError(false) 
     setShowLoader(true)
     signInWithEmailAndPassword(email, password)
       .then(user => {
-        props.loginLoaderHandler(true)
         setIsLoggingIn(false)
-        router.push('/onboarding/welcome')
-
+        props.loginLoaderHandler(true)
+        // router.push('/onboarding/welcome')
+        setError(false) 
         if (user) {
           firebaseDatabase
             .ref()
@@ -131,8 +134,6 @@ export default function Login(props) {
                 location.href = '/onboarding/welcome'
               }
             })
-        }else{
-          setShowLoader(false)
         }
       })
       .catch(error => {
@@ -140,7 +141,7 @@ export default function Login(props) {
         
         setIsLoggingIn(false)
         setShowLoader(false)
-        setError(error.message)
+        setError(true)
       })
   }
 
