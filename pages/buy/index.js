@@ -74,6 +74,7 @@ export default function OnboardingWelcomePage() {
         <div className={styles.promoCodeWrapper}>
           <div className={styles.promoCodeAppliedInner}>
             <div className={styles.promoCodeInnerTop}>
+              <CloseRoundedIcon className={styles.promoWrapperClose} onClick={e => {setShowCouponApplied(false)}}/>
               <h2>Free for a month!</h2>
               <p>Start your wellbeing journey <br/>with Mooditude Premium</p>
             </div>

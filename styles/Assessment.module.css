@@ -640,9 +640,17 @@ h2.assessmentDashRiskText{
 	color: #072B4F;
 }
 
+.assessment_list_inner_wrap{
+	flex-wrap: wrap!important;
+}
+
 @media(max-width:  1199px) and (min-width:  768px){
 	.dashboard_left p{
 		max-width: 100%;
+	}
+
+	.assessment_list_inner_wrap{
+		flex-wrap: wrap!important;
 	}
 }
 
@@ -674,6 +682,10 @@ h2.assessmentDashRiskText{
 	.assessment_list_wrap{
 		margin-top: 0;
 	}
+
+	.assessment_list_inner_wrap{
+		flex-wrap: wrap!important;
+	}
 }
 
 @media(max-width:  767px){
@@ -685,6 +697,11 @@ h2.assessmentDashRiskText{
 	.assessment_wrap.dashboard_page > div{
 		padding: 20px 30px;
 		width: 100%;
+	}
+
+
+	.assessment_list_inner_wrap{
+		flex-wrap: wrap!important;
 	}
 
 	.assessment_wrap.welcome_page{
