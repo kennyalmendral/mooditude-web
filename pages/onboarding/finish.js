@@ -20,8 +20,6 @@ export default function OnboardingFinishPage() {
 
   const { authUser, loading, signOut } = useAuth()
 
-
-
   useEffect(() => {
     if (!loading && !authUser) {
       router.push('/auth/login')

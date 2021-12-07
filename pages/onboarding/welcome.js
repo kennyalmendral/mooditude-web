@@ -39,17 +39,20 @@ export default function OnboardingWelcomePage(props) {
           .on('value', snapshot => {
             if (snapshot.val() != null ) {
               if (
-                (snapshot.val().onboardingStep == 'accountCreated') && 
+                (
+                  snapshot.val().onboardingStep == 'accountCreated' ||
+                  snapshot.val().onboardingStep == 0
+                ) && 
                 (localStorage.getItem(`${user.uid}_currentProfileStep`) != null)
               ) {
                 if (localStorage.getItem(`${user.uid}_currentProfileStep`) > 0) {
                   props.loginLoaderHandler(true)
                   location.href = `/onboarding/${localStorage.getItem(`${user.uid}_currentProfileStep`)}`
                 }
-              } else if (snapshot.val().onboardingStep == 'profileCreated') {
+              } else if (snapshot.val().onboardingStep == 'profileCreated' || snapshot.val().onboardingStep == 1) {
                 props.loginLoaderHandler(true)
                 location.href = '/'
-              } else if (snapshot.val().onboardingStep == 'tookAssessment') {
+              } else if (snapshot.val().onboardingStep == 'tookAssessment' || snapshot.val().onboardingStep == 2) {
                 props.loginLoaderHandler(true)
                 location.href = '/assessment/report'
               }
