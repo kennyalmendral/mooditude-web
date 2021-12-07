@@ -12,7 +12,7 @@ import { useAuth } from '@/context/AuthUserContext'
 
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-
+import GridLoader from "react-spinners/GridLoader"
 import Firebase from 'lib/Firebase'
 import TextField from '@mui/material/TextField'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
@@ -25,7 +25,7 @@ const firebaseFunctions = Firebase.functions()
 
 export default function OnboardingWelcomePage() {
   const router = useRouter()
-
+  const [checking, setChecking] = useState(true)
   const { authUser, loading, signOut } = useAuth()
   const [showLoader, setShowLoader] = useState(false)
   const [name, setName] = useState('')
@@ -48,6 +48,7 @@ export default function OnboardingWelcomePage() {
         .get()
         .then(doc => {
           doc.data() && setLicenseType(doc.data().grant.licenseType)
+          setChecking(false)
         })
     }
   }, [authUser])
@@ -82,138 +83,163 @@ export default function OnboardingWelcomePage() {
   
   return (
     <Layout title={`Buy | ${SITE_NAME}`}>
-      {
-        showCoupon ? 
-        <div className={styles.promoCodeWrapper}>
-          <div className={styles.promoCodeInnerWrapper}>
-            <CloseRoundedIcon className={styles.promoWrapperClose} onClick={e => {setShowCoupon(false)}}/>
-            <div>
-              <h2>Promo Code</h2>
-              <TextField 
-                label="Enter Promo Code" 
-                variant="outlined" 
-                type="text" 
-                required
-                fullWidth={true}
-                size={"small"}
-                className={styles.promoField}
-              />
 
-              <Button 
-                size="large" 
-                variant="contained" 
-              >
-                REDEEM
-              </Button>
-            </div>
-          </div>
-        </div> : ''
-      }
-
-      {
-        showCouponApplied ? 
-        <div className={styles.promoCodeWrapper}>
-          <div className={styles.promoCodeAppliedInner}>
-            <div className={styles.promoCodeInnerTop}>
-              <CloseRoundedIcon className={styles.promoWrapperClose} onClick={e => {setShowCouponApplied(false)}}/>
-              <h2>Free for a month!</h2>
-              <p>Start your wellbeing journey <br/>with Mooditude Premium</p>
-            </div>
-
-            <div className={styles.promoCodeInnerBottom}>
-              <img src="/buy_icon.svg" />
-              <p >Start with a 30-Day Free Trial</p>
-              <button>$89.99 / YEAR <span>After 30-Day FREE Trial</span></button>  
-              <p className={styles.promoCodeInnerCancelText}>Cancel Anytime.</p>
-            </div>
-          </div>
-        </div> : ''
-      }
-      {
-        licenseType == 'Premium' ? 
-        <div className={styles.promoCodeWrapper}>
-          <div className={styles.promoCodeAppliedInner}>
-            <div className={styles.promoCodeInnerTop}>
-              <h2>Hooray!</h2>
-              <p>You're already a premium user.</p>
-            </div>
-
-            <div className={styles.promoCodeInnerBottom}>
-              <img src="/buy_icon.svg" />
-            </div>
-          </div>
-        </div> : ''
-      }
-      <div className={styles.buy_wrapper}>
+      
         {
-          showLoader ? 
+          checking ? 
+
             <div 
               className={styles.custom_loader} 
               style={{
                 position: 'absolute',
                 width: '100%',
-                height: '100%',
-                background: 'rgba(255,255,255,.8)',
-                zIndex: 10,
                 display: 'flex',
                 alignItems: 'center',
-                flexDirection: 'column',
                 justifyContent: 'center',
+                height: '100vh',
+                background: '#fff',
+                zIndex: 10
               }}
             >
               <MoonLoader color={'#1CA566'} loading={true} size={30} />
             </div>
           : 
-          ''
-        }
-        <div className={`${styles.buy_inner_wrapper} `}>
-          <h1>Take Control of Your Mental Health </h1> 
-          <h3>With Mooditude Premium</h3>
+          <>
+            {
+              showCoupon ? 
+              <div className={styles.promoCodeWrapper}>
+                <div className={styles.promoCodeInnerWrapper}>
+                  <CloseRoundedIcon className={styles.promoWrapperClose} onClick={e => {setShowCoupon(false)}}/>
+                  <div>
+                    <h2>Promo Code</h2>
+                    <TextField 
+                      label="Enter Promo Code" 
+                      variant="outlined" 
+                      type="text" 
+                      required
+                      fullWidth={true}
+                      size={"small"}
+                      className={styles.promoField}
+                    />
 
-          <div className={styles.list_wrap}>
-            <p><img src="/check.png"/> Ulimited Mental Health Assessments</p>
-            <p><img src="/check.png"/> 800+ minutes of self-care activities including guided journaling, meditations, and coping activities</p>
-            <p><img src="/check.png"/> Problem-specific programs with workbooks</p>
-            <p><img src="/check.png"/> Goal Tracker and Positve Habit Builder</p>
-            <p><img src="/check.png"/> Mood Tracker</p>
-            <p><img src="/check.png"/> Progress Tracking &amp; Reports</p>
-            <p><img src="/check.png"/> Supportive Community</p>
-            <p><img src="/check.png"/> Ask-the-Expert, and</p>
-            <p><img src="/check.png"/> Find the  Right Therapist</p>
-          </div>
+                    <Button 
+                      size="large" 
+                      variant="contained" 
+                    >
+                      REDEEM
+                    </Button>
+                  </div>
+                </div>
+              </div> : ''
+            }
+
+            {
+              showCouponApplied ? 
+              <div className={styles.promoCodeWrapper}>
+                <div className={styles.promoCodeAppliedInner}>
+                  <div className={styles.promoCodeInnerTop}>
+                    <CloseRoundedIcon className={styles.promoWrapperClose} onClick={e => {setShowCouponApplied(false)}}/>
+                    <h2>Free for a month!</h2>
+                    <p>Start your wellbeing journey <br/>with Mooditude Premium</p>
+                  </div>
+
+                  <div className={styles.promoCodeInnerBottom}>
+                    <img src="/buy_icon.svg" />
+                    <p >Start with a 30-Day Free Trial</p>
+                    <button>$89.99 / YEAR <span>After 30-Day FREE Trial</span></button>  
+                    <p className={styles.promoCodeInnerCancelText}>Cancel Anytime.</p>
+                  </div>
+                </div>
+              </div> : ''
+            }
+            {
+              licenseType == 'Premium' ? 
+              <div className={styles.promoCodeWrapper}>
+                <div className={styles.promoCodeAppliedInner}>
+                  <div className={styles.promoCodeInnerTop}>
+                    <h2>Hooray!</h2>
+                    <p>You're already a premium user.</p>
+                  </div>
+
+                  <div className={styles.promoCodeInnerBottom}>
+                    <img src="/buy_icon.svg" />
+                  </div>
+                </div>
+              </div> : ''
+            }
+            <div className={styles.buy_wrapper}>
+              {
+                showLoader ? 
+                  <div 
+                    className={styles.custom_loader} 
+                    style={{
+                      position: 'absolute',
+                      width: '100%',
+                      height: '100%',
+                      background: 'rgba(255,255,255,.8)',
+                      zIndex: 10,
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <MoonLoader color={'#1CA566'} loading={true} size={30} />
+                  </div>
+                : 
+                ''
+              }
+              <div className={`${styles.buy_inner_wrapper} `}>
+                <h1>Take Control of Your Mental Health </h1> 
+                <h3>With Mooditude Premium</h3>
+
+                <div className={styles.list_wrap}>
+                  <p><img src="/check.png"/> Ulimited Mental Health Assessments</p>
+                  <p><img src="/check.png"/> 800+ minutes of self-care activities including guided journaling, meditations, and coping activities</p>
+                  <p><img src="/check.png"/> Problem-specific programs with workbooks</p>
+                  <p><img src="/check.png"/> Goal Tracker and Positve Habit Builder</p>
+                  <p><img src="/check.png"/> Mood Tracker</p>
+                  <p><img src="/check.png"/> Progress Tracking &amp; Reports</p>
+                  <p><img src="/check.png"/> Supportive Community</p>
+                  <p><img src="/check.png"/> Ask-the-Expert, and</p>
+                  <p><img src="/check.png"/> Find the  Right Therapist</p>
+                </div>
 
 
-          <div className={styles.buy_wrap}>
-            <Stack direction="row" spacing={2}>
-              <form onSubmit={handleMonthlySubscription}>
-                <button
-                  type="submit" 
-                  style={{
-                    height: '100%'
-                  }} 
-                >
-                  $12.99 / month
-                </button>
-              </form>
-                  
-              <form onSubmit={handleYearlySubscription}>
-                <button
-                  type="submit" 
-                  style={{
-                    height: '100%'
-                  }} 
-                  className={styles.yearly}
-                >
-                  $89.99 / YEAR <br/>
-                  <span>ONLY $7.50/MONTH —Save 42%</span>
-                </button>
-              </form>
-            </Stack>
-          </div>
+                <div className={styles.buy_wrap}>
+                  <Stack direction="row" spacing={2}>
+                    <form onSubmit={handleMonthlySubscription}>
+                      <button
+                        type="submit" 
+                        style={{
+                          height: '100%'
+                        }} 
+                      >
+                        $12.99 / month
+                      </button>
+                    </form>
+                        
+                    <form onSubmit={handleYearlySubscription}>
+                      <button
+                        type="submit" 
+                        style={{
+                          height: '100%'
+                        }} 
+                        className={styles.yearly}
+                      >
+                        $89.99 / YEAR <br/>
+                        <span>ONLY $7.50/MONTH —Save 42%</span>
+                      </button>
+                    </form>
+                  </Stack>
+                </div>
 
-          <a className={styles.promoCode} href="#" onClick={e => {e.preventDefault();setShowCoupon(true)}}>Have a Promo Code?</a>
-        </div>
-      </div>
+                <a className={styles.promoCode} href="#" onClick={e => {e.preventDefault();setShowCoupon(true)}}>Have a Promo Code?</a>
+              </div>
+            </div>
+          </>
+      }
+      
     </Layout>
   )
 }
