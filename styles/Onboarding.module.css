@@ -4,6 +4,7 @@
 	flex-direction: column;
 	/*justify-content: center;*/
 	min-height: 100vh;
+	position: relative;
 }
 
 
@@ -141,7 +142,7 @@
 	margin-top: 8px;
 	display: none;
 	color: #516B84;
-	animation: fadeInRight .3s ease-in;
+	animation: fadeInDown .3s ease-in;
 
 }
 
@@ -351,6 +352,49 @@
 	max-width: 100%;
 }
 
+.fadeInDown300{
+	animation: fadeInDown .3s ease-in;
+}
+
+.fadeInDown400{
+	animation: fadeInDown .4s ease-in;
+}
+
+.fadeInDown500{
+	animation: fadeInDown .5s ease-in;
+}
+
+.fadeInDown600{
+	animation: fadeInDown .6s ease-in;
+}
+
+@-webkit-keyframes fadeInDown {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, -100%, 0);
+    transform: translate3d(0, -100%, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, -100%, 0);
+    transform: translate3d(0, -100%, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 
 @-webkit-keyframes fadeInRight {
   from {
@@ -458,5 +502,14 @@
 
   .custom_stepper_wrapper > div > div > span{
   	align-items: flex-start;
+  }
+
+  .wellBeingText{
+  	display: none!important;
+  }
+
+  .breather_wrap{
+  	padding-top: 10px;
+  	padding-bottom: 30px;
   }
 }

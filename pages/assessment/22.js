@@ -60,13 +60,12 @@ export default function Assessment22() {
     <Layout title={`Take a breather | ${SITE_NAME}`}>
       <div className={`${styles.onboarding_wrapper} ${styles.on_assessment_wrapper}`}>
         <div className={styles.onboarding_inner_wrapper}>
-          <h2>Assess Your Wellbeing Score</h2>
+          <h2 className={styles.wellBeingText}>Assess Your Wellbeing Score</h2>
         
-          <Animation direction="right" in={true} timeout={1000}>
-            <div >
+          <div className={styles.fadeInDown500}>
               <h1 className={styles.breather_wrap}>Since you last took this test, <br/>have there ever been phases or periods when you have noticed the following...</h1>  
             </div>
-          </Animation>
+          
           
           <div className={styles.btn_wrap}>
             <Stack direction="row" spacing={2}>

@@ -307,28 +307,28 @@ export default function AssessmentWelcomePage() {
 
                     {currentAllRiskLevel == 'unlikely' && (
                       <>
-                        <h2>Unlikely Risk</h2>
+                        <h2 className={styles.assessmentDashRiskText}>Unlikely Risk</h2>
                         <p>Score of {currentRiskScore} shows that it is unlikely you are suffering from a mental health condition at this time.</p>
                       </>
                     )}
 
                     {currentAllRiskLevel == 'low' && (
                       <>
-                        <h2>Low Risk</h2>
+                        <h2 className={styles.assessmentDashRiskText}>Low Risk</h2>
                         <p>Score of {currentRiskScore} suggests that you have a low risk of a mental health condition.</p>
                       </>
                     )}
 
                     {currentAllRiskLevel == 'medium' && (
                       <>
-                        <h2>Medium Risk</h2>
+                        <h2 className={styles.assessmentDashRiskText}>Medium Risk</h2>
                         <p>Score of {currentRiskScore} suggests that you have a medium risk of a mental health condition.</p>
                       </>
                     )}
 
                     {currentAllRiskLevel == 'high' && (
                       <>
-                        <h2>High Risk</h2>
+                        <h2 className={styles.assessmentDashRiskText}>High Risk</h2>
                         <p>Score of {currentRiskScore} suggests that you have a high risk of a mental health condition.</p>
                       </>
                     )}
@@ -367,8 +367,10 @@ export default function AssessmentWelcomePage() {
                   {currentChartData && (
                     <Line 
                       data={currentChartData}
+                      height={400}
                       options={{
                         responsive: true,
+                        maintainAspectRatio: false,
                         scales: {
                           xAxes: [{
                             offset: true

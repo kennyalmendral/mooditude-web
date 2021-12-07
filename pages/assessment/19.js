@@ -97,7 +97,7 @@ export default function Assessment19() {
     <Layout title={`Question 19 | ${SITE_NAME}`}>
       <div className={`${styles.onboarding_wrapper} ${styles.on_assessment_wrapper}`}>
         <div className={styles.onboarding_inner_wrapper}>
-          <h2>Assess Your Wellbeing Score</h2>
+          <h2 className={styles.wellBeingText}>Assess Your Wellbeing Score</h2>
           <p className={styles.step_text}>Question 19 of 29</p>
 
           <div className={`custom_stepper_wrap ${styles.custom_stepper_wrapper}`}>
@@ -109,15 +109,15 @@ export default function Assessment19() {
               ))}
             </Stepper>
           </div>
-          <Animation direction="right" in={true} timeout={1000}>
-            <div>
+          
+            <div className={styles.fadeInDown500}>
               <p className={styles.top_sub_title}>Over the past two weeks...</p>
               <h1 className={`mt_0`}>I can’t get certain thoughts out of my mind</h1>  
             </div>
-          </Animation>
           
-          <div className={styles.form_wrap}>
-            <Animation direction="right" in={true} timeout={1000}>
+          
+          <div className={`${styles.form_wrap} ${styles.fadeInDown400}`}>
+            
             <FormControl component="fieldset" error={formError} onChange={() => {setFormError(false)}}>
               
               <RadioGroup>
@@ -133,7 +133,7 @@ export default function Assessment19() {
               }
 
             </FormControl>
-            </Animation>
+            
           </div>
 
           <div className={styles.btn_wrap}>

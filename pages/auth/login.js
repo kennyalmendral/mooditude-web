@@ -16,6 +16,7 @@ import Firebase from 'lib/Firebase'
 const firebaseAuth = Firebase.auth()
 const firebaseStore = Firebase.firestore()
 const firebaseDatabase = Firebase.database()
+import MoonLoader from "react-spinners/MoonLoader"
 
 export default function Login(props) {
   const router = useRouter()
@@ -24,6 +25,7 @@ export default function Login(props) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [isLoggingIn, setIsLoggingIn] = useState(false)
+  const [showLoader, setShowLoader] = useState(false)
 
   const { authUser, loading, signInWithEmailAndPassword } = useAuth()
 
@@ -78,11 +80,13 @@ export default function Login(props) {
   const handleLogin = e => {
     e.preventDefault()
 
-    props.loginLoaderHandler(true)
+    
     setIsLoggingIn(true)
     setError(null) 
+    setShowLoader(true)
     signInWithEmailAndPassword(email, password)
       .then(user => {
+        props.loginLoaderHandler(true)
         setIsLoggingIn(false)
         router.push('/onboarding/welcome')
 
@@ -126,12 +130,15 @@ export default function Login(props) {
                 location.href = '/onboarding/welcome'
               }
             })
+        }else{
+          setShowLoader(false)
         }
       })
       .catch(error => {
         console.log('error')
-        props.loginLoaderHandler(false)
+        
         setIsLoggingIn(false)
+        setShowLoader(false)
         setError(error.message)
       })
   }
@@ -142,6 +149,28 @@ export default function Login(props) {
         <div className={styles.authBg}></div>
 
         <div className={styles.authForm}>
+          {
+            showLoader ? 
+              <div 
+                className={styles.custom_loader} 
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  background: 'rgba(255,255,255,.8)',
+                  zIndex: 10,
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <MoonLoader color={'#1CA566'} loading={true} size={30} />
+                <p>Logging you in...</p>
+              </div>
+            : 
+            ''
+          }
           <div className={styles.authFormInner}>
             <img  
               src="/logo_svg.svg" 
@@ -181,7 +210,7 @@ export default function Login(props) {
                     size={"small"}
                     
                   />
- 
+          
                 </div>
 
                 <div className={styles.field}>

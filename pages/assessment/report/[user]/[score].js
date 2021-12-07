@@ -24,7 +24,7 @@ const firebaseDatabase = Firebase.database()
 const firebaseFunctions = Firebase.functions()
 import GridLoader from "react-spinners/GridLoader"
 
-export default function AssessmentReport() {
+export default function AssessmentReport(props) {
   const router = useRouter()
 
   const { authUser, loading, signOut } = useAuth()
@@ -312,7 +312,7 @@ export default function AssessmentReport() {
                         <div className={styles.rating_inner_wrap}>
                           {riskScore}
                         </div> 
-                      </div> 
+                      </div>  
                     </div>
 
                     {allRiskLevel == 'unlikely' && (

@@ -304,7 +304,7 @@ img{
     font-style: normal;
     font-weight: normal;
     font-size: 14px;
-    line-height: 18px;
+    line-height: 1.8em;
     /* identical to box height */
 
 
@@ -317,7 +317,7 @@ img{
     font-style: normal;
     font-weight: normal;
     font-size: 14px;
-    line-height: 18px;
+    line-height: 1.8em;
     /* identical to box height */
 
 
@@ -330,7 +330,7 @@ img{
     font-style: normal;
     font-weight: normal;
     font-size: 14px;
-    line-height: 18px;
+    line-height: 1.8em;
     /* identical to box height */
 
 
@@ -343,7 +343,7 @@ img{
     font-style: normal;
     font-weight: normal;
     font-size: 14px;
-    line-height: 18px;
+    line-height: 1.8em;
     /* identical to box height */
 
 
@@ -360,7 +360,7 @@ img{
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
-  line-height: 24px;
+  line-height: 1.8em;
   /* identical to box height */
 
 
@@ -374,11 +374,15 @@ img{
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
-  line-height: 20px;
+  line-height: 1.8em;
   /* identical to box height */
 
 
   /* Placeholder */
 
   color: #A8B5C1;
+}
+
+.MuiButton-root{
+  box-shadow: none!important;
 }

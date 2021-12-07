@@ -1,0 +1,409 @@
+.buy_wrapper{
+  padding: 30px 63px;
+  display: flex;
+  flex-direction: column;
+  /*justify-content: center;*/
+  min-height: 100vh;
+  position: relative;
+}
+
+
+
+.buy_inner_wrapper{
+  min-height: 75vh;
+  display: flex;
+  flex-direction: column;
+   
+}
+
+.buy_inner_wrapper h1{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 32px;
+  line-height: 40px;
+  margin-bottom: 0;
+  margin-top: 0;
+
+  /* Primary */
+
+  color: #072B4F;
+}
+
+.buy_inner_wrapper h3{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 23px;
+  /* identical to box height */
+  margin-top: 0;
+  margin-bottom: 52px;
+
+  /* Primary */
+
+  color: #072B4F;
+}
+
+.list_wrap p{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  /* identical to box height */
+  display: flex;
+  align-items: center;
+
+  /* Primary */
+
+  color: #072B4F;
+
+}
+
+.list_wrap p img {
+  margin-right: 10px;
+}
+
+.list_wrap{
+  margin-bottom: 50px;
+}
+
+.buy_wrap button{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  text-transform: uppercase;
+
+  /* OnPrimary */
+  background: #FFFFFF;
+  /* Placeholder */
+  cursor: pointer!important;
+  border: 1px solid #A8B5C1;
+  box-sizing: border-box;
+  border-radius: 8px;
+  padding: 15px 26px;
+  color: #072B4F;
+}
+
+.buy_wrap button.yearly{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  text-transform: uppercase;
+  background: #1DA467;
+  border-radius: 8px;
+  /* Primary */
+
+  color: #FFFFFF;
+}
+
+.buy_wrap button.yearly span{
+  font-family: 'Circular Std';
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 13px;
+  letter-spacing: 0em;
+  text-align: center;
+  display: block;
+
+}
+
+.promoCode{
+  margin-top: 23px;
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 18px;
+  /* identical to box height */
+  /* Link */
+  color: #1CA566;
+}
+
+.promoCodeWrapper{
+  position: absolute;
+  top: 0;
+
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  z-index: 2;
+
+}
+
+.promoCodeInnerWrapper{
+  padding: 40px;
+  background: #FEFDE8;
+  /* Brand */
+  position: relative;
+  border: 1px solid #F8E71C;
+  box-sizing: border-box;
+  border-radius: 8px;
+}
+
+.promoCodeInnerWrapper h2{
+  font-family: 'Circular Std';
+  margin-top: 0;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 30px;
+
+  /* Primary */
+
+  color: #072B4F;
+
+}
+
+.promoField{
+  background: white;
+  margin-bottom: 65px;
+}
+
+.promoWrapperClose{
+  cursor: pointer!important;
+  color: #072B4F;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+}
+
+.promoCodeAppliedInner{
+  max-width: 400px;
+  width: 400px;
+  background-image: url(/buy_rec.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.promoCodeAppliedInner .promoCodeInnerTop{
+  width: 100%;
+  background-size: 100% 100%;
+  height: 275px;
+  background-image: url(/buy_image.png);
+}
+
+.promoCodeAppliedInner .promoCodeInnerTop h2{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 32px;
+  line-height: 40px;
+  text-align: center;
+  padding-top: 76px;
+  margin-top: 0;
+  /* OnPrimary */
+  margin-bottom: 21px;
+  color: #072B4F;
+}
+
+.promoCodeAppliedInner .promoCodeInnerTop p{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+
+  /* OnPrimary */
+
+  color: #072B4F;
+}
+
+.promoCodeInnerBottom{
+  padding-top: 40px;
+  text-align: center;
+  width: 100%;
+  padding-bottom: 50px;
+}
+
+.promoCodeInnerCancelText{
+  margin-bottom: 56px;
+}
+
+.promoCodeInnerBottom img{
+  margin-bottom: 50px;
+}
+
+.promoCodeInnerBottom button{
+  background: #1DA467;
+  border-radius: 25px;
+  text-align: center;
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  text-transform: uppercase;
+  max-width: 270px;
+  width: 270px;
+  /* Primary */
+  padding-top: 9px;
+  padding-bottom: 9px;
+  box-shadow: none;
+  border: none;
+  text-align: center;
+  color: #FFFFFF;
+  cursor: pointer!important;
+}
+
+.promoCodeInnerBottom button span{
+  font-family: 'Circular Std';
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 13px;
+  letter-spacing: 0em;
+  text-align: center;
+  display: block;
+
+}
+
+.promoCodeInnerBottom p{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  margin-bottom: 10px;
+  /* Primary */
+
+  color: #FFFFFF;
+}
+
+.promoCodeInnerBottom p.promoCodeInnerCancelText{
+  margin-top: 10px;
+  font-family: Circular Std;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 15px;
+  text-align: center;
+
+  /* Primary */
+
+  color: #FFFFFF;
+}
+
+.thankYouWrapper{
+  width: 100%;
+  min-height: 100vh;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  background: white;
+}
+
+.promoCodeInnerBottom p.promoCodeInnerThankYouText{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 30px;
+  text-align: center;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  /* White */
+
+  color: #FFFFFF;
+}
+
+.thankYouApp{
+  max-width: 600px;
+  width: 600px;
+}
+
+.thankYouWrapper > div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.thankYouApp{
+  margin-top: 30px;
+  background: #FEFDE8;
+  border: 1px solid #F8E71C;
+  box-sizing: border-box;
+  border-radius: 4px;
+  padding: 32px 40px;
+}
+
+.thankYouApp p{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 23px;
+  text-align: center;
+  margin-top: 0;
+  /* Primary */
+
+  color: #072B4F;
+}
+
+.thankYouAppInner{
+  text-align: center;
+}
+
+.thankYouAppInner a{
+  margin-right: 20px;
+}
+
+@media(min-width: 768px) and (max-width: 992px){
+  .thankYouApp{
+    max-width: 90%;
+  }
+}
+
+@media(max-width: 767px){
+  .buy_wrapper{
+    padding: 20px 30px;
+  }
+
+  .buy_wrap > div {
+      flex-wrap: wrap;
+  }
+
+  .buy_wrap > div button{
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+      margin-top: 10px;
+  }
+
+  .promoCodeAppliedInner,
+  .promoCodeInnerWrapper{
+    width: 90%;
+  }
+
+  .promoCodeWrapper{
+    align-items: flex-start;
+    padding-top: 50px;
+  }
+
+  .thankYouApp{
+    max-width: 90%;
+    width: 90%;
+  }
+}

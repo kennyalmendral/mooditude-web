@@ -131,4 +131,8 @@ a.menu_item{
     position: relative;
   }
 
+  .mobile_drawer > div:nth-child(3){
+    background: #F8E71C;
+  }
+
 }
