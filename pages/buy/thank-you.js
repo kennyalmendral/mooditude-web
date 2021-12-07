@@ -18,6 +18,7 @@ import Stack from '@mui/material/Stack'
 import Firebase from 'lib/Firebase'
 import TextField from '@mui/material/TextField';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import GridLoader from "react-spinners/GridLoader"
 
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
@@ -33,6 +34,7 @@ export default function OnboardingWelcomePage() {
   const [expiryDate, setExpiryDate] = useState('')
   const [showCoupon, setShowCoupon] = useState(false)
   const [showCouponApplied, setShowCouponApplied] = useState(false)
+  const [showLoader, setShowLoader] = useState(true)
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -42,7 +44,7 @@ export default function OnboardingWelcomePage() {
 
   useEffect(() => {
     const getStripeSubscription = firebaseFunctions.httpsCallable('getStripeSubscription')
-  
+    
     getStripeSubscription({
       session_id: new URLSearchParams(window.location.search).get('session_id')
     }).then(result => {
@@ -83,6 +85,7 @@ export default function OnboardingWelcomePage() {
                   })
                   .then(() => {
                     setExpiryDate(format(new Date(session.expires_at * 1000), 'LLLL dd, yyyy'))
+                    setShowLoader(false)
                   })
               })
           })
@@ -92,6 +95,13 @@ export default function OnboardingWelcomePage() {
 
   return (
     <Layout title={`Congratulations | ${SITE_NAME}`}>
+      {
+        showLoader ? 
+          <div className="page-loader"><GridLoader color={'#1CA566'} loading={true} size={10} /></div> 
+        : 
+        ''
+      }
+
       <div className={styles.thankYouWrapper}>
         <div>
           <div className={styles.promoCodeAppliedInner}>
@@ -119,8 +129,6 @@ export default function OnboardingWelcomePage() {
             </div>  
           </div>
         </div>
-
-
       </div>
     </Layout>
   )

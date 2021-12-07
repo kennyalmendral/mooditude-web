@@ -16,6 +16,7 @@ import Stack from '@mui/material/Stack'
 import Firebase from 'lib/Firebase'
 import TextField from '@mui/material/TextField'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
+import MoonLoader from "react-spinners/MoonLoader"
 
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
@@ -26,7 +27,7 @@ export default function OnboardingWelcomePage() {
   const router = useRouter()
 
   const { authUser, loading, signOut } = useAuth()
-
+  const [showLoader, setShowLoader] = useState(false)
   const [name, setName] = useState('')
   const [showCoupon, setShowCoupon] = useState(false)
   const [showCouponApplied, setShowCouponApplied] = useState(false)
@@ -39,10 +40,8 @@ export default function OnboardingWelcomePage() {
 
   const handleMonthlySubscription = async (e) => {
     e.preventDefault()
-    console.log('handleMonthlySubscription')
-
     const processStripeSubscription = firebaseFunctions.httpsCallable('processStripeSubscription')
-  
+    setShowLoader(true)
     processStripeSubscription({
       plan: 'monthly',
       redirectUrl: window.location.origin + '/buy/thank-you',
@@ -55,7 +54,7 @@ export default function OnboardingWelcomePage() {
   const handleYearlySubscription = async (e) => {
     e.preventDefault()
     console.log('handleYearlySubscription')
-
+    setShowLoader(true)
     const processStripeSubscription = firebaseFunctions.httpsCallable('processStripeSubscription')
   
     processStripeSubscription({
@@ -117,6 +116,27 @@ export default function OnboardingWelcomePage() {
         </div> : ''
       }
       <div className={styles.buy_wrapper}>
+        {
+          showLoader ? 
+            <div 
+              className={styles.custom_loader} 
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                background: 'rgba(255,255,255,.8)',
+                zIndex: 10,
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+                justifyContent: 'center',
+              }}
+            >
+              <MoonLoader color={'#1CA566'} loading={true} size={30} />
+            </div>
+          : 
+          ''
+        }
         <div className={`${styles.buy_inner_wrapper} `}>
           <h1>Take Control of Your Mental Health </h1> 
           <h3>With Mooditude Premium</h3>
@@ -140,11 +160,10 @@ export default function OnboardingWelcomePage() {
                 <button
                   type="submit" 
                   style={{
-                    paddingTop: '26px',
-                    paddingBottom: '26px'
+                    height: '100%'
                   }} 
                 >
-                  $13.99 / month
+                  $12.99 / month
                 </button>
               </form>
                   
@@ -152,8 +171,7 @@ export default function OnboardingWelcomePage() {
                 <button
                   type="submit" 
                   style={{
-                    paddingTop: '26px',
-                    paddingBottom: '26px'
+                    height: '100%'
                   }} 
                   className={styles.yearly}
                 >

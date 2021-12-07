@@ -170,9 +170,7 @@ function App({ Component, pageProps }) {
         <div className={`body-wrapper ${checkAuth ? 'logged' : ''} ${checkMenuCollapse ? 'menu_collapsed' : ''}`}>
           { checkAuth ? <MainMenu menuCollapseHandler={menuCollapseHandler} logoutLoaderHandler={logoutLoaderHandler}  /> : '' }
           <Component 
-            {...pageProps} 
-            removePageLoader={removePageLoader}
-            loginLoaderHandler={loginLoaderHandler}
+            
           />
         </div>
       </AuthUserProvider>

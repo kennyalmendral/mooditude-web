@@ -5,6 +5,7 @@
   /*justify-content: center;*/
   min-height: 100vh;
   position: relative;
+  overflow-x: hidden;
 }
 
 
@@ -13,7 +14,7 @@
   min-height: 75vh;
   display: flex;
   flex-direction: column;
-   
+  
 }
 
 .buy_inner_wrapper h1{
