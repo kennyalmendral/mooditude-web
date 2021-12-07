@@ -70,7 +70,7 @@ export default function AssessmentReport(props) {
   const [noneAnswerQuestions, setNoneAnswerQuestions] = useState([])
 
   const [assessmentDate, setAssessmentDate] = useState(null)
-  const [customerType, setCustomerType] = useState('free')
+  const [licenseType, setLicenseType] = useState('Free')
   const [checking, setChecking] = useState(true)
   const [questions, setQuestions] = useState([])
 
@@ -92,11 +92,11 @@ export default function AssessmentReport(props) {
       let assessmentScoreId = router.query.score
 
       firebaseStore
-        .collection('Users')
+        .collection('Subscribers')
         .doc(authUser.uid)
         .get()
         .then(doc => {
-          doc.data() && setCustomerType(doc.data().customerType)
+          doc.data() && setLicenseType(doc.data().grant.licenseType)
         })
 
       firebaseStore
@@ -354,23 +354,26 @@ export default function AssessmentReport(props) {
                 <div className={styles.report_btns_wrapper}>
                     <a
                       href="#" 
-                      className={isReportVisible && styles.active} 
+                      className={isReportVisible ? styles.active : ''} 
                       onClick={() => {
                         setIsScoresVisible(false)
                         setIsDownloadVisible(false)
                         setIsReportVisible(true)
                       }}>REPORT</a>
 
-                    <a 
-                      href="#" 
-                      className={isScoresVisible && styles.active} 
-                      onClick={() => {
-                        setIsReportVisible(false)
-                        setIsDownloadVisible(false)
-                        setIsScoresVisible(true)
-                      }}>SCORES</a>
-
-                    {/* <a href="#" onClick={() => {setContentShow('report_content_download_wrap')}}>DOWNLOAD</a> */}
+                    {licenseType == 'Premium' && (
+                      <a 
+                        href="#" 
+                        className={isScoresVisible ? styles.active : ''} 
+                        onClick={() => {
+                          setIsReportVisible(false)
+                          setIsDownloadVisible(false)
+                          setIsScoresVisible(true)
+                        }}
+                      >
+                        SCORES
+                      </a>
+                    )}
                 </div>
                 
                 <div className={styles.report_content_wrap}>
@@ -406,7 +409,7 @@ export default function AssessmentReport(props) {
                           </div>
                           
                           
-                            {customerType == 'free' && (
+                            {licenseType == 'Free' && (
                               <>
                                 { buyPremium ? 
                                 <div className={styles.bold_text_wrap}
@@ -526,7 +529,7 @@ export default function AssessmentReport(props) {
                           
                           
 
-                          {customerType == 'premium' && (
+                          {licenseType == 'Premium' && (
                             <>
                               <div style={{ marginBottom: '40px' }}>
                                 <img src="/warning.svg" alt="Disorder Risks" />
