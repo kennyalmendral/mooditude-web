@@ -30,9 +30,10 @@ export default function Login(props) {
   const { authUser, loading, signInWithEmailAndPassword } = useAuth()
 
   useEffect(() => {
-    setTimeout(() => {
-      props.removePageLoader()
-    },300)
+    // setTimeout(() => {
+    //   console.log(props)
+    //   props.removePageLoader()
+    // },300)
 
     if (loading && authUser) {
       if (authUser) {

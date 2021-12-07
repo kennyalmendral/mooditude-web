@@ -32,11 +32,25 @@ export default function OnboardingWelcomePage() {
   const [showCoupon, setShowCoupon] = useState(false)
   const [showCouponApplied, setShowCouponApplied] = useState(false)
 
+  const [licenseType, setLicenseType] = useState('Free')
+
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/auth/login')
     }
   }, [authUser, loading, router])
+
+  useEffect(() => {
+    if (authUser) {
+      firebaseStore
+        .collection('Subscribers')
+        .doc(authUser.uid)
+        .get()
+        .then(doc => {
+          doc.data() && setLicenseType(doc.data().grant.licenseType)
+        })
+    }
+  }, [authUser])
 
   const handleMonthlySubscription = async (e) => {
     e.preventDefault()
@@ -111,6 +125,21 @@ export default function OnboardingWelcomePage() {
               <p >Start with a 30-Day Free Trial</p>
               <button>$89.99 / YEAR <span>After 30-Day FREE Trial</span></button>  
               <p className={styles.promoCodeInnerCancelText}>Cancel Anytime.</p>
+            </div>
+          </div>
+        </div> : ''
+      }
+      {
+        licenseType == 'Premium' ? 
+        <div className={styles.promoCodeWrapper}>
+          <div className={styles.promoCodeAppliedInner}>
+            <div className={styles.promoCodeInnerTop}>
+              <h2>Hooray!</h2>
+              <p>You're already a premium user.</p>
+            </div>
+
+            <div className={styles.promoCodeInnerBottom}>
+              <img src="/buy_icon.svg" />
             </div>
           </div>
         </div> : ''

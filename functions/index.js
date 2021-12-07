@@ -272,9 +272,12 @@ exports.processStripeSubscription = functions.https.onCall(async (data, context)
         quantity: 1,
       },
     ],
+    subscription_data: {
+      trial_period_days: 30
+    },
     mode: 'subscription',
     success_url: `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: data.cancelUrl
+    cancel_url: data.cancelUrl,
   });
 
   return {

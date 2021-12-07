@@ -36,6 +36,9 @@ export default function OnboardingWelcomePage() {
   const [showCouponApplied, setShowCouponApplied] = useState(false)
   const [showLoader, setShowLoader] = useState(true)
 
+  let dateNow = new Date()
+  let expirationDate = dateNow.setDate(dateNow.getDate() + 30)
+
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/auth/login')
@@ -60,34 +63,33 @@ export default function OnboardingWelcomePage() {
           .update({
             customerType: 'premium',
             expiryDate: session.expires_at * 1000,
-            paymentStatus: 'active'
+            paymentStatus: 'active',
+          })
+        
+        firebaseStore
+          .collection('Users')
+          .doc(authUser.uid)
+          .update({
+            customerType: 'premium'
+          })
+
+        firebaseStore
+          .collection('Subscribers')
+          .doc(authUser.uid)
+          .set({
+            grant: {
+              expiryDate: format(new Date(expirationDate), 'LLLL dd, yyyy'),
+              expiryDate: expirationDate,
+              grantType: 'Purchase',
+              licenseType: 'Premium',
+              productType: 'Subscription',
+              transactionDate: new Date(),
+              transactionId: session.id
+            }
           })
           .then(() => {
-            firebaseStore
-              .collection('Users')
-              .doc(authUser.uid)
-              .update({
-                customerType: 'premium'
-              })
-              .then(() => {
-                firebaseStore
-                  .collection('Subscribers')
-                  .doc(authUser.uid)
-                  .set({
-                    grant: {
-                      expiryDate: format(new Date(session.expires_at * 1000), 'LLLL dd, yyyy'),
-                      grantType: 'Purchase',
-                      licenseType: 'Premium',
-                      productType: 'Subscription',
-                      transactionDate: new Date(),
-                      transactionId: session.id
-                    }
-                  })
-                  .then(() => {
-                    setExpiryDate(format(new Date(session.expires_at * 1000), 'LLLL dd, yyyy'))
-                    setShowLoader(false)
-                  })
-              })
+            setExpiryDate(format(new Date(expirationDate), 'LLLL dd, yyyy'))
+            setShowLoader(false)
           })
       }
     })
