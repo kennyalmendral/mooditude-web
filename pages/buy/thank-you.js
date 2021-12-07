@@ -10,6 +10,8 @@ import styles from '@/styles/Buy.module.css'
 
 import { useAuth } from '@/context/AuthUserContext'
 
+import { format } from 'date-fns'
+
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 
@@ -20,6 +22,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
+const firebaseFunctions = Firebase.functions()
 
 export default function OnboardingWelcomePage() {
   const router = useRouter()
@@ -27,9 +30,9 @@ export default function OnboardingWelcomePage() {
   const { authUser, loading, signOut } = useAuth()
 
   const [name, setName] = useState('')
+  const [expiryDate, setExpiryDate] = useState('')
   const [showCoupon, setShowCoupon] = useState(false)
   const [showCouponApplied, setShowCouponApplied] = useState(false)
-
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -37,10 +40,58 @@ export default function OnboardingWelcomePage() {
     }
   }, [authUser, loading, router])
 
+  useEffect(() => {
+    const getStripeSubscription = firebaseFunctions.httpsCallable('getStripeSubscription')
+  
+    getStripeSubscription({
+      session_id: new URLSearchParams(window.location.search).get('session_id')
+    }).then(result => {
+      let session = result.data.session
 
+      console.log(session)
+
+      if (authUser) {
+        firebaseDatabase
+          .ref()
+          .child('users')
+          .child(authUser.uid)
+          .update({
+            customerType: 'premium',
+            expiryDate: session.expires_at * 1000,
+            paymentStatus: 'active'
+          })
+          .then(() => {
+            firebaseStore
+              .collection('Users')
+              .doc(authUser.uid)
+              .update({
+                customerType: 'premium'
+              })
+              .then(() => {
+                firebaseStore
+                  .collection('Subscribers')
+                  .doc(authUser.uid)
+                  .set({
+                    grant: {
+                      expiryDate: format(new Date(session.expires_at * 1000), 'LLLL dd, yyyy'),
+                      grantType: 'Purchase',
+                      licenseType: 'Premium',
+                      productType: 'Subscription',
+                      transactionDate: new Date(),
+                      transactionId: session.id
+                    }
+                  })
+                  .then(() => {
+                    setExpiryDate(format(new Date(session.expires_at * 1000), 'LLLL dd, yyyy'))
+                  })
+              })
+          })
+      }
+    })
+  }, [authUser])
 
   return (
-    <Layout title={`Buy | ${SITE_NAME}`}>
+    <Layout title={`Congratulations | ${SITE_NAME}`}>
       <div className={styles.thankYouWrapper}>
         <div>
           <div className={styles.promoCodeAppliedInner}>
@@ -49,9 +100,9 @@ export default function OnboardingWelcomePage() {
             </div>
 
             <div className={styles.promoCodeInnerBottom}>
-              <p className={styles.promoCodeInnerThankYouText}>Your have free access to Mooditude Premium for 30 days</p>
+              <p className={styles.promoCodeInnerThankYouText}>You have free access to Mooditude Premium for 30 days</p>
               
-              <p className={styles.promoCodeInnerCancelText}>Till July 31, 2022</p>
+              <p className={styles.promoCodeInnerCancelText}>Till {expiryDate}</p>
             </div>
           </div>
 

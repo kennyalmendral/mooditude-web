@@ -1,6 +1,8 @@
 const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 
+const stripe = require('stripe')('sk_test_51K09rjAuTlAR8JLMimh1DvJBksnM2A1L6LVeDqQQoeO55f62ocwVsD8nkXbV004WzIrE8LyRYidKNk6lyGSaJqSJ00YRntqU8e');
+
 admin.initializeApp(functions.config().firebase);
 
 exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) => {
@@ -250,4 +252,47 @@ exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) =>
     ledToUsingAlcoholAnswer,
     ledToUsingDrugAnswer
   };
+});
+
+exports.processStripeSubscription = functions.https.onCall(async (data, context) => {
+  const stripe = require('stripe')('sk_test_51K09rjAuTlAR8JLMimh1DvJBksnM2A1L6LVeDqQQoeO55f62ocwVsD8nkXbV004WzIrE8LyRYidKNk6lyGSaJqSJ00YRntqU8e');
+
+  let price = 'price_1K09ueAuTlAR8JLMqv6RVsh8'
+
+  if (data.plan == 'monthly') {
+    price = 'price_1K09ueAuTlAR8JLMqv6RVsh8'
+  } else if (data.plan == 'yearly') {
+    price = 'price_1K09ueAuTlAR8JLM3JmfvSgj'
+  }
+
+  const session = await stripe.checkout.sessions.create({
+    line_items: [
+      {
+        price: price,
+        quantity: 1,
+      },
+    ],
+    mode: 'subscription',
+    success_url: `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: data.cancelUrl
+  });
+
+  return {
+    data,
+    session
+  };
+});
+
+exports.getStripeSubscription = functions.https.onCall(async (data, context) => {
+  const stripe = require('stripe')('sk_test_51K09rjAuTlAR8JLMimh1DvJBksnM2A1L6LVeDqQQoeO55f62ocwVsD8nkXbV004WzIrE8LyRYidKNk6lyGSaJqSJ00YRntqU8e');
+  
+  const session = await stripe.checkout.sessions.retrieve(data.session_id);
+  const customer = await stripe.customers.retrieve(session.customer);
+
+  if (session) {
+    return {
+      session,
+      customer
+    };
+  }
 });

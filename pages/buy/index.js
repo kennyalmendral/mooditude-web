@@ -14,12 +14,13 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 
 import Firebase from 'lib/Firebase'
-import TextField from '@mui/material/TextField';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import TextField from '@mui/material/TextField'
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
+const firebaseFunctions = Firebase.functions()
 
 export default function OnboardingWelcomePage() {
   const router = useRouter()
@@ -30,15 +31,42 @@ export default function OnboardingWelcomePage() {
   const [showCoupon, setShowCoupon] = useState(false)
   const [showCouponApplied, setShowCouponApplied] = useState(false)
 
-
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/auth/login')
     }
   }, [authUser, loading, router])
 
+  const handleMonthlySubscription = async (e) => {
+    e.preventDefault()
+    console.log('handleMonthlySubscription')
 
+    const processStripeSubscription = firebaseFunctions.httpsCallable('processStripeSubscription')
+  
+    processStripeSubscription({
+      plan: 'monthly',
+      redirectUrl: window.location.origin + '/buy/thank-you',
+      cancelUrl: window.location.origin + '/buy'
+    }).then(result => {
+      location.href = result.data.session.url
+    })
+  }
 
+  const handleYearlySubscription = async (e) => {
+    e.preventDefault()
+    console.log('handleYearlySubscription')
+
+    const processStripeSubscription = firebaseFunctions.httpsCallable('processStripeSubscription')
+  
+    processStripeSubscription({
+      plan: 'yearly',
+      redirectUrl: window.location.origin + '/buy/thank-you',
+      cancelUrl: window.location.origin + '/buy'
+    }).then(result => {
+      location.href = result.data.session.url
+    })
+  }
+  
   return (
     <Layout title={`Buy | ${SITE_NAME}`}>
       {
@@ -99,7 +127,7 @@ export default function OnboardingWelcomePage() {
             <p><img src="/check.png"/> Problem-specific programs with workbooks</p>
             <p><img src="/check.png"/> Goal Tracker and Positve Habit Builder</p>
             <p><img src="/check.png"/> Mood Tracker</p>
-            <p><img src="/check.png"/> Progress Tracking & Reports</p>
+            <p><img src="/check.png"/> Progress Tracking &amp; Reports</p>
             <p><img src="/check.png"/> Supportive Community</p>
             <p><img src="/check.png"/> Ask-the-Expert, and</p>
             <p><img src="/check.png"/> Find the  Right Therapist</p>
@@ -108,18 +136,31 @@ export default function OnboardingWelcomePage() {
 
           <div className={styles.buy_wrap}>
             <Stack direction="row" spacing={2}>
-              <button
-                
-              >
-                $13.99 / month
-              </button>
-
-              <button
-                className={styles.yearly}
-              >
-                $89.99 / YEAR <br/>
-                <span>ONLY $7.50/MONTH —Save 42%</span>
-              </button>
+              <form onSubmit={handleMonthlySubscription}>
+                <button
+                  type="submit" 
+                  style={{
+                    paddingTop: '26px',
+                    paddingBottom: '26px'
+                  }} 
+                >
+                  $13.99 / month
+                </button>
+              </form>
+                  
+              <form onSubmit={handleYearlySubscription}>
+                <button
+                  type="submit" 
+                  style={{
+                    paddingTop: '26px',
+                    paddingBottom: '26px'
+                  }} 
+                  className={styles.yearly}
+                >
+                  $89.99 / YEAR <br/>
+                  <span>ONLY $7.50/MONTH —Save 42%</span>
+                </button>
+              </form>
             </Stack>
           </div>
 
