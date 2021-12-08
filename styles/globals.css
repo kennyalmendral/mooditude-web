@@ -204,7 +204,7 @@ img{
   align-items: center;
   justify-content: center;  
   background: white;
-  z-index: 10;
+  z-index: 999;
 }
 
 .grayCheck .MuiFormControlLabel-label{

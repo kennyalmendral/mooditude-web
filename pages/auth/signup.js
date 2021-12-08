@@ -14,7 +14,7 @@ import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlin
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-
+import MoonLoader from "react-spinners/MoonLoader"
 import { useAuth } from '@/context/AuthUserContext'
 
 import Firebase from 'lib/Firebase'
@@ -39,6 +39,7 @@ export default function SignUp(props) {
   const [isSpecialChar, setIsSpecialChar] = useState(false)
   const [isMatch, setIsMatch] = useState(false)
   const [btnDisabled, setBtnDisabled] = useState(true)
+  const [showLoader, setShowLoader] = useState(false)
 
   const { authUser, createUserWithEmailAndPassword } = useAuth()
 
@@ -85,9 +86,9 @@ export default function SignUp(props) {
     setBtnDisabled(true)
     setIsSigningUp(true)
     setError(null)
-
+    setShowLoader(true)
     if (password === passwordConfirmation) {
-      props.loginLoaderHandler(true)
+      
       createUserWithEmailAndPassword(email, password)
         .then(authUser => {
           setIsSigningUp(false)
@@ -162,22 +163,17 @@ export default function SignUp(props) {
         .catch(error => {
           props.loginLoaderHandler(false)
           setIsSigningUp(false)
+          setShowLoader(false)
           checkPass(password, passwordConfirmation, isPrivacyPolicyChecked)
           setError(error.message)
         })
     } else {
       setError('Passwords do not match.')
       setIsSigningUp(false)
+      setShowLoader(false)
       checkPass(password, passwordConfirmation, isPrivacyPolicyChecked)
     }
   }
-
-  useEffect(() => {
-    setTimeout(() => {
-      props.removePageLoader()
-    },300)
-    
-  }, [])
 
   return (
     <Layout title={`Join ${SITE_NAME} | ${SITE_NAME}`}>
@@ -185,6 +181,28 @@ export default function SignUp(props) {
         <div className={styles.authBg}></div>
 
         <div className={styles.authForm}>
+          {
+            showLoader ? 
+              <div 
+                className={styles.custom_loader} 
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  background: 'rgba(255,255,255,.8)',
+                  zIndex: 10,
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <MoonLoader color={'#1CA566'} loading={true} size={30} />
+                <p>Signing you up...</p>
+              </div>
+            : 
+            ''
+          }
           <div className={styles.authFormInner}>
             <img  
               src="/logo_svg.svg" 

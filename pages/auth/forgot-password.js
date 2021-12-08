@@ -7,7 +7,7 @@ import styles from '@/styles/Auth.module.css'
 
 import Layout from '@/components/Layout'
 import { SITE_NAME } from '@/config/index'
-
+import MoonLoader from "react-spinners/MoonLoader"
 import { useAuth } from '@/context/AuthUserContext'
 import TextField from '@mui/material/TextField';
 
@@ -20,13 +20,6 @@ export default function ForgotPassword(props) {
   const [isResetPasswordEmailSent, setIsResetPasswordEmailSent] = useState(false)
 
   const { sendPasswordResetEmail } = useAuth()
-
-  useEffect(() => {
-    setTimeout(() => {
-      props.removePageLoader()
-    },300)
-    
-  }, [])
 
 
   const handleForgotPassword = e => {

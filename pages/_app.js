@@ -170,6 +170,11 @@ function App({ Component, pageProps }) {
         <div className={`body-wrapper ${checkAuth && !Router.pathname.includes('auth') ? 'logged' : ''} ${checkMenuCollapse ? 'menu_collapsed' : ''}`}>
           { checkAuth && !Router.pathname.includes('auth') ? <MainMenu menuCollapseHandler={menuCollapseHandler} logoutLoaderHandler={logoutLoaderHandler}  /> : '' }
           <Component 
+            {...pageProps} 
+            removePageLoader={removePageLoader}
+            loginLoaderHandler={loginLoaderHandler}
+            setPageLoader = {setPageLoader} 
+            logoutLoaderHandler = {logoutLoaderHandler} 
             
           />
         </div>

@@ -9,7 +9,7 @@ import Layout from '@/components/Layout'
 import { SITE_NAME } from '@/config/index'
 
 import { useAuth } from '@/context/AuthUserContext'
-
+import MoonLoader from "react-spinners/MoonLoader"
 import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
@@ -39,11 +39,6 @@ export default function ResetPassword(props) {
 
   const { verifyPasswordResetCode, confirmPasswordReset } = useAuth()
 
-  useEffect(() => {
-    setTimeout(() => {
-      props.removePageLoader()
-    },300)
-  }, [])
 
   useEffect(() => {
     if (router.query && router.query.oobCode) {
