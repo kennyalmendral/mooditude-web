@@ -36,9 +36,6 @@ export default function OnboardingWelcomePage() {
   const [showCouponApplied, setShowCouponApplied] = useState(false)
   const [showLoader, setShowLoader] = useState(true)
 
-  let dateNow = new Date()
-  let expirationDate = dateNow.setDate(dateNow.getDate() + 30)
-
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/auth/login')
@@ -52,8 +49,9 @@ export default function OnboardingWelcomePage() {
       session_id: new URLSearchParams(window.location.search).get('session_id')
     }).then(result => {
       let session = result.data.session
+      let subscription = result.data.subscription
 
-      console.log(session)
+      console.log(session, subscription)
 
       if (authUser) {
         firebaseDatabase
@@ -62,8 +60,9 @@ export default function OnboardingWelcomePage() {
           .child(authUser.uid)
           .update({
             customerType: 'premium',
-            expiryDate: session.expires_at * 1000,
+            expiryDate: subscription.current_period_end * 1000,
             paymentStatus: 'active',
+            paymentType: 'stripe'
           })
         
         firebaseStore
@@ -78,17 +77,16 @@ export default function OnboardingWelcomePage() {
           .doc(authUser.uid)
           .set({
             grant: {
-              expiryDate: format(new Date(expirationDate), 'LLLL dd, yyyy'),
-              expiryDate: expirationDate,
+              expiryDate: format(subscription.current_period_end * 1000, 'LLLL dd, yyyy'),
               grantType: 'Purchase',
               licenseType: 'Premium',
               productType: 'Subscription',
-              transactionDate: new Date(),
+              transactionDate: format(subscription.created * 1000, 'LLLL dd, yyyy'),
               transactionId: session.id
             }
           })
           .then(() => {
-            setExpiryDate(format(new Date(expirationDate), 'LLLL dd, yyyy'))
+            setExpiryDate(format(new Date(subscription.current_period_end * 1000), 'LLLL dd, yyyy'))
             setShowLoader(false)
           })
       }

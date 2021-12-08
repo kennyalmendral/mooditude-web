@@ -290,12 +290,12 @@ exports.getStripeSubscription = functions.https.onCall(async (data, context) => 
   const stripe = require('stripe')('sk_test_51K09rjAuTlAR8JLMimh1DvJBksnM2A1L6LVeDqQQoeO55f62ocwVsD8nkXbV004WzIrE8LyRYidKNk6lyGSaJqSJ00YRntqU8e');
   
   const session = await stripe.checkout.sessions.retrieve(data.session_id);
-  const customer = await stripe.customers.retrieve(session.customer);
+  const subscription = await stripe.subscriptions.retrieve(session.subscription);
 
   if (session) {
     return {
       session,
-      customer
+      subscription
     };
   }
 });
