@@ -96,7 +96,7 @@ export default function AssessmentReport(props) {
         .doc(authUser.uid)
         .get()
         .then(doc => {
-          doc.data().grant && setLicenseType(doc.data().grant.licenseType)
+          doc.data() && setLicenseType(doc.data().grant.licenseType)
         })
 
       firebaseStore

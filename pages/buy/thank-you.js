@@ -82,7 +82,7 @@ export default function OnboardingWelcomePage() {
               licenseType: 'Premium',
               productType: 'Subscription',
               transactionDate: format(subscription.created * 1000, 'LLLL dd, yyyy'),
-              transactionId: session.id
+              transactionId: subscription.id
             }
           })
           .then(() => {
