@@ -261,26 +261,51 @@ exports.processStripeSubscription = functions.https.onCall(async (data, context)
 
   if (data.plan == 'monthly') {
     price = 'price_1K09ueAuTlAR8JLMqv6RVsh8'
-  } else if (data.plan == 'yearly' || data.plan == 'yearly-30-trial') {
+  } else if (data.plan == 'yearly') {
     price = 'price_1K09ueAuTlAR8JLM3JmfvSgj'
-  } else if (data.plan == 'yearly-50-off') {
-    price = 'price_1K4oHJAuTlAR8JLMPm7MOrsi'
   }
 
-  const session = await stripe.checkout.sessions.create({
+  let stripeData = {
     line_items: [
       {
         price: price,
         quantity: 1,
       },
     ],
-    subscription_data: {
-      trial_period_days: 30
-    },
     mode: 'subscription',
-    success_url: `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}`,
+    success_url: `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&code_type=${data.codeType}&discount=${data.message}&duration=${data.duration}`,
     cancel_url: data.cancelUrl,
-  });
+  };
+
+  if (data.codeType == 'discount') {
+    switch (data.message) {
+      case '10% OFF':
+        stripeData.discounts = [
+          {coupon: 'TEST10'}
+        ];
+        break;
+      case '80% OFF':
+        stripeData.discounts = [
+          {coupon: 'TEST80'}
+        ];
+        break;
+      case '50% OFF':
+        stripeData.discounts = [
+          {coupon: 'TEST50'}
+        ];
+        break;
+    }
+  }
+
+  if (data.codeType == 'trial') {
+    stripeData.subscription_data = {
+      trial_period_days: data.duration
+    };
+  }
+
+  console.log(stripeData)
+
+  const session = await stripe.checkout.sessions.create(stripeData);
 
   return {
     data,

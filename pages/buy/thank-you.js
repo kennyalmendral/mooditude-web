@@ -104,17 +104,29 @@ export default function OnboardingWelcomePage() {
 
       <div className={styles.thankYouWrapper}>
         <div>
-          <div className={styles.promoCodeAppliedInner}>
-            <div className={styles.promoCodeInnerTop}>
-              <h2>Congratulations!</h2>
-            </div>
+          {router.query.code_type != 'undefined' && (
+            <div className={styles.promoCodeAppliedInner}>
+              <div className={styles.promoCodeInnerTop}>
+                <h2>Congratulations!</h2>
+              </div>
 
-            <div className={styles.promoCodeInnerBottom}>
-              <p className={styles.promoCodeInnerThankYouText}>You have free access to Mooditude Premium for 30 days</p>
-              
-              <p className={styles.promoCodeInnerCancelText}>Till {expiryDate}</p>
+              <div className={styles.promoCodeInnerBottom}>
+                {router.query.code_type == 'discount' && (
+                  <p className={styles.promoCodeInnerThankYouText}>Thank you for buying.</p>
+                )}
+
+                {router.query.code_type == 'trial' && (
+                  <p className={styles.promoCodeInnerThankYouText}>You have free access to Mooditude Premium for {router.query.duration} days</p>
+                )}
+                
+                {expiryDate && <p className={styles.promoCodeInnerCancelText}>Till {expiryDate}</p>}
+              </div>
             </div>
-          </div>
+          )}
+          
+          {router.query.code_type == 'undefined' && (
+            <h2>Thank you for your purchase</h2>
+          )}
 
           <div className={styles.thankYouApp}>
             <p>For the full experience download Mooditude’s mobile app and login with your credentials. </p>
