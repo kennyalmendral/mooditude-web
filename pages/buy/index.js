@@ -39,6 +39,8 @@ export default function OnboardingWelcomePage() {
   const [promoCode, setPromoCode] = useState('')
   const [licenseType, setLicenseType] = useState('Free')
 
+  const [subscription, setSubscription] = useState({})
+
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/auth/login')
@@ -52,7 +54,7 @@ export default function OnboardingWelcomePage() {
         .doc(authUser.uid)
         .get()
         .then(doc => {
-          doc.data() && setLicenseType(doc.data().grant.licenseType)
+          doc.data().grant && setLicenseType(doc.data().grant.licenseType)
           setChecking(false)
         })
     }
@@ -100,13 +102,75 @@ export default function OnboardingWelcomePage() {
         platform: 'web',
         userId: authUser.uid
       }).then(result => {
-        console.log('then', result)
+        let resultData = result.data
 
-        if (!result.data.error) {
+        console.log('then', resultData)
+
+        if (!resultData.error) {
           setError('')
-          location.reload()
+
+          // code1
+          if (
+            resultData.codeInfo.codeType == 'purchased' && 
+            resultData.codeInfo.message == 'Your have free access to Mooditude Premium'
+          ) {
+            firebaseStore
+              .collection('Users')
+              .doc(authUser.uid)
+              .update({
+                customerType: 'premium'
+              })
+              .then(() => {
+                firebaseDatabase
+                  .ref()
+                  .child('users')
+                  .child(authUser.uid)
+                  .update({
+                    customerType: 'premium',
+                    expiryDate: resultData.expiryDate
+                  })
+                  .then(() => {
+                    router.push(`/buy/code1?expiry_date=${resultData.expiryDate}&message=${resultData.codeInfo.message}&success=true`)
+                  })
+              })
+          }
+
+          // code2
+          if (resultData.promoCode == 'code2') {
+            router.push(`/buy/code2?message=${resultData.codeInfo.message}&success=true`)
+          }
+
+          // code3
+          if (
+            resultData.codeInfo.codeType == 'purchased' && 
+            resultData.codeInfo.message == 'Free Access to Mooditude Premium for 1 Month'
+          ) {
+            firebaseStore
+              .collection('Users')
+              .doc(authUser.uid)
+              .update({
+                customerType: 'premium'
+              })
+              .then(() => {
+                firebaseDatabase
+                  .ref()
+                  .child('users')
+                  .child(authUser.uid)
+                  .update({
+                    customerType: 'premium'
+                  })
+                  .then(() => {
+                    router.push(`/buy/code3?message=${resultData.codeInfo.message}&success=true`)
+                  })
+              })
+          }
+
+          // code4
+          if (resultData.promoCode == 'code4') {
+            router.push(`/buy/code4?message=${resultData.codeInfo.message}&success=true`)
+          }
         } else {
-          setError(result.data.error.message)
+          setError(resultData.error.message)
         }
 
         setShowLoader(false)

@@ -261,8 +261,10 @@ exports.processStripeSubscription = functions.https.onCall(async (data, context)
 
   if (data.plan == 'monthly') {
     price = 'price_1K09ueAuTlAR8JLMqv6RVsh8'
-  } else if (data.plan == 'yearly') {
+  } else if (data.plan == 'yearly' || data.plan == 'yearly-30-trial') {
     price = 'price_1K09ueAuTlAR8JLM3JmfvSgj'
+  } else if (data.plan == 'yearly-50-off') {
+    price = 'price_1K4oHJAuTlAR8JLMPm7MOrsi'
   }
 
   const session = await stripe.checkout.sessions.create({
