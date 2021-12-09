@@ -171,7 +171,7 @@
 
 .promoField{
   background: white;
-  margin-bottom: 65px;
+  margin-bottom: 65px !important;
 }
 
 .promoWrapperClose{
