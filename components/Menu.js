@@ -5,6 +5,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Grow from '@mui/material/Grow';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Link from "next/link"
+import Router from 'next/router';
 
 export default function MainMenu(props) {
     const { signOut } = useAuth()
@@ -17,13 +18,13 @@ export default function MainMenu(props) {
     useEffect(() => {
       setWidth(window.innerWidth)
       if (authUser) {
-        if (authUser && localStorage.getItem(`${authUser.uid}_onboardingStep`) == 0) {
+        if (authUser && Router.pathname.includes('onboarding')) {
             setShowMenu(false)
         } else{
             setShowMenu(true)
         }
       }
-    }, [])
+    }, [Router])
 
 
 
