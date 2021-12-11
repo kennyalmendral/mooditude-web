@@ -29,7 +29,6 @@ export default function CouponApplied() {
 
   const [codeType, setCodeType] = useState('')
   const [duration, setDuration] = useState(0)
-  const [discount, setDiscount] = useState('')
   const [expiryDate, setExpiryDate] = useState('')
   const [message, setMessage] = useState('')
   const [showLoader, setShowLoader] = useState(true)
@@ -55,9 +54,6 @@ export default function CouponApplied() {
       if (router.query.code_type == 'purchased') {
         router.query.expiry_date && setExpiryDate(format(new Date(parseInt(router.query.expiry_date)), 'LLLL dd, yyyy'))
       }
-
-      if (router.query.code_type == 'discount') {
-      }
     }
 
   }, [authUser, router])
@@ -75,8 +71,8 @@ export default function CouponApplied() {
   
     processStripeSubscription({
       plan: 'yearly',
-      codeType: codeType,
-      message: message,
+      codeType: codeType || null,
+      message: message || null,
       redirectUrl: window.location.origin + '/buy/thank-you',
       cancelUrl: window.location.origin + '/buy'
     }).then(result => {
@@ -93,9 +89,9 @@ export default function CouponApplied() {
   
     processStripeSubscription({
       plan: 'monthly',
-      codeType: codeType,
-      duration: duration,
-      message: message,
+      codeType: codeType || null,
+      duration: duration || null,
+      message: message || null,
       redirectUrl: window.location.origin + '/buy/thank-you',
       cancelUrl: window.location.origin + '/buy'
     }).then(result => {

@@ -257,12 +257,24 @@ exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) =>
 exports.processStripeSubscription = functions.https.onCall(async (data, context) => {
   const stripe = require('stripe')('sk_test_51K09rjAuTlAR8JLMimh1DvJBksnM2A1L6LVeDqQQoeO55f62ocwVsD8nkXbV004WzIrE8LyRYidKNk6lyGSaJqSJ00YRntqU8e');
 
-  let price = 'price_1K09ueAuTlAR8JLMqv6RVsh8'
+  let price = 'price_1K09ueAuTlAR8JLMqv6RVsh8';
 
   if (data.plan == 'monthly') {
-    price = 'price_1K09ueAuTlAR8JLMqv6RVsh8'
+    price = 'price_1K09ueAuTlAR8JLMqv6RVsh8';
   } else if (data.plan == 'yearly') {
-    price = 'price_1K09ueAuTlAR8JLM3JmfvSgj'
+    price = 'price_1K09ueAuTlAR8JLM3JmfvSgj';
+  }
+
+  let couponCode = null;
+
+  if (data.message != null) {
+    if (data.message == '10% OFF') {
+      couponCode = 'TEST10';
+    } else if (data.message == '80% OFF') {
+      couponCode = 'TEST80';
+    } else if (data.message == '50% OFF') {
+      couponCode = 'TEST50';
+    }
   }
 
   let stripeData = {
@@ -273,34 +285,24 @@ exports.processStripeSubscription = functions.https.onCall(async (data, context)
       },
     ],
     mode: 'subscription',
-    success_url: `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&code_type=${data.codeType}&discount=${data.message}&duration=${data.duration}`,
+    success_url: `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&code_type=${data.codeType}&discount=${couponCode}&duration=${data.duration}`,
     cancel_url: data.cancelUrl,
   };
 
   if (data.codeType == 'discount') {
-    switch (data.message) {
-      case '10% OFF':
-        stripeData.discounts = [
-          {coupon: 'TEST10'}
-        ];
-        break;
-      case '80% OFF':
-        stripeData.discounts = [
-          {coupon: 'TEST80'}
-        ];
-        break;
-      case '50% OFF':
-        stripeData.discounts = [
-          {coupon: 'TEST50'}
-        ];
-        break;
+    if (data.message != null) {
+      stripeData.discounts = [
+        {coupon: couponCode}
+      ];
     }
   }
 
   if (data.codeType == 'trial') {
-    stripeData.subscription_data = {
-      trial_period_days: data.duration
-    };
+    if (data.duration != null) {
+      stripeData.subscription_data = {
+        trial_period_days: data.duration
+      };
+    }
   }
 
   console.log(stripeData)
