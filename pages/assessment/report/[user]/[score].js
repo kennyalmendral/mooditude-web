@@ -22,6 +22,7 @@ const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
 const firebaseFunctions = Firebase.functions()
+
 import GridLoader from "react-spinners/GridLoader"
 
 export default function AssessmentReport(props) {
@@ -72,13 +73,18 @@ export default function AssessmentReport(props) {
   const [assessmentDate, setAssessmentDate] = useState(null)
   const [licenseType, setLicenseType] = useState('Free')
   const [checking, setChecking] = useState(true)
-  const [questions, setQuestions] = useState([])
+
+  const [userProfile, setUserProfile] = useState({})
 
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/auth/login')
     }
   }, [authUser, loading, router])
+
+  useEffect(() => {
+    userProfile && console.log(userProfile)
+  }, [userProfile])
 
   useEffect(() => {
     setMostOfTheTimeAnswerQuestions([])
@@ -96,7 +102,27 @@ export default function AssessmentReport(props) {
         .doc(authUser.uid)
         .get()
         .then(doc => {
-          doc.data() && setLicenseType(doc.data().grant.licenseType)
+          if (doc.data()) {
+            if (doc.data().grant) {
+              setLicenseType(doc.data().grant.licenseType)
+            }
+          }
+        })
+      
+      firebaseDatabase
+        .ref()
+        .child('users')
+        .child(authUser.uid)
+        .once('value')
+        .then((snapshot) => {
+          const snapshotValue = snapshot.val()
+
+          if (snapshotValue != null) {
+            setUserProfile(snapshotValue)
+          }
+        })
+        .catch(error => {
+          console.log('error', error)
         })
 
       firebaseStore
@@ -261,6 +287,34 @@ export default function AssessmentReport(props) {
     }
   }
 
+  const handleDownload = (e) => {
+    e.preventDefault()
+
+    if (router) {
+      const generatePDFReport = firebaseFunctions.httpsCallable('generatePDFReport')
+
+      generatePDFReport({
+        userId: router.query.user,
+        scoreId: router.query.score,
+        assessmentDate: assessmentDate,
+        assessmentScores: assessmentScores,
+        userProfile: userProfile,
+        allRiskLevel: allRiskLevel,
+        depressionRiskLevel: depressionRiskLevel,
+        anxietyRiskLevel: anxietyRiskLevel,
+        ptsdRiskLevel: ptsdRiskLevel,
+        bipolarRiskLevel: bipolarRiskLevel,
+        hasSuicidalThoughts: hasSuicidalThoughts,
+        usedAlcohol: usedAlcohol,
+        usedDrug: usedDrug
+      }).then(result => {
+        window.open(result.data.url[0], '_blank')
+      }).catch(err => {
+        console.log(err)
+      })
+    }
+  }
+
   return (
     <Layout title={`Assessment Full Report | ${SITE_NAME}`}>
       {
@@ -362,17 +416,26 @@ export default function AssessmentReport(props) {
                       }}>REPORT</a>
 
                     {licenseType == 'Premium' && (
-                      <a 
-                        href="#" 
-                        className={isScoresVisible ? styles.active : ''} 
-                        onClick={() => {
-                          setIsReportVisible(false)
-                          setIsDownloadVisible(false)
-                          setIsScoresVisible(true)
-                        }}
-                      >
-                        SCORES
-                      </a>
+                      <>
+                        <a 
+                          href="#" 
+                          className={isScoresVisible ? styles.active : ''} 
+                          onClick={() => {
+                            setIsReportVisible(false)
+                            setIsDownloadVisible(false)
+                            setIsScoresVisible(true)
+                          }}
+                        >
+                          SCORES
+                        </a>
+
+                        <a 
+                          href="" 
+                          onClick={handleDownload}
+                        >
+                          DOWNLOAD
+                        </a>
+                      </>
                     )}
                 </div>
                 
