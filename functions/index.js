@@ -765,7 +765,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     if (data.hasSuicidalThoughts) {
       doc
         .moveDown(1.5)
-        .rect(doc.x + 20, doc.y, 240, 105)
+        .rect(doc.x + 20, doc.y, 240, 104)
         .fill('#FFFFAA');
 
       doc
@@ -792,7 +792,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     if (data.usedDrug) {
       doc
         .font('fonts/CircularStd-Medium.ttf')
-        .moveDown(2.2)
+        .moveDown(2.3)
         .text(`Your responses indicated that you have occasionally used non-prescribed drugs to manage some of the symptoms.`, defaultMarginLeft)
         .moveDown()
         .text(`Self-medication for such symptoms, even when this appears to be effective, is likely to make such symptoms worse over the long term. We strongly urge you to share the responses to these questions with your physician and to begin an honest discussion about your drug use patterns.`, defaultMarginLeft)
