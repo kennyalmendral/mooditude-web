@@ -1,0 +1,293 @@
+.profileWrapper{
+  padding: 30px 63px;
+  display: flex;
+  flex-direction: column;
+  /*justify-content: center;*/
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+
+
+.profileInnerWrapper{
+  min-height: 75vh;
+  display: flex;
+  flex-direction: column;
+  
+}
+
+
+.profileInnerHeader h1{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 32px;
+  line-height: 40px;
+  margin-top: 0;
+  /* Primary */
+  margin-bottom: 0;
+
+  color: #072B4F;
+}
+
+.profileInnerHeader h4{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  margin-top: 5px;
+  line-height: 18px;
+  /* identical to box height */
+
+
+  /* Secondary */
+
+  color: #516B84;
+}
+
+
+.profileInnerMain{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.profileInnerLeft{
+  width: 35%;
+}
+
+.profileInnerRight{
+  width: 65%;
+  max-width: 350px;
+}
+
+.profilePicture{
+  margin-top: 50px;
+  margin-bottom: 30px;
+}
+
+.profileStars{
+  display: flex;
+  align-items: center;
+
+}
+
+.profileStars > div{
+  margin-right: 20px;
+
+}
+
+.profileDetails h2{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 30px;
+  margin-bottom: 4px;
+  /* Primary */
+
+  color: #072B4F;
+}
+
+.profileDetails p{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  /* identical to box height */
+
+  margin-bottom: 5px;
+  margin-top: 0;
+  /* Primary */
+
+  color: #072B4F;
+}
+
+.profileDetails{
+  margin-bottom: 50px;
+
+}
+
+.profileButtons{
+  display: flex;
+  flex-direction: column;
+}
+
+.profileButtons button{
+  border: 1px solid #516B84;
+  box-sizing: border-box;
+  border-radius: 4px;
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 18px;
+  /* identical to box height */
+  margin-bottom: 16px;
+
+  width: 270px;
+  /* Primary */
+
+  color: #072B4F;
+
+}
+
+
+.formItem {
+  margin-bottom: 15px;
+  max-width: 350px;
+}
+
+.formItem label{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 13px;
+  /* identical to box height */
+  margin-bottom: 4px;
+  text-transform: uppercase;
+
+  /* Secondary */
+
+  color: #516B84;
+}
+
+.formItem input{
+  background: #F3F4F6;
+  border: none;
+  border-radius: 4px;
+
+}
+
+.formItem > div fieldset{
+  border: none;
+
+}
+
+.normal_btn{
+  border: 1px solid #516B84;
+  box-sizing: border-box;
+  border-radius: 4px;
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 18px;
+  /* identical to box height */
+  width: 123px;
+  margin-top: 25px;
+  /* Primary */
+
+  color: #072B4F;
+}
+
+
+.button_wrapper{
+  text-align: right;
+}
+
+.profileInnerHeader a{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  /* identical to box height */
+  display: flex;
+  align-items: center;
+
+  /* Link */
+
+  color: #1CA566;
+}
+
+
+
+.profileInnerPage{
+  margin-top: 100px;
+}
+
+.profileInnerPage .subscriptionInnerItem{
+  display: flex;
+  align-items: flex-start;
+}
+
+.profileInnerPage .subscriptionInnerItem > p:first-child{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 18px;
+  /* identical to box height */
+  /* Primary */
+
+  color: #072B4F;
+  width: 170px;
+}
+
+.profileInnerPage .subscriptionInnerItem > p:last-child,
+.profileInnerPage .subscriptionInnerItem > div:last-child p{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  color: #516B84;
+}
+
+
+.privacyPolicyTextInput,
+.privacyPolicyTextInput input,
+.privacyPolicyTextInput svg,
+.privacyPolicyTextInput span{
+  pointer-events: none!important;
+  user-select: none!important;
+}
+
+.profileInnerPage .button_wrapper{
+  text-align: left;
+  margin-top: 45px;
+}
+
+.passwordChecker{
+  margin-top: 35px;
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  /* identical to box height */
+
+
+  /* Primary */
+
+  color: #072B4F;
+}
+
+.deleteInnerPage h3{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 23px;
+
+  /* OnPrimary */
+
+  color: #072B4F;
+}
+
+
+.deleteInnerPage p{
+  font-family: 'Circular Std';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+
+  /* Secondary 70% */
+
+  color: #516B84;
+
+}

@@ -77,6 +77,14 @@ export default function MainMenu(props) {
                                 </div>
 
                                 <div>
+                                    <Link href="/profile"> 
+                                    <a className={styles.menu_item} >
+                                        Profile
+                                    </a>
+                                    </Link>
+                                </div>
+
+                                <div>
                                     <Link href="/buy"> 
                                     <a className={styles.menu_item} >
                                         BUY
