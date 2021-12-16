@@ -74,6 +74,8 @@ export default function AssessmentReport(props) {
   const [licenseType, setLicenseType] = useState('Free')
   const [checking, setChecking] = useState(true)
 
+  const [isDownloading, setIsDownloading] = useState(false)
+
   const [userProfile, setUserProfile] = useState({})
 
   useEffect(() => {
@@ -290,6 +292,8 @@ export default function AssessmentReport(props) {
   const handleDownload = (e) => {
     e.preventDefault()
 
+    setIsDownloading(true)
+
     if (router) {
       const generatePDFReport = firebaseFunctions.httpsCallable('generatePDFReport')
 
@@ -306,10 +310,32 @@ export default function AssessmentReport(props) {
         bipolarRiskLevel: bipolarRiskLevel,
         hasSuicidalThoughts: hasSuicidalThoughts,
         usedAlcohol: usedAlcohol,
-        usedDrug: usedDrug
+        usedDrug: usedDrug,
+        thoughtsOfSuicideAnswer: thoughtsOfSuicideAnswer,
+        impairsWorkSchoolAnswer: impairsWorkSchoolAnswer,
+        impairsFriendsFamilyAnswer: impairsFriendsFamilyAnswer,
+        ledToUsingAlcoholAnswer: ledToUsingAlcoholAnswer,
+        ledToUsingDrugAnswer: ledToUsingDrugAnswer,
+        anxietyRiskScore: anxietyRiskScore,
+        ptsdRiskScore: ptsdRiskScore,
+        bipolarRiskScore, bipolarRiskScore,
+        mostOfTheTimeAnswerCount: mostOfTheTimeAnswerCount,
+        mostOfTheTimeAnswerQuestions: mostOfTheTimeAnswerQuestions,
+        noneAnswerCount: noneAnswerCount,
+        noneAnswerQuestions: noneAnswerQuestions,
+        oftenAnswerCount: oftenAnswerCount,
+        oftenAnswerQuestions: oftenAnswerQuestions,
+        sometimesAnswerCount: sometimesAnswerCount,
+        sometimesAnswerQuestions: sometimesAnswerQuestions,
+        rarelyAnswerCount: rarelyAnswerCount,
+        rarelyAnswerQuestions: rarelyAnswerQuestions
       }).then(result => {
+        setIsDownloading(false)
+
         window.open(result.data.url[0], '_blank')
       }).catch(err => {
+        setIsDownloading(false)
+        
         console.log(err)
       })
     }
@@ -431,9 +457,10 @@ export default function AssessmentReport(props) {
 
                         <a 
                           href="" 
-                          onClick={handleDownload}
+                          onClick={handleDownload} 
                         >
-                          DOWNLOAD
+                          {isDownloading && 'PLEASE WAIT...'}
+                          {!isDownloading && 'DOWNLOAD'}
                         </a>
                       </>
                     )}
@@ -909,6 +936,7 @@ export default function AssessmentReport(props) {
                             {thoughtsOfSuicideAnswer == 2 && <div className={styles.risk_level_low}></div>}
                             {thoughtsOfSuicideAnswer == 3 && <div className={styles.risk_level_medium}></div>}
                             {thoughtsOfSuicideAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                            {thoughtsOfSuicideAnswer == 5 && <div className={styles.risk_level_high}></div>}
                             
                             <p>Thoughts of suicide</p>
 
@@ -917,6 +945,7 @@ export default function AssessmentReport(props) {
                             {thoughtsOfSuicideAnswer == 2 && <p>Sometimes</p>}
                             {thoughtsOfSuicideAnswer == 3 && <p>Often</p>}
                             {thoughtsOfSuicideAnswer == 4 && <p>Most of the time</p>}
+                            {thoughtsOfSuicideAnswer == 5 && <p>Most of the time</p>}
                           </div>
 
                           <div>
@@ -925,6 +954,7 @@ export default function AssessmentReport(props) {
                             {impairsWorkSchoolAnswer == 2 && <div className={styles.risk_level_low}></div>}
                             {impairsWorkSchoolAnswer == 3 && <div className={styles.risk_level_medium}></div>}
                             {impairsWorkSchoolAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                            {impairsWorkSchoolAnswer == 5 && <div className={styles.risk_level_high}></div>}
                             
                             <p>Impairs work/school</p>
 
@@ -933,6 +963,7 @@ export default function AssessmentReport(props) {
                             {impairsWorkSchoolAnswer == 2 && <p>Sometimes</p>}
                             {impairsWorkSchoolAnswer == 3 && <p>Often</p>}
                             {impairsWorkSchoolAnswer == 4 && <p>Most of the time</p>}
+                            {impairsWorkSchoolAnswer == 5 && <p>Most of the time</p>}
                           </div>
 
                           <div>
@@ -941,6 +972,7 @@ export default function AssessmentReport(props) {
                             {impairsFriendsFamilyAnswer == 2 && <div className={styles.risk_level_low}></div>}
                             {impairsFriendsFamilyAnswer == 3 && <div className={styles.risk_level_medium}></div>}
                             {impairsFriendsFamilyAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                            {impairsFriendsFamilyAnswer == 5 && <div className={styles.risk_level_high}></div>}
                             
                             <p>Impairs friends/family</p>
 
@@ -949,6 +981,7 @@ export default function AssessmentReport(props) {
                             {impairsFriendsFamilyAnswer == 2 && <p>Sometimes</p>}
                             {impairsFriendsFamilyAnswer == 3 && <p>Often</p>}
                             {impairsFriendsFamilyAnswer == 4 && <p>Most of the time</p>}
+                            {impairsFriendsFamilyAnswer == 5 && <p>Most of the time</p>}
                           </div>
 
                           <div>
@@ -957,6 +990,7 @@ export default function AssessmentReport(props) {
                             {ledToUsingAlcoholAnswer == 2 && <div className={styles.risk_level_low}></div>}
                             {ledToUsingAlcoholAnswer == 3 && <div className={styles.risk_level_medium}></div>}
                             {ledToUsingAlcoholAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                            {ledToUsingAlcoholAnswer == 5 && <div className={styles.risk_level_high}></div>}
                             
                             <p>Led to using alcohol</p>
 
@@ -965,6 +999,7 @@ export default function AssessmentReport(props) {
                             {ledToUsingAlcoholAnswer == 2 && <p>Sometimes</p>}
                             {ledToUsingAlcoholAnswer == 3 && <p>Often</p>}
                             {ledToUsingAlcoholAnswer == 4 && <p>Most of the time</p>}
+                            {ledToUsingAlcoholAnswer == 5 && <p>Most of the time</p>}
                           </div>
 
                           <div>
@@ -973,6 +1008,7 @@ export default function AssessmentReport(props) {
                             {ledToUsingDrugAnswer == 2 && <div className={styles.risk_level_low}></div>}
                             {ledToUsingDrugAnswer == 3 && <div className={styles.risk_level_medium}></div>}
                             {ledToUsingDrugAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                            {ledToUsingDrugAnswer == 5 && <div className={styles.risk_level_high}></div>}
                             
                             <p>Led to using drugs</p>
 
@@ -981,6 +1017,7 @@ export default function AssessmentReport(props) {
                             {ledToUsingDrugAnswer == 2 && <p>Sometimes</p>}
                             {ledToUsingDrugAnswer == 3 && <p>Often</p>}
                             {ledToUsingDrugAnswer == 4 && <p>Most of the time</p>}
+                            {ledToUsingDrugAnswer == 5 && <p>Most of the time</p>}
                           </div>
                         </div>
                       </div>

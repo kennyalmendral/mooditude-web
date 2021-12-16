@@ -345,6 +345,69 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     .file(`reports/${data.userId}/${data.scoreId}.pdf`);
 
   await new Promise((resolve, reject) => {
+    const getQuestion = (index) => {
+      switch (index) {
+        case 0:
+          return "Feel sad/unhappy";
+        case 1:
+          return "Can't concentrate/focus";
+        case 2:
+          return "Nothing gives pleasure";
+        case 3:
+          return "Tired, no energy";
+        case 4:
+          return "Suicidal thoughts";
+        case 5:
+          return "Difficulty sleeping";
+        case 6:
+          return "Sleeping too much";
+        case 7:
+          return "Decreased appetite";
+        case 8:
+          return "Increased appetite";
+        case 9:
+          return "Tense anxious can't sit";
+        case 10:
+          return "Worried or fearful";
+        case 11:
+          return "Anxiety/panic attacks";
+        case 12:
+          return "Worried about dying/losing control";
+        case 13:
+          return "Nervous in social situations";
+        case 14:
+          return "Nightmares, flashbacks";
+        case 15:
+          return "Jumpy, startled easily";
+        case 16:
+          return "Avoid places";
+        case 17:
+          return "Dull, numb, or detached";
+        case 18:
+          return "Can't get thoughts out";
+        case 19:
+          return "Must repeat rituals";
+        case 20:
+          return "Need to check/recheck things";
+        case 21:
+          return "More energy than usual";
+        case 22:
+          return "Irritable angry";
+        case 23:
+          return "Excited revved high";
+        case 24:
+          return "Needed less sleep";
+        case 25:
+          return "Interferes with work/school";
+        case 26:
+          return "Affects friends/family relationships";
+        case 27:
+          return "Has led to alcohol to get by";
+        case 28:
+          return "Has led to using drugs";
+      }
+    }
+
     const writeStream = file.createWriteStream({
       resumable: false,
       contentType: 'application/pdf',
@@ -404,6 +467,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc.moveDown(1);
 
     let defaultMarginLeft = doc.x;
+    let defaultMarginTop = doc.y;
 
     let col1LeftPos = doc.x;
     let colTop = doc.y;
@@ -716,8 +780,8 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .image('recommended-actions.png', doc.x, doc.y + 23, {
-        // width: 26,
-        height: 26,
+        // width: 28,
+        height: 28,
         valign: 'bottom'
       });
 
@@ -765,7 +829,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     if (data.hasSuicidalThoughts) {
       doc
         .moveDown(1.5)
-        .rect(doc.x + 20, doc.y, 240, 104)
+        .rect(doc.x + 20, doc.y, 240, 103)
         .fill('#FFFFAA');
 
       doc
@@ -792,7 +856,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     if (data.usedDrug) {
       doc
         .font('fonts/CircularStd-Medium.ttf')
-        .moveDown(2.3)
+        .moveDown(2.4)
         .text(`Your responses indicated that you have occasionally used non-prescribed drugs to manage some of the symptoms.`, defaultMarginLeft)
         .moveDown()
         .text(`Self-medication for such symptoms, even when this appears to be effective, is likely to make such symptoms worse over the long term. We strongly urge you to share the responses to these questions with your physician and to begin an honest discussion about your drug use patterns.`, defaultMarginLeft)
@@ -811,6 +875,749 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
         .text(`It is virtually certain that a more appropriate and more effective means for managing your symptoms can be found, bringing with it a real chance for improvement in your functioning, quality of life, and overall health.`, defaultMarginLeft);
     }
     // End Page 3
+
+    doc.addPage()
+
+    // Start Page 4
+    // Start Header 4
+    doc
+      .rect(0, 0, 3508, 6)
+      .fillAndStroke('#F8E71C')
+      .stroke();
+
+    doc
+      .image('mooditude-logo.png', 72, 26, {
+        width: 32,
+        height: 32,
+        valign: 'bottom'
+      });
+
+    doc.fillColor('#072B4F');
+
+    doc
+      .font('fonts/CircularStd-Black.ttf')
+      .moveUp(0.7)
+      .fontSize(10)
+      .text('MOODITUDE');
+    
+    doc
+      .font('fonts/CircularStd-Medium.ttf')
+      .moveDown(0)
+      .fontSize(7)
+      .text('A Happier You!');
+    // End Header 4
+
+    doc
+      .image('recommended-actions.png', doc.x, doc.y + 23, {
+        // width: 28,
+        height: 28,
+        valign: 'bottom'
+      });
+
+    doc
+      .moveDown(5)
+      .fontSize(14)
+      .font('fonts/CircularStd-Bold.ttf')
+      .text('RecommendedActions', doc.x + 40, doc.y - 25, { width: 100 });
+
+    doc
+      .moveDown(1.5)
+      .fillColor('#516B84')
+      .fontSize(11)
+      .font('fonts/CircularStd-Medium.ttf')
+      .text('Disclaimer', defaultMarginLeft);
+
+    doc
+      .moveDown()
+      .fontSize(9)
+      .text(`Mooditude is not engaged in rendering medical or other professional services, and the use of the assessment is not intended to create and does not create any medical or other professional services relationship.`, defaultMarginLeft)
+      .moveDown()
+      .text(`Use of this assessment is not an adequate substitute for obtaining medical or other professional advice, diagnosis, or treatment from a qualified licensed health care provider.`, defaultMarginLeft)
+      .moveDown()
+      .text(`This assessment is not intended for anyone under eighteen (18) years of age and is provided "as is" without any warranties of any kind, either express or implied, and Mooditude disclaims all warranties, including liability for indirect or consequential damages.`, defaultMarginLeft);
+    // End Page 4
+
+    doc.addPage()
+
+    // Start Page 5
+    // Start Header 5
+    doc
+      .rect(0, 0, 3508, 6)
+      .fillAndStroke('#F8E71C')
+      .stroke();
+
+    doc
+      .image('mooditude-logo.png', 72, 26, {
+        width: 32,
+        height: 32,
+        valign: 'bottom'
+      });
+
+    doc.fillColor('#072B4F');
+
+    doc
+      .font('fonts/CircularStd-Black.ttf')
+      .moveUp(0.7)
+      .fontSize(10)
+      .text('MOODITUDE');
+    
+    doc
+      .font('fonts/CircularStd-Medium.ttf')
+      .moveDown(0)
+      .fontSize(7)
+      .text('A Happier You!');
+    // End Header 5
+
+    doc
+      .moveDown(2)
+      .fontSize(14)
+      .font('fonts/CircularStd-Bold.ttf')
+      .text('Scores');
+
+    doc
+      .moveTo(col1LeftPos - 40, colTop + 20)
+      .circle(col1LeftPos - 40, colTop + 20, 30)
+      .lineWidth(3)
+      .fillOpacity(1)
+      .fillAndStroke('#EB5757', '#F8E71C');
+
+    if (data.assessmentScores.allScore > 9) {
+      allScoreMarginLeft = col1LeftPos - 54;
+    } else {
+      allScoreMarginLeft = col1LeftPos - 44;
+    }
+
+    doc
+      .fillColor('#fff')
+      .fontSize(24)
+      .font('fonts/CircularStd-Medium.ttf')
+      .text(data.assessmentScores.allScore, allScoreMarginLeft, colTop + 5);
+
+    if (data.allRiskLevel == 'unlikely') {
+      allRiskLevelShortDescription = `Score of ${data.assessmentScores.allScore} shows that it is unlikely you are suffering from a mental health condition at this time.`;
+    } else if (data.allRiskLevel == 'low') {
+      allRiskLevelShortDescription = `Score of ${data.assessmentScores.allScore} suggests that you have a low risk of a mental health condition.`;
+    } else if (data.allRiskLevel == 'medium') {
+      allRiskLevelShortDescription = `Score of ${data.assessmentScores.allScore} suggests that you have a medium risk of a mental health condition.`;
+    } else if (data.allRiskLevel == 'high') {
+      allRiskLevelShortDescription = `Score of ${data.assessmentScores.allScore} suggests that you have a high risk of a mental health condition.`;
+    }
+
+    doc
+      .fillColor('#072B4F')
+      .font('fonts/CircularStd-Bold.ttf')
+      .fontSize(18)
+      .text((data.allRiskLevel.charAt(0).toUpperCase() + data.allRiskLevel.slice(1)) + ' Risk', col2LeftPos, colTop - 10, { width: colWidth })
+      .fillColor('#516B84')
+      .fontSize(10)
+      .font('fonts/CircularStd-Medium.ttf')
+      .text(allRiskLevelShortDescription, col2LeftPos, colTop + 20, { width: colWidth });
+
+    doc
+      .image('scale.png', doc.x, doc.y + 15, {
+        width: 150,
+        valign: 'bottom'
+      });
+
+    doc
+      .moveDown(4)
+      .fontSize(11)
+      .fillColor('#072B4F')
+      .font('fonts/CircularStd-Bold.ttf')
+      .text('Diagnosis Risks', defaultMarginLeft);
+    
+    doc.moveDown(2);
+
+    let depressionRiskLevelColor;
+
+    if (data.depressionRiskLevel == 'unlikely') {
+      depressionRiskLevelColor = '#F8E71C';
+    } else if (data.depressionRiskLevel == 'low') {
+      depressionRiskLevelColor = '#22A1D1';
+    } else if (data.depressionRiskLevel == 'medium') {
+      depressionRiskLevelColor = '#F9982C';
+    } else if (data.depressionRiskLevel == 'high') {
+      depressionRiskLevelColor = '#EB5757';
+    }
+
+    doc
+      .moveTo(defaultMarginLeft + 9, doc.y - 4)
+      .circle(defaultMarginLeft + 9, doc.y - 4, 8)
+      .fillOpacity(1)
+      .fillAndStroke(depressionRiskLevelColor, depressionRiskLevelColor);
+
+    doc
+      .fontSize(10)
+      .font('fonts/CircularStd-Medium.ttf')
+      .fillColor(data.depressionRiskLevel == 'unlikely' ? '#072B4F' : '#ffffff')
+      .text(
+        data.assessmentScores.depressionScore, 
+        data.assessmentScores.depressionScore > 9 ? defaultMarginLeft + 4 : defaultMarginLeft + 6, 
+        doc.y - 11
+      );
+    
+    doc
+      .fontSize(9)
+      .fillColor('#072B4F')
+      .text('Depression Risk', defaultMarginLeft + 28, doc.y - 11);
+
+    doc
+      .fillColor('#516B84')
+      .text(data.depressionRiskLevel.charAt(0).toUpperCase() + data.depressionRiskLevel.slice(1), defaultMarginLeft + 178, doc.y - 11);
+
+    doc.moveDown(2);
+
+    let anxietyRiskLevelColor;
+
+    if (data.anxietyRiskLevel == 'unlikely') {
+      anxietyRiskLevelColor = '#F8E71C';
+    } else if (data.anxietyRiskLevel == 'low') {
+      anxietyRiskLevelColor = '#22A1D1';
+    } else if (data.anxietyRiskLevel == 'medium') {
+      anxietyRiskLevelColor = '#F9982C';
+    } else if (data.anxietyRiskLevel == 'high') {
+      anxietyRiskLevelColor = '#EB5757';
+    }
+
+    doc
+      .moveTo(defaultMarginLeft + 9, doc.y - 4)
+      .circle(defaultMarginLeft + 9, doc.y - 4, 8)
+      .fillOpacity(1)
+      .fillAndStroke(anxietyRiskLevelColor, anxietyRiskLevelColor);
+
+    doc
+      .fontSize(10)
+      .font('fonts/CircularStd-Medium.ttf')
+      .fillColor(data.anxietyRiskLevel == 'unlikely' ? '#072B4F' : '#ffffff')
+      .text(
+        data.anxietyRiskScore, 
+        data.anxietyRiskScore > 9 ? defaultMarginLeft + 4 : defaultMarginLeft + 6, 
+        doc.y - 11
+      );
+    
+    doc
+      .fontSize(9)
+      .fillColor('#072B4F')
+      .text('Anxiety Risk', defaultMarginLeft + 28, doc.y - 11);
+
+    doc
+      .fillColor('#516B84')
+      .text(data.anxietyRiskLevel.charAt(0).toUpperCase() + data.anxietyRiskLevel.slice(1), defaultMarginLeft + 178, doc.y - 11);
+  
+    doc.moveDown(2);
+
+    let ptsdRiskLevelColor;
+
+    if (data.ptsdRiskLevel == 'unlikely') {
+      ptsdRiskLevelColor = '#F8E71C';
+    } else if (data.ptsdRiskLevel == 'low') {
+      ptsdRiskLevelColor = '#22A1D1';
+    } else if (data.ptsdRiskLevel == 'medium') {
+      ptsdRiskLevelColor = '#F9982C';
+    } else if (data.ptsdRiskLevel == 'high') {
+      ptsdRiskLevelColor = '#EB5757';
+    }
+
+    doc
+      .moveTo(defaultMarginLeft + 9, doc.y - 4)
+      .circle(defaultMarginLeft + 9, doc.y - 4, 8)
+      .fillOpacity(1)
+      .fillAndStroke(ptsdRiskLevelColor, ptsdRiskLevelColor);
+
+    doc
+      .fontSize(10)
+      .font('fonts/CircularStd-Medium.ttf')
+      .fillColor(data.ptsdRiskLevel == 'unlikely' ? '#072B4F' : '#ffffff')
+      .text(
+        data.ptsdRiskScore, 
+        data.ptsdRiskScore > 9 ? defaultMarginLeft + 4 : defaultMarginLeft + 6, 
+        doc.y - 11
+      );
+    
+    doc
+      .fontSize(9)
+      .fillColor('#072B4F')
+      .text('PTSD Risk', defaultMarginLeft + 28, doc.y - 11);
+
+    doc
+      .fillColor('#516B84')
+      .text(data.ptsdRiskLevel.charAt(0).toUpperCase() + data.ptsdRiskLevel.slice(1), defaultMarginLeft + 178, doc.y - 11);
+
+    doc.moveDown(2);
+
+    let bipolarRiskLevelColor;
+
+    if (data.bipolarRiskLevel == 'unlikely') {
+      bipolarRiskLevelColor = '#F8E71C';
+    } else if (data.bipolarRiskLevel == 'low') {
+      bipolarRiskLevelColor = '#22A1D1';
+    } else if (data.bipolarRiskLevel == 'medium') {
+      bipolarRiskLevelColor = '#F9982C';
+    } else if (data.bipolarRiskLevel == 'high') {
+      bipolarRiskLevelColor = '#EB5757';
+    }
+
+    doc
+      .moveTo(defaultMarginLeft + 9, doc.y - 4)
+      .circle(defaultMarginLeft + 9, doc.y - 4, 8)
+      .fillOpacity(1)
+      .fillAndStroke(bipolarRiskLevelColor, bipolarRiskLevelColor);
+
+    doc
+      .fontSize(10)
+      .font('fonts/CircularStd-Medium.ttf')
+      .fillColor(data.bipolarRiskLevel == 'unlikely' ? '#072B4F' : '#ffffff')
+      .text(
+        data.bipolarRiskScore, 
+        data.bipolarRiskScore > 9 ? defaultMarginLeft + 4 : defaultMarginLeft + 6, 
+        doc.y - 11
+      );
+    
+    doc
+      .fontSize(9)
+      .fillColor('#072B4F')
+      .text('Bipolar Risk', defaultMarginLeft + 28, doc.y - 11);
+
+    doc
+      .fillColor('#516B84')
+      .text(data.bipolarRiskLevel.charAt(0).toUpperCase() + data.bipolarRiskLevel.slice(1), defaultMarginLeft + 178, doc.y - 11);
+
+    doc
+      .moveDown(1.8)
+      .fontSize(11)
+      .fillColor('#072B4F')
+      .font('fonts/CircularStd-Bold.ttf')
+      .text('Functional Impairments', defaultMarginLeft);
+    
+    doc.moveDown(1.5);
+
+    let thoughtsOfSuicideAnswerColor;
+    let thoughtsOfSuicideAnswerText;
+
+    if (data.thoughtsOfSuicideAnswer == 0) {
+      thoughtsOfSuicideAnswerColor = '#F8E71C';
+      thoughtsOfSuicideAnswerText = 'None';
+    } else if (data.thoughtsOfSuicideAnswer == 1) {
+      thoughtsOfSuicideAnswerColor = '#F8E71C';
+      thoughtsOfSuicideAnswerText = 'Rarely';
+    } else if (data.thoughtsOfSuicideAnswer == 2) {
+      thoughtsOfSuicideAnswerColor = '#22A1D1';
+      thoughtsOfSuicideAnswerText = 'Sometimes';
+    } else if (data.thoughtsOfSuicideAnswer == 3) {
+      thoughtsOfSuicideAnswerColor = '#F9982C';
+      thoughtsOfSuicideAnswerText = 'Often';
+    } else if (data.thoughtsOfSuicideAnswer == 4) {
+      thoughtsOfSuicideAnswerColor = '#EB5757';
+      thoughtsOfSuicideAnswerText = 'Most of the time';
+    } else if (data.thoughtsOfSuicideAnswer == 5) {
+      thoughtsOfSuicideAnswerColor = '#EB5757';
+      thoughtsOfSuicideAnswerText = 'Most of the time';
+    }
+
+    doc.font('fonts/CircularStd-Medium.ttf');
+
+    doc
+      .moveTo(defaultMarginLeft + 10, doc.y - 5)
+      .circle(defaultMarginLeft + 10, doc.y - 5, 2)
+      .fillOpacity(1)
+      .fillAndStroke(thoughtsOfSuicideAnswerColor, thoughtsOfSuicideAnswerColor);
+    
+    doc
+      .fontSize(9)
+      .fillColor('#072B4F')
+      .text('Thoughts of suicide', defaultMarginLeft + 28, doc.y - 11);
+
+    doc
+      .fillColor('#516B84')
+      .text(thoughtsOfSuicideAnswerText, defaultMarginLeft + 178, doc.y - 11);
+    
+    doc.moveDown(1.4);
+
+    let impairsWorkSchoolAnswerColor;
+    let impairsWorkSchoolAnswerText;
+
+    if (data.impairsWorkSchoolAnswer == 0) {
+      impairsWorkSchoolAnswerColor = '#F8E71C';
+      impairsWorkSchoolAnswerText = 'None';
+    } else if (data.impairsWorkSchoolAnswer == 1) {
+      impairsWorkSchoolAnswerColor = '#F8E71C';
+      impairsWorkSchoolAnswerText = 'Rarely';
+    } else if (data.impairsWorkSchoolAnswer == 2) {
+      impairsWorkSchoolAnswerColor = '#22A1D1';
+      impairsWorkSchoolAnswerText = 'Sometimes';
+    } else if (data.impairsWorkSchoolAnswer == 3) {
+      impairsWorkSchoolAnswerColor = '#F9982C';
+      impairsWorkSchoolAnswerText = 'Often';
+    } else if (data.impairsWorkSchoolAnswer == 4) {
+      impairsWorkSchoolAnswerColor = '#EB5757';
+      impairsWorkSchoolAnswerText = 'Most of the time';
+    } else if (data.impairsWorkSchoolAnswer == 5) {
+      impairsWorkSchoolAnswerColor = '#EB5757';
+      impairsWorkSchoolAnswerText = 'Most of the time';
+    }
+
+    doc
+      .moveTo(defaultMarginLeft + 10, doc.y - 5)
+      .circle(defaultMarginLeft + 10, doc.y - 5, 2)
+      .fillOpacity(1)
+      .fillAndStroke(impairsWorkSchoolAnswerColor, impairsWorkSchoolAnswerColor);
+    
+    doc
+      .fontSize(9)
+      .fillColor('#072B4F')
+      .text('Impairs work/school', defaultMarginLeft + 28, doc.y - 11);
+
+    doc
+      .fillColor('#516B84')
+      .text(impairsWorkSchoolAnswerText, defaultMarginLeft + 178, doc.y - 11);
+    
+    doc.moveDown(1.4);
+
+    let impairsFriendsFamilyAnswerColor;
+    let impairsFriendsFamilyAnswerText;
+
+    if (data.impairsFriendsFamilyAnswer == 0) {
+      impairsFriendsFamilyAnswerColor = '#F8E71C';
+      impairsFriendsFamilyAnswerText = 'None';
+    } else if (data.impairsFriendsFamilyAnswer == 1) {
+      impairsFriendsFamilyAnswerColor = '#F8E71C';
+      impairsFriendsFamilyAnswerText = 'Rarely';
+    } else if (data.impairsFriendsFamilyAnswer == 2) {
+      impairsFriendsFamilyAnswerColor = '#22A1D1';
+      impairsFriendsFamilyAnswerText = 'Sometimes';
+    } else if (data.impairsFriendsFamilyAnswer == 3) {
+      impairsFriendsFamilyAnswerColor = '#F9982C';
+      impairsFriendsFamilyAnswerText = 'Often';
+    } else if (data.impairsFriendsFamilyAnswer == 4) {
+      impairsFriendsFamilyAnswerColor = '#EB5757';
+      impairsFriendsFamilyAnswerText = 'Most of the time';
+    } else if (data.impairsFriendsFamilyAnswer == 5) {
+      impairsFriendsFamilyAnswerColor = '#EB5757';
+      impairsFriendsFamilyAnswerText = 'Most of the time';
+    }
+
+    doc
+      .moveTo(defaultMarginLeft + 10, doc.y - 5)
+      .circle(defaultMarginLeft + 10, doc.y - 5, 2)
+      .fillOpacity(1)
+      .fillAndStroke(impairsFriendsFamilyAnswerColor, impairsFriendsFamilyAnswerColor);
+    
+    doc
+      .fontSize(9)
+      .fillColor('#072B4F')
+      .text('Impairs friends/family', defaultMarginLeft + 28, doc.y - 11);
+
+    doc
+      .fillColor('#516B84')
+      .text(impairsFriendsFamilyAnswerText, defaultMarginLeft + 178, doc.y - 11);
+
+    doc.moveDown(1.4);
+
+    let ledToUsingAlcoholAnswerColor;
+    let ledToUsingAlcoholAnswerText;
+
+    if (data.ledToUsingAlcoholAnswer == 0) {
+      ledToUsingAlcoholAnswerColor = '#F8E71C';
+      ledToUsingAlcoholAnswerText = 'None';
+    } else if (data.ledToUsingAlcoholAnswer == 1) {
+      ledToUsingAlcoholAnswerColor = '#F8E71C';
+      ledToUsingAlcoholAnswerText = 'Rarely';
+    } else if (data.ledToUsingAlcoholAnswer == 2) {
+      ledToUsingAlcoholAnswerColor = '#22A1D1';
+      ledToUsingAlcoholAnswerText = 'Sometimes';
+    } else if (data.ledToUsingAlcoholAnswer == 3) {
+      ledToUsingAlcoholAnswerColor = '#F9982C';
+      ledToUsingAlcoholAnswerText = 'Often';
+    } else if (data.ledToUsingAlcoholAnswer == 4) {
+      ledToUsingAlcoholAnswerColor = '#EB5757';
+      ledToUsingAlcoholAnswerText = 'Most of the time';
+    } else if (data.ledToUsingAlcoholAnswer == 5) {
+      ledToUsingAlcoholAnswerColor = '#EB5757';
+      ledToUsingAlcoholAnswerText = 'Most of the time';
+    }
+
+    doc
+      .moveTo(defaultMarginLeft + 10, doc.y - 5)
+      .circle(defaultMarginLeft + 10, doc.y - 5, 2)
+      .fillOpacity(1)
+      .fillAndStroke(ledToUsingAlcoholAnswerColor, ledToUsingAlcoholAnswerColor);
+    
+    doc
+      .fontSize(9)
+      .fillColor('#072B4F')
+      .text('Led to using alcohol', defaultMarginLeft + 28, doc.y - 11);
+
+    doc
+      .fillColor('#516B84')
+      .text(ledToUsingAlcoholAnswerText, defaultMarginLeft + 178, doc.y - 11);
+
+    doc.moveDown(1.4);
+
+    let ledToUsingDrugAnswerColor;
+    let ledToUsingDrugAnswerText;
+
+    if (data.ledToUsingDrugAnswer == 0) {
+      ledToUsingDrugAnswerColor = '#F8E71C';
+      ledToUsingDrugAnswerText = 'None';
+    } else if (data.ledToUsingDrugAnswer == 1) {
+      ledToUsingDrugAnswerColor = '#F8E71C';
+      ledToUsingDrugAnswerText = 'Rarely';
+    } else if (data.ledToUsingDrugAnswer == 2) {
+      ledToUsingDrugAnswerColor = '#22A1D1';
+      ledToUsingDrugAnswerText = 'Sometimes';
+    } else if (data.ledToUsingDrugAnswer == 3) {
+      ledToUsingDrugAnswerColor = '#F9982C';
+      ledToUsingDrugAnswerText = 'Often';
+    } else if (data.ledToUsingDrugAnswer == 4) {
+      ledToUsingDrugAnswerColor = '#EB5757';
+      ledToUsingDrugAnswerText = 'Most of the time';
+    } else if (data.ledToUsingDrugAnswer == 5) {
+      ledToUsingDrugAnswerColor = '#EB5757';
+      ledToUsingDrugAnswerText = 'Most of the time';
+    }
+
+    doc
+      .moveTo(defaultMarginLeft + 10, doc.y - 5)
+      .circle(defaultMarginLeft + 10, doc.y - 5, 2)
+      .fillOpacity(1)
+      .fillAndStroke(ledToUsingDrugAnswerColor, ledToUsingDrugAnswerColor);
+    
+    doc
+      .fontSize(9)
+      .fillColor('#072B4F')
+      .text('Led to using drugs', defaultMarginLeft + 28, doc.y - 11);
+
+    doc
+      .fillColor('#516B84')
+      .text(ledToUsingDrugAnswerText, defaultMarginLeft + 178, doc.y - 11);
+    // End Page 5
+
+    doc.addPage()
+
+    // Start Page 6
+    // Start Header 6
+    doc
+      .rect(0, 0, 3508, 6)
+      .fillAndStroke('#F8E71C')
+      .stroke();
+
+    doc
+      .image('mooditude-logo.png', 72, 26, {
+        width: 32,
+        height: 32,
+        valign: 'bottom'
+      });
+
+    doc.fillColor('#072B4F');
+
+    doc
+      .font('fonts/CircularStd-Black.ttf')
+      .moveUp(0.7)
+      .fontSize(10)
+      .text('MOODITUDE');
+    
+    doc
+      .font('fonts/CircularStd-Medium.ttf')
+      .moveDown(0)
+      .fontSize(7)
+      .text('A Happier You!');
+    // End Header 6
+
+    doc
+      .moveDown(2)
+      .fontSize(14)
+      .font('fonts/CircularStd-Bold.ttf')
+      .text('Questions');
+
+    doc
+      .moveDown(1)
+      .fontSize(9)
+      .text(`Most of the time (${data.mostOfTheTimeAnswerCount})`);
+
+    doc
+      .fillColor('#516B84')
+      .font('fonts/CircularStd-Medium.ttf')
+      .fontSize(8);
+
+    if (data.mostOfTheTimeAnswerQuestions.length > 0) {
+      data.mostOfTheTimeAnswerQuestions.map(question => {
+        doc
+          .moveDown(0.3)
+          .text(getQuestion(parseInt(question)), defaultMarginLeft + 13);
+      });
+    }
+
+    doc
+      .fillColor('#072B4F')
+      .fontSize(9)
+      .text(`None (${data.noneAnswerCount})`, defaultMarginLeft + 170, doc.y - 64);
+
+    doc
+      .fillColor('#516B84')
+      .font('fonts/CircularStd-Medium.ttf')
+      .fontSize(8);
+
+    if (data.noneAnswerQuestions.length > 0) {
+      data.noneAnswerQuestions.map(question => {
+        doc
+          .moveDown(0.3)
+          .text(getQuestion(parseInt(question)), defaultMarginLeft + 180);
+      });
+    }
+
+    doc
+      .moveDown(2)
+      .fillColor('#072B4F')
+      .fontSize(9)
+      .text(`Often (${data.oftenAnswerCount})`, defaultMarginLeft);
+
+    doc
+      .fillColor('#516B84')
+      .font('fonts/CircularStd-Medium.ttf')
+      .fontSize(8);
+
+    if (data.oftenAnswerQuestions.length > 0) {
+      data.oftenAnswerQuestions.map(question => {
+        doc
+          .moveDown(0.3)
+          .text(getQuestion(parseInt(question)), defaultMarginLeft + 13);
+      });
+    }
+
+    doc
+      .moveDown(1.5)
+      .fillColor('#072B4F')
+      .fontSize(9)
+      .text(`Sometimes (${data.sometimesAnswerCount})`, defaultMarginLeft);
+
+    doc
+      .fillColor('#516B84')
+      .font('fonts/CircularStd-Medium.ttf')
+      .fontSize(8);
+
+    if (data.sometimesAnswerQuestions.length > 0) {
+      data.sometimesAnswerQuestions.map(question => {
+        doc
+          .moveDown(0.3)
+          .text(getQuestion(parseInt(question)), defaultMarginLeft + 13);
+      });
+    }
+
+    doc
+      .moveDown(1.5)
+      .fillColor('#072B4F')
+      .fontSize(9)
+      .text(`Rarely (${data.rarelyAnswerCount})`, defaultMarginLeft);
+
+    doc
+      .fillColor('#516B84')
+      .font('fonts/CircularStd-Medium.ttf')
+      .fontSize(8);
+
+    if (data.rarelyAnswerQuestions.length > 0) {
+      data.rarelyAnswerQuestions.map(question => {
+        doc
+          .moveDown(0.3)
+          .text(getQuestion(parseInt(question)), defaultMarginLeft + 13);
+      });
+    }
+
+    doc.addPage()
+
+    // Start Page 7
+    // Start Header 7
+    doc
+      .rect(0, 0, 3508, 6)
+      .fillAndStroke('#F8E71C')
+      .stroke();
+
+    doc
+      .image('mooditude-logo.png', 72, 26, {
+        width: 32,
+        height: 32,
+        valign: 'bottom'
+      });
+
+    doc.fillColor('#072B4F');
+
+    doc
+      .font('fonts/CircularStd-Black.ttf')
+      .moveUp(0.7)
+      .fontSize(10)
+      .text('MOODITUDE');
+    
+    doc
+      .font('fonts/CircularStd-Medium.ttf')
+      .moveDown(0)
+      .fontSize(7)
+      .text('A Happier You!');
+    // End Header 7
+    
+    doc
+      .fillColor('#072B4F')
+      .font('fonts/CircularStd-Bold.ttf')
+      .fontSize(9)
+      .text(`Feel Happier with Mooditude — Programs designed by clinical psychologists and data-science experts.`, defaultMarginLeft, defaultMarginTop - 60, { width: 120 });
+
+    doc
+      .moveDown(1.1)
+      .fontSize(8)
+      .font('fonts/CircularStd-Medium.ttf')
+      .text(`https://mooditude.app`)
+      .link(doc.x, doc.y, 100, 5, `https://mooditude.app`);
+
+    doc
+      .moveDown(0)
+      .text(`hello@mooditude.app`)
+      .link(doc.x, doc.y, 100, 5, `mailto:hello@mooditude.app`);
+
+    doc
+      .fillColor('#516B84')
+      .font('fonts/CircularStd-Bold.ttf')
+      .fontSize(11)
+      .text(`Science Behind the Assessment`, defaultMarginLeft + 160, defaultMarginTop - 60);
+    
+    doc
+      .moveDown(1.1)
+      .font('fonts/CircularStd-Medium.ttf')
+      .fontSize(8)
+      .text(`This assessment — M3 Checklist — is a  3-minute mental health symptom assessment tool designed by experts from the National Institute for Mental Health, Boston University, Columbia University, and Weill Cornell Medicine, and validated by researchers from the University of North Carolina, and published in the Annals of Family Medicine in 2010.`, defaultMarginLeft + 160);
+    
+    doc
+      .moveDown(1.1)
+      .font('fonts/CircularStd-Medium.ttf')
+      .fontSize(8)
+      .text(`This assessment — M3 Checklist — is a  3-minute mental health symptom assessment tool designed by experts from the National Institute for Mental Health, Boston University, Columbia University, and Weill Cornell Medicine, and validated by researchers from the University of North Carolina, and published in the Annals of Family Medicine in 2010.`, defaultMarginLeft + 160);
+    
+    doc
+      .moveDown(1.1)
+      .text(`It efficiently measures the pulse of your mental well-being, by combining common symptom areas — depression, bipolar, anxiety, and posttraumatic stress disorders — with substance use and functional impairments to produce a set of mental health vital signs that can be tracked over time to measure progress.`, defaultMarginLeft + 160);
+
+    doc
+      .moveDown(1.1)
+      .text(`REFERENCE:\nTitle: Feasibility and Diagnostic Validity of the M-3 Checklist: A Brief, Self-Rated Screen for Depressive, Bipolar, Anxiety, and Post-Traumatic Stress Disorders in Primary Care`, defaultMarginLeft + 160);
+    
+    doc
+      .moveDown(1.1)
+      .text(`Journal: Annals of Family Medicine\nAuthors: Bradley N. Gaynes, MD, MPH; Joanne DeVeaugh-Geiss, MA, LPA; Sam Weir, MD; Hongbin Gu, PhD; Cora MacPherson, PhD; Herbert C. Schulberg, PhD, MSHyg; Larry Culpepper, MD, MPH; and David R. Rubinow, MD.`, defaultMarginLeft + 160);
+    
+    doc
+      .moveDown(1.1)
+      .fillColor('#1CA566')
+      .text(`https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2834723/`, defaultMarginLeft + 160)
+      .link(doc.x, doc.y, 160, 20, `https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2834723/`);
+
+    doc
+      .moveDown(1.1)
+      .image('m3info.png', defaultMarginLeft + 160, doc.y, {
+        // width: 139,
+        height: 36,
+        align: 'right'
+      });
+    
+    doc
+      .fillColor('#516B84');
+    // End Page 7
 
     // Start Footer
     let pages = doc.bufferedPageRange();
