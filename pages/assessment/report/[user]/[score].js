@@ -22,6 +22,7 @@ const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
 const firebaseFunctions = Firebase.functions()
+
 import GridLoader from "react-spinners/GridLoader"
 
 export default function AssessmentReport(props) {
@@ -72,13 +73,20 @@ export default function AssessmentReport(props) {
   const [assessmentDate, setAssessmentDate] = useState(null)
   const [licenseType, setLicenseType] = useState('Free')
   const [checking, setChecking] = useState(true)
-  const [questions, setQuestions] = useState([])
+
+  const [isDownloading, setIsDownloading] = useState(false)
+
+  const [userProfile, setUserProfile] = useState({})
 
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/auth/login')
     }
   }, [authUser, loading, router])
+
+  useEffect(() => {
+    userProfile && console.log(userProfile)
+  }, [userProfile])
 
   useEffect(() => {
     setMostOfTheTimeAnswerQuestions([])
@@ -96,7 +104,27 @@ export default function AssessmentReport(props) {
         .doc(authUser.uid)
         .get()
         .then(doc => {
-          doc.data() && setLicenseType(doc.data().grant.licenseType)
+          if (doc.data()) {
+            if (doc.data().grant) {
+              setLicenseType(doc.data().grant.licenseType)
+            }
+          }
+        })
+      
+      firebaseDatabase
+        .ref()
+        .child('users')
+        .child(authUser.uid)
+        .once('value')
+        .then((snapshot) => {
+          const snapshotValue = snapshot.val()
+
+          if (snapshotValue != null) {
+            setUserProfile(snapshotValue)
+          }
+        })
+        .catch(error => {
+          console.log('error', error)
         })
 
       firebaseStore
@@ -261,6 +289,58 @@ export default function AssessmentReport(props) {
     }
   }
 
+  const handleDownload = (e) => {
+    e.preventDefault()
+
+    setIsDownloading(true)
+
+    if (router) {
+      const generatePDFReport = firebaseFunctions.httpsCallable('generatePDFReport')
+
+      generatePDFReport({
+        userId: router.query.user,
+        scoreId: router.query.score,
+        assessmentDate: assessmentDate,
+        assessmentScores: assessmentScores,
+        userProfile: userProfile,
+        allRiskLevel: allRiskLevel,
+        depressionRiskLevel: depressionRiskLevel,
+        anxietyRiskLevel: anxietyRiskLevel,
+        ptsdRiskLevel: ptsdRiskLevel,
+        bipolarRiskLevel: bipolarRiskLevel,
+        hasSuicidalThoughts: hasSuicidalThoughts,
+        usedAlcohol: usedAlcohol,
+        usedDrug: usedDrug,
+        thoughtsOfSuicideAnswer: thoughtsOfSuicideAnswer,
+        impairsWorkSchoolAnswer: impairsWorkSchoolAnswer,
+        impairsFriendsFamilyAnswer: impairsFriendsFamilyAnswer,
+        ledToUsingAlcoholAnswer: ledToUsingAlcoholAnswer,
+        ledToUsingDrugAnswer: ledToUsingDrugAnswer,
+        anxietyRiskScore: anxietyRiskScore,
+        ptsdRiskScore: ptsdRiskScore,
+        bipolarRiskScore, bipolarRiskScore,
+        mostOfTheTimeAnswerCount: mostOfTheTimeAnswerCount,
+        mostOfTheTimeAnswerQuestions: mostOfTheTimeAnswerQuestions,
+        noneAnswerCount: noneAnswerCount,
+        noneAnswerQuestions: noneAnswerQuestions,
+        oftenAnswerCount: oftenAnswerCount,
+        oftenAnswerQuestions: oftenAnswerQuestions,
+        sometimesAnswerCount: sometimesAnswerCount,
+        sometimesAnswerQuestions: sometimesAnswerQuestions,
+        rarelyAnswerCount: rarelyAnswerCount,
+        rarelyAnswerQuestions: rarelyAnswerQuestions
+      }).then(result => {
+        setIsDownloading(false)
+
+        window.open(result.data.url[0], '_blank')
+      }).catch(err => {
+        setIsDownloading(false)
+        
+        console.log(err)
+      })
+    }
+  }
+
   return (
     <Layout title={`Assessment Full Report | ${SITE_NAME}`}>
       {
@@ -362,17 +442,27 @@ export default function AssessmentReport(props) {
                       }}>REPORT</a>
 
                     {licenseType == 'Premium' && (
-                      <a 
-                        href="#" 
-                        className={isScoresVisible ? styles.active : ''} 
-                        onClick={() => {
-                          setIsReportVisible(false)
-                          setIsDownloadVisible(false)
-                          setIsScoresVisible(true)
-                        }}
-                      >
-                        SCORES
-                      </a>
+                      <>
+                        <a 
+                          href="#" 
+                          className={isScoresVisible ? styles.active : ''} 
+                          onClick={() => {
+                            setIsReportVisible(false)
+                            setIsDownloadVisible(false)
+                            setIsScoresVisible(true)
+                          }}
+                        >
+                          SCORES
+                        </a>
+
+                        <a 
+                          href="" 
+                          onClick={handleDownload} 
+                        >
+                          {isDownloading && 'PLEASE WAIT...'}
+                          {!isDownloading && 'DOWNLOAD'}
+                        </a>
+                      </>
                     )}
                 </div>
                 
@@ -846,6 +936,7 @@ export default function AssessmentReport(props) {
                             {thoughtsOfSuicideAnswer == 2 && <div className={styles.risk_level_low}></div>}
                             {thoughtsOfSuicideAnswer == 3 && <div className={styles.risk_level_medium}></div>}
                             {thoughtsOfSuicideAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                            {thoughtsOfSuicideAnswer == 5 && <div className={styles.risk_level_high}></div>}
                             
                             <p>Thoughts of suicide</p>
 
@@ -854,6 +945,7 @@ export default function AssessmentReport(props) {
                             {thoughtsOfSuicideAnswer == 2 && <p>Sometimes</p>}
                             {thoughtsOfSuicideAnswer == 3 && <p>Often</p>}
                             {thoughtsOfSuicideAnswer == 4 && <p>Most of the time</p>}
+                            {thoughtsOfSuicideAnswer == 5 && <p>Most of the time</p>}
                           </div>
 
                           <div>
@@ -862,6 +954,7 @@ export default function AssessmentReport(props) {
                             {impairsWorkSchoolAnswer == 2 && <div className={styles.risk_level_low}></div>}
                             {impairsWorkSchoolAnswer == 3 && <div className={styles.risk_level_medium}></div>}
                             {impairsWorkSchoolAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                            {impairsWorkSchoolAnswer == 5 && <div className={styles.risk_level_high}></div>}
                             
                             <p>Impairs work/school</p>
 
@@ -870,6 +963,7 @@ export default function AssessmentReport(props) {
                             {impairsWorkSchoolAnswer == 2 && <p>Sometimes</p>}
                             {impairsWorkSchoolAnswer == 3 && <p>Often</p>}
                             {impairsWorkSchoolAnswer == 4 && <p>Most of the time</p>}
+                            {impairsWorkSchoolAnswer == 5 && <p>Most of the time</p>}
                           </div>
 
                           <div>
@@ -878,6 +972,7 @@ export default function AssessmentReport(props) {
                             {impairsFriendsFamilyAnswer == 2 && <div className={styles.risk_level_low}></div>}
                             {impairsFriendsFamilyAnswer == 3 && <div className={styles.risk_level_medium}></div>}
                             {impairsFriendsFamilyAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                            {impairsFriendsFamilyAnswer == 5 && <div className={styles.risk_level_high}></div>}
                             
                             <p>Impairs friends/family</p>
 
@@ -886,6 +981,7 @@ export default function AssessmentReport(props) {
                             {impairsFriendsFamilyAnswer == 2 && <p>Sometimes</p>}
                             {impairsFriendsFamilyAnswer == 3 && <p>Often</p>}
                             {impairsFriendsFamilyAnswer == 4 && <p>Most of the time</p>}
+                            {impairsFriendsFamilyAnswer == 5 && <p>Most of the time</p>}
                           </div>
 
                           <div>
@@ -894,6 +990,7 @@ export default function AssessmentReport(props) {
                             {ledToUsingAlcoholAnswer == 2 && <div className={styles.risk_level_low}></div>}
                             {ledToUsingAlcoholAnswer == 3 && <div className={styles.risk_level_medium}></div>}
                             {ledToUsingAlcoholAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                            {ledToUsingAlcoholAnswer == 5 && <div className={styles.risk_level_high}></div>}
                             
                             <p>Led to using alcohol</p>
 
@@ -902,6 +999,7 @@ export default function AssessmentReport(props) {
                             {ledToUsingAlcoholAnswer == 2 && <p>Sometimes</p>}
                             {ledToUsingAlcoholAnswer == 3 && <p>Often</p>}
                             {ledToUsingAlcoholAnswer == 4 && <p>Most of the time</p>}
+                            {ledToUsingAlcoholAnswer == 5 && <p>Most of the time</p>}
                           </div>
 
                           <div>
@@ -910,6 +1008,7 @@ export default function AssessmentReport(props) {
                             {ledToUsingDrugAnswer == 2 && <div className={styles.risk_level_low}></div>}
                             {ledToUsingDrugAnswer == 3 && <div className={styles.risk_level_medium}></div>}
                             {ledToUsingDrugAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                            {ledToUsingDrugAnswer == 5 && <div className={styles.risk_level_high}></div>}
                             
                             <p>Led to using drugs</p>
 
@@ -918,6 +1017,7 @@ export default function AssessmentReport(props) {
                             {ledToUsingDrugAnswer == 2 && <p>Sometimes</p>}
                             {ledToUsingDrugAnswer == 3 && <p>Often</p>}
                             {ledToUsingDrugAnswer == 4 && <p>Most of the time</p>}
+                            {ledToUsingDrugAnswer == 5 && <p>Most of the time</p>}
                           </div>
                         </div>
                       </div>
