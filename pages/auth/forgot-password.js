@@ -21,6 +21,9 @@ export default function ForgotPassword(props) {
 
   const { sendPasswordResetEmail } = useAuth()
 
+  useEffect(() => {
+    router.query.email && setEmail(router.query.email)
+  }, [router])
 
   const handleForgotPassword = e => {
     e.preventDefault()

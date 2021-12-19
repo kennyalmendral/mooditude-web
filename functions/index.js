@@ -2,6 +2,8 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
 const fs = require('fs');
+const stream = require('stream')
+const path = require('path')
 
 const PDFDocument = require('pdfkit');
 
@@ -259,8 +261,6 @@ exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) =>
 });
 
 exports.processStripeSubscription = functions.https.onCall(async (data, context) => {
-  const stripe = require('stripe')('sk_test_51K09rjAuTlAR8JLMimh1DvJBksnM2A1L6LVeDqQQoeO55f62ocwVsD8nkXbV004WzIrE8LyRYidKNk6lyGSaJqSJ00YRntqU8e');
-
   let price = 'price_1K09ueAuTlAR8JLMqv6RVsh8';
 
   if (data.plan == 'monthly') {
@@ -319,15 +319,33 @@ exports.processStripeSubscription = functions.https.onCall(async (data, context)
   };
 });
 
-exports.getStripeSubscription = functions.https.onCall(async (data, context) => {
-  const stripe = require('stripe')('sk_test_51K09rjAuTlAR8JLMimh1DvJBksnM2A1L6LVeDqQQoeO55f62ocwVsD8nkXbV004WzIrE8LyRYidKNk6lyGSaJqSJ00YRntqU8e');
-  
+exports.cancelStripeSubscription = functions.https.onCall(async (data, context) => {
+  const response = await stripe.subscriptions.update(data.subscriptionId, {
+    cancel_at_period_end: true
+  });
+
+  return {
+    response
+  };
+});
+
+exports.getStripeSubscription = functions.https.onCall(async (data, context) => {  
   const session = await stripe.checkout.sessions.retrieve(data.session_id);
   const subscription = await stripe.subscriptions.retrieve(session.subscription);
 
   if (session) {
     return {
       session,
+      subscription
+    };
+  }
+});
+
+exports.getStripeSubscriptionDirect = functions.https.onCall(async (data, context) => {  
+  const subscription = await stripe.subscriptions.retrieve(data.subscriptionId);
+
+  if (subscription) {
+    return {
       subscription
     };
   }
@@ -856,7 +874,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     if (data.usedDrug) {
       doc
         .font('fonts/CircularStd-Medium.ttf')
-        .moveDown(2.4)
+        .moveDown()
         .text(`Your responses indicated that you have occasionally used non-prescribed drugs to manage some of the symptoms.`, defaultMarginLeft)
         .moveDown()
         .text(`Self-medication for such symptoms, even when this appears to be effective, is likely to make such symptoms worse over the long term. We strongly urge you to share the responses to these questions with your physician and to begin an honest discussion about your drug use patterns.`, defaultMarginLeft)
@@ -1450,7 +1468,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc
       .fillColor('#072B4F')
       .fontSize(9)
-      .text(`None (${data.noneAnswerCount})`, defaultMarginLeft + 170, doc.y - 64);
+      .text(`None (${data.noneAnswerCount})`);
 
     doc
       .fillColor('#516B84')
@@ -1461,7 +1479,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       data.noneAnswerQuestions.map(question => {
         doc
           .moveDown(0.3)
-          .text(getQuestion(parseInt(question)), defaultMarginLeft + 180);
+          .text(getQuestion(parseInt(question)), defaultMarginLeft + 13);
       });
     }
 
@@ -1657,5 +1675,40 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     
   return {
     url
+  };
+});
+
+exports.uploadProfilePicture = functions.https.onCall(async (data, context) => {
+  let bufferStream = new stream.PassThrough();
+
+  bufferStream.end(Buffer.from(data.image, 'base64'));
+
+  let fileExt = path.parse(data.name).ext;
+
+  let bucket = admin.storage().bucket();
+  let file = bucket.file(`Profile/Images/${data.user}${fileExt}`);
+
+  bufferStream.pipe(file.createWriteStream({
+    metadata: {
+      contentType: data.type
+    }
+  }))
+  .on('error', error => {
+    reject(`Error while uploading picture ${JSON.stringify(error)}`);
+
+    return {
+      error
+    };
+  })
+  .on('finish', (file) => {
+    console.log("Image successfully uploaded: ", JSON.stringify(file));
+
+    return {
+      url: `https://firebasestorage.googleapis.com/v0/b/mooditudetesting.appspot.com/o/Profile%2FImages%2F${data.user}${fileExt}`
+    };
+  });
+
+  return {
+    file: file.id
   };
 });

@@ -19,10 +19,13 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import MoonLoader from "react-spinners/MoonLoader"
 import { FormLabel } from '@mui/material';
 
+import { format } from 'date-fns'
+
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
 const firebaseFunctions = Firebase.functions()
+
 import KeyboardArrowLeftRoundedIcon from '@mui/icons-material/KeyboardArrowLeftRounded';
 
 export default function profileSubscription() {
@@ -33,10 +36,11 @@ export default function profileSubscription() {
   const [checking, setChecking] = useState(true)
   const [showLoader, setShowLoader] = useState(false)
   const [name, setName] = useState('')
-
-
   const [error, setError] = useState('')
 
+  const [grant, setGrant] = useState({})
+  const [subscription, setSubscription] = useState({})
+  const [cancelAt, setCancelAt] = useState('')
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -52,16 +56,46 @@ export default function profileSubscription() {
         .get()
         .then(doc => {
           if (doc && doc.data()) {
-            doc.data().grant && setLicenseType(doc.data().grant.licenseType)
-          }
+            if (doc.data().grant) {
+              setGrant(doc.data().grant)
 
-          setChecking(false)
+              const getStripeSubscriptionDirect = firebaseFunctions.httpsCallable('getStripeSubscriptionDirect')
+  
+              getStripeSubscriptionDirect({
+                subscriptionId: doc.data().grant.transactionId
+              }).then(result => {
+                setSubscription(result.data.subscription)
+
+                console.log(result.data.subscription)
+
+                setChecking(false)
+              })
+            } 
+          }
         })
     }
   }, [authUser])
 
-
+  useEffect(() => {
+    if (subscription) {
+      subscription.cancel_at != null && setCancelAt(subscription.cancel_at)
+    }
+  }, [subscription])
   
+  const handleCancelSubscription = () => {
+    const confirmation = confirm('Are you sure?')
+
+    if (confirmation) {
+      const cancelStripeSubscription = firebaseFunctions.httpsCallable('cancelStripeSubscription')
+    
+      cancelStripeSubscription({
+        subscriptionId: grant.transactionId
+      }).then(result => {
+        setCancelAt(result.data.response.cancel_at)
+      })
+    }
+  }
+
   return (
     <Layout title={`Manage Subscription | ${SITE_NAME}`}>
       {
@@ -93,24 +127,24 @@ export default function profileSubscription() {
                 <div className={styles.profileInnerPage}>
                   <div className={styles.subscriptionInnerPage}>
                     <div className={styles.subscriptionInnerItem}>
-                      <p><b>Subscription  Period:</b></p>
-                      <p>Yearly</p>
+                      <p><b>Subscription Period:</b></p>
+                      <p>{subscription.plan && subscription.plan.interval.charAt(0).toUpperCase() + subscription.plan.interval.slice(1) + 'ly'}</p>
                     </div> 
 
                     <div className={styles.subscriptionInnerItem}>
                       <p><b>Status:</b></p>
-                      <p>Active</p>
+                      <p>{subscription.status && subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}</p>
                     </div> 
 
                     <div className={styles.subscriptionInnerItem}>
                       <p><b>Auto Renewal On:</b></p>
-                      <p>Yes</p>
+                      <p>{subscription.status == 'active' ? 'Yes' : 'No'}</p>
                     </div> 
 
 
                     <div className={styles.subscriptionInnerItem}>
                       <p><b>Renewal Date:</b></p>
-                      <p>02/02/2022</p>
+                      <p>{format(new Date(parseInt(subscription.current_period_end) * 1000), 'LLLL dd, yyyy')}</p>
                     </div> 
 
                     <div className={styles.subscriptionInnerItem}>
@@ -123,8 +157,13 @@ export default function profileSubscription() {
 
                         <p>You purchased Mooditude Premium from Google Play. Cancel your subscription from the Google Play Store.</p>
 
-                        <p>Click here to cancel your subscrion.</p>
+                        {cancelAt != '' && (
+                          <p>Your subscription will be canceled on {format(new Date(parseInt(cancelAt) * 1000), 'LLLL dd, yyyy')}.</p>
+                        )}
 
+                        {cancelAt == '' && (
+                          <p><a onClick={handleCancelSubscription} style={{ cursor: 'pointer' }}>Click here to cancel your subscription.</a></p>
+                        )}
                       </div> 
                     </div> 
                   </div>

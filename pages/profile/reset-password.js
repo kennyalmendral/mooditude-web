@@ -28,9 +28,10 @@ const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
 const firebaseFunctions = Firebase.functions()
+
 import KeyboardArrowLeftRoundedIcon from '@mui/icons-material/KeyboardArrowLeftRounded';
 
-export default function profileReset() {
+export default function profilePasswordReset(props) {
   const router = useRouter()
 
   const { authUser, loading, signOut } = useAuth()
@@ -38,10 +39,26 @@ export default function profileReset() {
   const [checking, setChecking] = useState(true)
   const [showLoader, setShowLoader] = useState(false)
   const [name, setName] = useState('')
-
-
   const [error, setError] = useState('')
 
+  const specialChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/
+  const hasNumber = /\d/
+
+  const [isSending, setIsSending] = useState(false)
+  const [isPasswordReset, setIsPasswordReset] = useState(false)
+
+  const [isMinChar, setIsMinChar] = useState(false)
+  const [isOneDigit, setIsOneDigit] = useState(false)
+  const [isSpecialChar, setIsSpecialChar] = useState(false)
+  const [isMatch, setIsMatch] = useState(false)
+  const [btnDisabled, setBtnDisabled] = useState(true)
+
+  const [password, setPassword] = useState('')
+  const [passwordConfirmation, setPasswordConfirmation] = useState('')
+
+  const [licenseType, setLicenseType] = useState('')
+
+  const { confirmPasswordReset } = useAuth()
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -51,21 +68,70 @@ export default function profileReset() {
 
   useEffect(() => {
     if (authUser) {
-      firebaseStore
-        .collection('Subscribers')
-        .doc(authUser.uid)
-        .get()
-        .then(doc => {
-          if (doc && doc.data()) {
-            doc.data().grant && setLicenseType(doc.data().grant.licenseType)
-          }
-
-          setChecking(false)
-        })
+      setChecking(false)
     }
   }, [authUser])
 
+  const handleResetPassword = e => {
+    e.preventDefault()
 
+    setBtnDisabled(true)
+
+    if (password != passwordConfirmation) {
+      setError('Your password does not match.')
+      return false
+    }
+
+    setIsSending(true)
+
+    if (password != '') {
+      confirmPasswordReset(code, password)
+        .then(() => {
+          setIsSending(false)
+          setIsPasswordReset(true)
+          checkPass()
+        })
+        .catch(err => {
+          setIsSending(false)
+          console.log(err)
+        })
+    }
+  }
+
+  const checkPass = (p1 = '', p2 = '') => {  
+    p1 = p1 == '' ? password : p1
+    p2 = p2 == '' ? passwordConfirmation : p2
+
+    if (p1.length >= 8) {
+      setIsMinChar(true)
+    }else{
+      setIsMinChar(false)
+    }
+
+    if (hasNumber.test(p1)) {
+      setIsOneDigit(true)
+    }else{
+      setIsOneDigit(false)
+    }
+
+    if (specialChars.test(p1)) {
+      setIsSpecialChar(true)
+    }else{
+      setIsSpecialChar(false)
+    }
+
+    if (p1.length > 1 && p1 == p2) {
+      setIsMatch(true)
+    }else{
+      setIsMatch(false)
+    }
+
+    if (p1.length >= 8 && hasNumber.test(p1) && specialChars.test(p1) && p1 == p2 ) {
+      setBtnDisabled(false)
+    }else{
+      setBtnDisabled(true)
+    }  
+  }
   
   return (
     <Layout title={`Reset Password | ${SITE_NAME}`}>

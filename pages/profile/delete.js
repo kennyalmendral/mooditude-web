@@ -33,15 +33,15 @@ import KeyboardArrowLeftRoundedIcon from '@mui/icons-material/KeyboardArrowLeftR
 export default function profileDelete() {
   const router = useRouter()
 
-  const { authUser, loading, signOut } = useAuth()
+  const { authUser, loading, signOut, signInWithEmailAndPassword } = useAuth()
 
   const [checking, setChecking] = useState(true)
   const [showLoader, setShowLoader] = useState(false)
-  const [name, setName] = useState('')
+  const [password, setPassword] = useState('')
 
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const [error, setError] = useState('')
-
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -51,24 +51,78 @@ export default function profileDelete() {
 
   useEffect(() => {
     if (authUser) {
-      firebaseStore
-        .collection('Subscribers')
-        .doc(authUser.uid)
-        .get()
-        .then(doc => {
-          if (doc && doc.data()) {
-            doc.data().grant && setLicenseType(doc.data().grant.licenseType)
-          }
-
-          setChecking(false)
-        })
+      setChecking(false)
     }
   }, [authUser])
 
+  const handleDeleteAccount = e => {
+    e.preventDefault()
+    
+    setIsDeleting(true)
 
+    const confirmation = confirm('Are you sure?')
+
+    if (authUser) {
+      if (confirmation) {
+        signInWithEmailAndPassword(authUser.email, password)
+          .then(user => {
+            setIsDeleting(false)
+            
+            if (user.user) {
+              firebaseAuth.currentUser
+                .delete()
+                .then(() => {
+                  // firebaseStore
+                  //   .collection('Users')
+                  //   .get()
+                  //   .then(doc => {
+                  //     if (doc.docs.length > 0) {
+                  //       doc.docs.map(item => {
+                  //         console.log(item.value)
+                  //       })
+                  //     }
+                  //   })
+
+                  firebaseStore
+                    .collection('Users')
+                    .doc(user.user.uid)
+                    .delete()
+                  
+                  firebaseStore
+                    .collection('Subscribers')
+                    .doc(user.user.uid)
+                    .delete()
+
+                  firebaseStore
+                    .collection('M3Assessment')
+                    .doc(user.user.uid)
+                    .delete()
+
+                  firebaseDatabase
+                    .ref(`users/${user.user.uid}`)
+                    .remove()
+
+                  setIsDeleting(false)
+                })
+                .catch(err => {
+                  setIsDeleting(false)
+                  console.log(err)
+                })
+            }
+          })
+          .catch(err => {
+            setError('Wrong password.')
+            setIsDeleting(false)
+            console.log(err)
+          })
+      } else {
+        setIsDeleting(false)
+      }
+    }
+  }
   
   return (
-    <Layout title={`Reset Password | ${SITE_NAME}`}>
+    <Layout title={`Delete Account | ${SITE_NAME}`}>
       {
         checking ? 
           <div 
@@ -96,32 +150,39 @@ export default function profileDelete() {
                   <h1>Delete Account</h1>
                 </div>
                 <div className={styles.profileInnerPage}>
-                  <div className={styles.deleteInnerPage}>
-                    <img src="/error.svg" />
-                    <h3>Please enter your password to<br/> delete your account.</h3>
-                    <p>All your data from this device and our servers<br/> will be permanently deleted.</p>
-                    <div className={styles.formItem}>
-                      <FormLabel>CURRENT PASSWORD</FormLabel>
-                      <TextField 
-                        type="password" 
-                        fullWidth={true}
-                        size={"small"}
-                        
-                      />
+                  <form onSubmit={handleDeleteAccount}>
+                    <div className={styles.deleteInnerPage}>
+                      <img src="/error.svg" />
+                      <h3>Please enter your password to<br/> delete your account.</h3>
+                      <p>All your data from this device and our servers<br/> will be permanently deleted.</p>
+                      <div className={styles.formItem}>
+                        <FormLabel>CURRENT PASSWORD</FormLabel>
+
+                        <TextField 
+                          type="password" 
+                          fullWidth={true}
+                          size={"small"}
+                          value={password} 
+                          onChange={e => setPassword(e.target.value)} 
+                          error={error}
+                          helperText={error ? 'Wrong password.' : ''}
+                          required
+                        />
+                      </div>
                     </div>
 
-                  
-
-                  </div>
-
-                  <div className={styles.button_wrapper}>
-                    <Button 
-                      size="large" 
-                      variant="contained"
-                    >
-                      Delete Account
-                    </Button>
-                  </div>
+                    <div className={styles.button_wrapper}>
+                      <Button 
+                        type="submit"
+                        size="large" 
+                        variant="contained"
+                        disabled={isDeleting ? true : false}
+                      >
+                        {isDeleting && 'Please Wait'}
+                        {!isDeleting && 'Delete Account'}
+                      </Button>
+                    </div>
+                  </form>
                 </div>
               </div>
           </div>
