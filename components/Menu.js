@@ -18,7 +18,7 @@ export default function MainMenu(props) {
     useEffect(() => {
       setWidth(window.innerWidth)
       if (authUser) {
-        if (authUser && Router.pathname.includes('onboarding')) {
+        if (authUser) {
             setShowMenu(false)
         } else{
             setShowMenu(true)
