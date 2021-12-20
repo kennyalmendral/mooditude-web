@@ -332,11 +332,10 @@ export default function AssessmentReport(props) {
       }).then(result => {
         setIsDownloading(false)
 
-        // window.open(result.data.url[0], '_blank')
-
         const link = document.createElement('a')
         link.href = result.data.url[0]
         link.download = 'file.pdf'
+        link.target = '_blank'
         link.dispatchEvent(new MouseEvent('click'))
       }).catch(err => {
         setIsDownloading(false)
@@ -1107,7 +1106,7 @@ export default function AssessmentReport(props) {
                         disabled={isDownloading ? true : false} 
                         style={{ marginTop: '0' }}
                       >
-                        {isDownloading && 'Please wait'}
+                        {isDownloading && 'Generating PDF'}
                         {!isDownloading && 'Download Report'}
                       </Button>
                     </div>
