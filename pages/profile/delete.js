@@ -24,10 +24,16 @@ import Checkbox from '@mui/material/Checkbox';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Dialog from '@mui/material/Dialog';
+
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
 const firebaseFunctions = Firebase.functions()
+
 import KeyboardArrowLeftRoundedIcon from '@mui/icons-material/KeyboardArrowLeftRounded';
 
 export default function profileDelete() {
@@ -43,6 +49,8 @@ export default function profileDelete() {
 
   const [error, setError] = useState('')
 
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false)
+
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/auth/login')
@@ -55,69 +63,69 @@ export default function profileDelete() {
     }
   }, [authUser])
 
-  const handleDeleteAccount = e => {
-    e.preventDefault()
-    
+  const handleProceed = () => {
     setIsDeleting(true)
 
-    const confirmation = confirm('Are you sure?')
-
     if (authUser) {
-      if (confirmation) {
-        signInWithEmailAndPassword(authUser.email, password)
-          .then(user => {
-            setIsDeleting(false)
-            
-            if (user.user) {
-              firebaseAuth.currentUser
-                .delete()
-                .then(() => {
-                  // firebaseStore
-                  //   .collection('Users')
-                  //   .get()
-                  //   .then(doc => {
-                  //     if (doc.docs.length > 0) {
-                  //       doc.docs.map(item => {
-                  //         console.log(item.value)
-                  //       })
-                  //     }
-                  //   })
+      firebaseAuth.currentUser
+        .delete()
+        .then(() => {
+          // firebaseStore
+          //   .collection('Users')
+          //   .get()
+          //   .then(doc => {
+          //     if (doc.docs.length > 0) {
+          //       doc.docs.map(item => {
+          //         console.log(item.value)
+          //       })
+          //     }
+          //   })
 
-                  firebaseStore
-                    .collection('Users')
-                    .doc(user.user.uid)
-                    .delete()
-                  
-                  firebaseStore
-                    .collection('Subscribers')
-                    .doc(user.user.uid)
-                    .delete()
+          firebaseStore
+            .collection('Users')
+            .doc(authUser.uid)
+            .delete()
+          
+          firebaseStore
+            .collection('Subscribers')
+            .doc(authUser.uid)
+            .delete()
 
-                  firebaseStore
-                    .collection('M3Assessment')
-                    .doc(user.user.uid)
-                    .delete()
+          firebaseStore
+            .collection('M3Assessment')
+            .doc(authUser.uid)
+            .delete()
 
-                  firebaseDatabase
-                    .ref(`users/${user.user.uid}`)
-                    .remove()
+          firebaseDatabase
+            .ref(`users/${authUser.uid}`)
+            .remove()
 
-                  setIsDeleting(false)
-                })
-                .catch(err => {
-                  setIsDeleting(false)
-                  console.log(err)
-                })
-            }
-          })
-          .catch(err => {
-            setError('Wrong password.')
-            setIsDeleting(false)
-            console.log(err)
-          })
-      } else {
-        setIsDeleting(false)
-      }
+          setIsDeleting(false)
+          setOpenConfirmationDialog(false)
+        })
+        .catch(err => {
+          setIsDeleting(false)
+          setOpenConfirmationDialog(false)
+
+          console.log(err)
+        })
+    }
+  }
+
+  const handleDeleteAccount = () => {
+    if (authUser) {
+      signInWithEmailAndPassword(authUser.email, password)
+        .then(user => {
+          setOpenConfirmationDialog(true)
+          // setIsDeleting(false)
+          setError('')
+        })
+        .catch(err => {
+          setError('Wrong password.')
+          // setIsDeleting(false)
+          setOpenConfirmationDialog(false)
+          console.log(err)
+        })
     }
   }
   
@@ -142,7 +150,31 @@ export default function profileDelete() {
           </div>
         : 
         <>
-          
+          <Dialog
+            sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
+            maxWidth="xs"
+            open={openConfirmationDialog}
+          >
+            <DialogTitle style={{ fontFamily: 'Circular Std' }}>Are you sure?</DialogTitle>
+
+            <DialogContent style={{ fontFamily: 'Circular Std' }} dividers>
+              <p style={{ margin: 0 }}>This operation cannot be undone.</p>
+            </DialogContent>
+
+            <DialogActions>
+              <Button style={{ fontFamily: 'Circular Std' }} onClick={() => setOpenConfirmationDialog(false)}>Cancel</Button>
+              
+              <Button 
+                style={{ fontFamily: 'Circular Std' }} 
+                onClick={handleProceed} 
+                disabled={isDeleting ? true : false}
+              >
+                {isDeleting && 'Please wait'}
+                {!isDeleting && 'Proceed'}
+              </Button>
+            </DialogActions>
+          </Dialog>
+
           <div className={styles.profileWrapper}>
               <div className={styles.profileInnerWrapper}>
                 <div className={styles.profileInnerHeader}>
@@ -150,39 +182,38 @@ export default function profileDelete() {
                   <h1>Delete Account</h1>
                 </div>
                 <div className={styles.profileInnerPage}>
-                  <form onSubmit={handleDeleteAccount}>
-                    <div className={styles.deleteInnerPage}>
-                      <img src="/error.svg" />
-                      <h3>Please enter your password to<br/> delete your account.</h3>
-                      <p>All your data from this device and our servers<br/> will be permanently deleted.</p>
-                      <div className={styles.formItem}>
-                        <FormLabel>CURRENT PASSWORD</FormLabel>
+                  <div className={styles.deleteInnerPage}>
+                    <img src="/error.svg" />
+                    <h3>Please enter your password to<br/> delete your account.</h3>
 
-                        <TextField 
-                          type="password" 
-                          fullWidth={true}
-                          size={"small"}
-                          value={password} 
-                          onChange={e => setPassword(e.target.value)} 
-                          error={error}
-                          helperText={error ? 'Wrong password.' : ''}
-                          required
-                        />
-                      </div>
-                    </div>
+                    <p>All your data from this device and our servers<br/> will be permanently deleted.</p>
 
-                    <div className={styles.button_wrapper}>
-                      <Button 
-                        type="submit"
-                        size="large" 
-                        variant="contained"
-                        disabled={isDeleting ? true : false}
-                      >
-                        {isDeleting && 'Please Wait'}
-                        {!isDeleting && 'Delete Account'}
-                      </Button>
+                    <div className={styles.formItem}>
+                      <FormLabel>CURRENT PASSWORD</FormLabel>
+
+                      <TextField 
+                        type="password" 
+                        fullWidth={true}
+                        size={"small"}
+                        value={password} 
+                        onChange={e => setPassword(e.target.value)} 
+                        error={error}
+                        helperText={error ? 'Wrong password.' : ''}
+                        required
+                      />
                     </div>
-                  </form>
+                  </div>
+
+                  <div className={styles.button_wrapper}>
+                    <Button 
+                      type="submit"
+                      size="large" 
+                      variant="contained" 
+                      onClick={handleDeleteAccount}
+                    >
+                      Delete Account
+                    </Button>
+                  </div>
                 </div>
               </div>
           </div>

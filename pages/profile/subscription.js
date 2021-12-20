@@ -21,6 +21,11 @@ import { FormLabel } from '@mui/material';
 
 import { format } from 'date-fns'
 
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Dialog from '@mui/material/Dialog';
+
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
@@ -41,6 +46,9 @@ export default function profileSubscription() {
   const [grant, setGrant] = useState({})
   const [subscription, setSubscription] = useState({})
   const [cancelAt, setCancelAt] = useState('')
+
+  const [isCanceling, setIsCanceling] = useState(false)
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false)
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -91,19 +99,19 @@ export default function profileSubscription() {
       subscription.cancel_at != null && setCancelAt(subscription.cancel_at)
     }
   }, [subscription])
-  
-  const handleCancelSubscription = () => {
-    const confirmation = confirm('Are you sure?')
 
-    if (confirmation) {
-      const cancelStripeSubscription = firebaseFunctions.httpsCallable('cancelStripeSubscription')
+  const handleProceed = () => {
+    setIsCanceling(true)
+
+    const cancelStripeSubscription = firebaseFunctions.httpsCallable('cancelStripeSubscription')
     
-      cancelStripeSubscription({
-        subscriptionId: grant.transactionId
-      }).then(result => {
-        setCancelAt(result.data.response.cancel_at)
-      })
-    }
+    cancelStripeSubscription({
+      subscriptionId: grant.transactionId
+    }).then(result => {
+      setCancelAt(result.data.response.cancel_at)
+      setOpenConfirmationDialog(false)
+      setIsCanceling(false)
+    })
   }
 
   return (
@@ -127,7 +135,31 @@ export default function profileSubscription() {
           </div>
         : 
         <>
-          
+          <Dialog
+            sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
+            maxWidth="xs"
+            open={openConfirmationDialog}
+          >
+            <DialogTitle style={{ fontFamily: 'Circular Std' }}>Are you sure?</DialogTitle>
+
+            <DialogContent style={{ fontFamily: 'Circular Std' }} dividers>
+              <p style={{ margin: 0 }}>This operation will cancel your current subscription.</p>
+            </DialogContent>
+
+            <DialogActions>
+              <Button style={{ fontFamily: 'Circular Std' }} onClick={() => setOpenConfirmationDialog(false)}>Cancel</Button>
+              
+              <Button 
+                style={{ fontFamily: 'Circular Std' }} 
+                onClick={handleProceed} 
+                disabled={isCanceling ? true : false}
+              >
+                {isCanceling && 'Please wait'}
+                {!isCanceling && 'Proceed'}
+              </Button>
+            </DialogActions>
+          </Dialog>
+
           <div className={styles.profileWrapper}>
               <div className={styles.profileInnerWrapper}>
                 <div className={styles.profileInnerHeader}>
@@ -178,7 +210,7 @@ export default function profileSubscription() {
                             )}
 
                             {cancelAt == '' && (
-                              <p><a onClick={handleCancelSubscription} style={{ cursor: 'pointer' }}>Click here to cancel your subscription.</a></p>
+                              <p><a onClick={() => setOpenConfirmationDialog(true)} style={{ cursor: 'pointer' }}>Click here to cancel your subscription.</a></p>
                             )}
                           </div> 
                         </div> 

@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-
 import styles from '@/styles/Auth.module.css'
 import profileStyles from '@/styles/Profile.module.css'
 
