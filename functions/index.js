@@ -855,28 +855,29 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     if (data.hasSuicidalThoughts) {
       doc
         .moveDown(1.5)
-        .rect(doc.x + 20, doc.y, 240, 103)
+        .rect(doc.x + 60, doc.y, 240, 103)
         .fill('#FFFFAA');
 
       doc
         .font('fonts/CircularStd-Bold.ttf')
         .fillColor('#EB5757')
         .moveDown()
-        .text(`Your response to a question related to suicidal thoughts raises a red flag.`, defaultMarginLeft + 40, doc.y, {
+        .text(`Your response to a question related to suicidal thoughts raises a red flag.`, defaultMarginLeft + 80, doc.y, {
           width: 200,
           align: 'center'
         })
         .fillColor('#072B4F')
         .moveDown()
-        .text(`Are you in crisis?`, defaultMarginLeft + 40, doc.y, {
+        .text(`Are you in crisis?`, defaultMarginLeft + 80, doc.y, {
           width: 200,
           align: 'center'
         })
         .moveDown()
-        .text(`Please call National Suicide Prevention Lifeline or proceed directly to an emergency room.`, defaultMarginLeft + 40, doc.y, {
+        .text(`Please call National Suicide Prevention Lifeline or proceed directly to an emergency room.`, defaultMarginLeft + 80, doc.y, {
           width: 200,
           align: 'center'
-        });
+        })
+        .moveDown(1.5);
     }
 
     if (data.usedDrug) {
