@@ -59,17 +59,27 @@ export default function profileSubscription() {
             if (doc.data().grant) {
               setGrant(doc.data().grant)
 
-              const getStripeSubscriptionDirect = firebaseFunctions.httpsCallable('getStripeSubscriptionDirect')
+              if (doc.data().grant.transactionId.includes('sub_')) {
+                const getStripeSubscriptionDirect = firebaseFunctions.httpsCallable('getStripeSubscriptionDirect')
   
-              getStripeSubscriptionDirect({
-                subscriptionId: doc.data().grant.transactionId
-              }).then(result => {
-                setSubscription(result.data.subscription)
+                getStripeSubscriptionDirect({
+                  subscriptionId: doc.data().grant.transactionId
+                })
+                .then(result => {
+                  setSubscription(result.data.subscription)
 
-                console.log(result.data.subscription)
+                  console.log(result.data.subscription)
 
+                  setChecking(false)
+                })
+                .catch(err => {
+                  console.log(err)
+
+                  setChecking(false)
+                })
+              } else {
                 setChecking(false)
-              })
+              }
             } 
           }
         })
@@ -126,46 +136,54 @@ export default function profileSubscription() {
                 </div>
                 <div className={styles.profileInnerPage}>
                   <div className={styles.subscriptionInnerPage}>
-                    <div className={styles.subscriptionInnerItem}>
-                      <p><b>Subscription Period:</b></p>
-                      <p>{subscription.plan && subscription.plan.interval.charAt(0).toUpperCase() + subscription.plan.interval.slice(1) + 'ly'}</p>
-                    </div> 
+                    {!grant.transactionId.includes('sub_') && (
+                      <p style={{ textAlign: 'center' }}>You have no active subscription yet.</p>
+                    )}
 
-                    <div className={styles.subscriptionInnerItem}>
-                      <p><b>Status:</b></p>
-                      <p>{subscription.status && subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}</p>
-                    </div> 
+                    {grant.transactionId.includes('sub_') && (
+                      <>
+                        <div className={styles.subscriptionInnerItem}>
+                          <p><b>Subscription Period:</b></p>
+                          <p>{subscription.plan && subscription.plan.interval.charAt(0).toUpperCase() + subscription.plan.interval.slice(1) + 'ly'}</p>
+                        </div> 
 
-                    <div className={styles.subscriptionInnerItem}>
-                      <p><b>Auto Renewal On:</b></p>
-                      <p>{subscription.status == 'active' ? 'Yes' : 'No'}</p>
-                    </div> 
+                        <div className={styles.subscriptionInnerItem}>
+                          <p><b>Status:</b></p>
+                          <p>{subscription.status && subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}</p>
+                        </div> 
 
-
-                    <div className={styles.subscriptionInnerItem}>
-                      <p><b>Renewal Date:</b></p>
-                      <p>{format(new Date(parseInt(subscription.current_period_end) * 1000), 'LLLL dd, yyyy')}</p>
-                    </div> 
-
-                    <div className={styles.subscriptionInnerItem}>
-                      <p><b>Cancel Subscription:</b></p>
-                      <div>
-                        <p>Statement or action here depends on where user purchased the subscription from. For example:</p>
-
-                        <p>You purchased Mooditude Premium from Apple App Store. Cancel  your subscription from the App Store.</p>
+                        <div className={styles.subscriptionInnerItem}>
+                          <p><b>Auto Renewal On:</b></p>
+                          <p>{subscription.status == 'active' ? 'Yes' : 'No'}</p>
+                        </div> 
 
 
-                        <p>You purchased Mooditude Premium from Google Play. Cancel your subscription from the Google Play Store.</p>
+                        <div className={styles.subscriptionInnerItem}>
+                          <p><b>Renewal Date:</b></p>
+                          <p>{format(new Date(parseInt(subscription.current_period_end) * 1000), 'LLLL dd, yyyy')}</p>
+                        </div> 
 
-                        {cancelAt != '' && (
-                          <p>Your subscription will be canceled on {format(new Date(parseInt(cancelAt) * 1000), 'LLLL dd, yyyy')}.</p>
-                        )}
+                        <div className={styles.subscriptionInnerItem}>
+                          <p><b>Cancel Subscription:</b></p>
+                          <div>
+                            <p>Statement or action here depends on where user purchased the subscription from. For example:</p>
 
-                        {cancelAt == '' && (
-                          <p><a onClick={handleCancelSubscription} style={{ cursor: 'pointer' }}>Click here to cancel your subscription.</a></p>
-                        )}
-                      </div> 
-                    </div> 
+                            <p>You purchased Mooditude Premium from Apple App Store. Cancel  your subscription from the App Store.</p>
+
+
+                            <p>You purchased Mooditude Premium from Google Play. Cancel your subscription from the Google Play Store.</p>
+
+                            {cancelAt != '' && (
+                              <p>Your subscription will be canceled on {format(new Date(parseInt(cancelAt) * 1000), 'LLLL dd, yyyy')}.</p>
+                            )}
+
+                            {cancelAt == '' && (
+                              <p><a onClick={handleCancelSubscription} style={{ cursor: 'pointer' }}>Click here to cancel your subscription.</a></p>
+                            )}
+                          </div> 
+                        </div> 
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

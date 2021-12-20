@@ -104,11 +104,13 @@ export default function OnboardingWelcomePage() {
 
       <div className={styles.thankYouWrapper}>
         <div>
-          {router.query.code_type != 'undefined' && (
+          {router.query.code_type != 'null' && (
             <div className={styles.promoCodeAppliedInner}>
-              <div className={styles.promoCodeInnerTop}>
-                <h2>Congratulations!</h2>
-              </div>
+              {router.query.code_type == 'purchased' && (
+                <div className={styles.promoCodeInnerTop}>
+                  <h2>Congratulations!</h2>
+                </div>
+              )}
 
               <div className={styles.promoCodeInnerBottom}>
                 {router.query.code_type == 'discount' && (
@@ -124,8 +126,11 @@ export default function OnboardingWelcomePage() {
             </div>
           )}
           
-          {router.query.code_type == 'undefined' && (
-            <h2>Thank you for your purchase</h2>
+          {router.query.code_type == 'null' && (
+            <>
+              <h2 style={{ marginBottom: '0' }}>Thank you for your purchase</h2>
+              <p style={{ marginTop: '5px' }}>Your have free access to Mooditude Premium for 30 days</p>
+            </>
           )}
 
           <div className={styles.thankYouApp}>

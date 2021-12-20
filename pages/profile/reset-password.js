@@ -31,7 +31,7 @@ const firebaseFunctions = Firebase.functions()
 
 import KeyboardArrowLeftRoundedIcon from '@mui/icons-material/KeyboardArrowLeftRounded';
 
-export default function profilePasswordReset(props) {
+export default function ProfilePasswordReset(props) {
   const router = useRouter()
 
   const { authUser, loading, signOut } = useAuth()

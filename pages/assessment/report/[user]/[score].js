@@ -332,7 +332,12 @@ export default function AssessmentReport(props) {
       }).then(result => {
         setIsDownloading(false)
 
-        window.open(result.data.url[0], '_blank')
+        // window.open(result.data.url[0], '_blank')
+
+        const link = document.createElement('a')
+        link.href = result.data.url[0]
+        link.download = 'file.pdf'
+        link.dispatchEvent(new MouseEvent('click'))
       }).catch(err => {
         setIsDownloading(false)
         
@@ -456,12 +461,13 @@ export default function AssessmentReport(props) {
                         </a>
 
                         <a 
-                          href="" 
-                          onClick={handleDownload} 
-                        >
-                          {isDownloading && 'PLEASE WAIT...'}
-                          {!isDownloading && 'DOWNLOAD'}
-                        </a>
+                          href="#" 
+                          className={isDownloadVisible ? styles.active : ''}
+                          onClick={() => {
+                            setIsScoresVisible(false)
+                            setIsDownloadVisible(true)
+                            setIsReportVisible(false)
+                          }}>DOWNLOAD</a>
                       </>
                     )}
                 </div>
@@ -1090,6 +1096,21 @@ export default function AssessmentReport(props) {
                         </div>
                       </div>
                     </div> 
+                  )}
+
+                  {isDownloadVisible && (
+                    <div className={styles.report_content_item} key={'report_content_paid_wrap'}>
+                      <Button 
+                        className={styles.report_btn} 
+                        variant="contained" 
+                        onClick={handleDownload} 
+                        disabled={isDownloading ? true : false} 
+                        style={{ marginTop: '0' }}
+                      >
+                        {isDownloading && 'Please wait'}
+                        {!isDownloading && 'Download Report'}
+                      </Button>
+                    </div>
                   )}
 
                   {/* <div className={styles.report_content_item} key={'report_content_paid_scores_wrap'}>

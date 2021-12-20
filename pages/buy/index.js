@@ -151,7 +151,7 @@ export default function OnboardingWelcomePage() {
           setError(resultData.error.message)
         }
 
-        // setShowLoader(false)
+        setShowLoader(false)
       }).catch((e) => {
         console.log('catch', e.message)
         setShowLoader(false)

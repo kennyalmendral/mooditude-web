@@ -87,9 +87,7 @@ export default function ForgotPassword(props) {
                         size={"small"}
                         error={error}
                         helperText={error ? error : ''}
-                        
                       />
-
 
                       {/*{error && (
                         <div className={styles.error}>

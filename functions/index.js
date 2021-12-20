@@ -354,6 +354,12 @@ exports.getStripeSubscriptionDirect = functions.https.onCall(async (data, contex
 exports.generatePDFReport = functions.https.onCall(async (data, context) => {
   const doc = new PDFDocument({
     size: 'A5',
+    margins: {
+      top: 60,
+      bottom: 60,
+      left: 30,
+      right: 30
+    },
     bufferPages: true,
   });
 
@@ -443,7 +449,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .stroke();
 
     doc
-      .image('mooditude-logo.png', 72, 26, {
+      .image('mooditude-logo.png', doc.x, 26, {
         width: 32,
         height: 32,
         valign: 'bottom'
@@ -453,7 +459,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .font('fonts/CircularStd-Black.ttf')
-      .moveUp(0.7)
+      .moveDown(0.1)
       .fontSize(10)
       .text('MOODITUDE');
     
@@ -549,6 +555,8 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     if (data.assessmentScores.allScore > 9) {
       allScoreMarginLeft = col1LeftPos - 54;
+    } else if (data.assessmentScores.allScore == 0) {
+      allScoreMarginLeft = col1LeftPos - 48;
     } else {
       allScoreMarginLeft = col1LeftPos - 44;
     }
@@ -615,7 +623,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .stroke();
 
     doc
-      .image('mooditude-logo.png', 72, 26, {
+      .image('mooditude-logo.png', doc.x, 26, {
         width: 32,
         height: 32,
         valign: 'bottom'
@@ -625,7 +633,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .font('fonts/CircularStd-Black.ttf')
-      .moveUp(0.7)
+      .moveDown(0.1)
       .fontSize(10)
       .text('MOODITUDE');
     
@@ -775,7 +783,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .stroke();
 
     doc
-      .image('mooditude-logo.png', 72, 26, {
+      .image('mooditude-logo.png', doc.x, 26, {
         width: 32,
         height: 32,
         valign: 'bottom'
@@ -785,7 +793,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .font('fonts/CircularStd-Black.ttf')
-      .moveUp(0.7)
+      .moveDown(0.1)
       .fontSize(10)
       .text('MOODITUDE');
     
@@ -904,7 +912,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .stroke();
 
     doc
-      .image('mooditude-logo.png', 72, 26, {
+      .image('mooditude-logo.png', doc.x, 26, {
         width: 32,
         height: 32,
         valign: 'bottom'
@@ -914,7 +922,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .font('fonts/CircularStd-Black.ttf')
-      .moveUp(0.7)
+      .moveDown(0.1)
       .fontSize(10)
       .text('MOODITUDE');
     
@@ -965,7 +973,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .stroke();
 
     doc
-      .image('mooditude-logo.png', 72, 26, {
+      .image('mooditude-logo.png', doc.x, 26, {
         width: 32,
         height: 32,
         valign: 'bottom'
@@ -975,7 +983,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .font('fonts/CircularStd-Black.ttf')
-      .moveUp(0.7)
+      .moveDown(0.1)
       .fontSize(10)
       .text('MOODITUDE');
     
@@ -1001,6 +1009,8 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     if (data.assessmentScores.allScore > 9) {
       allScoreMarginLeft = col1LeftPos - 54;
+    } else if (data.assessmentScores.allScore == 0) {
+      allScoreMarginLeft = col1LeftPos - 48;
     } else {
       allScoreMarginLeft = col1LeftPos - 44;
     }
@@ -1009,7 +1019,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .fillColor('#fff')
       .fontSize(24)
       .font('fonts/CircularStd-Medium.ttf')
-      .text(data.assessmentScores.allScore, allScoreMarginLeft, colTop + 5);
+      .text(data.assessmentScores.allScore, allScoreMarginLeft, colTop + 4);
 
     if (data.allRiskLevel == 'unlikely') {
       allRiskLevelShortDescription = `Score of ${data.assessmentScores.allScore} shows that it is unlikely you are suffering from a mental health condition at this time.`;
@@ -1420,7 +1430,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .stroke();
 
     doc
-      .image('mooditude-logo.png', 72, 26, {
+      .image('mooditude-logo.png', doc.x, 26, {
         width: 32,
         height: 32,
         valign: 'bottom'
@@ -1430,7 +1440,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .font('fonts/CircularStd-Black.ttf')
-      .moveUp(0.7)
+      .moveDown(0.1)
       .fontSize(10)
       .text('MOODITUDE');
     
@@ -1466,9 +1476,10 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     }
 
     doc
+      .moveDown(1.5)
       .fillColor('#072B4F')
       .fontSize(9)
-      .text(`None (${data.noneAnswerCount})`);
+      .text(`None (${data.noneAnswerCount})`, defaultMarginLeft);
 
     doc
       .fillColor('#516B84')
@@ -1484,7 +1495,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     }
 
     doc
-      .moveDown(2)
+      .moveDown(1.5)
       .fillColor('#072B4F')
       .fontSize(9)
       .text(`Often (${data.oftenAnswerCount})`, defaultMarginLeft);
@@ -1550,7 +1561,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .stroke();
 
     doc
-      .image('mooditude-logo.png', 72, 26, {
+      .image('mooditude-logo.png', doc.x, 26, {
         width: 32,
         height: 32,
         valign: 'bottom'
@@ -1560,7 +1571,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .font('fonts/CircularStd-Black.ttf')
-      .moveUp(0.7)
+      .moveDown(0.1)
       .fontSize(10)
       .text('MOODITUDE');
     
@@ -1575,7 +1586,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .fillColor('#072B4F')
       .font('fonts/CircularStd-Bold.ttf')
       .fontSize(9)
-      .text(`Feel Happier with Mooditude — Programs designed by clinical psychologists and data-science experts.`, defaultMarginLeft, defaultMarginTop - 60, { width: 120 });
+      .text(`Feel Happier with Mooditude — Programs designed by clinical psychologists and data-science experts.`, defaultMarginLeft, defaultMarginTop - 70, { width: 130 });
 
     doc
       .moveDown(1.1)
@@ -1593,10 +1604,10 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .fillColor('#516B84')
       .font('fonts/CircularStd-Bold.ttf')
       .fontSize(11)
-      .text(`Science Behind the Assessment`, defaultMarginLeft + 160, defaultMarginTop - 60);
+      .text(`Science Behind the Assessment`, defaultMarginLeft + 160, defaultMarginTop - 70);
     
     doc
-      .moveDown(1.1)
+      .moveDown(0.8)
       .font('fonts/CircularStd-Medium.ttf')
       .fontSize(8)
       .text(`This assessment — M3 Checklist — is a  3-minute mental health symptom assessment tool designed by experts from the National Institute for Mental Health, Boston University, Columbia University, and Weill Cornell Medicine, and validated by researchers from the University of North Carolina, and published in the Annals of Family Medicine in 2010.`, defaultMarginLeft + 160);
@@ -1648,6 +1659,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       doc.page.margins.bottom = 0;
 
       doc
+        .fillColor('#072B4F')
         .fontSize(8)
         .text(
           `Page ${i + 1} of ${pages.count}`,
