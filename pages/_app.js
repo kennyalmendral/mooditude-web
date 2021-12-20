@@ -167,8 +167,11 @@ function App({ Component, pageProps }) {
           <div className="page-loader login-loader"><GridLoader color={'#1CA566'} loading={true} size={10} /></div> : ''
         }
 
-        <div className={`body-wrapper ${checkAuth && !router.pathname.includes('auth') ? 'logged' : ''} ${checkMenuCollapse ? 'menu_collapsed' : ''}`}>
-          { checkAuth && !router.pathname.includes('auth') ? <MainMenu menuCollapseHandler={menuCollapseHandler} logoutLoaderHandler={logoutLoaderHandler}  /> : '' }
+        {/* <div className={`body-wrapper ${checkAuth && !router.pathname.includes('auth') ? 'logged' : ''} ${checkMenuCollapse ? 'menu_collapsed' : ''}`}> */}
+        <div className={`body-wrapper ${checkAuth ? 'logged' : ''} ${checkMenuCollapse ? 'menu_collapsed' : ''}`}>
+          {/* { checkAuth && !router.pathname.includes('auth') ? <MainMenu menuCollapseHandler={menuCollapseHandler} logoutLoaderHandler={logoutLoaderHandler}  /> : '' } */}
+          {checkAuth && <MainMenu menuCollapseHandler={menuCollapseHandler} logoutLoaderHandler={logoutLoaderHandler} />}
+
           <Component 
             {...pageProps} 
             removePageLoader={removePageLoader}
