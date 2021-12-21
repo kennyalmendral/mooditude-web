@@ -329,6 +329,22 @@ exports.cancelStripeSubscription = functions.https.onCall(async (data, context) 
   };
 });
 
+exports.renewStripeSubscription = functions.https.onCall(async (data, context) => {
+  const subscription = await stripe.subscriptions.retrieve(data.subscriptionId);
+
+  const response = await stripe.subscriptions.update(data.subscriptionId, {
+    cancel_at_period_end: false,
+    items: [{
+      id: subscription.items.data[0].id,
+      price: subscription.plan.id
+    }]
+  });
+
+  return {
+    response
+  };
+});
+
 exports.getStripeSubscription = functions.https.onCall(async (data, context) => {  
   const session = await stripe.checkout.sessions.retrieve(data.session_id);
   const subscription = await stripe.subscriptions.retrieve(session.subscription);

@@ -48,7 +48,9 @@ export default function profileSubscription() {
   const [cancelAt, setCancelAt] = useState('')
 
   const [isCanceling, setIsCanceling] = useState(false)
-  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false)
+  const [isRenewing, setIsRenewing] = useState(false)
+  const [openCancelConfirmationDialog, setOpenCancelConfirmationDialog] = useState(false)
+  const [openRenewConfirmationDialog, setOpenRenewConfirmationDialog] = useState(false)
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -100,7 +102,7 @@ export default function profileSubscription() {
     }
   }, [subscription])
 
-  const handleProceed = () => {
+  const handleProceedCancelation = () => {
     setIsCanceling(true)
 
     const cancelStripeSubscription = firebaseFunctions.httpsCallable('cancelStripeSubscription')
@@ -109,8 +111,23 @@ export default function profileSubscription() {
       subscriptionId: grant.transactionId
     }).then(result => {
       setCancelAt(result.data.response.cancel_at)
-      setOpenConfirmationDialog(false)
+      setOpenCancelConfirmationDialog(false)
       setIsCanceling(false)
+    })
+  }
+
+  const handleProceedRenewal = () => {
+    setIsRenewing(true)
+
+    const renewStripeSubscription = firebaseFunctions.httpsCallable('renewStripeSubscription')
+  
+    renewStripeSubscription({
+      subscriptionId: grant.transactionId
+    })
+    .then(result => {
+      setCancelAt('')
+      setOpenRenewConfirmationDialog(false)
+      setIsRenewing(false)
     })
   }
 
@@ -138,7 +155,7 @@ export default function profileSubscription() {
           <Dialog
             sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
             maxWidth="xs"
-            open={openConfirmationDialog}
+            open={openCancelConfirmationDialog}
           >
             <DialogTitle style={{ fontFamily: 'Circular Std' }}>Are you sure?</DialogTitle>
 
@@ -147,15 +164,40 @@ export default function profileSubscription() {
             </DialogContent>
 
             <DialogActions>
-              <Button style={{ fontFamily: 'Circular Std' }} onClick={() => setOpenConfirmationDialog(false)}>Cancel</Button>
+              <Button style={{ fontFamily: 'Circular Std' }} onClick={() => setOpenCancelConfirmationDialog(false)}>Cancel</Button>
               
               <Button 
                 style={{ fontFamily: 'Circular Std' }} 
-                onClick={handleProceed} 
+                onClick={handleProceedCancelation} 
                 disabled={isCanceling ? true : false}
               >
                 {isCanceling && 'Please wait'}
                 {!isCanceling && 'Proceed'}
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          <Dialog
+            sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
+            maxWidth="xs"
+            open={openRenewConfirmationDialog}
+          >
+            <DialogTitle style={{ fontFamily: 'Circular Std' }}>Are you sure?</DialogTitle>
+
+            <DialogContent style={{ fontFamily: 'Circular Std' }} dividers>
+              <p style={{ margin: 0 }}>This operation will renew your canceled subscription.</p>
+            </DialogContent>
+
+            <DialogActions>
+              <Button style={{ fontFamily: 'Circular Std' }} onClick={() => setOpenRenewConfirmationDialog(false)}>Cancel</Button>
+              
+              <Button 
+                style={{ fontFamily: 'Circular Std' }} 
+                onClick={handleProceedRenewal} 
+                disabled={isRenewing ? true : false}
+              >
+                {isRenewing && 'Please wait'}
+                {!isRenewing && 'Proceed'}
               </Button>
             </DialogActions>
           </Dialog>
@@ -202,15 +244,18 @@ export default function profileSubscription() {
 
                             <p>You purchased Mooditude Premium from Apple App Store. Cancel  your subscription from the App Store.</p>
 
-
                             <p>You purchased Mooditude Premium from Google Play. Cancel your subscription from the Google Play Store.</p>
 
                             {cancelAt != '' && (
-                              <p>Your subscription will be canceled on {format(new Date(parseInt(cancelAt) * 1000), 'LLLL dd, yyyy')}.</p>
+                              <p>
+                                Your subscription will be canceled on {format(new Date(parseInt(cancelAt) * 1000), 'LLLL dd, yyyy')}.
+                                {' '}
+                                <a onClick={() => setOpenRenewConfirmationDialog(true)} style={{ cursor: 'pointer' }}>Click here to renew</a>
+                              </p>
                             )}
 
                             {cancelAt == '' && (
-                              <p><a onClick={() => setOpenConfirmationDialog(true)} style={{ cursor: 'pointer' }}>Click here to cancel your subscription.</a></p>
+                              <p><a onClick={() => setOpenCancelConfirmationDialog(true)} style={{ cursor: 'pointer' }}>Click here to cancel your subscription</a></p>
                             )}
                           </div> 
                         </div> 
