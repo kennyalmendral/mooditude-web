@@ -577,11 +577,19 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       allScoreMarginLeft = col1LeftPos - 44;
     }
 
-    doc
-      .fillColor('#fff')
-      .fontSize(24)
-      .font('fonts/CircularStd-Medium.ttf')
-      .text(data.assessmentScores.allScore, allScoreMarginLeft, colTop + 88);
+    if (data.assessmentScores.allScore > 9) {
+      doc
+        .fillColor('#fff')
+        .fontSize(24)
+        .font('fonts/CircularStd-Medium.ttf')
+        .text(data.assessmentScores.allScore, (40 / 2) + parseInt(doc.widthOfString(data.assessmentScores.allScore.toString())), colTop + 88);
+    } else if (data.assessmentScores.allScore == 0) {
+      doc
+        .fillColor('#fff')
+        .fontSize(24)
+        .font('fonts/CircularStd-Medium.ttf')
+        .text(data.assessmentScores.allScore, col1LeftPos - 48, colTop + 88);
+    }
 
     let allRiskLevelShortDescription;
 
@@ -1036,7 +1044,21 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .fillColor('#fff')
       .fontSize(24)
       .font('fonts/CircularStd-Medium.ttf')
-      .text(data.assessmentScores.allScore, allScoreMarginLeft, colTop + 4);
+      .text(data.assessmentScores.allScore, (40 / 2) + parseInt(doc.widthOfString(data.assessmentScores.allScore.toString())), colTop + 4);
+
+    if (data.assessmentScores.allScore > 9) {
+      doc
+        .fillColor('#fff')
+        .fontSize(24)
+        .font('fonts/CircularStd-Medium.ttf')
+        .text(data.assessmentScores.allScore, (40 / 2) + parseInt(doc.widthOfString(data.assessmentScores.allScore.toString())), colTop + 4);
+    } else if (data.assessmentScores.allScore == 0) {
+      doc
+        .fillColor('#fff')
+        .fontSize(24)
+        .font('fonts/CircularStd-Medium.ttf')
+        .text(data.assessmentScores.allScore, col1LeftPos - 48, colTop + 4);
+    }
 
     if (data.allRiskLevel == 'unlikely') {
       allRiskLevelShortDescription = `Score of ${data.assessmentScores.allScore} shows that it is unlikely you are suffering from a mental health condition at this time.`;

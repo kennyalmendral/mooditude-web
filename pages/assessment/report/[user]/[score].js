@@ -75,6 +75,7 @@ export default function AssessmentReport(props) {
   const [checking, setChecking] = useState(true)
 
   const [isDownloading, setIsDownloading] = useState(false)
+  const [reportLink, setReportLink] = useState('')
 
   const [userProfile, setUserProfile] = useState({})
 
@@ -83,6 +84,10 @@ export default function AssessmentReport(props) {
       router.push('/auth/login')
     }
   }, [authUser, loading, router])
+
+  useEffect(() => {
+    reportLink && console.log(reportLink)
+  }, [reportLink])
 
   useEffect(() => {
     userProfile && console.log(userProfile)
@@ -331,12 +336,13 @@ export default function AssessmentReport(props) {
         rarelyAnswerQuestions: rarelyAnswerQuestions
       }).then(result => {
         setIsDownloading(false)
+        setReportLink(result.data.url[0])
 
-        const link = document.createElement('a')
-        link.href = result.data.url[0]
-        link.download = 'file.pdf'
-        link.target = '_blank'
-        link.dispatchEvent(new MouseEvent('click'))
+        // const link = document.createElement('a')
+        // link.href = result.data.url[0]
+        // link.download = 'file.pdf'
+        // link.target = '_blank'
+        // link.dispatchEvent(new MouseEvent('click'))
       }).catch(err => {
         setIsDownloading(false)
         
@@ -1104,11 +1110,13 @@ export default function AssessmentReport(props) {
                         variant="contained" 
                         onClick={handleDownload} 
                         disabled={isDownloading ? true : false} 
-                        style={{ marginTop: '0' }}
+                        style={{ marginTop: '0', marginBottom: '0', marginRight: '20px', textTransform: 'none', fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}
                       >
-                        {isDownloading && 'Generating PDF'}
-                        {!isDownloading && 'Download Report'}
+                        {isDownloading && 'Generating Report'}
+                        {(!isDownloading) && 'Generate Report'}
                       </Button>
+
+                      {(!isDownloading && reportLink != '') && <a href={reportLink} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>}
                     </div>
                   )}
 

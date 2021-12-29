@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { useRouter } from 'next/router'
 import { AuthUserProvider } from '@/context/AuthUserContext'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import MainMenu from '@/components/menu.js'
+import Menu from '@/components/Menu'
 import Router from 'next/router';
 import '../styles/globals.css'
 import GridLoader from "react-spinners/GridLoader";
@@ -169,8 +169,8 @@ function App({ Component, pageProps }) {
 
         {/* <div className={`body-wrapper ${checkAuth && !router.pathname.includes('auth') ? 'logged' : ''} ${checkMenuCollapse ? 'menu_collapsed' : ''}`}> */}
         <div className={`body-wrapper ${checkAuth ? 'logged' : ''} ${checkMenuCollapse ? 'menu_collapsed' : ''}`}>
-          {/* { checkAuth && !router.pathname.includes('auth') ? <MainMenu menuCollapseHandler={menuCollapseHandler} logoutLoaderHandler={logoutLoaderHandler}  /> : '' } */}
-          {checkAuth && <MainMenu menuCollapseHandler={menuCollapseHandler} logoutLoaderHandler={logoutLoaderHandler} />}
+          {/* { checkAuth && !router.pathname.includes('auth') ? <Menu menuCollapseHandler={menuCollapseHandler} logoutLoaderHandler={logoutLoaderHandler}  /> : '' } */}
+          {checkAuth && <Menu menuCollapseHandler={menuCollapseHandler} logoutLoaderHandler={logoutLoaderHandler} />}
 
           <Component 
             {...pageProps} 

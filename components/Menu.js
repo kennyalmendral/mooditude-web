@@ -7,7 +7,7 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Link from "next/link"
 import Router from 'next/router';
 
-export default function MainMenu(props) {
+export default function Menu(props) {
     const { signOut } = useAuth()
     const [open, setOpen] = React.useState(false);
     const [width, setWidth] = React.useState(null);
@@ -17,16 +17,13 @@ export default function MainMenu(props) {
 
     useEffect(() => {
       setWidth(window.innerWidth)
+
       if (authUser) {
-        if (authUser) {
-            setShowMenu(false)
-        } else{
-            setShowMenu(true)
-        }
+        setShowMenu(true)
+      } else{
+        setShowMenu(false)
       }
     }, [Router])
-
-
 
     const collapseMenu = () => {
         
@@ -36,8 +33,6 @@ export default function MainMenu(props) {
             setMainMenuCollapse(mainMenuCollapse ? false : true)
             props.menuCollapseHandler(mainMenuCollapse ? true : false)
         }
-
-
     }
     return (
         <>
