@@ -45,6 +45,8 @@ export default function OnboardingWelcomePage() {
     if (!loading && !authUser) { 
       router.push('/auth/login')
     }
+
+    authUser && console.log(authUser)
   }, [authUser, loading, router])
 
   useEffect(() => {
@@ -72,6 +74,7 @@ export default function OnboardingWelcomePage() {
       codeType: null,
       duration: null,
       message: null,
+      customerEmail: authUser ? authUser.email : '',
       redirectUrl: window.location.origin + '/buy/thank-you',
       cancelUrl: window.location.origin + '/buy'
     }).then(result => {
@@ -278,7 +281,7 @@ export default function OnboardingWelcomePage() {
               <h3>With Mooditude Premium</h3>
 
               <div className={styles.list_wrap}>
-                <p><img src="/check.png"/> Ulimited Mental Health Assessments</p>
+                <p><img src="/check.png"/> Unlimited Mental Health Assessments</p>
                 <p><img src="/check.png"/> 800+ minutes of self-care activities including guided journaling, meditations, and coping activities</p>
                 <p><img src="/check.png"/> Problem-specific programs with workbooks</p>
                 <p><img src="/check.png"/> Goal Tracker and Positve Habit Builder</p>
@@ -312,7 +315,7 @@ export default function OnboardingWelcomePage() {
                       className={styles.yearly}
                     >
                       $89.99 / YEAR <br/>
-                      <span>ONLY $7.50/MONTH —Save 42%</span>
+                      <span>ONLY $7.50/MONTH — Save 42%</span>
                     </button>
                   </form>
                 </Stack>

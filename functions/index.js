@@ -289,6 +289,7 @@ exports.processStripeSubscription = functions.https.onCall(async (data, context)
       },
     ],
     mode: 'subscription',
+    customer_email: data.customerEmail,
     success_url: `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&code_type=${data.codeType}&discount=${couponCode}&duration=${data.duration}`,
     cancel_url: data.cancelUrl,
   };
