@@ -429,57 +429,58 @@ export default function AssessmentWelcomePage() {
                           alignItems: 'center', 
                         }} 
                         key={assessment.id} 
-                        onClick={() => handleClickAssessment(
-                          assessment.allScore, 
-                          new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
-                            month: 'long',
-                            day: 'numeric',
-                            year: 'numeric'
-                          }),
-                          assessment.allRiskLevel,
-                          {
-                            labels: [
-                              new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
-                                month: 'long',
-                                day: 'numeric',
-                                year: 'numeric'
-                              }),
-                            ],
-                            datasets: [
-                              {
-                                label: 'Depression',
-                                data: [parseInt(assessment.depressionScore)],
-                                backgroundColor: '#6FCF97',
-                                type: 'bar'
-                              },
-                              {
-                                label: 'Anxiety',
-                                data: [parseInt(assessment.anxietyScore)],
-                                backgroundColor: '#D68AFA',
-                                type: 'bar'
-                              },
-                              {
-                                label: 'PTSD',
-                                data: [parseInt(assessment.ptsdScore)],
-                                backgroundColor: '#56CCF2',
-                                type: 'bar'
-                              },
-                              {
-                                label: 'Bipolar',
-                                data: [parseInt(assessment.bipolarScore)],
-                                backgroundColor: '#DC957E',
-                                type: 'bar'
-                              },
-                              {
-                                label: 'Overall Score',
-                                data: [parseInt(assessment.overallScore)],
-                                backgroundColor: '#2968EA',
-                                type: 'line'
-                              }
-                            ]
-                          },
-                          `/assessment/report/${authUser.uid}/${assessment.id}`
-                        )}
+                        onClick={() => router.push(`/assessment/report/${authUser.uid}/${assessment.id}`)} 
+                        // onClick={() => handleClickAssessment(
+                        //   assessment.allScore, 
+                        //   new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
+                        //     month: 'long',
+                        //     day: 'numeric',
+                        //     year: 'numeric'
+                        //   }),
+                        //   assessment.allRiskLevel,
+                        //   {
+                        //     labels: [
+                        //       new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
+                        //         month: 'long',
+                        //         day: 'numeric',
+                        //         year: 'numeric'
+                        //       }),
+                        //     ],
+                        //     datasets: [
+                        //       {
+                        //         label: 'Depression',
+                        //         data: [parseInt(assessment.depressionScore)],
+                        //         backgroundColor: '#6FCF97',
+                        //         type: 'bar'
+                        //       },
+                        //       {
+                        //         label: 'Anxiety',
+                        //         data: [parseInt(assessment.anxietyScore)],
+                        //         backgroundColor: '#D68AFA',
+                        //         type: 'bar'
+                        //       },
+                        //       {
+                        //         label: 'PTSD',
+                        //         data: [parseInt(assessment.ptsdScore)],
+                        //         backgroundColor: '#56CCF2',
+                        //         type: 'bar'
+                        //       },
+                        //       {
+                        //         label: 'Bipolar',
+                        //         data: [parseInt(assessment.bipolarScore)],
+                        //         backgroundColor: '#DC957E',
+                        //         type: 'bar'
+                        //       },
+                        //       {
+                        //         label: 'Overall Score',
+                        //         data: [parseInt(assessment.overallScore)],
+                        //         backgroundColor: '#2968EA',
+                        //         type: 'line'
+                        //       }
+                        //     ]
+                        //   },
+                        //   `/assessment/report/${authUser.uid}/${assessment.id}`
+                        // )}
                       >
                         <div className={styles.ai_score}>
                           <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
@@ -500,8 +501,7 @@ export default function AssessmentWelcomePage() {
                         
                         
                         <div 
-                          className={styles.ai_action} 
-                          onClick={() => router.push(`/assessment/report/${authUser.uid}/${assessment.id}`)}
+                          className={styles.ai_action}
                           style={{
                             cursor: 'pointer'
                           }}
