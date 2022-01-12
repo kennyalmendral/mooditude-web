@@ -66,18 +66,29 @@
   margin-bottom: 30px;
 }
 
-.profileStars{
+.profileStars {
   display: flex;
   align-items: center;
-
 }
 
-.profileStars > div{
+.profileStars > div {
   margin-right: 20px;
-
+  position: relative;
 }
 
-.profileDetails h2{
+.profileStars .count {
+  position: absolute;
+  right: -2px;
+  top: -5px;
+  background: #F8E71C;
+  border: 1px solid #072B4F;
+  border-radius: 20px;
+  padding: 0 2px;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.profileDetails h2 {
   font-family: 'Circular Std';
   font-style: normal;
   font-weight: bold;

@@ -70,7 +70,7 @@ export default function AssessmentWelcomePage() {
           {
             label: 'Depression',
             data: [parseInt(assessments[0].depressionScore)],
-            backgroundColor: '#6FCF97',
+            backgroundColor: '#6FCF97', 
             type: 'bar'
           },
           {
@@ -97,7 +97,15 @@ export default function AssessmentWelcomePage() {
             backgroundColor: '#2968EA',
             type: 'line'
           }
-        ]
+        ],
+        options: {
+          legend: {
+            display: true,
+            labels: {
+              fontSize: 10
+            }
+          }
+        }
       })
       
       assessments[0] && setCurrentFullReportLink(`/assessment/report/${authUser.uid}/${assessments[0].id}`)

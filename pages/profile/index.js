@@ -54,6 +54,10 @@ export default function Profile(props) {
   const [phone, setPhone] = useState('')
   const [veteranStatus, setVeteranStatus] = useState('notVeteran')
 
+  const [checksCount, setChecksCount] = useState('')
+  const [starsCount, setStarsCount] = useState('')
+  const [crownsCount, setCrownsCount] = useState('')
+
   const [profilePicture, setProfilePicture] = useState('')
 
   const fileEl = useRef(null)
@@ -73,6 +77,24 @@ export default function Profile(props) {
         .then(doc => {
           if (doc && doc.data()) {
             doc.data().grant && setGrant(doc.data().grant)
+          }
+        })
+
+      firebaseStore
+        .collection('Users')
+        .doc(authUser.uid)
+        .get()
+        .then(doc => {
+          if (doc && doc.data()) {
+            if (doc.data().stats != undefined) {
+              setChecksCount(doc.data().stats.checksCount)
+              setStarsCount(doc.data().stats.starCount)
+              setCrownsCount(doc.data().stats.crownsCount)
+            } else {
+              setChecksCount(doc.data().badges.ticks)
+              setStarsCount(doc.data().badges.starts)
+              setCrownsCount(doc.data().badges.crowns)
+            }
           }
         })
 
@@ -222,333 +244,348 @@ export default function Profile(props) {
         <>
           
           <div className={styles.profileWrapper}>
-              <div className={styles.profileInnerWrapper}>
-                <div className={styles.profileInnerHeader}>
-                  <h1>Profile</h1>
-                  <h4>Join Date: {format(new Date(profile.memberSince), 'LLLL dd, yyyy')}</h4>
-                </div>
-                <div className={styles.profileInnerMain}>
-                  <div className={styles.profileInnerLeft}>
-                    <div className={styles.profilePicture}>
-                      {!profilePicture && (
-                        <img 
-                          src="/default_profile.svg" 
-                          style={{
-                            cursor: 'pointer'
-                          }}
-                          onClick={handleImageClick} 
-                        />
-                      )}
-                      
-                      {profilePicture && (
-                        <img 
-                          src={profilePicture} 
-                          alt={name} 
-                          style={{
-                            cursor: 'pointer',
-                            width: '120px',
-                            height: '120px',
-                            borderRadius: '50%',
-                            border: '5px solid #F8E71C'
-                          }} 
-                          onClick={handleImageClick} 
-                        />
-                      )}
+            <div className={styles.profileInnerWrapper}>
+              <div className={styles.profileInnerHeader}>
+                <h1>Profile</h1>
+                <h4>Join Date: {format(new Date(profile.memberSince), 'LLLL dd, yyyy')}</h4>
+              </div>
 
-                      <input 
-                        type="file" 
-                        ref={fileEl} 
-                        onChange={handleFileChange} 
-                        style={{ display: 'none' }} 
+              <div className={styles.profileInnerMain}>
+                <div className={styles.profileInnerLeft}>
+                  <div className={styles.profilePicture}>
+                    {!profilePicture && (
+                      <img 
+                        src="/default_profile.svg" 
+                        style={{
+                          cursor: 'pointer'
+                        }}
+                        onClick={handleImageClick} 
+                      />
+                    )}
+                    
+                    {profilePicture && (
+                      <img 
+                        src={profilePicture} 
+                        alt={name} 
+                        style={{
+                          cursor: 'pointer',
+                          width: '120px',
+                          height: '120px',
+                          borderRadius: '50%',
+                          border: '5px solid #F8E71C'
+                        }} 
+                        onClick={handleImageClick} 
+                      />
+                    )}
+
+                    <input 
+                      type="file" 
+                      ref={fileEl} 
+                      onChange={handleFileChange} 
+                      style={{ display: 'none' }} 
+                    />
+                  </div>
+
+                  <div className={styles.profileStars}>
+                    <div>
+                      <img src="/checks-badge.svg" />
+
+                      <div className={styles.count}>
+                        {checksCount}
+                      </div>
+                    </div>
+
+                    <div>
+                      <img src="/stars-badge.svg" />
+
+                      <div className={styles.count}>
+                        {starsCount}
+                      </div>
+                    </div>
+
+                    <div>
+                      <img src="/crowns-badge.svg" />
+
+                      <div className={styles.count}>
+                        {crownsCount}
+                      </div>
+                    </div>
+                  </div>  
+
+                  <div className={styles.profileDetails}>
+                    <h2>{profile.name}</h2>
+                    <p>{profile.email}</p>
+
+                    {(grant && grant.licenseType == 'Premium') && (
+                      <>
+                        {grant.expiryDate.hasOwnProperty('seconds') && (
+                          <>
+                            <p>{grant.licenseType.charAt(0).toUpperCase() + grant.licenseType.slice(1)} — Expires {format(new Date(grant.expiryDate.seconds * 1000), 'LLLL dd, yyyy')}</p>
+                          </>
+                        )}
+
+                        {!grant.expiryDate.hasOwnProperty('seconds') && (
+                          <>
+                            <p>{grant.licenseType.charAt(0).toUpperCase() + grant.licenseType.slice(1)} — Expires {format(new Date(grant.expiryDate), 'LLLL dd, yyyy')}</p>
+                          </>
+                        )}
+                      </>
+                      
+                    )}
+
+                    {(grant && grant.licenseType != 'Premium') && (
+                      <p>Free</p>
+                    )}
+                  </div>  
+
+                  <div className={styles.profileButtons}>
+                    {(grant && grant.licenseType == 'Premium') && (
+                      <Link href="/profile/subscription">
+                        <Button 
+                          type="submit"
+                          size="large" 
+                          
+                        >
+                          MANAGE SUBSCRIPTION
+                        </Button>
+                      </Link>
+                    )}
+
+                    <Button 
+                      type="submit"
+                      size="large" 
+                      onClick={() => signOut()}
+                    >
+                      LOG OUT
+                    </Button>
+
+                    <Button 
+                      type="submit"
+                      size="large" 
+                      onClick={e => router.push(`/profile/reset-password-code`)}
+                    >
+                      RESET PASSWORD
+                    </Button>
+
+                      <Link href="/profile/delete">
+                      <Button 
+                        type="submit"
+                        size="large"
+                      >
+                        DELETE ACCOUNT
+                      </Button>
+                      </Link>
+                  </div>  
+                </div>
+                <div className={styles.profileInnerRight}>
+                  {isSaved && <Alert severity="success" style={{ marginBottom: '20px' }}>Profile has been successfully updated.</Alert>}
+
+                  <form onSubmit={handleSaveChanges}>
+                    <div className={styles.formItem}>
+                      <FormLabel>NAME</FormLabel>
+                      <TextField 
+                        type="text" 
+                        fullWidth={true} 
+                        size={"small"} 
+                        disabled={isEditEnabled ? false : true} 
+                        value={name} 
+                        onChange={e => setName(e.target.value)} 
+                        required
                       />
                     </div>
 
-                    {/* <div className={styles.profileStars}>
-                      <div>
-                        <img src="/star1.svg" />
-                      </div>
-                      <div>
-                        <img src="/star2.svg" />
-                      </div>
-                      <div>
-                        <img src="/star3.svg" />
-                      </div>
-                    </div>   */}
+                    <div className={styles.formItem}>
+                      <FormLabel>CHALLENGES</FormLabel>
 
-                    <div className={styles.profileDetails}>
-                      <h2>{profile.name}</h2>
-                      <p>{profile.email}</p>
-
-                      {(grant && grant.licenseType == 'Premium') && (
-                        <>
-                          {grant.expiryDate.hasOwnProperty('seconds') && (
-                            <>
-                              <p>{grant.licenseType.charAt(0).toUpperCase() + grant.licenseType.slice(1)} — Expires {format(new Date(grant.expiryDate.seconds * 1000), 'LLLL dd, yyyy')}</p>
-                            </>
-                          )}
-
-                          {!grant.expiryDate.hasOwnProperty('seconds') && (
-                            <>
-                              <p>{grant.licenseType.charAt(0).toUpperCase() + grant.licenseType.slice(1)} — Expires {format(new Date(grant.expiryDate), 'LLLL dd, yyyy')}</p>
-                            </>
-                          )}
-                        </>
-                        
-                      )}
-
-                      {(grant && grant.licenseType != 'Premium') && (
-                        <p>Free</p>
-                      )}
-                    </div>  
-
-                    <div className={styles.profileButtons}>
-                      {(grant && grant.licenseType == 'Premium') && (
-                        <Link href="/profile/subscription">
-                          <Button 
-                            type="submit"
-                            size="large" 
-                            
-                          >
-                            MANAGE SUBSCRIPTION
-                          </Button>
-                        </Link>
-                      )}
-
-                      <Button 
-                        type="submit"
-                        size="large" 
-                        onClick={() => signOut()}
+                      <Select
+                        fullWidth={true} 
+                        value={challenges}
+                        multiple
+                        label="Challenges"
+                        onChange={handleChangeChallenges} 
+                        disabled={isEditEnabled ? false : true} 
+                        style={{
+                          background: '#F3F4F6',
+                          border: 'none',
+                          borderRadius: '4px',
+                          fontSize: '14px'
+                        }} 
+                        required
                       >
-                        LOG OUT
-                      </Button>
+                        <MenuItem value='people'>People</MenuItem>
+                        <MenuItem value='work'>Work</MenuItem>
+                        <MenuItem value='health'>Health</MenuItem>
+                        <MenuItem value='money'>Money</MenuItem>
+                        <MenuItem value='me'>Me</MenuItem>
+                      </Select>
+                    </div>
 
-                      <Button 
-                        type="submit"
-                        size="large" 
-                        onClick={e => router.push(`/profile/reset-password-code`)}
+                    <div className={styles.formItem}>
+                      <FormLabel>GOING TO THERAPY</FormLabel>
+
+                      <Select
+                        fullWidth={true} 
+                        value={goingToTherapy}
+                        label="Going to therapy"
+                        onChange={e => setGoingToTherapy(e.target.value)} 
+                        disabled={isEditEnabled ? false : true} 
+                        style={{
+                          background: '#F3F4F6',
+                          border: 'none',
+                          borderRadius: '4px',
+                          fontSize: '14px'
+                        }} 
+                        required
                       >
-                        RESET PASSWORD
-                      </Button>
+                        <MenuItem value='true'>Yes</MenuItem>
+                        <MenuItem value='false'>No</MenuItem>
+                      </Select>
+                    </div>
 
-                       <Link href="/profile/delete">
+                    <div className={styles.formItem}>
+                      <FormLabel>AGE GROUP</FormLabel>
+
+                      <Select
+                        fullWidth={true} 
+                        value={ageGroup}
+                        label="Age Group"
+                        onChange={e => setAgeGroup(e.target.value)} 
+                        disabled={isEditEnabled ? false : true} 
+                        style={{
+                          background: '#F3F4F6',
+                          border: 'none',
+                          borderRadius: '4px',
+                          fontSize: '14px'
+                        }} 
+                        required
+                      >
+                        <MenuItem value={1}>&#60; 18</MenuItem>
+                        <MenuItem value={2}>19 - 24</MenuItem>
+                        <MenuItem value={3}>25 - 39</MenuItem>
+                        <MenuItem value={4}>40 - 59</MenuItem>
+                        <MenuItem value={5}>&#62; 60</MenuItem>
+                      </Select>
+                    </div>
+
+                    <div className={styles.formItem}>
+                      <FormLabel>GENDER</FormLabel>
+
+                      <Select
+                        fullWidth={true} 
+                        value={gender}
+                        label="Gender"
+                        onChange={e => setGender(e.target.value)} 
+                        disabled={isEditEnabled ? false : true} 
+                        style={{
+                          background: '#F3F4F6',
+                          border: 'none',
+                          borderRadius: '4px',
+                          fontSize: '14px'
+                        }} 
+                        required
+                      >
+                        <MenuItem value={1}>Male</MenuItem>
+                        <MenuItem value={2}>Female</MenuItem>
+                        <MenuItem value={3}>Transgender</MenuItem>
+                        <MenuItem value={4}>Non-binary</MenuItem>
+                        <MenuItem value={5}>Others</MenuItem>
+                      </Select>
+                    </div>
+
+                    <div className={styles.formItem}>
+                      <FormLabel>PHONE</FormLabel>
+                      <TextField 
+                        type="text" 
+                        fullWidth={true}
+                        size={"small"}
+                        disabled={isEditEnabled ? false : true} 
+                        value={phone} 
+                        onChange={e => setPhone(e.target.value)} 
+                        required
+                      />
+                    </div>
+
+                    <div className={styles.formItem}>
+                      <FormLabel>VETERAN STATUS</FormLabel>
+
+                      <Select
+                        fullWidth={true} 
+                        value={veteranStatus}
+                        label="Veteran Status"
+                        onChange={e => setVeteranStatus(e.target.value)} 
+                        disabled={isEditEnabled ? false : true} 
+                        style={{
+                          background: '#F3F4F6',
+                          border: 'none',
+                          borderRadius: '4px',
+                          fontSize: '14px'
+                        }} 
+                        required
+                      >
+                        <MenuItem value="notVeteran">Not a veteran</MenuItem>
+                        <MenuItem value="postNineEleven">Post 9-11 veteran</MenuItem>
+                      </Select>
+                    </div>
+
+                    {isEditEnabled && (
+                      <div className={styles.button_wrapper}>
                         <Button 
-                          type="submit"
-                          size="large"
+                          type="button" 
+                          size="large" 
+                          className={styles.normal_btn} 
+                          style={{
+                            lineHeight: '26px',
+                            marginTop: '10px'
+                          }}
+                          onClick={() => setIsEditEnabled(false)}
                         >
-                          DELETE ACCOUNT
+                          CANCEL
                         </Button>
-                       </Link>
-                    </div>  
-                  </div>
-                  <div className={styles.profileInnerRight}>
-                    {isSaved && <Alert severity="success" style={{ marginBottom: '20px' }}>Profile has been successfully updated.</Alert>}
 
-                    <form onSubmit={handleSaveChanges}>
-                      <div className={styles.formItem}>
-                        <FormLabel>NAME</FormLabel>
-                        <TextField 
-                          type="text" 
-                          fullWidth={true} 
-                          size={"small"} 
-                          disabled={isEditEnabled ? false : true} 
-                          value={name} 
-                          onChange={e => setName(e.target.value)} 
-                          required
-                        />
-                      </div>
-
-                      <div className={styles.formItem}>
-                        <FormLabel>CHALLENGES</FormLabel>
-
-                        <Select
-                          fullWidth={true} 
-                          value={challenges}
-                          multiple
-                          label="Challenges"
-                          onChange={handleChangeChallenges} 
-                          disabled={isEditEnabled ? false : true} 
+                        <Button 
+                          type="submit" 
+                          size="large" 
+                          variant="contained" 
+                          disabled={isSaving ? true : false}
                           style={{
-                            background: '#F3F4F6',
-                            border: 'none',
-                            borderRadius: '4px',
-                            fontSize: '14px'
-                          }} 
-                          required
+                            minWidth: '123px',
+                            marginTop: '10px',
+                            marginLeft: '20px',
+                            fontSize: '14px',
+                            fontWeight: '700',
+                            letterSpacing: '1px',
+                            lineHeight: '28px'
+                          }}
                         >
-                          <MenuItem value='people'>People</MenuItem>
-                          <MenuItem value='work'>Work</MenuItem>
-                          <MenuItem value='health'>Health</MenuItem>
-                          <MenuItem value='money'>Money</MenuItem>
-                          <MenuItem value='me'>Me</MenuItem>
-                        </Select>
+                          {isSaving && 'PLEASE WAIT'}
+                          {!isSaving && 'SAVE'}
+                        </Button>
                       </div>
-
-                      <div className={styles.formItem}>
-                        <FormLabel>GOING TO THERAPY</FormLabel>
-
-                        <Select
-                          fullWidth={true} 
-                          value={goingToTherapy}
-                          label="Going to therapy"
-                          onChange={e => setGoingToTherapy(e.target.value)} 
-                          disabled={isEditEnabled ? false : true} 
+                    )}
+                    
+                    {!isEditEnabled && (
+                      <div className={styles.button_wrapper}>
+                        <Button 
+                          type="button" 
+                          size="large" 
+                          className={styles.normal_btn} 
                           style={{
-                            background: '#F3F4F6',
-                            border: 'none',
-                            borderRadius: '4px',
-                            fontSize: '14px'
-                          }} 
-                          required
+                            marginTop: '10px',
+                            lineHeight: '26px'
+                          }}
+                          onClick={() => {
+                            setIsEditEnabled(true)
+                            setIsSaved(false)
+                          }}
                         >
-                          <MenuItem value='true'>Yes</MenuItem>
-                          <MenuItem value='false'>No</MenuItem>
-                        </Select>
+                          EDIT
+                        </Button>
                       </div>
-
-                      <div className={styles.formItem}>
-                        <FormLabel>AGE GROUP</FormLabel>
-
-                        <Select
-                          fullWidth={true} 
-                          value={ageGroup}
-                          label="Age Group"
-                          onChange={e => setAgeGroup(e.target.value)} 
-                          disabled={isEditEnabled ? false : true} 
-                          style={{
-                            background: '#F3F4F6',
-                            border: 'none',
-                            borderRadius: '4px',
-                            fontSize: '14px'
-                          }} 
-                          required
-                        >
-                          <MenuItem value={1}>&#60; 18</MenuItem>
-                          <MenuItem value={2}>19 - 24</MenuItem>
-                          <MenuItem value={3}>25 - 39</MenuItem>
-                          <MenuItem value={4}>40 - 59</MenuItem>
-                          <MenuItem value={5}>&#62; 60</MenuItem>
-                        </Select>
-                      </div>
-
-                      <div className={styles.formItem}>
-                        <FormLabel>GENDER</FormLabel>
-
-                        <Select
-                          fullWidth={true} 
-                          value={gender}
-                          label="Gender"
-                          onChange={e => setGender(e.target.value)} 
-                          disabled={isEditEnabled ? false : true} 
-                          style={{
-                            background: '#F3F4F6',
-                            border: 'none',
-                            borderRadius: '4px',
-                            fontSize: '14px'
-                          }} 
-                          required
-                        >
-                          <MenuItem value={1}>Male</MenuItem>
-                          <MenuItem value={2}>Female</MenuItem>
-                          <MenuItem value={3}>Transgender</MenuItem>
-                          <MenuItem value={4}>Non-binary</MenuItem>
-                          <MenuItem value={5}>Others</MenuItem>
-                        </Select>
-                      </div>
-
-                      <div className={styles.formItem}>
-                        <FormLabel>PHONE</FormLabel>
-                        <TextField 
-                          type="text" 
-                          fullWidth={true}
-                          size={"small"}
-                          disabled={isEditEnabled ? false : true} 
-                          value={phone} 
-                          onChange={e => setPhone(e.target.value)} 
-                          required
-                        />
-                      </div>
-
-                      <div className={styles.formItem}>
-                        <FormLabel>VETERAN STATUS</FormLabel>
-
-                        <Select
-                          fullWidth={true} 
-                          value={veteranStatus}
-                          label="Veteran Status"
-                          onChange={e => setVeteranStatus(e.target.value)} 
-                          disabled={isEditEnabled ? false : true} 
-                          style={{
-                            background: '#F3F4F6',
-                            border: 'none',
-                            borderRadius: '4px',
-                            fontSize: '14px'
-                          }} 
-                          required
-                        >
-                          <MenuItem value="notVeteran">Not a veteran</MenuItem>
-                          <MenuItem value="postNineEleven">Post 9-11 veteran</MenuItem>
-                        </Select>
-                      </div>
-
-                      {isEditEnabled && (
-                        <div className={styles.button_wrapper}>
-                          <Button 
-                            type="button" 
-                            size="large" 
-                            className={styles.normal_btn} 
-                            style={{
-                              lineHeight: '26px',
-                              marginTop: '10px'
-                            }}
-                            onClick={() => setIsEditEnabled(false)}
-                          >
-                            CANCEL
-                          </Button>
-
-                          <Button 
-                            type="submit" 
-                            size="large" 
-                            variant="contained" 
-                            disabled={isSaving ? true : false}
-                            style={{
-                              minWidth: '123px',
-                              marginTop: '10px',
-                              marginLeft: '20px',
-                              fontSize: '14px',
-                              fontWeight: '700',
-                              letterSpacing: '1px',
-                              lineHeight: '28px'
-                            }}
-                          >
-                            {isSaving && 'PLEASE WAIT'}
-                            {!isSaving && 'SAVE'}
-                          </Button>
-                        </div>
-                      )}
-                      
-                      {!isEditEnabled && (
-                        <div className={styles.button_wrapper}>
-                          <Button 
-                            type="button" 
-                            size="large" 
-                            className={styles.normal_btn} 
-                            style={{
-                              marginTop: '10px',
-                              lineHeight: '26px'
-                            }}
-                            onClick={() => {
-                              setIsEditEnabled(true)
-                              setIsSaved(false)
-                            }}
-                          >
-                            EDIT
-                          </Button>
-                        </div>
-                      )}
-                    </form>
-                  </div>
+                    )}
+                  </form>
                 </div>
               </div>
+            </div>
           </div>
         </>
       }
