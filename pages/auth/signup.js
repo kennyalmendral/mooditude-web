@@ -45,10 +45,6 @@ export default function SignUp(props) {
 
   const { authUser, createUserWithEmailAndPassword } = useAuth()
 
-  // useEffect(() => {
-  //   console.log(router.query.type)
-  // }, [router])
-
   const checkPass = (p1 = '', p2 = '', policy = false) => {
     
     p1 = p1 == '' ? password : p1
@@ -199,10 +195,19 @@ export default function SignUp(props) {
     <Layout title={`Join ${SITE_NAME} | ${SITE_NAME}`}>
       <div className={`${styles.container} auth_page_wrapper`}>
         <div className={styles.authBg}>
+          {((router.query.type != 'signup_subscription') && (router.query.type != 'payment')) && (
+            <div className={styles.free}>
+              {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
+              {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3-info.svg" alt="M3Information" />}
+            </div>
+          )}
+
           {router.query.type == 'signup_subscription' && (
             <div className={styles.mooditudePremium}>
               <div>
-                <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />
+                {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
+                {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3-info.svg" alt="M3Information" />}
+                
                 <h2>MOODITUDE PREMIUM</h2>
 
                 <div>
@@ -219,7 +224,9 @@ export default function SignUp(props) {
           {router.query.type == 'payment' && (
             <div className={styles.oneTime}>
               <div>
-                <img src="/m3-info.svg" alt="M3Information" />
+                {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
+                {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3-info.svg" alt="M3Information" />}
+
                 <h2>FULL REPORT</h2>
 
                 <div>
