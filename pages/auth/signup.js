@@ -45,6 +45,14 @@ export default function SignUp(props) {
 
   const { authUser, createUserWithEmailAndPassword } = useAuth()
 
+  useEffect(() => {
+    if (authUser) {
+      if (localStorage.getItem(`${authUser.uid}_onboardingStep`) == 'accountCreated') {
+        location.href = '/onboarding/welcome'
+      }
+    }
+  }, [authUser])
+
   const checkPass = (p1 = '', p2 = '', policy = false) => {
     
     p1 = p1 == '' ? password : p1
@@ -197,7 +205,6 @@ export default function SignUp(props) {
         <div className={styles.authBg}>
           {((router.query.type != 'signup_subscription') && (router.query.type != 'payment')) && (
             <div className={styles.free}>
-              {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
               {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3-info.svg" alt="M3Information" />}
             </div>
           )}
