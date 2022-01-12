@@ -79,11 +79,33 @@ export default function AssessmentReport(props) {
 
   const [userProfile, setUserProfile] = useState({})
 
+  const [oneTimeReportUrl, setOneTimeReportUrl] = useState(null)
+
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/auth/login')
     }
   }, [authUser, loading, router])
+
+  useEffect(() => {
+    if (authUser) {
+      firebaseStore
+        .collection('Subscribers')
+        .doc(authUser.uid)
+        .get()
+        .then(doc => {
+          if (doc && doc.data()) {
+            if (doc.data().payment != undefined) {
+              setOneTimeReportUrl(doc.data().payment.reportUrl)
+            }
+          }
+        })
+    }
+  }, [authUser, oneTimeReportUrl])
+
+  useEffect(() => {
+    console.log(oneTimeReportUrl)
+  }, [oneTimeReportUrl])
 
   useEffect(() => {
     reportLink && console.log(reportLink)
@@ -336,13 +358,26 @@ export default function AssessmentReport(props) {
         rarelyAnswerQuestions: rarelyAnswerQuestions
       }).then(result => {
         setIsDownloading(false)
-        setReportLink(result.data.url[0])
+        
+        if (authUser) {
+          let usedOneTimeDownload = {}
+          usedOneTimeDownload[`payment.usedOneTimeDownload`] = true
 
-        // const link = document.createElement('a')
-        // link.href = result.data.url[0]
-        // link.download = 'file.pdf'
-        // link.target = '_blank'
-        // link.dispatchEvent(new MouseEvent('click'))
+          firebaseStore
+            .collection('Subscribers')
+            .doc(authUser.uid)
+            .update(usedOneTimeDownload)
+            .then(() => {
+              firebaseStore
+                .collection('Subscribers')
+                .doc(authUser.uid)
+                .update({
+                  reportUrl: result.data.url[0]
+                })
+            })
+        }
+        
+        setReportLink(result.data.url[0])
       }).catch(err => {
         setIsDownloading(false)
         
@@ -451,7 +486,7 @@ export default function AssessmentReport(props) {
                         setIsReportVisible(true)
                       }}>REPORT</a>
 
-                    {licenseType == 'Premium' && (
+                    {((licenseType == 'Premium') || (userProfile.customerType == 'premium')) && (
                       <>
                         <a 
                           href="#" 
@@ -630,7 +665,7 @@ export default function AssessmentReport(props) {
                           
                           
 
-                          {licenseType == 'Premium' && (
+                          {((licenseType == 'Premium') || (userProfile.customerType == 'premium')) && (
                             <>
                               <div style={{ marginBottom: '40px' }}>
                                 <img src="/warning.svg" alt="Disorder Risks" />
@@ -1105,18 +1140,22 @@ export default function AssessmentReport(props) {
 
                   {isDownloadVisible && (
                     <div className={styles.report_content_item} key={'report_content_paid_wrap'}>
-                      <Button 
-                        className={styles.report_btn} 
-                        variant="contained" 
-                        onClick={handleDownload} 
-                        disabled={isDownloading ? true : false} 
-                        style={{ marginTop: '0', marginBottom: '0', marginRight: '20px', textTransform: 'none', fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}
-                      >
-                        {isDownloading && 'Generating Report'}
-                        {(!isDownloading) && 'Generate Report'}
-                      </Button>
+                      {/* {oneTimeReportUrl != null && ( */}
+                        <Button 
+                          className={styles.report_btn} 
+                          variant="contained" 
+                          onClick={handleDownload} 
+                          disabled={isDownloading ? true : false} 
+                          style={{ marginTop: '0', marginBottom: '0', marginRight: '20px', textTransform: 'none', fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}
+                        >
+                          {isDownloading && 'Generating Report'}
+                          {(!isDownloading) && 'Generate Report'}
+                        </Button>
+                      {/* )} */}
 
                       {(!isDownloading && reportLink != '') && <a href={reportLink} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>}
+
+                      {/* {oneTimeReportUrl == null && <a href={oneTimeReportUrl} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>} */}
                     </div>
                   )}
 

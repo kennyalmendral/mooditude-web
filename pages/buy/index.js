@@ -71,6 +71,7 @@ export default function OnboardingWelcomePage() {
     setShowLoader(true)
     processStripeSubscription({
       plan: 'monthly',
+      type: 'subscription',
       codeType: null,
       duration: null,
       message: null,
@@ -91,9 +92,11 @@ export default function OnboardingWelcomePage() {
   
     processStripeSubscription({
       plan: 'yearly',
+      type: 'subscription',
       codeType: null,
       duration: null,
       message: null,
+      customerEmail: authUser ? authUser.email : '',
       redirectUrl: window.location.origin + '/buy/thank-you',
       cancelUrl: window.location.origin + '/buy'
     }).then(result => {

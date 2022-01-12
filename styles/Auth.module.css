@@ -10,6 +10,46 @@
   background-size: cover;
 }
 
+.authBg .mooditudePremium,
+.authBg .oneTime {
+  color: #072B4F;
+  font-family: 'Circular Std';
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.authBg .mooditudePremium h2,
+.authBg .oneTime h2 {
+  margin: 10px 0 40px;
+  font-weight: 500;
+}
+
+.authBg .oneTime h2 {
+  margin: 15px 0 15px;
+}
+
+.authBg .mooditudePremium > div strong,
+.authBg .oneTime > div strong {
+  font-size: 40px;
+  font-weight: 600;
+  margin-right: 3px;
+}
+
+.authBg .mooditudePremium > div span {
+  margin-left: 3px;
+  font-size: 20px;
+  font-weight: 300;
+}
+
+.authBg .mooditudePremium > div:last-of-type,
+.authBg .oneTime > div:last-of-type {
+  font-size: 14px;
+  font-weight: 300;
+}
+
 .error {
   margin-top: 5px;
   font-size: 10px;

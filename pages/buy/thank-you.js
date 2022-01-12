@@ -30,10 +30,7 @@ export default function OnboardingWelcomePage() {
 
   const { authUser, loading, signOut } = useAuth()
 
-  const [name, setName] = useState('')
   const [expiryDate, setExpiryDate] = useState('')
-  const [showCoupon, setShowCoupon] = useState(false)
-  const [showCouponApplied, setShowCouponApplied] = useState(false)
   const [showLoader, setShowLoader] = useState(true)
 
   useEffect(() => {
@@ -43,55 +40,102 @@ export default function OnboardingWelcomePage() {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    const getStripeSubscription = firebaseFunctions.httpsCallable('getStripeSubscription')
+    if (router.query.type == 'subscription' || router.query.type == 'signup_subscription') {
+      const getStripeSubscription = firebaseFunctions.httpsCallable('getStripeSubscription')
     
-    getStripeSubscription({
-      session_id: new URLSearchParams(window.location.search).get('session_id')
-    }).then(result => {
-      let session = result.data.session
-      let subscription = result.data.subscription
+      getStripeSubscription({
+        session_id: new URLSearchParams(window.location.search).get('session_id')
+      }).then(result => {
+        let session = result.data.session
+        let subscription = result.data.subscription
 
-      console.log(session, subscription)
+        console.log(session, subscription)
 
-      if (authUser) {
-        firebaseDatabase
-          .ref()
-          .child('users')
-          .child(authUser.uid)
-          .update({
-            customerType: 'premium',
-            expiryDate: subscription.current_period_end * 1000,
-            paymentStatus: 'active',
-            paymentType: 'stripe'
-          })
-        
-        firebaseStore
-          .collection('Users')
-          .doc(authUser.uid)
-          .update({
-            customerType: 'premium'
-          })
+        if (authUser) {
+          firebaseDatabase
+            .ref()
+            .child('users')
+            .child(authUser.uid)
+            .update({
+              customerType: 'premium',
+              expiryDate: subscription.current_period_end * 1000,
+              paymentStatus: 'active',
+              paymentType: 'stripe'
+            })
+          
+          firebaseStore
+            .collection('Users')
+            .doc(authUser.uid)
+            .update({
+              customerType: 'premium'
+            })
 
-        firebaseStore
-          .collection('Subscribers')
-          .doc(authUser.uid)
-          .set({
-            grant: {
-              expiryDate: format(subscription.current_period_end * 1000, 'LLLL dd, yyyy'),
-              grantType: 'Purchase',
-              licenseType: 'Premium',
-              productType: 'Subscription',
-              transactionDate: format(subscription.created * 1000, 'LLLL dd, yyyy'),
-              transactionId: subscription.id
-            }
-          })
-          .then(() => {
-            setExpiryDate(format(new Date(subscription.current_period_end * 1000), 'LLLL dd, yyyy'))
-            setShowLoader(false)
-          })
-      }
-    })
-  }, [authUser])
+          firebaseStore
+            .collection('Subscribers')
+            .doc(authUser.uid)
+            .set({
+              grant: {
+                expiryDate: format(subscription.current_period_end * 1000, 'LLLL dd, yyyy'),
+                grantType: 'Purchase',
+                licenseType: 'Premium',
+                productType: 'Subscription',
+                transactionDate: format(subscription.created * 1000, 'LLLL dd, yyyy'),
+                transactionId: subscription.id
+              }
+            })
+            .then(() => {
+              setExpiryDate(format(new Date(subscription.current_period_end * 1000), 'LLLL dd, yyyy'))
+              setShowLoader(false)
+            })
+        }
+      })
+    } else if (router.query.type == 'payment') {
+      const getStripePayment = firebaseFunctions.httpsCallable('getStripePayment')
+    
+      getStripePayment({
+        session_id: new URLSearchParams(window.location.search).get('session_id')
+      }).then(result => {
+        let session = result.data.session
+        let paymentIntent = result.data.paymentIntent
+
+        console.log(session, paymentIntent)
+
+        if (authUser) {
+          firebaseDatabase
+            .ref()
+            .child('users')
+            .child(authUser.uid)
+            .update({
+              customerType: 'premium',
+              expiryDate: '',
+              paymentStatus: 'active',
+              paymentType: 'stripe'
+            })
+          
+          firebaseStore
+            .collection('Users')
+            .doc(authUser.uid)
+            .update({
+              customerType: 'premium'
+            })
+
+          firebaseStore
+            .collection('Subscribers')
+            .doc(authUser.uid)
+            .set({
+              payment: {
+                usedOneTimeDownload: false,
+                transactionDate: format(paymentIntent.created * 1000, 'LLLL dd, yyyy'),
+                transactionId: paymentIntent.id
+              }
+            })
+            .then(() => {
+              setShowLoader(false)
+            })
+        }
+      })
+    }
+  }, [authUser, router])
 
   return (
     <Layout title={`Congratulations | ${SITE_NAME}`}>
@@ -104,7 +148,7 @@ export default function OnboardingWelcomePage() {
 
       <div className={styles.thankYouWrapper}>
         <div>
-          {router.query.code_type != 'null' && (
+          {((router.query.code_type != 'null') && (router.query.type != 'signup_subscription') && (router.query.type != 'payment')) && (
             <div className={styles.promoCodeAppliedInner}>
               {router.query.code_type == 'purchased' && (
                 <div className={styles.promoCodeInnerTop}>
@@ -133,8 +177,17 @@ export default function OnboardingWelcomePage() {
             </>
           )}
 
+          {router.query.type == 'signup_subscription' && (
+            <>
+              <h2 style={{ marginBottom: '0' }}>Thank you for your purchase</h2>
+              <p style={{ marginTop: '5px' }}>Your have free access to Mooditude Premium for 3 days</p>
+            </>
+          )}
+
+          {router.query.type == 'payment' && <h2>Thank you for your purchase</h2>}
+
           <div className={styles.thankYouApp}>
-            <p>For the full experience download Mooditude’s mobile app and login with your credentials. </p>
+            <p>For the full experience download Mooditude&apos;s mobile app and login with your credentials. </p>
             <div className={styles.thankYouAppInner}>
               <a href="https://apps.apple.com/us/app/mooditude-cbt-therapy/id1450661800" target="_blank">
                 <img src="/Apple.svg" alt="" />

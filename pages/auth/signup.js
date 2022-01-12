@@ -18,10 +18,12 @@ import MoonLoader from "react-spinners/MoonLoader"
 import { useAuth } from '@/context/AuthUserContext'
 
 import Firebase from 'lib/Firebase'
+import { route } from 'next/dist/server/router'
 
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
+const firebaseFunctions = Firebase.functions()
 
 export default function SignUp(props) {
   const router = useRouter()
@@ -42,6 +44,10 @@ export default function SignUp(props) {
   const [showLoader, setShowLoader] = useState(false)
 
   const { authUser, createUserWithEmailAndPassword } = useAuth()
+
+  // useEffect(() => {
+  //   console.log(router.query.type)
+  // }, [router])
 
   const checkPass = (p1 = '', p2 = '', policy = false) => {
     
@@ -87,8 +93,8 @@ export default function SignUp(props) {
     setIsSigningUp(true)
     setError(null)
     setShowLoader(true)
+
     if (password === passwordConfirmation) {
-      
       createUserWithEmailAndPassword(email, password)
         .then(authUser => {
           setIsSigningUp(false)
@@ -149,10 +155,24 @@ export default function SignUp(props) {
                       lastAssessmentDate: null
                     })
                     .then(() => {
-                      location.href = '/onboarding/welcome'
-
                       localStorage.setItem(`${user.uid}_currentProfileStep`, 0)
                       localStorage.setItem(`${user.uid}_onboardingStep`, 'accountCreated')
+
+                      if (router.query.type != undefined) {
+                        const processStripeSubscriptionOnSignUp = firebaseFunctions.httpsCallable('processStripeSubscriptionOnSignUp')
+  
+                        processStripeSubscriptionOnSignUp({
+                          type: router.query.type,
+                          mode: router.query.type == 'signup_subscription' ? 'signup_subscription' : 'payment',
+                          customerEmail: user.email,
+                          redirectUrl: window.location.origin + '/buy/thank-you',
+                          cancelUrl: window.location.origin + '/buy'
+                        }).then(result => {
+                          location.href = result.data.session.url
+                        })
+                      } else {
+                        location.href = '/onboarding/welcome'
+                      }
                     })
                 })
             }
@@ -178,7 +198,41 @@ export default function SignUp(props) {
   return (
     <Layout title={`Join ${SITE_NAME} | ${SITE_NAME}`}>
       <div className={`${styles.container} auth_page_wrapper`}>
-        <div className={styles.authBg}></div>
+        <div className={styles.authBg}>
+          {router.query.type == 'signup_subscription' && (
+            <div className={styles.mooditudePremium}>
+              <div>
+                <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />
+                <h2>MOODITUDE PREMIUM</h2>
+
+                <div>
+                  <div>
+                    <strong>$14</strong>/<span>month</span>
+                  </div>
+
+                  <div>after 3-day free trial</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {router.query.type == 'payment' && (
+            <div className={styles.oneTime}>
+              <div>
+                <img src="/m3-info.svg" alt="M3Information" />
+                <h2>FULL REPORT</h2>
+
+                <div>
+                  <div>
+                    <strong>$14</strong>
+                  </div>
+
+                  <div>One-time charge</div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className={styles.authForm}>
           {

@@ -290,7 +290,7 @@ exports.processStripeSubscription = functions.https.onCall(async (data, context)
     ],
     mode: 'subscription',
     customer_email: data.customerEmail,
-    success_url: `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&code_type=${data.codeType}&discount=${couponCode}&duration=${data.duration}`,
+    success_url: `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&type=${data.type}&code_type=${data.codeType}&discount=${couponCode}&duration=${data.duration}`,
     cancel_url: data.cancelUrl,
   };
 
@@ -309,6 +309,38 @@ exports.processStripeSubscription = functions.https.onCall(async (data, context)
       };
     }
   }
+
+  console.log(stripeData)
+
+  const session = await stripe.checkout.sessions.create(stripeData);
+
+  return {
+    data,
+    session
+  };
+});
+
+exports.processStripeSubscriptionOnSignUp = functions.https.onCall(async (data, context) => {
+  let price = 'price_1KGzdpAuTlAR8JLMR6wrxj34';
+
+  if (data.type == 'signup_subscription') {
+    price = 'price_1KGzdpAuTlAR8JLMR6wrxj34';
+  } else if (data.type == 'payment') {
+    price = 'price_1KGzeLAuTlAR8JLMWqvaSIE0';
+  }
+
+  let stripeData = {
+    line_items: [
+      {
+        price: price,
+        quantity: 1,
+      },
+    ],
+    mode: data.mode == 'signup_subscription' ? 'subscription' : 'payment',
+    customer_email: data.customerEmail,
+    success_url: `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&type=${data.type}`,
+    cancel_url: data.cancelUrl,
+  };
 
   console.log(stripeData)
 
@@ -349,7 +381,7 @@ exports.renewStripeSubscription = functions.https.onCall(async (data, context) =
 exports.getStripeSubscription = functions.https.onCall(async (data, context) => {  
   const session = await stripe.checkout.sessions.retrieve(data.session_id);
   const subscription = await stripe.subscriptions.retrieve(session.subscription);
-
+  
   if (session) {
     return {
       session,
@@ -364,6 +396,18 @@ exports.getStripeSubscriptionDirect = functions.https.onCall(async (data, contex
   if (subscription) {
     return {
       subscription
+    };
+  }
+});
+
+exports.getStripePayment = functions.https.onCall(async (data, context) => {
+  const session = await stripe.checkout.sessions.retrieve(data.session_id);
+  const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent);
+
+  if (session) {
+    return {
+      session,
+      paymentIntent
     };
   }
 });

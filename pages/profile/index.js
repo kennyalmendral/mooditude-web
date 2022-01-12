@@ -45,6 +45,7 @@ export default function Profile(props) {
 
   const [profile, setProfile] = useState({})
   const [grant, setGrant] = useState({})
+  const [customerType, setCustomerType] = useState('')
 
   const [name, setName] = useState('')
   const [challenges, setChallenges] = useState([])
@@ -123,6 +124,7 @@ export default function Profile(props) {
       setGoingToTherapy(profile.goingToTherapy)
       setVeteranStatus(profile.veteranStatus || 'notVeteran')
       setProfilePicture(profile.photo)
+      Object.keys(grant).length == 0 && setCustomerType(profile.customerType)
     }
   }, [profile])
 
@@ -316,25 +318,28 @@ export default function Profile(props) {
                     <h2>{profile.name}</h2>
                     <p>{profile.email}</p>
 
-                    {(grant && grant.licenseType == 'Premium') && (
+                    {Object.keys(grant).length > 0 && (
                       <>
-                        {grant.expiryDate.hasOwnProperty('seconds') && (
+                        {grant.licenseType == 'Premium' && (
                           <>
-                            <p>{grant.licenseType.charAt(0).toUpperCase() + grant.licenseType.slice(1)} — Expires {format(new Date(grant.expiryDate.seconds * 1000), 'LLLL dd, yyyy')}</p>
+                            {grant.expiryDate.hasOwnProperty('seconds') && (
+                              <p>{grant.licenseType.charAt(0).toUpperCase() + grant.licenseType.slice(1)} — Expires {format(new Date(grant.expiryDate.seconds * 1000), 'LLLL dd, yyyy')}</p>
+                            )}
+
+                            {!grant.expiryDate.hasOwnProperty('seconds') && (
+                              <p>{grant.licenseType.charAt(0).toUpperCase() + grant.licenseType.slice(1)} — Expires {format(new Date(grant.expiryDate), 'LLLL dd, yyyy')}</p>
+                            )}
                           </>
                         )}
 
-                        {!grant.expiryDate.hasOwnProperty('seconds') && (
-                          <>
-                            <p>{grant.licenseType.charAt(0).toUpperCase() + grant.licenseType.slice(1)} — Expires {format(new Date(grant.expiryDate), 'LLLL dd, yyyy')}</p>
-                          </>
+                        {grant.licenseType != 'Premium' && (
+                          <p>Free</p>
                         )}
                       </>
-                      
                     )}
 
-                    {(grant && grant.licenseType != 'Premium') && (
-                      <p>Free</p>
+                    {((Object.keys(grant).length == 0) && (customerType != '')) && (
+                      <p>{customerType.charAt(0).toUpperCase() + customerType.slice(1)}</p>
                     )}
                   </div>  
 
