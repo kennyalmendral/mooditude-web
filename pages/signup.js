@@ -112,10 +112,10 @@ export default function SignUp(props) {
                 .set({
                   name: name,
                   photo: '',
-                  badges: {
-                    ticks: 0,
-                    crowns: 0,
-                    starts: 0
+                  stats: {
+                    checksCount: 0,
+                    starCount: 0,
+                    crownsCount: 0
                   },
                   customerType: 'free',
                 })
@@ -167,7 +167,8 @@ export default function SignUp(props) {
   
                         processStripeSubscriptionOnSignUp({
                           type: router.query.type,
-                          mode: router.query.type == 'signup_subscription' ? 'signup_subscription' : 'payment',
+                          duration: router.query.duration,
+                          mode: router.query.type == 'subscription' ? 'subscription' : 'payment',
                           customerEmail: user.email,
                           redirectUrl: window.location.origin + '/buy/thank-you',
                           cancelUrl: window.location.origin + '/buy'
@@ -203,13 +204,13 @@ export default function SignUp(props) {
     <Layout title={`Join ${SITE_NAME} | ${SITE_NAME}`}>
       <div className={`${styles.container} auth_page_wrapper`}>
         <div className={styles.authBg}>
-          {((router.query.type != 'signup_subscription') && (router.query.type != 'payment')) && (
+          {((router.query.type != 'subscription') && (router.query.type != 'payment')) && (
             <div className={styles.free}>
               {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3-info.svg" alt="M3Information" />}
             </div>
           )}
 
-          {router.query.type == 'signup_subscription' && (
+          {router.query.type == 'subscription' && (
             <div className={styles.mooditudePremium}>
               <div>
                 {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
@@ -218,11 +219,31 @@ export default function SignUp(props) {
                 <h2>MOODITUDE PREMIUM</h2>
 
                 <div>
-                  <div>
-                    <strong>$14</strong>/<span>month</span>
-                  </div>
+                  {router.query.duration == 1 && (
+                    <>
+                      <div>
+                        <strong>$14.99</strong>/<span>month</span>
+                      </div>
 
-                  <div>after 3-day free trial</div>
+                      {/* <div>after 3-day free trial</div> */}
+                    </>
+                  )}
+
+                  {router.query.duration == 3 && (
+                    <>
+                      <div>
+                        <strong>$14.99</strong>/<span>3 months</span>
+                      </div>
+                    </>
+                  )}
+
+                  {router.query.duration == null && (
+                    <>
+                      <div>
+                        <strong>$89.99</strong>/<span>year</span>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

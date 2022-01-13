@@ -92,9 +92,9 @@ export default function Profile(props) {
               setStarsCount(doc.data().stats.starCount)
               setCrownsCount(doc.data().stats.crownsCount)
             } else {
-              setChecksCount(doc.data().badges.ticks)
-              setStarsCount(doc.data().badges.starts)
-              setCrownsCount(doc.data().badges.crowns)
+              setChecksCount(0)
+              setStarsCount(0)
+              setCrownsCount(0)
             }
           }
         })

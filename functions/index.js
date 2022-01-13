@@ -310,8 +310,6 @@ exports.processStripeSubscription = functions.https.onCall(async (data, context)
     }
   }
 
-  console.log(stripeData)
-
   const session = await stripe.checkout.sessions.create(stripeData);
 
   return {
@@ -321,12 +319,16 @@ exports.processStripeSubscription = functions.https.onCall(async (data, context)
 });
 
 exports.processStripeSubscriptionOnSignUp = functions.https.onCall(async (data, context) => {
-  let price = 'price_1KGzdpAuTlAR8JLMR6wrxj34';
+  let price = 'price_1K09ueAuTlAR8JLMqv6RVsh8';
 
-  if (data.type == 'signup_subscription') {
-    price = 'price_1KGzdpAuTlAR8JLMR6wrxj34';
+  if ((data.type == 'subscription') && (data.duration == '1')) {
+    price = 'price_1K09ueAuTlAR8JLMqv6RVsh8'; // monthly
+  } else if ((data.type == 'subscription') && (data.duration == '3')) {
+    price = 'price_1KHXXoAuTlAR8JLM1hdixwNI'; // every 3 months
+  } else if ((data.type == 'subscription') && (data.duration == null)) {
+    price = 'price_1K09ueAuTlAR8JLM3JmfvSgj'; // yearly
   } else if (data.type == 'payment') {
-    price = 'price_1KGzeLAuTlAR8JLMWqvaSIE0';
+    price = 'price_1KGzeLAuTlAR8JLMWqvaSIE0'; // one-time
   }
 
   let stripeData = {
@@ -336,13 +338,11 @@ exports.processStripeSubscriptionOnSignUp = functions.https.onCall(async (data, 
         quantity: 1,
       },
     ],
-    mode: data.mode == 'signup_subscription' ? 'subscription' : 'payment',
+    mode: data.mode == 'subscription' ? 'subscription' : 'payment',
     customer_email: data.customerEmail,
-    success_url: `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&type=${data.type}`,
+    success_url: `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&type=${data.type}&duration=${data.duration}`,
     cancel_url: data.cancelUrl,
   };
-
-  console.log(stripeData)
 
   const session = await stripe.checkout.sessions.create(stripeData);
 

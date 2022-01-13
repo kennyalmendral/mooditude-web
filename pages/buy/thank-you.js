@@ -40,7 +40,7 @@ export default function OnboardingWelcomePage() {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    if (router.query.type == 'subscription' || router.query.type == 'signup_subscription') {
+    if (router.query.type == 'subscription') {
       const getStripeSubscription = firebaseFunctions.httpsCallable('getStripeSubscription')
     
       getStripeSubscription({
@@ -148,7 +148,7 @@ export default function OnboardingWelcomePage() {
 
       <div className={styles.thankYouWrapper}>
         <div>
-          {((router.query.code_type != 'null') && (router.query.type != 'signup_subscription') && (router.query.type != 'payment')) && (
+          {((router.query.code_type != 'null') && (router.query.type != 'subscription') && (router.query.type != 'payment')) && (
             <div className={styles.promoCodeAppliedInner}>
               {router.query.code_type == 'purchased' && (
                 <div className={styles.promoCodeInnerTop}>
@@ -170,17 +170,17 @@ export default function OnboardingWelcomePage() {
             </div>
           )}
           
-          {router.query.code_type == 'null' && (
+          {((router.query.code_type == 'null') && (router.query.type == 'subscription')) && (
             <>
               <h2 style={{ marginBottom: '0' }}>Thank you for your purchase</h2>
               <p style={{ marginTop: '5px' }}>Your have free access to Mooditude Premium for 30 days</p>
             </>
           )}
 
-          {router.query.type == 'signup_subscription' && (
+          {((router.query.code_type == null) && (router.query.type == 'subscription')) && (
             <>
               <h2 style={{ marginBottom: '0' }}>Thank you for your purchase</h2>
-              <p style={{ marginTop: '5px' }}>Your have free access to Mooditude Premium for 3 days</p>
+              {/* <p style={{ marginTop: '5px' }}>Your have free access to Mooditude Premium for 3 days</p> */}
             </>
           )}
 
@@ -188,6 +188,7 @@ export default function OnboardingWelcomePage() {
 
           <div className={styles.thankYouApp}>
             <p>For the full experience download Mooditude&apos;s mobile app and login with your credentials. </p>
+
             <div className={styles.thankYouAppInner}>
               <a href="https://apps.apple.com/us/app/mooditude-cbt-therapy/id1450661800" target="_blank">
                 <img src="/Apple.svg" alt="" />
