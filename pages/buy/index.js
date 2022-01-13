@@ -43,7 +43,7 @@ export default function OnboardingWelcomePage() {
 
   useEffect(() => {
     if (!loading && !authUser) { 
-      router.push('/auth/login')
+      router.push('/login')
     }
 
     authUser && console.log(authUser)

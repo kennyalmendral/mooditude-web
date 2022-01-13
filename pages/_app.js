@@ -136,7 +136,7 @@ function App({ Component, pageProps }) {
     setLogoutLoader(status)
     if (status) {
       firebaseAuth.onAuthStateChanged(user => {
-          location.href='/auth/login'
+          location.href='/login'
       })
     }
   }

@@ -13,7 +13,7 @@ export default function Custom404() {
       if (user) {
         Router.push('/')
       }else{
-        Router.push('/auth/login')
+        Router.push('/login')
       }
     })
   })

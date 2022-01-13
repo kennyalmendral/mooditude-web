@@ -286,7 +286,7 @@ export default function SignUp(props) {
               </div>
               
               <div>
-                <Link href="/auth/login">
+                <Link href="/login">
                   <a>Log In</a>
                 </Link>
               </div>

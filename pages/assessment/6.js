@@ -44,7 +44,7 @@ export default function Assessment6() {
 
   useEffect(() => {
     if (!loading && !authUser) { 
-      router.push('/auth/login')
+      router.push('/login')
     } else {
       if (authUser && localStorage.getItem(`${authUser.uid}_assessmentStep6Answer`) !== null) {
         setAssessmentStep6Answer(localStorage.getItem(`${authUser.uid}_assessmentStep6Answer`))

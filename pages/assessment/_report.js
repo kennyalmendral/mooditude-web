@@ -75,7 +75,7 @@ export default function AssessmentReport() {
 
   useEffect(() => {
     if (!loading && !authUser) { 
-      router.push('/auth/login')
+      router.push('/login')
     }
 
     if (authUser) {

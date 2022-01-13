@@ -44,7 +44,7 @@ export default function Assessment8() {
 
   useEffect(() => {
     if (!loading && !authUser) { 
-      router.push('/auth/login')
+      router.push('/login')
     } else {
       if (authUser && localStorage.getItem(`${authUser.uid}_assessmentStep8Answer`) !== null) {
         setAssessmentStep8Answer(localStorage.getItem(`${authUser.uid}_assessmentStep8Answer`))

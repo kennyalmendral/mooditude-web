@@ -54,7 +54,7 @@ export default function profileSubscription() {
 
   useEffect(() => {
     if (!loading && !authUser) { 
-      router.push('/auth/login')
+      router.push('/login')
     }
   }, [authUser, loading, router])
 

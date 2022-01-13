@@ -42,7 +42,7 @@ export default function Onboarding2() {
 
   useEffect(() => {
     if (!loading && !authUser) { 
-      router.push('/auth/login')
+      router.push('/login')
     }
   }, [authUser, loading, router])
 

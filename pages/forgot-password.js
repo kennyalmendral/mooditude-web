@@ -120,7 +120,7 @@ export default function ForgotPassword(props) {
                 <div>
                   <span>&larr; Back to</span>
                   {' '}
-                  <Link href="/auth/login">
+                  <Link href="/login">
                     <a>Log In</a>
                   </Link>
                 </div>

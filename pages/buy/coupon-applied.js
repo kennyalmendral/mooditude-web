@@ -35,7 +35,7 @@ export default function CouponApplied() {
 
   useEffect(() => {
     if (!loading && !authUser) { 
-      router.push('/auth/login')
+      router.push('/login')
     }
 
     setShowLoader(false)

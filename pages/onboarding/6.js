@@ -41,7 +41,7 @@ export default function Onboarding6() {
   const [formError, setFormError] = useState(false)
   useEffect(() => {
     if (!loading && !authUser) { 
-      router.push('/auth/login')
+      router.push('/login')
     }
   }, [authUser, loading, router])
 

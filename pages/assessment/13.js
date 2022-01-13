@@ -44,7 +44,7 @@ export default function Assessment13() {
 
   useEffect(() => {
     if (!loading && !authUser) { 
-      router.push('/auth/login')
+      router.push('/login')
     } else {
       if (authUser && localStorage.getItem(`${authUser.uid}_assessmentStep13Answer`) !== null) {
         setAssessmentStep13Answer(localStorage.getItem(`${authUser.uid}_assessmentStep13Answer`))

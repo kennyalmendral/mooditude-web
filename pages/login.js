@@ -191,7 +191,7 @@ export default function Login(props) {
               </div>
               
               <div>
-                <Link href="/auth/signup">
+                <Link href="/signup">
                   <a>Sign Up</a>
                 </Link>
               </div>
@@ -258,7 +258,7 @@ export default function Login(props) {
                 <div>
                   <span>Forgot password? Rest it</span>
                   {' '}
-                  <Link href="/auth/forgot-password">
+                  <Link href="/forgot-password">
                     <a>here.</a>
                   </Link>
                 </div>

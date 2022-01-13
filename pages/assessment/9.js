@@ -44,7 +44,7 @@ export default function Assessment9() {
 
   useEffect(() => {
     if (!loading && !authUser) {
-      router.push('/auth/login')
+      router.push('/login')
     } else {
       if (authUser && localStorage.getItem(`${authUser.uid}_assessmentStep9Answer`) !== null) {
         setAssessmentStep9Answer(localStorage.getItem(`${authUser.uid}_assessmentStep9Answer`))

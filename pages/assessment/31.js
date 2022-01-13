@@ -53,7 +53,7 @@ export default function Assessment31(props) {
 
   useEffect(() => {
     if (!loading && !authUser) { 
-      router.push('/auth/login')
+      router.push('/login')
     } else {
       if (authUser && localStorage.getItem(`${authUser.uid}_assessmentStep31Answer`) !== null) {
         setAssessmentStep31Answer(localStorage.getItem(`${authUser.uid}_assessmentStep31Answer`))
