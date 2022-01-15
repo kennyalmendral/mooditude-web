@@ -409,3 +409,13 @@
     width: 90%;
   }
 }
+
+@media(max-width: 466px){
+  .buy_wrap > div {
+    flex-direction: column;
+  }
+
+  .buy_wrap > div form {
+    margin-left: 0 !important;
+  }
+}
