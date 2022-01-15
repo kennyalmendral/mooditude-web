@@ -396,21 +396,30 @@ export default function SignUp(props) {
                 <div className={styles.privacyPolicy}>
 
                   <FormGroup>
-                    <FormControlLabel 
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <FormControlLabel 
+                        control={<Checkbox 
+                            className={`${styles.privacyPolicyLabel} no_bg`}
+                            type="checkbox" 
+                            id="privacy-policy" 
+                            checked={isPrivacyPolicyChecked} 
+                            onChange={e => {setIsPrivacyPolicyChecked(e.target.checked);checkPass(password, passwordConfirmation, e.target.checked)}}
+                          />} 
+                        label={false}
+                      />
 
-                      control={<Checkbox 
-                          className={`${styles.privacyPolicyLabel} no_bg`}
-                          type="checkbox" 
-                          id="privacy-policy" 
-                          checked={isPrivacyPolicyChecked} 
-                          onChange={e => {setIsPrivacyPolicyChecked(e.target.checked);checkPass(password, passwordConfirmation, e.target.checked)}}
-                        />} 
-                      label={<div className={styles.privacyPolicyText} dangerouslySetInnerHTML={{__html: `I agree with the
-                      <Link href="#">
-                        <a>Terms &amp; Privacy Policy</a>
-                      </Link>`}} />}
-
-                    />
+                      <label for="privacy-policy" style={{ marginLeft: '-16px' }}>
+                        <div className={styles.privacyPolicyText}>
+                          <span>I agree with the</span>
+                          {' '}
+                          <a href="https://mooditude.app/terms" target="_blank">Terms</a>
+                          {' '}
+                          &amp;
+                          {' '}
+                          <a href="https://mooditude.app/privacy" target="_blank">Privacy Policy</a>
+                        </div>
+                      </label>
+                    </div>
                   </FormGroup>
               
                 </div>
