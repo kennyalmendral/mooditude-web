@@ -1,0 +1,22 @@
+{
+    "firebase": {
+        "userProfilePictureDir": "https://firebasestorage.googleapis.com/v0/b/mooditudetesting.appspot.com/o/Profile/Images"
+    },
+    "stripe": {
+        "secretKey": "sk_test_51K09rjAuTlAR8JLMimh1DvJBksnM2A1L6LVeDqQQoeO55f62ocwVsD8nkXbV004WzIrE8LyRYidKNk6lyGSaJqSJ00YRntqU8e",
+        "plan": {
+            "monthly": "price_1K09ueAuTlAR8JLMqv6RVsh8",
+            "everyThreeMonths": "price_1KHXXoAuTlAR8JLM1hdixwNI",
+            "yearly": "price_1K09ueAuTlAR8JLM3JmfvSgj",
+            "oneTime": "price_1KGzeLAuTlAR8JLMWqvaSIE0"
+        }
+    },
+    "mailJet": {
+        "apiKey": "ad7cf06fbd36f5cb228990091fb37397",
+        "apiSecret": "516ef34946b2bcfe0f4bed7080946bbf"
+    },
+    "mailJetLists": {
+        "appSignup": 25769,
+        "webSignup": 25768
+    }
+}

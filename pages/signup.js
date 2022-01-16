@@ -18,7 +18,6 @@ import MoonLoader from "react-spinners/MoonLoader"
 import { useAuth } from '@/context/AuthUserContext'
 
 import Firebase from 'lib/Firebase'
-import { route } from 'next/dist/server/router'
 
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
@@ -408,7 +407,7 @@ export default function SignUp(props) {
                         label={false}
                       />
 
-                      <label for="privacy-policy" style={{ marginLeft: '-16px' }}>
+                      <label htmlFor="privacy-policy" style={{ marginLeft: '-16px' }}>
                         <div className={styles.privacyPolicyText}>
                           <span>I agree with the</span>
                           {' '}
