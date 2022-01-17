@@ -1819,38 +1819,6 @@ exports.uploadProfilePicture = functions.https.onCall(async (data, context) => {
   };
 });
 
-exports.updateUserPaymentStatus = functions.database.ref('users/{userId}').onUpdate(async (change, context) => {
-  if (!change.before.exists) {
-    return null;
-  }
-
-  const newValue = change.after.val();
-  const previousValue = change.before.val();
-
-  if (!newValue.mailJetUserId) {
-    functions.logger.info(`MailJetUserId doesn't exist for user ${context.params.userId}.`);
-
-    return null;
-  }
-
-  if (!previousValue.mailJetUserId) {
-    return null;
-  }
-
-  const url = `https://api.mailjet.com/v3/REST/contactdata/${newValue.mailJetUserId}`;
-
-  const requestData = {
-    'Data': [
-      {
-        'Name': 'paymentstatus',
-        'Value': newValue.paymentStatus
-      }
-    ]
-  };
-
-  return needle('put', url, requestData, mailjetOptions);
-});
-
 exports.stripeWebhooks = functions.https.onRequest((req, res) => {
   let reqBody = req.body;
 
@@ -1869,19 +1837,26 @@ exports.stripeWebhooks = functions.https.onRequest((req, res) => {
     let event = reqBody.type;
     let userId = reqDataObj.customer;
     let paymentStatus = reqDataObj.status;
-    let token = reqDataObj.id;
     
     switch (event) {
-      case 'customer.subscription.created':
+      case 'invoice.payment_succeeded':
+        responseData = reqBody.data;
+
         axios.post('/receipts', {
           app_user_id: userId,
-          fetch_token: token,
+          fetch_token: reqDataObj.subscription,
           attributes: {
-            'stripe_customer_id': {
+            '$stripeCustomerId': {
               value: userId
             },
             'payment_status': {
               value: paymentStatus
+            },
+            "$displayName": {
+              value: reqDataObj.customer_name
+            },
+            "$email": {
+              value: reqDataObj.customer_email
             }
           }
         }).then(response => {
@@ -1889,6 +1864,42 @@ exports.stripeWebhooks = functions.https.onRequest((req, res) => {
         }).catch(error => {
           errorData = error;
         });
+
+        admin.auth()
+          .getUserByEmail(reqDataObj.customer_email)
+          .then(response => {
+            let userId = response.uid;
+          
+            admin.database()
+              .ref()
+              .child('users')
+              .child(userId)
+              .once('value')
+              .then(snapshot => {
+                const snapshotValue = snapshot.val()
+
+                if (snapshotValue != null) {
+                  const url = `https://api.mailjet.com/v3/REST/contactdata/${snapshotValue.mailJetUserId}`;
+
+                  const requestData = {
+                    'Data': [
+                      {
+                        'Name': 'paymentstatus',
+                        'Value': snapshotValue.paymentStatus
+                      }
+                    ]
+                  };
+
+                  needle('put', url, requestData, mailjetOptions);
+                }
+              })
+              .catch(error => {
+                functions.logger.error(error);
+              })
+          })
+          .catch(err => {
+            functions.logger.error(err);
+          });
         break;
       case 'customer.subscription.updated':
         axios.post(`/subscribers/${userId}/attributes`, {
@@ -1900,6 +1911,42 @@ exports.stripeWebhooks = functions.https.onRequest((req, res) => {
           }
         }).then(response => {
           responseData = response;
+
+          admin.auth()
+            .getUserByEmail(reqDataObj.customer_email)
+            .then(response => {
+              let userId = response.uid;
+            
+              admin.database()
+                .ref()
+                .child('users')
+                .child(userId)
+                .once('value')
+                .then(snapshot => {
+                  const snapshotValue = snapshot.val()
+
+                  if (snapshotValue != null) {
+                    const url = `https://api.mailjet.com/v3/REST/contactdata/${snapshotValue.mailJetUserId}`;
+
+                    const requestData = {
+                      'Data': [
+                        {
+                          'Name': 'paymentstatus',
+                          'Value': snapshotValue.paymentStatus
+                        }
+                      ]
+                    };
+
+                    needle('put', url, requestData, mailjetOptions);
+                  }
+                })
+                .catch(error => {
+                  functions.logger.error(error);
+                })
+            })
+            .catch(err => {
+              functions.logger.error(err);
+            });
         }).catch(error => {
           errorData = error;
         });
@@ -1914,6 +1961,42 @@ exports.stripeWebhooks = functions.https.onRequest((req, res) => {
           }
         }).then(response => {
           responseData = response;
+
+          admin.auth()
+            .getUserByEmail(reqDataObj.customer_email)
+            .then(response => {
+              let userId = response.uid;
+            
+              admin.database()
+                .ref()
+                .child('users')
+                .child(userId)
+                .once('value')
+                .then(snapshot => {
+                  const snapshotValue = snapshot.val()
+
+                  if (snapshotValue != null) {
+                    const url = `https://api.mailjet.com/v3/REST/contactdata/${snapshotValue.mailJetUserId}`;
+
+                    const requestData = {
+                      'Data': [
+                        {
+                          'Name': 'paymentstatus',
+                          'Value': snapshotValue.paymentStatus
+                        }
+                      ]
+                    };
+
+                    needle('put', url, requestData, mailjetOptions);
+                  }
+                })
+                .catch(error => {
+                  functions.logger.error(error);
+                })
+            })
+            .catch(err => {
+              functions.logger.error(err);
+            });
         }).catch(error => {
           errorData = error;
         });
