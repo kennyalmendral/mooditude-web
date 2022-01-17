@@ -1828,7 +1828,7 @@ exports.updateUserPaymentStatus = functions.database.ref('users/{userId}').onUpd
   const previousValue = change.before.val();
 
   if (!newValue.mailJetUserId) {
-    functions.logger.info(`MailJetUserId doesn't exist for user ${context.params.userId}. Exiting..`)
+    functions.logger.info(`MailJetUserId doesn't exist for user ${context.params.userId}.`);
 
     return null;
   }
@@ -1849,4 +1849,81 @@ exports.updateUserPaymentStatus = functions.database.ref('users/{userId}').onUpd
   };
 
   return needle('put', url, requestData, mailjetOptions);
+});
+
+exports.stripeWebhooks = functions.https.onRequest((req, res) => {
+  let reqBody = req.body;
+
+  if (reqBody) {
+    const axios = require('axios').create({
+      baseURL: 'https://api.revenuecat.com/v1',
+      headers: {
+        'X-Platform': 'stripe', 
+        'Authorization': `Bearer ${config.revenueCat.publicApiKey}`
+      }
+    });
+
+    let responseData;
+    let errorData;
+    let reqDataObj = reqBody.data.object;
+    let event = reqBody.type;
+    let userId = reqDataObj.customer;
+    let paymentStatus = reqDataObj.status;
+    let token = reqDataObj.id;
+    
+    switch (event) {
+      case 'customer.subscription.created':
+        axios.post('/receipts', {
+          app_user_id: userId,
+          fetch_token: token,
+          attributes: {
+            'stripe_customer_id': {
+              value: userId
+            },
+            'payment_status': {
+              value: paymentStatus
+            }
+          }
+        }).then(response => {
+          responseData = response;
+        }).catch(error => {
+          errorData = error;
+        });
+        break;
+      case 'customer.subscription.updated':
+        axios.post(`/subscribers/${userId}/attributes`, {
+          app_user_id: userId,
+          attributes: {
+            'payment_status': {
+              value: paymentStatus
+            }
+          }
+        }).then(response => {
+          responseData = response;
+        }).catch(error => {
+          errorData = error;
+        });
+        break;
+      case 'customer.subscription.deleted':
+        axios.post(`/subscribers/${userId}/attributes`, {
+          app_user_id: userId,
+          attributes: {
+            'payment_status': {
+              value: paymentStatus
+            }
+          }
+        }).then(response => {
+          responseData = response;
+        }).catch(error => {
+          errorData = error;
+        });
+        break;
+      default:
+        break;
+    }
+
+    res.status(200).json(responseData);
+  } else {
+    res.status(400).json(errorData);
+  }
 });

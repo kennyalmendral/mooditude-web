@@ -18,5 +18,9 @@
     "mailJetLists": {
         "appSignup": 25769,
         "webSignup": 25768
+    },
+    "revenueCat": {
+        "appId": "appa6f97a6010",
+        "publicApiKey": "strp_HfujmrmWoJYnJqBFsXbxqejFwyc"
     }
 }
