@@ -13,6 +13,14 @@ const PDFDocument = require('pdfkit');
 
 const stripe = require('stripe')(config.stripe.secretKey);
 
+const needle = require('needle');
+
+const mailjetOptions = {
+  'json': true,
+  'username': config.mailJet.apiKey,
+  'password': config.mailJet.apiSecret
+}
+
 exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) => {
   let allScore = 0;
   let gatewayScore = 0;
@@ -1809,4 +1817,36 @@ exports.uploadProfilePicture = functions.https.onCall(async (data, context) => {
   return {
     file: file.id
   };
+});
+
+exports.updateUserPaymentStatus = functions.database.ref('users/{userId}').onUpdate(async (change, context) => {
+  if (!change.before.exists) {
+    return null;
+  }
+
+  const newValue = change.after.val();
+  const previousValue = change.before.val();
+
+  if (!newValue.mailJetUserId) {
+    functions.logger.info(`MailJetUserId doesn't exist for user ${context.params.userId}. Exiting..`)
+
+    return null;
+  }
+
+  if (!previousValue.mailJetUserId) {
+    return null;
+  }
+
+  const url = `https://api.mailjet.com/v3/REST/contactdata/${newValue.mailJetUserId}`;
+
+  const requestData = {
+    'Data': [
+      {
+        'Name': 'paymentstatus',
+        'Value': newValue.paymentStatus
+      }
+    ]
+  };
+
+  return needle('put', url, requestData, mailjetOptions);
 });
