@@ -38,8 +38,11 @@ export default function OnboardingWelcomePage() {
   const [weekDifference, setWeekDifference] = useState(0)
   const [isReportOutdated, setIsReportOutdated] = useState(false)
   const [isMobileView, setIsMobileView] = useState(false)
+  const [isCheckoutCancelled, setIsCheckoutCancelled] = useState(false)
+  const [paymentFailed, setPaymentFailed] = useState(false)
+  const [paymentSuccess, setPaymentSuccess] = useState(false)
 
-  const [grant, setGrant] = useState({})
+  const [grant, setGrant] = useState(null)
 
   const [checking, setChecking] = useState(true)
 
@@ -50,6 +53,22 @@ export default function OnboardingWelcomePage() {
       setIsMobileView(false)
     }
   }, [])
+
+  useEffect(() => {
+    console.log(router.query)
+
+    if (router.query.checkout_cancelled) {
+      setPaymentFailed(true)
+    } else {
+      setPaymentFailed(false)
+    }
+
+    if (router.query.payment_success) {
+      setPaymentSuccess(true)
+    } else {
+      setPaymentSuccess(false)
+    }
+  }, [router])
 
   useEffect(() => {
     if (authUser) {
@@ -160,6 +179,24 @@ export default function OnboardingWelcomePage() {
               )}
             </div>
 
+            {paymentFailed && (
+              <div className={styles.error_alert}>
+                <span onClick={() => router.push('/')}><img src="/close.svg" /></span>
+
+                <h2>Payment didn't go through</h2>
+                <p>Either you cancelled your payment or your card didn't work.</p>
+              </div>
+            )}
+
+            {paymentSuccess && (
+              <div className={styles.success_alert}>
+                <span onClick={() => router.push('/')}><img src="/close.svg" /></span>
+
+                <h2>Thank you for your patronage!</h2>
+                <p>You took the right step in managing your mental health.</p>
+              </div>
+            )}
+
             <div className={styles.content}>
               <div className={styles.content_row}>
                 {(!isReportOutdated && (latestAssessment != null)) && (
@@ -208,7 +245,7 @@ export default function OnboardingWelcomePage() {
                   </div>
                 )}
                 
-                {router.query.product != null && (
+                {((router.query.product != null) && paymentFailed) && (
                   <div className={`${styles.content_col} ${styles.retry_buy}`}>
                     <Link href="https://play.google.com/store/apps/details?id=com.health.mental.mooditude">
                       <a target="_blank">
@@ -264,7 +301,7 @@ export default function OnboardingWelcomePage() {
                   </Link>
                 </div>
                 
-                {(grant.licenseType && (grant.licenseType != 'Premium')) && (
+                {!grant && (
                   <div className={`${styles.content_col} ${styles.buy}`}>
                     <Link href="/buy">
                       <a>

@@ -355,7 +355,7 @@
 .welcome_page .top_section {
 	font-family: 'Circular Std';
 	border-bottom: 4px solid #F3F4F6;
-	margin-bottom: 70px;
+	margin-bottom: 40px;
 }
 
 .welcome_page .top_section h1 {
@@ -373,6 +373,7 @@
 
 .welcome_page .content {
 	font-family: 'Circular Std';
+	margin-top: 40px;
 }
 
 .welcome_page .content .content_row {
@@ -459,6 +460,49 @@
 
 .welcome_page .content .content_col > a:hover svg path {
 	fill: #fff;
+}
+
+.error_alert,
+.success_alert {
+	position: relative;
+	background: #D6443F;
+	font-family: 'Circular Std';
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	border-radius: 8px;
+	padding: 20px;
+}
+
+.success_alert {
+	background: #1CA566;
+}
+
+.error_alert h2,
+.success_alert h2 {
+	color: #fff;
+	margin: 0 0 6px;
+	font-size: 24px;
+	font-weight: 400;
+}
+
+.error_alert p,
+.success_alert p {
+	color: #fff;
+	opacity: 0.7;
+	margin: 0;
+	font-size: 16px;
+	font-weight: 400;
+	max-width: 100%;
+}
+
+.error_alert span,
+.success_alert span {
+	position: absolute;
+	right: 15px;
+	top: 15px;
+	cursor: pointer;
 }
 
 .fadeInDown300{

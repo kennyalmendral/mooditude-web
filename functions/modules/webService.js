@@ -301,7 +301,7 @@ exports.processStripeSubscription = functions.https.onCall(async (data, context)
     mode: 'subscription',
     customer_email: data.customerEmail,
     success_url: `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&type=${data.type}&code_type=${data.codeType}&discount=${couponCode}&duration=${data.duration}`,
-    cancel_url: data.cancelUrl,
+    cancel_url: `${data.cancelUrl}?checkout_cancelled=true`,
   };
 
   if (data.codeType == 'discount') {
@@ -351,7 +351,7 @@ exports.processStripeSubscriptionOnSignUp = functions.https.onCall(async (data, 
     mode: data.mode == 'subscription' ? 'subscription' : 'payment',
     customer_email: data.customerEmail,
     success_url: `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&type=${data.type}&duration=${data.duration}`,
-    cancel_url: data.cancelUrl,
+    cancel_url: `${data.cancelUrl}?checkout_cancelled=true`,
   };
 
   const session = await stripe.checkout.sessions.create(stripeData);
