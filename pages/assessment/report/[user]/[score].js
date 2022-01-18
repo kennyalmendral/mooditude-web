@@ -421,14 +421,20 @@ export default function AssessmentReport(props) {
                 <p>Analyzing your responses...</p>
               </div>
             )}
-
+            <div className={styles.results_header_wrap}>
+              {assessmentDate && (
+                <p className={styles.date_text}>{assessmentDate}</p> 
+              )}
+              <h1>Your Mental Wellbeing Score</h1>
+            </div>
             <div className={`${styles.assessment_wrap} ${styles.report_page}`}>
-              <div className={styles.white_wrap}>
-                <h1>Your Mental <br/>Wellbeing Score</h1>
 
-                {assessmentDate && (
+              <div className={styles.white_wrap}>
+                {/*<h1>Your Mental <br/>Wellbeing Score</h1>*/}
+
+                {/*{assessmentDate && (
                   <p className={styles.date_text}>{assessmentDate}</p> 
-                )}
+                )}*/}
 
                 {riskScore > -1 && (
                   <>
@@ -443,28 +449,28 @@ export default function AssessmentReport(props) {
                     {allRiskLevel == 'unlikely' && (
                       <>
                         <h2>Unlikely Risk</h2>
-                        <p>Score of {riskScore} shows that it is unlikely you are suffering from a mental health condition at this time.</p>
+                        <p className={styles.riskText}>Score of {riskScore} shows that it is unlikely you are suffering from a mental health condition at this time.</p>
                       </>
                     )}
 
                     {allRiskLevel == 'low' && (
                       <>
                         <h2>Low Risk</h2>
-                        <p>Score of {riskScore} suggests that you have a low risk of a mental health condition.</p>
+                        <p className={styles.riskText}>Score of {riskScore} suggests that you have a low risk of a mental health condition.</p>
                       </>
                     )}
 
                     {allRiskLevel == 'medium' && (
                       <>
                         <h2>Medium Risk</h2>
-                        <p>Score of {riskScore} suggests that you have a medium risk of a mental health condition.</p>
+                        <p className={styles.riskText}>Score of {riskScore} suggests that you have a medium risk of a mental health condition.</p>
                       </>
                     )}
 
                     {allRiskLevel == 'high' && (
                       <>
                         <h2>High Risk</h2>
-                        <p>Score of {riskScore} suggests that you have a high risk of a mental health condition.</p>
+                        <p className={styles.riskText}>Score of {riskScore} suggests that you have a high risk of a mental health condition.</p>
                       </>
                     )}
         
@@ -476,696 +482,868 @@ export default function AssessmentReport(props) {
               </div>
 
               <div className={styles.report_right_wrap}>
-                <div className={styles.report_btns_wrapper}>
-                    <a
-                      href="#" 
-                      className={isReportVisible ? styles.active : ''} 
-                      onClick={() => {
-                        setIsScoresVisible(false)
-                        setIsDownloadVisible(false)
-                        setIsReportVisible(true)
-                      }}>REPORT</a>
-
-                    {((licenseType == 'Premium') || (userProfile.customerType == 'premium')) && (
-                      <>
-                        <a 
-                          href="#" 
-                          className={isScoresVisible ? styles.active : ''} 
-                          onClick={() => {
-                            setIsReportVisible(false)
-                            setIsDownloadVisible(false)
-                            setIsScoresVisible(true)
-                          }}
-                        >
-                          SCORES
-                        </a>
-
-                        <a 
-                          href="#" 
-                          className={isDownloadVisible ? styles.active : ''}
-                          onClick={() => {
-                            setIsScoresVisible(false)
-                            setIsDownloadVisible(true)
-                            setIsReportVisible(false)
-                          }}>DOWNLOAD</a>
-                      </>
-                    )}
+                <div className={styles.yellow_wrap}>
+                  <h4>Your Score is valid for 2-weeks</h4>
+                  <p>Recommended frequency to test your mental <br/> health conditions:</p>
+                  <p>If your risk is:</p>
+                  <ul>
+                    <li><span>High</span> <span>Test every two week</span></li>
+                    <li><span>Medium</span> <span>Test every month</span></li>
+                    <li><span>Low</span> <span>Test once every other month</span></li>
+                    <li><span>None</span> <span>Test every six months</span></li>
+                  </ul>          
+                      
                 </div>
-                
-                <div className={styles.report_content_wrap}>
-                  {isReportVisible && (
-                    <div className={`${styles.report_content_item} ${styles.active}`} key={'report_content_free_wrap'}>
-                      {riskScore > -1 && (
+              </div>
+            </div>
+
+            <div className={styles.results_bottom_wrap}>
+              {
+                licenseType != 'Free' ? 
+                  <div className={styles.report_btns_wrapper}>
+                      <a
+                        href="#" 
+                        className={isReportVisible ? styles.active : ''} 
+                        onClick={() => {
+                          setIsScoresVisible(false)
+                          setIsDownloadVisible(false)
+                          setIsReportVisible(true)
+                        }}>REPORT</a>
+
+                      {((licenseType == 'Premium') || (userProfile.customerType == 'premium')) && (
                         <>
-                          <div className={styles.normal_text_wrap}>
-                            {allRiskLevel == 'unlikely' && (
-                              <p>Your score is below the level usually found for individuals already known to be suffering from a mood or anxiety disorder. Despite this low score, it is still important to refer to the information and recommendations below concerning your risk for each of the four conditions described.</p>
-                            )}
+                          <a 
+                            href="#" 
+                            className={isScoresVisible ? styles.active : ''} 
+                            onClick={() => {
+                              setIsReportVisible(false)
+                              setIsDownloadVisible(false)
+                              setIsScoresVisible(true)
+                            }}
+                          >
+                            SCORES
+                          </a>
 
-                            {allRiskLevel == 'low' && (
-                              <>
-                                <p>Your score is in the lower range as compared to individuals already known to be suffering from a mood or anxiety disorder.</p>
-                                <p>Despite this relatively low score, your symptoms may be impacting your life, livelihood, and general well-being. Read closely the information and recommendations below concerning your risk of each of the four conditions described.</p>
-                              </>
-                            )}
+                          <a 
+                            href="#" 
+                            className={isDownloadVisible ? styles.active : ''}
+                            onClick={() => {
+                              setIsScoresVisible(false)
+                              setIsDownloadVisible(true)
+                              setIsReportVisible(false)
+                            }}>DOWNLOAD</a>
+                        </>
+                      )}
+                  </div>
+                : ''
+              }
+              
+              {
+                licenseType == 'Free' ? 
+                <div>
+                  <div className={styles.result_pricing_section}>
+                    <div className={styles.result_pricing_section_item}>
+                      <h4>Full Report</h4>
 
-                            {allRiskLevel == 'medium' && (
-                              <>
-                                <p>Your score is in the mid-range as compared to individuals already known to be suffering from a mood or anxiety disorder.</p>
-                                <p>This is a significant finding, as it suggests that your symptoms are probably impacting your life and general well-being. Read carefully the information and recommendations below concerning your risk of each of the four conditions described.</p>
-                              </>
-                            )}
+                      <h3>$14</h3>
+                      <p>One-time </p>
+                      <Button 
+                        size="large" 
+                        className={styles.report_btn} 
+                        variant="contained" 
+                        
+                        style={{
+                          marginBottom: '15px',
+                          fontSize: '14px',
+                          fontWeight: '300',
+                          fontFamily: 'Circular STD'
+                        }} 
+                      >
+                        Buy
+                      </Button>  
+                    </div>  
 
-                            {allRiskLevel == 'high' && (
+                    <div className={styles.result_pricing_section_item}>
+                      <h4>Unlimited Reports & Mooditude App</h4>
+
+                      <h3>$39</h3>
+                      <p>per 3-month</p>
+                      <Button 
+                        size="large" 
+                        className={styles.report_btn} 
+                        variant="contained" 
+                        
+                        style={{
+                          marginBottom: '15px',
+                          fontSize: '14px',
+                          fontWeight: '300',
+                          fontFamily: 'Circular STD'
+                        }} 
+                      >
+                        SUBCRIBE
+                      </Button>  
+                    </div>  
+
+                    <div className={styles.result_pricing_section_item}>
+                      <h4>Unlimited Reports & Mooditude App</h4>
+
+                      <h3>$89</h3>
+                      <p>per year </p>
+                      <Button 
+                        size="large" 
+                        className={styles.report_btn} 
+                        variant="contained" 
+                        
+                        style={{
+                          marginBottom: '15px',
+                          fontSize: '14px',
+                          fontWeight: '300',
+                          fontFamily: 'Circular STD'
+                        }} 
+                      >
+                        SUBCRIBE
+                      </Button>  
+                    </div>  
+                  </div>
+                  <div className={styles.pricing_section_text}>
+                    <ul>
+                      <li>Learn more about Mooditude apps <a target="_blank" href="#">here</a>.</li>
+                    </ul>
+                  </div>
+                </div>
+                : 
+                <div className={styles.report_main_section_wrap}>
+                  <div className={styles.report_content_wrap}>
+                    {isReportVisible && (
+                      <div className={`${styles.report_content_item} ${styles.active}`} key={'report_content_free_wrap'}>
+                        {riskScore > -1 && (
+                          <>
+                            <div className={styles.normal_text_wrap}>
+                              {allRiskLevel == 'unlikely' && (
+                                <p>Your score is below the level usually found for individuals already known to be suffering from a mood or anxiety disorder. Despite this low score, it is still important to refer to the information and recommendations below concerning your risk for each of the four conditions described.</p>
+                              )}
+
+                              {allRiskLevel == 'low' && (
+                                <>
+                                  <p>Your score is in the lower range as compared to individuals already known to be suffering from a mood or anxiety disorder.</p>
+                                  <p>Despite this relatively low score, your symptoms may be impacting your life, livelihood, and general well-being. Read closely the information and recommendations below concerning your risk of each of the four conditions described.</p>
+                                </>
+                              )}
+
+                              {allRiskLevel == 'medium' && (
+                                <>
+                                  <p>Your score is in the mid-range as compared to individuals already known to be suffering from a mood or anxiety disorder.</p>
+                                  <p>This is a significant finding, as it suggests that your symptoms are probably impacting your life and general well-being. Read carefully the information and recommendations below concerning your risk of each of the four conditions described.</p>
+                                </>
+                              )}
+
+                              {allRiskLevel == 'high' && (
+                                <>
+                                  <p>Your score is in the high range as compared to individuals already known to be suffering from a mood or anxiety disorder.</p>
+                                  <p>This is cause for real concern, as it suggests that your symptoms are impacting your life and general health. Read carefully the information and recommendations below concerning your risk of each of the four conditions described.</p>
+                                </>
+                              )}
+                            </div>
+                            
+
+                            <div className={styles.report_content_crisis_section}>
+                              <h4>Your response to a question related to suicidal thoughts raises a red flag.</h4>
+                              <h3>Are you in crisis?</h3>
+                              <p>Please call National Suicide Prevention Lifeline or proceed <br/>directly to an emergency room.</p>
+                            </div>
+                            
+                              {licenseType == 'Free' && (
+                                <>
+                                  { buyPremium ? 
+                                  <div className={styles.bold_text_wrap}
+                                    style={{
+                                      background: '#F3F4F6',
+                                      padding: '22px 18px 32px',
+                                      borderRadius: '8px',
+                                      marginBottom: '70px',
+                                      filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))'
+                                    }}
+                                  >
+                                    <div>
+                                      <img src="/crown.svg" />
+                                    </div>
+
+                                    <p style={{ fontSize: '16px', fontWeight: 'normal' }}>Buy Mooditude Premium to get your complete report showing your mental health risks and recommendations to overcome those risks.</p>
+
+                                    <p style={{ fontSize: '16px', fontWeight: 'normal' }}>Your purchase includes:</p>
+
+                                    <ul style={{
+                                      fontFamily: 'Circular STD',
+                                      fontWeight: 'normal',
+                                      color: '#072B4F',
+                                      listStyle: 'none',
+                                      paddingLeft: '0'
+                                    }}>
+                                      <li style={{ 
+                                        marginBottom: '18px',
+                                        position: 'relative',
+                                        paddingLeft: '40px'
+                                      }}>
+                                        <img 
+                                          src="/check.svg" 
+                                          style={{
+                                            position: 'absolute',
+                                            top: '0',
+                                            left: '0'
+                                          }}
+                                        />
+                                        Unlimited quiz so you can track your progress over time
+                                      </li>
+
+                                      <li style={{ 
+                                        marginBottom: '18px',
+                                        position: 'relative',
+                                        paddingLeft: '40px'
+                                      }}>
+                                        <img 
+                                          src="/check.svg" 
+                                          style={{
+                                            position: 'absolute',
+                                            top: '0',
+                                            left: '0'
+                                          }}
+                                        />
+                                        Access to 800+ minutes of self-care activities, and
+                                      </li>
+
+                                      <li style={{ 
+                                        marginBottom: '18px',
+                                        position: 'relative',
+                                        paddingLeft: '40px'
+                                      }}>
+                                        <img 
+                                          src="/check.svg" 
+                                          style={{
+                                            position: 'absolute',
+                                            top: '0',
+                                            left: '0'
+                                          }}
+                                        /> Goal Settings and Habit building features
+                                      </li>
+                                    </ul>
+
+                                    <Button 
+                                      size="large" 
+                                      className={styles.report_btn} 
+                                      variant="contained" 
+                                      href={'/buy'}
+                                      style={{
+                                        marginBottom: '15px',
+                                        fontSize: '14px',
+                                        fontWeight: '300',
+                                        fontFamily: 'Circular STD'
+                                      }} 
+                                    >
+                                      BUY MOODITUDE PREMIUM
+                                    </Button>
+                                    
+                                    {/*<div>
+                                      <Link href="#" >
+                                        <a onClick={e => {e.preventDefault();setBuyPremium(false)}} style={{
+                                          fontSize: '14px',
+                                          fontWeight: '300',
+                                          fontFamily: 'Circular STD'
+                                        }}>NO THANKS</a>
+                                      </Link>
+                                    </div>*/}
+                                  </div>
+                                   : '' }
+                                  <div className={styles.download_app_wrap}>
+                                    <h4>Download</h4>
+                                    <p>For the full experience download Mooditude’s mobile app and login with your credentials. </p>
+
+                                    <div className={styles.app_btns}>
+                                      <a href="https://apps.apple.com/us/app/mooditude-cbt-therapy/id1450661800" target="_blank">
+                                        <img src="/Apple.png" alt="" />
+                                      </a>  
+
+                                      <a href="https://play.google.com/store/apps/details?id=com.health.mental.mooditude" target="_blank">
+                                        <img src="/Android.png" alt="" />
+                                      </a>  
+                                    </div>
+                                  </div>
+                                </>
+                              )}
+                            
+                            
+
+                            {((licenseType == 'Premium') || (userProfile.customerType == 'premium')) && (
                               <>
-                                <p>Your score is in the high range as compared to individuals already known to be suffering from a mood or anxiety disorder.</p>
-                                <p>This is cause for real concern, as it suggests that your symptoms are impacting your life and general health. Read carefully the information and recommendations below concerning your risk of each of the four conditions described.</p>
-                              </>
-                            )}
-                          </div>
-                          
-                          
-                            {licenseType == 'Free' && (
-                              <>
-                                { buyPremium ? 
-                                <div className={styles.bold_text_wrap}
-                                  style={{
-                                    background: '#F3F4F6',
-                                    padding: '22px 18px 32px',
-                                    borderRadius: '8px',
-                                    marginBottom: '70px',
-                                    filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))'
-                                  }}
-                                >
-                                  <div>
-                                    <img src="/crown.svg" />
+                                <div className={styles.report_risks_wrap} >
+                                  {/*<img src="/warning.svg" alt="Disorder Risks" />*/}
+                                  <h2>Risks</h2>
+
+
+                                  <div className={styles.report_risks_flex_wrap}>
+                                    <div 
+                                      className={`
+                                        ${styles.report_risks_flex_item} 
+                                        ${ depressionRiskLevel == 'unlikely' ? styles.unlikely : '' } 
+                                        ${ depressionRiskLevel == 'low' ? styles.low : '' } 
+                                        ${ depressionRiskLevel == 'medium' ? styles.medium : '' } 
+                                        ${ depressionRiskLevel == 'high' ? styles.high : '' } 
+                                      `}
+                                    >
+                                      <h3>Depression</h3>
+                                      <h4>{depressionRiskLevel.charAt(0).toUpperCase() + depressionRiskLevel.slice(1)} Risk</h4>
+
+                                      {depressionRiskLevel == 'unlikely' && (
+                                        <>
+                                          {/*<img src="/unlikely-risk.svg" alt="Unlikely" />*/}
+                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>This low score means you have few symptoms of depression at this time.</p>
+                                        </>
+                                      )}
+
+                                      {depressionRiskLevel == 'low' && (
+                                        <>
+                                          {/*<img src="/low-risk.svg" alt="Low" />*/}
+                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the depression scale tend to have a 1 in 3 chance of suffering from depression.</p>
+                                        </>
+                                      )}
+
+                                      {depressionRiskLevel == 'medium' && (
+                                        <>
+                                          {/*<img src="/medium-risk.svg" alt="Medium" />*/}
+                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the depression scale tend to have a 2 in 3 chance of suffering from depression.</p>
+                                        </>
+                                      )}
+
+                                      {depressionRiskLevel == 'high' && (
+                                        <>
+                                          {/*<img src="/high-risk.svg" alt="High" />*/}
+                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the depression scale typically have a 90% chance of suffering from depression.</p>
+                                        </>
+                                      )}
+                                    </div>
+
+                                    <div className={`
+                                        ${styles.report_risks_flex_item} 
+                                        ${ anxietyRiskLevel == 'unlikely' ? styles.unlikely : '' } 
+                                        ${ anxietyRiskLevel == 'low' ? styles.low : '' } 
+                                        ${ anxietyRiskLevel == 'medium' ? styles.medium : '' } 
+                                        ${ anxietyRiskLevel == 'high' ? styles.high : '' } 
+                                      `}>
+                                      <h3 >Anxiety</h3>
+                                      <h4 className={`
+
+                                      `}>{anxietyRiskLevel.charAt(0).toUpperCase() + anxietyRiskLevel.slice(1)} Risk</h4>
+                                      {anxietyRiskLevel == 'unlikely' && (
+                                        <>
+                                          {/*<img src="/unlikely-risk.svg" alt="Unlikely" />*/}
+                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>This low score means you do not have symptoms of an anxiety disorder at this time.</p>
+                                        </>
+                                      )}
+
+                                      {anxietyRiskLevel == 'low' && (
+                                        <>
+                                          {/*<img src="/low-risk.svg" alt="Low" />*/}
+                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the anxiety scale tend to have a 1 in 3 chance of suffering from an anxiety disorder.</p>
+                                        </>
+                                      )}
+
+                                      {anxietyRiskLevel == 'medium' && (
+                                        <>
+                                          {/*<img src="/medium-risk.svg" alt="Medium" />*/}
+                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the anxiety scale tend to have about a 50% chance of suffering from an anxiety disorder.</p>
+                                        </>
+                                      )}
+
+                                      {anxietyRiskLevel == 'high' && (
+                                        <>
+                                          {/*<img src="/high-risk.svg" alt="High" />*/}
+                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the anxiety scale tend to have a 90% chance of suffering from an anxiety disorder.</p>
+                                        </>
+                                      )}
+                                    </div>
+
                                   </div>
 
-                                  <p style={{ fontSize: '16px', fontWeight: 'normal' }}>Buy Mooditude Premium to get your complete report showing your mental health risks and recommendations to overcome those risks.</p>
+                                  <div className={styles.report_risks_flex_wrap}>
+                                    <div 
+                                      className={`
+                                        ${styles.report_risks_flex_item} 
+                                        ${ ptsdRiskLevel == 'unlikely' ? styles.unlikely : '' } 
+                                        ${ ptsdRiskLevel == 'low' ? styles.low : '' } 
+                                        ${ ptsdRiskLevel == 'medium' ? styles.medium : '' } 
+                                        ${ ptsdRiskLevel == 'high' ? styles.high : '' } 
+                                      `}
+                                    >
+                                      <h3 >PTSD</h3>
+                                      <h4>{ptsdRiskLevel.charAt(0).toUpperCase() + ptsdRiskLevel.slice(1)} Risk</h4>
+                                      {ptsdRiskLevel == 'unlikely' && (
+                                        <>
+                                          {/*<img src="/unlikely-risk.svg" alt="Unlikely" />*/}
+                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>This low score means you do not have symptoms of posttraumatic stress disorder (PTSD) at this time.</p>
+                                        </>
+                                      )}
 
-                                  <p style={{ fontSize: '16px', fontWeight: 'normal' }}>Your purchase includes:</p>
+                                      {ptsdRiskLevel == 'low' && (
+                                        <>
+                                          {/*<img src="/low-risk.svg" alt="Low" />*/}
+                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>Many individuals who have posttraumatic stress disorder (PTSD) respond to the scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, your risk of PTSD is just 1 in 8, though there could be another underlying mood or anxiety condition. (Naturally, if you have experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)</p>
+                                        </>
+                                      )}
 
-                                  <ul style={{
-                                    fontFamily: 'Circular STD',
-                                    fontWeight: 'normal',
-                                    color: '#072B4F',
-                                    listStyle: 'none',
-                                    paddingLeft: '0'
-                                  }}>
-                                    <li style={{ 
-                                      marginBottom: '18px',
-                                      position: 'relative',
-                                      paddingLeft: '40px'
-                                    }}>
-                                      <img 
-                                        src="/check.svg" 
-                                        style={{
-                                          position: 'absolute',
-                                          top: '0',
-                                          left: '0'
-                                        }}
-                                      />
-                                      Unlimited quiz so you can track your progress over time
-                                    </li>
+                                      {ptsdRiskLevel == 'medium' && (
+                                        <>
+                                          {/*<img src="/medium-risk.svg" alt="Medium" />*/}
+                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>Most individuals who have posttraumatic stress disorder (PTSD) respond to the scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, your risk of PTSD is just 1 in 5, though there could be another underlying mood or anxiety condition. (Naturally, if you have experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)</p>
+                                        </>
+                                      )}
 
-                                    <li style={{ 
-                                      marginBottom: '18px',
-                                      position: 'relative',
-                                      paddingLeft: '40px'
-                                    }}>
-                                      <img 
-                                        src="/check.svg" 
-                                        style={{
-                                          position: 'absolute',
-                                          top: '0',
-                                          left: '0'
-                                        }}
-                                      />
-                                      Access to 800+ minutes of self-care activities, and
-                                    </li>
+                                      {ptsdRiskLevel == 'high' && (
+                                        <>
+                                          {/*<img src="/high-risk.svg" alt="High" />*/}
+                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>Most individuals who have posttraumatic stress disorder (PTSD) respond to the PTSD scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, the likelihood that you have PTSD is about 1 in 3, though there is a high likelihood of another underlying mood or anxiety condition. Further assessment may help clarify these results. (Naturally, if you are aware of having experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)</p>
+                                        </>
+                                      )}
+                                    </div>
 
-                                    <li style={{ 
-                                      marginBottom: '18px',
-                                      position: 'relative',
-                                      paddingLeft: '40px'
-                                    }}>
-                                      <img 
-                                        src="/check.svg" 
-                                        style={{
-                                          position: 'absolute',
-                                          top: '0',
-                                          left: '0'
-                                        }}
-                                      /> Goal Settings and Habit building features
-                                    </li>
-                                  </ul>
+                                    <div className={`
+                                        ${styles.report_risks_flex_item} 
+                                        ${ bipolarRiskLevel == 'unlikely' ? styles.unlikely : '' } 
+                                        ${ bipolarRiskLevel == 'low' ? styles.low : '' } 
+                                        ${ bipolarRiskLevel == 'medium' ? styles.medium : '' } 
+                                        ${ bipolarRiskLevel == 'high' ? styles.high : '' } 
+                                      `}>
+                                      <h3 >Bipolar</h3>
+                                      <h4 >{bipolarRiskLevel.charAt(0).toUpperCase() + bipolarRiskLevel.slice(1)} Risk</h4>
+                                      {bipolarRiskLevel == 'unlikely' && (
+                                        <>
+                                          {/*<img src="/unlikely-risk.svg" alt="Unlikely" />*/}
+                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>This low score means you do not have symptoms of bipolar disorder at this time.</p>
+                                        </>
+                                      )}
+
+                                      {bipolarRiskLevel == 'low' && (
+                                        <>
+                                          {/*<img src="/low-risk.svg" alt="Low" />*/}
+                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range of the bipolar scale tend to have a 1 in 9 chance of having bipolar disorder. Nonetheless, more than a third of people in this range have some type of mood or anxiety condition. Further assessment may help clarify these results.</p>
+                                        </>
+                                      )}
+
+                                      {bipolarRiskLevel == 'medium' && (
+                                        <>
+                                          {/*<img src="/medium-risk.svg" alt="Medium" />*/}
+                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range of the bipolar scale tend to have a 1 in 3 chance of having bipolar disorder, or possible another mood or anxiety condition. Further assessment may help clarify these results.</p>
+                                        </>
+                                      )}
+
+                                      {bipolarRiskLevel == 'high' && (
+                                        <>
+                                          {/*<img src="/high-risk.svg" alt="High" />*/}
+                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range of the bipolar scale tend to have a 50% likelihood of having bipolar disorder. Though the score is high, there is a high false positive rate, so further assessment may help clarify these results.</p>
+                                        </>
+                                      )}
+                                    </div>
+
+                                  </div>
+
+                                  
+
+                                  
+                                </div>
+
+                                <div className={styles.results_recommendations}>
+                                  {/*<img src="/recommended-actions.svg" alt="Recommended Actions" />*/}
+                                  <h2>Recommendations</h2>
+
+                                  {allRiskLevel == 'unlikely' && (
+                                    <>
+                                      <p>Your responses suggest that you are not suffering from a significant mood or anxiety disorder at the present time. However, before closing the book on this matter there are a few points you should consider.</p>
+
+                                      <p>A small percentage of individuals with mood or anxiety disorders fail to be picked up by the assessment. Therefore, if you find yourself experiencing troubling mood or anxiety-related symptoms then you should certainly present your concerns to your primary care practitioner or perhaps to a mental health clinician.</p>
+
+                                      <p>A tendency to underestimate the effects of your symptoms on friendships, home, or work-life may have resulted in an “all is well” report when perhaps this is not strictly true. Call it “denial,” not wishing to complain, or simply trying to “tough it out,” underreporting trouble could backfire and cause you more distress in the future. Avoid the pitfall of assuming that the way you feel “is to be expected considering my circumstances.” While bad feelings are naturally the result of difficult and stressful life situations, mood and anxiety disorders are real medical conditions that may be triggered by such stresses. When they do arise, these conditions make it more difficult to cope with the problems confronting you, and so it is always in your best interest to get them evaluated.</p>
+
+                                      <p>Milder or subclinical varieties of mood and anxiety occasionally develop into more serious conditions. In such instances, symptoms may be less severe but nonetheless distracting or annoying, slowing you down or making things more stressful than they should be. If you feel this may apply to you, you should consider raising the issue with your physician and sharing your responses to these questions.</p>
+
+                                      <p>Mood and anxiety disorders typically come in episodes. Therefore, even if you are feeling fine now, it is in your best interest to revisit this checklist every 6 months or so. Naturally, if at any point you find yourself experiencing some of the symptoms described in the assessment, please return and repeat the checklist at your first opportunity.</p>
+
+                                      <p>Mooditude has over 800 minutes of self-care activities. Make a habit of practicing one of them for just 10 minutes per day. This will help you maintain your mental well-being.</p>
+                                    </>
+                                  )}
+                                  
+                                  {allRiskLevel == 'low' && (
+                                    <>
+                                      <p>Your low overall score means that your symptoms are somewhat milder than average. However, mild symptoms still may have a negative effect on your well-being and, when left untreated, can grow worse with time. You may possibly benefit from contacting your physician or a mental health care provider to begin a discussion of your responses to these questions. It is important for you to share these results with your physician.</p>
+
+                                      <p>Mood and anxiety disorders can affect not only your general sense of well-being but your physical health as well, increasing the risk or severity of heart disease, stroke, diabetes, chronic pain, and other chronic health conditions.</p>
+                                    </>
+                                  )}
+
+                                  {allRiskLevel == 'medium' && (
+                                    <>
+                                      <p>Your overall score suggests that you would benefit from contacting your physician or a mental health care provider to begin a discussion of your responses to these questions.  It is important for you to share these results with your physician.</p>
+
+                                      <p>Mood and anxiety disorders can affect not only your general sense of well-being but your physical health as well, increasing the risk or severity of heart disease, stroke, diabetes, chronic pain, and other chronic health conditions.</p>
+                                    </>
+                                  )}
+
+                                  {allRiskLevel == 'high' && (
+                                    <>
+                                      <p>Your overall score suggests that you would benefit from contacting your physician or a mental health care provider as soon as possible to begin a discussion of your responses to these questions.  It is important for you to share these results with your physician.</p>
+
+                                      <p>Mood and anxiety disorders can affect not only your general sense of well-being but your physical health as well, increasing the risk or severity of heart disease, stroke, diabetes, chronic pain, and other chronic health conditions.</p>
+                                    </>
+                                  )}
 
                                   <Button 
                                     size="large" 
                                     className={styles.report_btn} 
                                     variant="contained" 
-                                    href={'/buy'}
                                     style={{
-                                      marginBottom: '15px',
-                                      fontSize: '14px',
-                                      fontWeight: '300',
-                                      fontFamily: 'Circular STD'
+                                      marginTop: '10px',
+                                      marginBottom: '60px',
+                                      fontFamily: 'Circular STD',
+                                      
                                     }} 
+                                    onClick={() => alert('Coming soon...')}
                                   >
-                                    BUY MOODITUDE PREMIUM
+                                    FIND THE RIGHT THERAPIST
                                   </Button>
-                                  
-                                  {/*<div>
-                                    <Link href="#" >
-                                      <a onClick={e => {e.preventDefault();setBuyPremium(false)}} style={{
-                                        fontSize: '14px',
-                                        fontWeight: '300',
-                                        fontFamily: 'Circular STD'
-                                      }}>NO THANKS</a>
-                                    </Link>
-                                  </div>*/}
                                 </div>
-                                 : '' }
-                                <div className={styles.download_app_wrap}>
-                                  <h4>Download</h4>
-                                  <p>For the full experience download Mooditude’s mobile app and login with your credentials. </p>
 
-                                  <div className={styles.app_btns}>
-                                    <a href="https://apps.apple.com/us/app/mooditude-cbt-therapy/id1450661800" target="_blank">
-                                      <img src="/Apple.png" alt="" />
-                                    </a>  
+                                <div className={styles.results_thoughts_wrap}>
+                                  
 
-                                    <a href="https://play.google.com/store/apps/details?id=com.health.mental.mooditude" target="_blank">
-                                      <img src="/Android.png" alt="" />
-                                    </a>  
-                                  </div>
+
+                                  {usedDrug && (
+                                    <div className={styles.results_thoughts_item}>
+                                      <h4>Substance Abuse</h4>
+                                      <p>Your responses indicated that you have occasionally used non-prescribed drugs to manage some of the symptoms.</p>
+
+                                      <p>Self-medication for such symptoms, even when this appears to be effective, is likely to make such symptoms worse over the long term. We strongly urge you to share the responses to these questions with your physician and to begin an honest discussion about your drug use patterns.</p>
+
+                                      <p>It is likely that a more appropriate and more effective means for managing your symptoms can be found, bringing with it a real chance for improvement in your functioning, quality of life, and overall health.</p>
+                                    </div>
+                                  )}
+
+                                  {usedAlcohol && (
+                                    <div className={styles.results_thoughts_item}>
+                                      <h4>Substance Abuse</h4>
+                                      <p>Your responses suggest that you have occasionally used alcohol to manage some of the symptoms.</p>
+
+                                      <p>Self-medication for such symptoms, even when this appears to be effective, often will make such symptoms worse over the long term. We strongly urge you to share your assessment results with your physician and to begin an honest discussion about your alcohol use patterns.</p>
+
+                                      <p>It is virtually certain that a more appropriate and more effective means for managing your symptoms can be found, bringing with it a real chance for improvement in your functioning, quality of life, and overall health.</p>
+                                    </div>
+                                  )}
+
+                                  {hasSuicidalThoughts && (
+                                    <>
+                                      <div className={styles.results_thoughts_item}>
+                                        <h4>Suicidality</h4>
+                                        <p ><strong style={{ color: '#EB5757' }}>Your response to a question related to suicidal thoughts raises a red flag.</strong></p>
+
+                                        <p >Are you in crisis?</p>
+
+                                        <p >Please reach out for help:</p>
+
+                                        <ul style={{
+                                          textAlign: 'left',
+                                          marginBottom: '0',
+                                          marginTop: '0',
+                                          paddingLeft: '20px'
+                                        }}>
+                                          <li>call your doctor </li>
+                                          <li>National Suicide Prevention Lifeline: <strong>1-800-273-8255</strong></li>
+                                          <li>text <em>HOME</em> to the Crisis Line at <strong>741741</strong></li>
+                                          <li>call or go to an emergency room.</li>
+                                        </ul>
+                                      </div>
+
+                                      <p style={{ margin: '20px 0' }}>It is very important, first of all, to point out that having such a thought does not automatically place you at risk for actual suicide. On the other hand, individuals who report suicidal thinking on closer examination are often found to have a mood or anxiety disorder. This is true even for those who feel that, due to life circumstances, they have legitimate reasons for having such thoughts. Given this fact, it is crucial that you present your responses to these questions to your physician and begin a discussion of this issue.</p>
+                                    </>
+                                  )}
+                                </div>
+                                
+
+                               
+
+                                
+                                
+                                <div className={styles.disclaimer}>
+                                  <h5>Disclaimer</h5>
+                                  
+                                  <p>Mooditude is not engaged in rendering medical or other professional services, and the use of the assessment is not intended to create and does not create any medical or other professional services relationship.</p>
+
+                                  <p>Use of this assessment is not an adequate substitute for obtaining medical or other professional advice, diagnosis, or treatment from a qualified licensed health care provider.</p>
+
+                                  <p>This assessment is not intended for anyone under eighteen (18) years of age and is provided "as is" without any warranties of any kind, either express or implied, and Mooditude disclaims all warranties, including liability for indirect or consequential damages.</p>
                                 </div>
                               </>
                             )}
+                          </>
+                        )}
+                      </div>
+                    )}
+
+                    {isScoresVisible && (
+                      <div className={styles.report_content_item} key={'report_content_paid_wrap'}>
+                        <div className={styles.scores_section} style={{ width: '400px' }}>
+                          <h2 >Diagnosis Risks</h2>
+
+                          <div className={styles.diagnosis_risks}>
+                            <div
+                              className={`
+                                ${depressionRiskLevel == 'high' ? styles.risk_high : ''} 
+                                ${depressionRiskLevel == 'medium' ? styles.risk_medium : ''} 
+                                ${depressionRiskLevel == 'low' ? styles.risk_low : ''} 
+                                ${depressionRiskLevel == 'unlikely' ? styles.risk_unlikely : ''} 
+                              `}
+                            >
+                              <div className={styles.risk_score}>{depressionRiskScore}</div>
+                              <h3>Depression Risks</h3>
+                              <h3>{depressionRiskLevel.charAt(0).toUpperCase() + depressionRiskLevel.slice(1)}</h3>
+                            </div>
+
                           
-                          
 
-                          {((licenseType == 'Premium') || (userProfile.customerType == 'premium')) && (
-                            <>
-                              <div style={{ marginBottom: '40px' }}>
-                                <img src="/warning.svg" alt="Disorder Risks" />
-                                <h2 style={{ marginTop: '-8px', marginBottom: '30px' }}>Disorder Risks</h2>
+                            <div
+                              className={`
+                                ${anxietyRiskLevel == 'high' ? styles.risk_high : ''} 
+                                ${anxietyRiskLevel == 'medium' ? styles.risk_medium : ''} 
+                                ${anxietyRiskLevel == 'low' ? styles.risk_low : ''} 
+                                ${anxietyRiskLevel == 'unlikely' ? styles.risk_unlikely : ''} 
+                              `}
+                            >
+                              <div className={styles.risk_score}>{anxietyRiskScore}</div>
+                              <h3>Anxiety Risks</h3>
+                              <h3>{anxietyRiskLevel.charAt(0).toUpperCase() + anxietyRiskLevel.slice(1)}</h3>
+                            </div>
 
-                                <div style={{ marginBottom: '32px' }}>
-                                  <h3 style={{ fontSize: '18px', fontFamily: 'Circular STD', marginBottom: '-5px', color: '#072B4F' }}>Depression — {depressionRiskLevel.charAt(0).toUpperCase() + depressionRiskLevel.slice(1)} Risk</h3>
+                            <div
+                              className={`
+                                ${ptsdRiskLevel == 'high' ? styles.risk_high : ''} 
+                                ${ptsdRiskLevel == 'medium' ? styles.risk_medium : ''} 
+                                ${ptsdRiskLevel == 'low' ? styles.risk_low : ''} 
+                                ${ptsdRiskLevel == 'unlikely' ? styles.risk_unlikely : ''} 
+                              `}
+                            >
+                              <div className={styles.risk_score}>{ptsdRiskScore}</div>
+                              <h3>PTSD Risks</h3>
+                              <h3>{ptsdRiskLevel.charAt(0).toUpperCase() + ptsdRiskLevel.slice(1)}</h3>
+                            </div>
 
-                                  {depressionRiskLevel == 'unlikely' && (
-                                    <>
-                                      <img src="/unlikely-risk.svg" alt="Unlikely" />
-                                      <p style={{ color: '#072B4F', marginTop: '5px' }}>This low score means you have few symptoms of depression at this time.</p>
-                                    </>
-                                  )}
-
-                                  {depressionRiskLevel == 'low' && (
-                                    <>
-                                      <img src="/low-risk.svg" alt="Low" />
-                                      <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the depression scale tend to have a 1 in 3 chance of suffering from depression.</p>
-                                    </>
-                                  )}
-
-                                  {depressionRiskLevel == 'medium' && (
-                                    <>
-                                      <img src="/medium-risk.svg" alt="Medium" />
-                                      <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the depression scale tend to have a 2 in 3 chance of suffering from depression.</p>
-                                    </>
-                                  )}
-
-                                  {depressionRiskLevel == 'high' && (
-                                    <>
-                                      <img src="/high-risk.svg" alt="High" />
-                                      <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the depression scale typically have a 90% chance of suffering from depression.</p>
-                                    </>
-                                  )}
-                                </div>
-
-                                <div style={{ marginBottom: '32px' }}>
-                                  <h3 style={{ fontSize: '18px', fontFamily: 'Circular STD', marginBottom: '-5px', color: '#072B4F' }}>Anxiety — {anxietyRiskLevel.charAt(0).toUpperCase() + anxietyRiskLevel.slice(1)} Risk</h3>
-
-                                  {anxietyRiskLevel == 'unlikely' && (
-                                    <>
-                                      <img src="/unlikely-risk.svg" alt="Unlikely" />
-                                      <p style={{ color: '#072B4F', marginTop: '5px' }}>This low score means you do not have symptoms of an anxiety disorder at this time.</p>
-                                    </>
-                                  )}
-
-                                  {anxietyRiskLevel == 'low' && (
-                                    <>
-                                      <img src="/low-risk.svg" alt="Low" />
-                                      <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the anxiety scale tend to have a 1 in 3 chance of suffering from an anxiety disorder.</p>
-                                    </>
-                                  )}
-
-                                  {anxietyRiskLevel == 'medium' && (
-                                    <>
-                                      <img src="/medium-risk.svg" alt="Medium" />
-                                      <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the anxiety scale tend to have about a 50% chance of suffering from an anxiety disorder.</p>
-                                    </>
-                                  )}
-
-                                  {anxietyRiskLevel == 'high' && (
-                                    <>
-                                      <img src="/high-risk.svg" alt="High" />
-                                      <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the anxiety scale tend to have a 90% chance of suffering from an anxiety disorder.</p>
-                                    </>
-                                  )}
-                                </div>
-
-                                <div style={{ marginBottom: '32px' }}>
-                                  <h3 style={{ fontSize: '18px', fontFamily: 'Circular STD', marginBottom: '-5px', color: '#072B4F' }}>PTSD — {ptsdRiskLevel.charAt(0).toUpperCase() + ptsdRiskLevel.slice(1)} Risk</h3>
-
-                                  {ptsdRiskLevel == 'unlikely' && (
-                                    <>
-                                      <img src="/unlikely-risk.svg" alt="Unlikely" />
-                                      <p style={{ color: '#072B4F', marginTop: '5px' }}>This low score means you do not have symptoms of posttraumatic stress disorder (PTSD) at this time.</p>
-                                    </>
-                                  )}
-
-                                  {ptsdRiskLevel == 'low' && (
-                                    <>
-                                      <img src="/low-risk.svg" alt="Low" />
-                                      <p style={{ color: '#072B4F', marginTop: '5px' }}>Many individuals who have posttraumatic stress disorder (PTSD) respond to the scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, your risk of PTSD is just 1 in 8, though there could be another underlying mood or anxiety condition. (Naturally, if you have experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)</p>
-                                    </>
-                                  )}
-
-                                  {ptsdRiskLevel == 'medium' && (
-                                    <>
-                                      <img src="/medium-risk.svg" alt="Medium" />
-                                      <p style={{ color: '#072B4F', marginTop: '5px' }}>Most individuals who have posttraumatic stress disorder (PTSD) respond to the scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, your risk of PTSD is just 1 in 5, though there could be another underlying mood or anxiety condition. (Naturally, if you have experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)</p>
-                                    </>
-                                  )}
-
-                                  {ptsdRiskLevel == 'high' && (
-                                    <>
-                                      <img src="/high-risk.svg" alt="High" />
-                                      <p style={{ color: '#072B4F', marginTop: '5px' }}>Most individuals who have posttraumatic stress disorder (PTSD) respond to the PTSD scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, the likelihood that you have PTSD is about 1 in 3, though there is a high likelihood of another underlying mood or anxiety condition. Further assessment may help clarify these results. (Naturally, if you are aware of having experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)</p>
-                                    </>
-                                  )}
-                                </div>
-
-                                <div style={{ marginBottom: '50px' }}>
-                                  <h3 style={{ fontSize: '18px', fontFamily: 'Circular STD', marginBottom: '-5px', color: '#072B4F' }}>Bipolar — {bipolarRiskLevel.charAt(0).toUpperCase() + bipolarRiskLevel.slice(1)} Risk</h3>
-
-                                  {bipolarRiskLevel == 'unlikely' && (
-                                    <>
-                                      <img src="/unlikely-risk.svg" alt="Unlikely" />
-                                      <p style={{ color: '#072B4F', marginTop: '5px' }}>This low score means you do not have symptoms of bipolar disorder at this time.</p>
-                                    </>
-                                  )}
-
-                                  {bipolarRiskLevel == 'low' && (
-                                    <>
-                                      <img src="/low-risk.svg" alt="Low" />
-                                      <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range of the bipolar scale tend to have a 1 in 9 chance of having bipolar disorder. Nonetheless, more than a third of people in this range have some type of mood or anxiety condition. Further assessment may help clarify these results.</p>
-                                    </>
-                                  )}
-
-                                  {bipolarRiskLevel == 'medium' && (
-                                    <>
-                                      <img src="/medium-risk.svg" alt="Medium" />
-                                      <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range of the bipolar scale tend to have a 1 in 3 chance of having bipolar disorder, or possible another mood or anxiety condition. Further assessment may help clarify these results.</p>
-                                    </>
-                                  )}
-
-                                  {bipolarRiskLevel == 'high' && (
-                                    <>
-                                      <img src="/high-risk.svg" alt="High" />
-                                      <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range of the bipolar scale tend to have a 50% likelihood of having bipolar disorder. Though the score is high, there is a high false positive rate, so further assessment may help clarify these results.</p>
-                                    </>
-                                  )}
-                                </div>
-                              </div>
-
-                              <div style={{ marginTop: '40px' }}>
-                                <img src="/recommended-actions.svg" alt="Recommended Actions" />
-                                <h2 style={{ marginTop: '-2px' }}>Recommended<br />Actions</h2>
-
-                                {allRiskLevel == 'unlikely' && (
-                                  <>
-                                    <p>Your responses suggest that you are not suffering from a significant mood or anxiety disorder at the present time. However, before closing the book on this matter there are a few points you should consider.</p>
-
-                                    <p>A small percentage of individuals with mood or anxiety disorders fail to be picked up by the assessment. Therefore, if you find yourself experiencing troubling mood or anxiety-related symptoms then you should certainly present your concerns to your primary care practitioner or perhaps to a mental health clinician.</p>
-
-                                    <p>A tendency to underestimate the effects of your symptoms on friendships, home, or work-life may have resulted in an “all is well” report when perhaps this is not strictly true. Call it “denial,” not wishing to complain, or simply trying to “tough it out,” underreporting trouble could backfire and cause you more distress in the future. Avoid the pitfall of assuming that the way you feel “is to be expected considering my circumstances.” While bad feelings are naturally the result of difficult and stressful life situations, mood and anxiety disorders are real medical conditions that may be triggered by such stresses. When they do arise, these conditions make it more difficult to cope with the problems confronting you, and so it is always in your best interest to get them evaluated.</p>
-
-                                    <p>Milder or subclinical varieties of mood and anxiety occasionally develop into more serious conditions. In such instances, symptoms may be less severe but nonetheless distracting or annoying, slowing you down or making things more stressful than they should be. If you feel this may apply to you, you should consider raising the issue with your physician and sharing your responses to these questions.</p>
-
-                                    <p>Mood and anxiety disorders typically come in episodes. Therefore, even if you are feeling fine now, it is in your best interest to revisit this checklist every 6 months or so. Naturally, if at any point you find yourself experiencing some of the symptoms described in the assessment, please return and repeat the checklist at your first opportunity.</p>
-
-                                    <p>Mooditude has over 800 minutes of self-care activities. Make a habit of practicing one of them for just 10 minutes per day. This will help you maintain your mental well-being.</p>
-                                  </>
-                                )}
-                                
-                                {allRiskLevel == 'low' && (
-                                  <>
-                                    <p>Your low overall score means that your symptoms are somewhat milder than average. However, mild symptoms still may have a negative effect on your well-being and, when left untreated, can grow worse with time. You may possibly benefit from contacting your physician or a mental health care provider to begin a discussion of your responses to these questions. It is important for you to share these results with your physician.</p>
-
-                                    <p>Mood and anxiety disorders can affect not only your general sense of well-being but your physical health as well, increasing the risk or severity of heart disease, stroke, diabetes, chronic pain, and other chronic health conditions.</p>
-                                  </>
-                                )}
-
-                                {allRiskLevel == 'medium' && (
-                                  <>
-                                    <p>Your overall score suggests that you would benefit from contacting your physician or a mental health care provider to begin a discussion of your responses to these questions.  It is important for you to share these results with your physician.</p>
-
-                                    <p>Mood and anxiety disorders can affect not only your general sense of well-being but your physical health as well, increasing the risk or severity of heart disease, stroke, diabetes, chronic pain, and other chronic health conditions.</p>
-                                  </>
-                                )}
-
-                                {allRiskLevel == 'high' && (
-                                  <>
-                                    <p>Your overall score suggests that you would benefit from contacting your physician or a mental health care provider as soon as possible to begin a discussion of your responses to these questions.  It is important for you to share these results with your physician.</p>
-
-                                    <p>Mood and anxiety disorders can affect not only your general sense of well-being but your physical health as well, increasing the risk or severity of heart disease, stroke, diabetes, chronic pain, and other chronic health conditions.</p>
-                                  </>
-                                )}
-
-                                <Button 
-                                  size="large" 
-                                  className={styles.report_btn} 
-                                  variant="contained" 
-                                  style={{
-                                    marginTop: '10px',
-                                    marginBottom: '60px',
-                                    fontFamily: 'Circular STD',
-                                    
-                                  }} 
-                                  onClick={() => alert('Coming soon...')}
-                                >
-                                  FIND THE RIGHT THERAPIST
-                                </Button>
-                              </div>
-
-                              {hasSuicidalThoughts && (
-                                <>
-                                  <div style={{
-                                    backgroundColor: '#FFFFAA',
-                                    padding: '30px',
-                                    textAlign: 'center',
-                                    fontFamily: 'Circular Std',
-                                    borderRadius: '4px'
-                                  }}>
-                                    <p style={{ marginTop: '0' }}><strong style={{ color: '#EB5757' }}>Your response to a question related to suicidal thoughts raises a red flag.</strong></p>
-
-                                    <p style={{ color: '#000' }}>Are you in crisis?</p>
-
-                                    <p style={{ marginBottom: '0', textAlign: 'left', color: '#000' }}>Please reach out for help:</p>
-
-                                    <ul style={{
-                                      textAlign: 'left',
-                                      marginBottom: '0',
-                                      marginTop: '0',
-                                      paddingLeft: '20px'
-                                    }}>
-                                      <li style={{ fontSize: '14px' }}>call your doctor </li>
-                                      <li style={{ fontSize: '14px' }}>National Suicide Prevention Lifeline: <strong>1-800-273-8255</strong></li>
-                                      <li style={{ fontSize: '14px' }}>text <em>HOME</em> to the Crisis Line at <strong>741741</strong></li>
-                                      <li style={{ fontSize: '14px' }}>call or go to an emergency room.</li>
-                                    </ul>
-                                  </div>
-
-                                  <p style={{ margin: '20px 0' }}>It is very important, first of all, to point out that having such a thought does not automatically place you at risk for actual suicide. On the other hand, individuals who report suicidal thinking on closer examination are often found to have a mood or anxiety disorder. This is true even for those who feel that, due to life circumstances, they have legitimate reasons for having such thoughts. Given this fact, it is crucial that you present your responses to these questions to your physician and begin a discussion of this issue.</p>
-                                </>
-                              )}
-
-                              {usedDrug && (
-                                <>
-                                  <p>Your responses indicated that you have occasionally used non-prescribed drugs to manage some of the symptoms.</p>
-
-                                  <p>Self-medication for such symptoms, even when this appears to be effective, is likely to make such symptoms worse over the long term. We strongly urge you to share the responses to these questions with your physician and to begin an honest discussion about your drug use patterns.</p>
-
-                                  <p>It is likely that a more appropriate and more effective means for managing your symptoms can be found, bringing with it a real chance for improvement in your functioning, quality of life, and overall health.</p>
-                                </>
-                              )}
-
-                              {usedAlcohol && (
-                                <>
-                                  <p>Your responses suggest that you have occasionally used alcohol to manage some of the symptoms.</p>
-
-                                  <p>Self-medication for such symptoms, even when this appears to be effective, often will make such symptoms worse over the long term. We strongly urge you to share your assessment results with your physician and to begin an honest discussion about your alcohol use patterns.</p>
-
-                                  <p>It is virtually certain that a more appropriate and more effective means for managing your symptoms can be found, bringing with it a real chance for improvement in your functioning, quality of life, and overall health.</p>
-                                </>
-                              )}
+                            <div
+                              className={`
+                                ${bipolarRiskLevel == 'high' ? styles.risk_high : ''} 
+                                ${bipolarRiskLevel == 'medium' ? styles.risk_medium : ''} 
+                                ${bipolarRiskLevel == 'low' ? styles.risk_low : ''} 
+                                ${bipolarRiskLevel == 'unlikely' ? styles.risk_unlikely : ''} 
+                              `}
+                            >
                               
-                              <div>
-                                <h5 style={{ fontSize: '18px', color: '#516B84', marginBottom: '12px', marginTop: '60px' }}>Disclaimer</h5>
-                                
-                                <p>Mooditude is not engaged in rendering medical or other professional services, and the use of the assessment is not intended to create and does not create any medical or other professional services relationship.</p>
-
-                                <p>Use of this assessment is not an adequate substitute for obtaining medical or other professional advice, diagnosis, or treatment from a qualified licensed health care provider.</p>
-
-                                <p>This assessment is not intended for anyone under eighteen (18) years of age and is provided "as is" without any warranties of any kind, either express or implied, and Mooditude disclaims all warranties, including liability for indirect or consequential damages.</p>
-                              </div>
-                            </>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  )}
-
-                  {isScoresVisible && (
-                    <div className={styles.report_content_item} key={'report_content_paid_wrap'}>
-                      <div className={styles.scores_section} style={{ width: '400px' }}>
-                        <h2 style={{ fontWeight: '500' }}>Diagnosis Risks</h2>
-
-                        <div className={styles.diagnosis_risks}>
-                          <div>
-                            {depressionRiskLevel == 'high' && <div className={styles.risk_level_high}>{depressionRiskScore}</div>}
-                            {depressionRiskLevel == 'medium' && <div className={styles.risk_level_medium}>{depressionRiskScore}</div>}
-                            {depressionRiskLevel == 'low' && <div className={styles.risk_level_low}>{depressionRiskScore}</div>}
-                            {depressionRiskLevel == 'unlikely' && <div className={styles.risk_level_unlikely}>{depressionRiskScore}</div>}
-                            <h3>Depression Risks</h3>
-                            <h3>{depressionRiskLevel.charAt(0).toUpperCase() + depressionRiskLevel.slice(1)}</h3>
-                          </div>
-
-                          <div>
-                            {anxietyRiskLevel == 'high' && <div className={styles.risk_level_high}>{anxietyRiskScore}</div>}
-                            {anxietyRiskLevel == 'medium' && <div className={styles.risk_level_medium}>{anxietyRiskScore}</div>}
-                            {anxietyRiskLevel == 'low' && <div className={styles.risk_level_low}>{anxietyRiskScore}</div>}
-                            {anxietyRiskLevel == 'unlikely' && <div className={styles.risk_level_unlikely}>{anxietyRiskScore}</div>}
-                            <h3>Anxiety Risks</h3>
-                            <h3>{anxietyRiskLevel.charAt(0).toUpperCase() + anxietyRiskLevel.slice(1)}</h3>
-                          </div>
-
-                          <div>
-                            {ptsdRiskLevel == 'high' && <div className={styles.risk_level_high}>{ptsdRiskScore}</div>}
-                            {ptsdRiskLevel == 'medium' && <div className={styles.risk_level_medium}>{ptsdRiskScore}</div>}
-                            {ptsdRiskLevel == 'low' && <div className={styles.risk_level_low}>{ptsdRiskScore}</div>}
-                            {ptsdRiskLevel == 'unlikely' && <div className={styles.risk_level_unlikely}>{ptsdRiskScore}</div>}
-                            <h3>PTSD Risks</h3>
-                            <h3>{ptsdRiskLevel.charAt(0).toUpperCase() + ptsdRiskLevel.slice(1)}</h3>
-                          </div>
-
-                          <div>
-                            {bipolarRiskLevel == 'high' && <div className={styles.risk_level_high}>{bipolarRiskScore}</div>}
-                            {bipolarRiskLevel == 'medium' && <div className={styles.risk_level_medium}>{bipolarRiskScore}</div>}
-                            {bipolarRiskLevel == 'low' && <div className={styles.risk_level_low}>{bipolarRiskScore}</div>}
-                            {bipolarRiskLevel == 'unlikely' && <div className={styles.risk_level_unlikely}>{bipolarRiskScore}</div>}
-                            <h3>Bipolar Risks</h3>
-                            <h3>{bipolarRiskLevel.charAt(0).toUpperCase() + bipolarRiskLevel.slice(1)}</h3>
+                              <div className={styles.risk_score}>{bipolarRiskScore}</div>
+                              <h3>Bipolar Risks</h3>
+                              <h3>{bipolarRiskLevel.charAt(0).toUpperCase() + bipolarRiskLevel.slice(1)}</h3>
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div className={styles.scores_section} style={{ width: '400px' }}>
-                        <h2 style={{ fontWeight: '500' }}>Functional Impairments</h2>
+                        <div className={styles.scores_section} style={{ width: '400px' }}>
+                          <h2 style={{ fontWeight: '500' }}>Functional Impairments</h2>
 
-                        <div className={styles.functional_impairments}>
-                          <div>
-                            {thoughtsOfSuicideAnswer == 0 && <div className={styles.risk_level_unlikely}></div>}
-                            {thoughtsOfSuicideAnswer == 1 && <div className={styles.risk_level_unlikely}></div>}
-                            {thoughtsOfSuicideAnswer == 2 && <div className={styles.risk_level_low}></div>}
-                            {thoughtsOfSuicideAnswer == 3 && <div className={styles.risk_level_medium}></div>}
-                            {thoughtsOfSuicideAnswer == 4 && <div className={styles.risk_level_high}></div>}
-                            {thoughtsOfSuicideAnswer == 5 && <div className={styles.risk_level_high}></div>}
-                            
-                            <p>Thoughts of suicide</p>
+                          <div className={styles.functional_impairments}>
+                            <div>
+                              {thoughtsOfSuicideAnswer == 0 && <div className={styles.risk_level_unlikely}></div>}
+                              {thoughtsOfSuicideAnswer == 1 && <div className={styles.risk_level_unlikely}></div>}
+                              {thoughtsOfSuicideAnswer == 2 && <div className={styles.risk_level_low}></div>}
+                              {thoughtsOfSuicideAnswer == 3 && <div className={styles.risk_level_medium}></div>}
+                              {thoughtsOfSuicideAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                              {thoughtsOfSuicideAnswer == 5 && <div className={styles.risk_level_high}></div>}
+                              
+                              <p>Thoughts of suicide</p>
 
-                            {thoughtsOfSuicideAnswer == 0 && <p>None</p>}
-                            {thoughtsOfSuicideAnswer == 1 && <p>Rarely</p>}
-                            {thoughtsOfSuicideAnswer == 2 && <p>Sometimes</p>}
-                            {thoughtsOfSuicideAnswer == 3 && <p>Often</p>}
-                            {thoughtsOfSuicideAnswer == 4 && <p>Most of the time</p>}
-                            {thoughtsOfSuicideAnswer == 5 && <p>Most of the time</p>}
-                          </div>
-
-                          <div>
-                            {impairsWorkSchoolAnswer == 0 && <div className={styles.risk_level_unlikely}></div>}
-                            {impairsWorkSchoolAnswer == 1 && <div className={styles.risk_level_unlikely}></div>}
-                            {impairsWorkSchoolAnswer == 2 && <div className={styles.risk_level_low}></div>}
-                            {impairsWorkSchoolAnswer == 3 && <div className={styles.risk_level_medium}></div>}
-                            {impairsWorkSchoolAnswer == 4 && <div className={styles.risk_level_high}></div>}
-                            {impairsWorkSchoolAnswer == 5 && <div className={styles.risk_level_high}></div>}
-                            
-                            <p>Impairs work/school</p>
-
-                            {impairsWorkSchoolAnswer == 0 && <p>None</p>}
-                            {impairsWorkSchoolAnswer == 1 && <p>Rarely</p>}
-                            {impairsWorkSchoolAnswer == 2 && <p>Sometimes</p>}
-                            {impairsWorkSchoolAnswer == 3 && <p>Often</p>}
-                            {impairsWorkSchoolAnswer == 4 && <p>Most of the time</p>}
-                            {impairsWorkSchoolAnswer == 5 && <p>Most of the time</p>}
-                          </div>
-
-                          <div>
-                            {impairsFriendsFamilyAnswer == 0 && <div className={styles.risk_level_unlikely}></div>}
-                            {impairsFriendsFamilyAnswer == 1 && <div className={styles.risk_level_unlikely}></div>}
-                            {impairsFriendsFamilyAnswer == 2 && <div className={styles.risk_level_low}></div>}
-                            {impairsFriendsFamilyAnswer == 3 && <div className={styles.risk_level_medium}></div>}
-                            {impairsFriendsFamilyAnswer == 4 && <div className={styles.risk_level_high}></div>}
-                            {impairsFriendsFamilyAnswer == 5 && <div className={styles.risk_level_high}></div>}
-                            
-                            <p>Impairs friends/family</p>
-
-                            {impairsFriendsFamilyAnswer == 0 && <p>None</p>}
-                            {impairsFriendsFamilyAnswer == 1 && <p>Rarely</p>}
-                            {impairsFriendsFamilyAnswer == 2 && <p>Sometimes</p>}
-                            {impairsFriendsFamilyAnswer == 3 && <p>Often</p>}
-                            {impairsFriendsFamilyAnswer == 4 && <p>Most of the time</p>}
-                            {impairsFriendsFamilyAnswer == 5 && <p>Most of the time</p>}
-                          </div>
-
-                          <div>
-                            {ledToUsingAlcoholAnswer == 0 && <div className={styles.risk_level_unlikely}></div>}
-                            {ledToUsingAlcoholAnswer == 1 && <div className={styles.risk_level_unlikely}></div>}
-                            {ledToUsingAlcoholAnswer == 2 && <div className={styles.risk_level_low}></div>}
-                            {ledToUsingAlcoholAnswer == 3 && <div className={styles.risk_level_medium}></div>}
-                            {ledToUsingAlcoholAnswer == 4 && <div className={styles.risk_level_high}></div>}
-                            {ledToUsingAlcoholAnswer == 5 && <div className={styles.risk_level_high}></div>}
-                            
-                            <p>Led to using alcohol</p>
-
-                            {ledToUsingAlcoholAnswer == 0 && <p>None</p>}
-                            {ledToUsingAlcoholAnswer == 1 && <p>Rarely</p>}
-                            {ledToUsingAlcoholAnswer == 2 && <p>Sometimes</p>}
-                            {ledToUsingAlcoholAnswer == 3 && <p>Often</p>}
-                            {ledToUsingAlcoholAnswer == 4 && <p>Most of the time</p>}
-                            {ledToUsingAlcoholAnswer == 5 && <p>Most of the time</p>}
-                          </div>
-
-                          <div>
-                            {ledToUsingDrugAnswer == 0 && <div className={styles.risk_level_unlikely}></div>}
-                            {ledToUsingDrugAnswer == 1 && <div className={styles.risk_level_unlikely}></div>}
-                            {ledToUsingDrugAnswer == 2 && <div className={styles.risk_level_low}></div>}
-                            {ledToUsingDrugAnswer == 3 && <div className={styles.risk_level_medium}></div>}
-                            {ledToUsingDrugAnswer == 4 && <div className={styles.risk_level_high}></div>}
-                            {ledToUsingDrugAnswer == 5 && <div className={styles.risk_level_high}></div>}
-                            
-                            <p>Led to using drugs</p>
-
-                            {ledToUsingDrugAnswer == 0 && <p>None</p>}
-                            {ledToUsingDrugAnswer == 1 && <p>Rarely</p>}
-                            {ledToUsingDrugAnswer == 2 && <p>Sometimes</p>}
-                            {ledToUsingDrugAnswer == 3 && <p>Often</p>}
-                            {ledToUsingDrugAnswer == 4 && <p>Most of the time</p>}
-                            {ledToUsingDrugAnswer == 5 && <p>Most of the time</p>}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className={styles.scores_section} style={{ width: '400px' }}>
-                        <h2 style={{ fontWeight: '500', marginBottom: '35px' }}>Questions</h2>
-
-                        <div className={styles.questions}>
-                          <div>
-                            <div style={{ marginBottom: '30px' }}>
-                              <h3>Most of the time ({mostOfTheTimeAnswerCount})</h3>
-
-                              {mostOfTheTimeAnswerQuestions.length > 0 && (
-                                <div style={{ marginLeft: '33px' }}>
-                                  {mostOfTheTimeAnswerQuestions.map((question) => (
-                                    <p key={question}>{getQuestion(parseInt(question))}</p>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-
-                            <div style={{ marginBottom: '30px' }}>
-                              <h3>Often ({oftenAnswerCount})</h3>
-
-                              {oftenAnswerQuestions.length > 0 && (
-                                <div style={{ marginLeft: '33px' }}>
-                                  {oftenAnswerQuestions.map((question) => (
-                                    <p key={question}>{getQuestion(parseInt(question))}</p>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-
-                            <div style={{ marginBottom: '30px' }}>
-                              <h3>Sometimes ({sometimesAnswerCount})</h3>
-
-                              {sometimesAnswerQuestions.length > 0 && (
-                                <div style={{ marginLeft: '33px' }}>
-                                  {sometimesAnswerQuestions.map((question) => (
-                                    <p key={question}>{getQuestion(parseInt(question))}</p>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-
-                            <div style={{ marginBottom: '30px' }}>
-                              <h3>Rarely ({rarelyAnswerCount})</h3>
-
-                              {rarelyAnswerQuestions.length > 0 && (
-                                <div style={{ marginLeft: '33px' }}>
-                                  {rarelyAnswerQuestions.map((question) => (
-                                    <p key={question}>{getQuestion(parseInt(question))}</p>
-                                  ))}
-                                </div>
-                              )}
+                              {thoughtsOfSuicideAnswer == 0 && <p>None</p>}
+                              {thoughtsOfSuicideAnswer == 1 && <p>Rarely</p>}
+                              {thoughtsOfSuicideAnswer == 2 && <p>Sometimes</p>}
+                              {thoughtsOfSuicideAnswer == 3 && <p>Often</p>}
+                              {thoughtsOfSuicideAnswer == 4 && <p>Most of the time</p>}
+                              {thoughtsOfSuicideAnswer == 5 && <p>Most of the time</p>}
                             </div>
 
                             <div>
-                              <h3>None ({noneAnswerCount})</h3>
+                              {impairsWorkSchoolAnswer == 0 && <div className={styles.risk_level_unlikely}></div>}
+                              {impairsWorkSchoolAnswer == 1 && <div className={styles.risk_level_unlikely}></div>}
+                              {impairsWorkSchoolAnswer == 2 && <div className={styles.risk_level_low}></div>}
+                              {impairsWorkSchoolAnswer == 3 && <div className={styles.risk_level_medium}></div>}
+                              {impairsWorkSchoolAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                              {impairsWorkSchoolAnswer == 5 && <div className={styles.risk_level_high}></div>}
+                              
+                              <p>Impairs work/school</p>
 
-                              {noneAnswerQuestions.length > 0 && (
-                                <div style={{ marginLeft: '33px' }}>
-                                  {noneAnswerQuestions.map((question) => (
-                                    <p key={question}>{getQuestion(parseInt(question))}</p>
-                                  ))}
-                                </div>
-                              )}
+                              {impairsWorkSchoolAnswer == 0 && <p>None</p>}
+                              {impairsWorkSchoolAnswer == 1 && <p>Rarely</p>}
+                              {impairsWorkSchoolAnswer == 2 && <p>Sometimes</p>}
+                              {impairsWorkSchoolAnswer == 3 && <p>Often</p>}
+                              {impairsWorkSchoolAnswer == 4 && <p>Most of the time</p>}
+                              {impairsWorkSchoolAnswer == 5 && <p>Most of the time</p>}
+                            </div>
+
+                            <div>
+                              {impairsFriendsFamilyAnswer == 0 && <div className={styles.risk_level_unlikely}></div>}
+                              {impairsFriendsFamilyAnswer == 1 && <div className={styles.risk_level_unlikely}></div>}
+                              {impairsFriendsFamilyAnswer == 2 && <div className={styles.risk_level_low}></div>}
+                              {impairsFriendsFamilyAnswer == 3 && <div className={styles.risk_level_medium}></div>}
+                              {impairsFriendsFamilyAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                              {impairsFriendsFamilyAnswer == 5 && <div className={styles.risk_level_high}></div>}
+                              
+                              <p>Impairs friends/family</p>
+
+                              {impairsFriendsFamilyAnswer == 0 && <p>None</p>}
+                              {impairsFriendsFamilyAnswer == 1 && <p>Rarely</p>}
+                              {impairsFriendsFamilyAnswer == 2 && <p>Sometimes</p>}
+                              {impairsFriendsFamilyAnswer == 3 && <p>Often</p>}
+                              {impairsFriendsFamilyAnswer == 4 && <p>Most of the time</p>}
+                              {impairsFriendsFamilyAnswer == 5 && <p>Most of the time</p>}
+                            </div>
+
+                            <div>
+                              {ledToUsingAlcoholAnswer == 0 && <div className={styles.risk_level_unlikely}></div>}
+                              {ledToUsingAlcoholAnswer == 1 && <div className={styles.risk_level_unlikely}></div>}
+                              {ledToUsingAlcoholAnswer == 2 && <div className={styles.risk_level_low}></div>}
+                              {ledToUsingAlcoholAnswer == 3 && <div className={styles.risk_level_medium}></div>}
+                              {ledToUsingAlcoholAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                              {ledToUsingAlcoholAnswer == 5 && <div className={styles.risk_level_high}></div>}
+                              
+                              <p>Led to using alcohol</p>
+
+                              {ledToUsingAlcoholAnswer == 0 && <p>None</p>}
+                              {ledToUsingAlcoholAnswer == 1 && <p>Rarely</p>}
+                              {ledToUsingAlcoholAnswer == 2 && <p>Sometimes</p>}
+                              {ledToUsingAlcoholAnswer == 3 && <p>Often</p>}
+                              {ledToUsingAlcoholAnswer == 4 && <p>Most of the time</p>}
+                              {ledToUsingAlcoholAnswer == 5 && <p>Most of the time</p>}
+                            </div>
+
+                            <div>
+                              {ledToUsingDrugAnswer == 0 && <div className={styles.risk_level_unlikely}></div>}
+                              {ledToUsingDrugAnswer == 1 && <div className={styles.risk_level_unlikely}></div>}
+                              {ledToUsingDrugAnswer == 2 && <div className={styles.risk_level_low}></div>}
+                              {ledToUsingDrugAnswer == 3 && <div className={styles.risk_level_medium}></div>}
+                              {ledToUsingDrugAnswer == 4 && <div className={styles.risk_level_high}></div>}
+                              {ledToUsingDrugAnswer == 5 && <div className={styles.risk_level_high}></div>}
+                              
+                              <p>Led to using drugs</p>
+
+                              {ledToUsingDrugAnswer == 0 && <p>None</p>}
+                              {ledToUsingDrugAnswer == 1 && <p>Rarely</p>}
+                              {ledToUsingDrugAnswer == 2 && <p>Sometimes</p>}
+                              {ledToUsingDrugAnswer == 3 && <p>Often</p>}
+                              {ledToUsingDrugAnswer == 4 && <p>Most of the time</p>}
+                              {ledToUsingDrugAnswer == 5 && <p>Most of the time</p>}
                             </div>
                           </div>
                         </div>
+
+                        <div className={styles.scores_section} >
+                          <h2>Individual Question Score</h2>
+
+                          <div className={styles.questions}>
+                            <div className={styles.result_questions_wrap}>
+                              <div className={styles.result_questions_item_wrap} style={{ marginBottom: '30px' }}>
+                                <h3>Most of the time ({mostOfTheTimeAnswerCount})</h3>
+
+                                {mostOfTheTimeAnswerQuestions.length > 0 && (
+                                  <div style={{ marginLeft: '33px' }}>
+                                    {mostOfTheTimeAnswerQuestions.map((question) => (
+                                      <p key={question}>{getQuestion(parseInt(question))}</p>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className={styles.result_questions_item_wrap} style={{ marginBottom: '30px' }}>
+                                <h3>Often ({oftenAnswerCount})</h3>
+
+                                {oftenAnswerQuestions.length > 0 && (
+                                  <div style={{ marginLeft: '33px' }}>
+                                    {oftenAnswerQuestions.map((question) => (
+                                      <p key={question}>{getQuestion(parseInt(question))}</p>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className={styles.result_questions_item_wrap} style={{ marginBottom: '30px' }}>
+                                <h3>Sometimes ({sometimesAnswerCount})</h3>
+
+                                {sometimesAnswerQuestions.length > 0 && (
+                                  <div style={{ marginLeft: '33px' }}>
+                                    {sometimesAnswerQuestions.map((question) => (
+                                      <p key={question}>{getQuestion(parseInt(question))}</p>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className={styles.result_questions_item_wrap} style={{ marginBottom: '30px' }}>
+                                <h3>Rarely ({rarelyAnswerCount})</h3>
+
+                                {rarelyAnswerQuestions.length > 0 && (
+                                  <div style={{ marginLeft: '33px' }}>
+                                    {rarelyAnswerQuestions.map((question) => (
+                                      <p key={question}>{getQuestion(parseInt(question))}</p>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className={styles.result_questions_item_wrap}>
+                                <h3>None ({noneAnswerCount})</h3>
+
+                                {noneAnswerQuestions.length > 0 && (
+                                  <div style={{ marginLeft: '33px' }}>
+                                    {noneAnswerQuestions.map((question) => (
+                                      <p key={question}>{getQuestion(parseInt(question))}</p>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div> 
+                    )}
+
+                    {isDownloadVisible && (
+                      <div className={styles.report_content_item} key={'report_content_paid_wrap'}>
+                        {/* {oneTimeReportUrl != null && ( */}
+                          <p className={styles.download_text}>Click here to download full report as a Pdf. </p>
+                          <Button 
+                            className={styles.report_btn} 
+                            variant="contained" 
+                            onClick={handleDownload} 
+                            disabled={isDownloading ? true : false} 
+                            style={{ marginTop: '0', marginBottom: '0', marginRight: '20px', textTransform: 'none', fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}
+                          >
+                            {isDownloading && 'Downloading'}
+                            {(!isDownloading) && 'Download'}
+                          </Button>
+                        {/* )} */}
+
+                        {(!isDownloading && reportLink != '') && <a href={reportLink} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>}
+
+                        {/* {oneTimeReportUrl == null && <a href={oneTimeReportUrl} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>} */}
                       </div>
+                    )}
+
+                    {/* <div className={styles.report_content_item} key={'report_content_paid_scores_wrap'}>
                     </div> 
-                  )}
 
-                  {isDownloadVisible && (
-                    <div className={styles.report_content_item} key={'report_content_paid_wrap'}>
-                      {/* {oneTimeReportUrl != null && ( */}
-                        <Button 
-                          className={styles.report_btn} 
-                          variant="contained" 
-                          onClick={handleDownload} 
-                          disabled={isDownloading ? true : false} 
-                          style={{ marginTop: '0', marginBottom: '0', marginRight: '20px', textTransform: 'none', fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}
-                        >
-                          {isDownloading && 'Generating Report'}
-                          {(!isDownloading) && 'Generate Report'}
-                        </Button>
-                      {/* )} */}
-
-                      {(!isDownloading && reportLink != '') && <a href={reportLink} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>}
-
-                      {/* {oneTimeReportUrl == null && <a href={oneTimeReportUrl} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>} */}
-                    </div>
-                  )}
-
-                  {/* <div className={styles.report_content_item} key={'report_content_paid_scores_wrap'}>
-                  </div> 
-
-                  <div className={styles.report_content_item} key={'report_content_download_wrap'}>
-                  </div> */}
-                </div> 
-              </div>
+                    <div className={styles.report_content_item} key={'report_content_download_wrap'}>
+                    </div> */}
+                  </div>
+                </div>
+              }
+               
             </div>
           </div>
         
