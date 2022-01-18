@@ -29,6 +29,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import Grow from '@mui/material/Fade';
 import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import TextField from '@mui/material/TextField'
 
 export default function Onboarding3() {
   const router = useRouter()
@@ -38,6 +39,8 @@ export default function Onboarding3() {
   const current_step = 2
 
   const [profileStepAnswer, setProfileStepAnswer] = useState('')
+  const [other, setOther] = useState('')
+
   const [formError, setFormError] = useState(false)
 
   useEffect(() => {
@@ -77,69 +80,83 @@ export default function Onboarding3() {
     <Layout title={`Step 3 | ${SITE_NAME}`}>
       <div className={styles.onboarding_wrapper}>
         <div className={styles.onboarding_inner_wrapper}>
-          <h2>Personalize Mooditude</h2>
-          <p className={styles.step_text}>Step 3 of 7</p>
+          
 
-          <div className={`custom_stepper_wrap ${styles.custom_stepper_wrapper}`}>
-            <Stepper activeStep={currentStep} alternativeLabel={true} epand="true">
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
+          <div className={styles.line_header_wrap}>
+            <p className={styles.step_text}>Step 3 of 7</p>
+            <h2>Personalize Mooditude</h2>
           </div>
+
           <Grow in={true} timeout={1000}>
             <div>
-              <h1 className={`mb_0`}>What do you want to achieve?</h1>  
-              <p className={styles.onboarding_sub_title}>Please select just one, the most important goal.</p>
+              <h1>What encourged you to take control of your mental health today?</h1>  
+              {/*<p className={styles.onboarding_sub_title}>Please select just one, the most important goal.</p>*/}
             </div>
           </Grow>
           <div className={styles.form_wrap}>
             <Grow in={true} timeout={1000}>
           
-              <FormControl component="fieldset" error={formError} onChange={() => {setFormError(false)}}>
+              <FormControl component="fieldset" error={formError} onChange={() => {setFormError(false)}} className={styles.max_80}>
                 
                 <RadioGroup>
                   
                   
                   <FormControlLabel 
-                    value="sleepBetter" 
+                    value="lonely" 
                     className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'sleepBetter'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
-                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Sleep Better <div>We get it; without a good night's sleep it's a struggle to get through the day. We'll help you build a routine that'll improve your sleep.</div>`}} />} />
-                  <FormControlLabel 
-                    value="handleStress" 
-                    className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'handleStress'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
-                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Handle Stress <div>Despite being unpleasant, stress is not an illness. But there are connections between stress and mental health conditions. We'll introduce you to self-care techniques for managing stress.</div>`}} />} />
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'lonely'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `I’m lonely <div>In addition to being emotionally painful, loneliness can bring on serious mental health concerns. Mooditude’s supportive community is available 24/7 to give and get support.</div>`}} />} />
                   <FormControlLabel 
                     value="masterDepression" 
                     className={styles.with_text_wrap}
                     control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'masterDepression'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
-                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Master Depression <div>Depression is the absence of hope. You look forward to feeling alive again. We'll introduce you to tools and techniques that inspire hope.</div>`}} />} />
+                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `I’m feeling depressed <div>Depression is the absence of hope. you look forward to feeling alive again. We’ll introduce you to tools and techniques that inspire hope.</div>`}} />} />
+                  <FormControlLabel 
+                    value="relationships" 
+                    className={styles.with_text_wrap}
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'relationships'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `I’m struggling in my relationships <div>Healthy interpersonal relationships are a vital part of our life and overall mental health. We'll give you boundary-setting tactics and healthy communication skills with those around you.</div>`}} />} />
                   <FormControlLabel 
                     value="overcomeAnxiety" 
                     className={styles.with_text_wrap}
                     control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'overcomeAnxiety'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
-                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Overcome Anxiety <div>Anxiety is a beast. We'll help you create a mind-body connection to change your behavior, lifestyle, and thought patterns. The result? A calmer and happier life.</div>`}} />} />
+                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `I’m restless and anxious <div>The overwhelming feeling of worry or fear can take many forms, and have various levels of severity. We'll introduce you to self-care techniques and coping skills for managing your anxiety, no matter how severe.</div>`}} />} />
+                  <FormControlLabel 
+                    value="trauma" 
+                    className={styles.with_text_wrap}
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'trauma'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `I don’t know how to cope with past trauma <div>Trauma can cause overwhelming emotional and physical reactions when least expected. We'll give you self-help strategies that will help you work through your trauma. </div>`}} />} />
+                  <FormControlLabel 
+                    value="handleStress" 
+                    className={styles.with_text_wrap}
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'handleStress'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `I’m burnt out <div>Emotional, physical, and mental exhaustion brought on by prolonged stress - burnout can cause severe health conditions if not treated. We'll provide you with tools and techniques to manage burnout.</div>`}} />} />
                   <FormControlLabel 
                     value="controlAnger" 
                     className={styles.with_text_wrap}
                     control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'controlAnger'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
-                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Control Anger <div>Anger is our instinctual response to a threat. Learn to escape its control. We'll give you coping activities to use when you feel hurt, annoyed, or disappointed.</div>`}} />} />
+                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `I’m struggling to control my anger <div>Anger is a natural response to a threat. It became a problem when you have difficulty controlling it. We'll give you coping activities that you can use when you feel hurt, annoyed, or disappointed. </div>`}} />} />
                   <FormControlLabel 
-                    value="boostSelfEsteem" 
+                    value="other" 
                     className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'boostSelfEsteem'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
-                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Boost Self-esteem <div>Overcome your fear of failure and pursue your dreams. We'll show you how to dismiss negative thoughts, meet your inner-self, and build rockstar self-esteem.</div>`}} />} />
-                  <FormControlLabel 
-                    value="liveHappier" 
-                    className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'liveHappier'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
-                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Feel Happier <div>Find your rose-tinted glasses. We'll introduce you to the skills needed to deal with people, handle unforeseeable events, and build a mind-body connection for a fulfilling life.</div>`}} />} />
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'other'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Other`}} />} />
 
                 </RadioGroup>
+
+                {
+                  profileStepAnswer == 'other' ?
+                  <TextField 
+                    type="text" 
+                    fullWidth={true} 
+                    multiline
+                    rows={5}
+                    placeholder={'Write down your reason, it will help you feel better.'} 
+                    value={name} 
+                    onChange={e => setOther(e.target.value)} 
+                    required
+                  /> : ''
+                }
                 {
                   formError ? 
                   <FormHelperText>Please choose an answer.</FormHelperText> : ''

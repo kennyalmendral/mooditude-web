@@ -30,9 +30,10 @@ import Grow from '@mui/material/Fade';
 import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import Firebase from 'lib/Firebase'
-
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
+import TextField from '@mui/material/TextField'
 
 export default function Onboarding7() {
   const router = useRouter()
@@ -40,6 +41,7 @@ export default function Onboarding7() {
   const { authUser, loading, signOut } = useAuth()
   const steps = [1, 2, 3, 4, 5, 6, 7]
   const current_step = 2
+  const [other, setOther] = useState('')
 
   const [profileStepAnswer, setProfileStepAnswer] = useState(null)
   const [formError, setFormError] = useState(false)
@@ -111,50 +113,72 @@ export default function Onboarding7() {
     <Layout title={`Step 7 | ${SITE_NAME}`}>
       <div className={styles.onboarding_wrapper}>
         <div className={styles.onboarding_inner_wrapper}>
-          <h2>Personalize Mooditude</h2>
-          <p className={styles.step_text}>Step 7 of 7</p>
+          
 
-          <div className={`custom_stepper_wrap ${styles.custom_stepper_wrapper}`}>
-            <Stepper activeStep={currentStep} alternativeLabel={true} epand="true">
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
+          <div className={styles.line_header_wrap}>
+            <p className={styles.step_text}>Step 7 of 7</p>
+            <h2>Personalize Mooditude</h2>
           </div>
+
           <Grow in={true} timeout={1000}>
             <div>
-              <h1 className={`mb_0`}>Make a Promise</h1>  
-              <p className={styles.onboarding_sub_title}>You will get the quickest results with consistency. Are you ready to fit in 10 minutes a day for amazing changes in your mental well-being?</p>
+              <h1>How committed are you to improve your mental health?</h1>  
+              {/*<p className={styles.onboarding_sub_title}>You will get the quickest results with consistency. Are you ready to fit in 10 minutes a day for amazing changes in your mental well-being?</p>*/}
             </div>
           </Grow>
-          <div className={styles.form_wrap}>
+          <div className={styles.form_wrap} >
             <Grow in={true} timeout={1000}>
-          
-              <FormControl component="fieldset" error={formError} onChange={() => {setFormError(false)}}>
-                
-                <RadioGroup>
-                  <FormControlLabel 
-                    value={true}  
-                    className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'true'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
-                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Let’s do this! <div>Great! Stay tuned for positive changes in your mental health conditions within a few days.</div>`}} />} 
-                  />
+              
+              <div className={styles.custom_choices} >
+                <div className={`${styles.custom_choice_item} ${profileStepAnswer == '1' ? styles.active : ''}`}
+                  onClick={e => {setProfileStepAnswer(1)}}
+                >
+                  <span>{profileStepAnswer != '1' ? '1' : <CheckRoundedIcon/> }</span>
+                </div>
 
-                  <FormControlLabel 
-                    value={false} 
-                    className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'false'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
-                    label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `I’m not ready <div>Let’s start with exploring Mooditude together.</div>`}} />} 
-                  />
+                <div className={`${styles.custom_choice_item} ${profileStepAnswer == '2' ? styles.active : ''}`}
+                  onClick={e => {setProfileStepAnswer(2)}}
+                >
+                  <span>{profileStepAnswer != '2' ? '2' : <CheckRoundedIcon/> }</span>
+                </div>
 
-                </RadioGroup>
+                <div className={`${styles.custom_choice_item} ${profileStepAnswer == '3' ? styles.active : ''}`}
+                  onClick={e => {setProfileStepAnswer(3)}}
+                >
+                  <span>{profileStepAnswer != '3' ? '3' : <CheckRoundedIcon/> }</span>
+                </div>
+
+                <div className={`${styles.custom_choice_item} ${profileStepAnswer == '4' ? styles.active : ''}`}
+                  onClick={e => {setProfileStepAnswer(4)}}
+                >
+                  <span>{profileStepAnswer != '4' ? '4' : <CheckRoundedIcon/> }</span>
+                </div>
+
+                <div className={`${styles.custom_choice_item} ${profileStepAnswer == '5' ? styles.active : ''}`}
+                  onClick={e => {setProfileStepAnswer(5)}}
+                >
+                  <span>{profileStepAnswer != '5' ? '5' : <CheckRoundedIcon/> }</span>
+                </div>
+
                 {
-                  formError ? 
-                  <FormHelperText>Please choose an answer.</FormHelperText> : ''
+                  profileStepAnswer && profileStepAnswer != 5 ?
+                  <TextField 
+                    type="text" 
+                    fullWidth={true} 
+                    multiline
+                    rows={5}
+                    placeholder={'Why not 5?'} 
+                    value={name} 
+                    onChange={e => setOther(e.target.value)} 
+                    required
+                  /> : ''
                 }
-                </FormControl>
+
+                {/*<p className={styles.custom_error}>Please choose an answer.</p>*/}
+
+
+              </div>
+             
               </Grow>
           </div>
 
