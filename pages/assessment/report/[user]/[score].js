@@ -124,13 +124,13 @@ export default function AssessmentReport(props) {
   }, [assessmentDate])
 
   useEffect(() => {
-    if ((allRiskLevel == 'high') && (weekDifference > 2)) {
+    if ((allRiskLevel == 'high') && (weekDifference >= 2)) {
       setIsReportOutdated(true)
-    } else if ((allRiskLevel == 'medium') && (weekDifference > 4)) {
+    } else if ((allRiskLevel == 'medium') && (weekDifference >= 4)) {
       setIsReportOutdated(true)
-    } else if ((allRiskLevel == 'low') && (weekDifference > 8)) {
+    } else if ((allRiskLevel == 'low') && (weekDifference >= 8)) {
       setIsReportOutdated(true)
-    } else if ((allRiskLevel == 'unlikely') && (weekDifference > 26)) {
+    } else if ((allRiskLevel == 'unlikely') && (weekDifference >= 26)) {
       setIsReportOutdated(true)
     } else {
       setIsReportOutdated(false)

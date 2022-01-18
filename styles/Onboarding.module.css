@@ -352,6 +352,115 @@
 	max-width: 100%;
 }
 
+.welcome_page .top_section {
+	font-family: 'Circular Std';
+	border-bottom: 4px solid #F3F4F6;
+	margin-bottom: 70px;
+}
+
+.welcome_page .top_section h1 {
+	font-size: 24px;
+	font-weight: 400;
+	margin: 0 0 2px;
+}
+
+.welcome_page .top_section h6 {
+	font-size: 14px;
+	font-weight: 400;
+	color: #516B84;
+	margin: 10px 0 0;
+}
+
+.welcome_page .content {
+	font-family: 'Circular Std';
+}
+
+.welcome_page .content .content_row {
+	display: flex;
+	justify-content: flex-start;
+	align-items: stretch;
+	margin: 0 -13px;
+}
+
+.welcome_page .content .content_col {
+	width: 260px;
+	margin: 0 13px;
+	display: flex;
+	align-items: stretch;
+}
+
+.welcome_page .content .content_col a > div:first-of-type {
+	margin-bottom: 10px;
+}
+
+.welcome_page .content .content_col.score > a div:first-of-type {
+	width: 58px;
+	height: 58px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #EB5757;
+	border: 2px solid #F8E71C;
+	border-radius: 50%;
+	font-size: 25px;
+	font-weight: 400;
+	color: #fff;
+}
+
+.welcome_page .content .content_col.download a > div:first-of-type,
+.welcome_page .content .content_col.retry_buy a > div:first-of-type,
+.welcome_page .content .content_col.stats a > div:first-of-type {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	background: #F8E71C;
+	border-radius: 50%;
+}
+
+.welcome_page .content .content_col > a {
+	border-radius: 8px;
+	border: 1px solid #A8B5C1;
+	padding: 25px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	transition: all 0.2s ease-out;
+}
+
+.welcome_page .content .content_col > a h3 {
+	font-size: 24px;
+	font-weight: 400;
+	color: #072B4F;
+	margin: 0;
+}
+.welcome_page .content .content_col > a p {
+	margin: 3px 0 0;
+}
+
+.welcome_page .content .content_col .arrow_container {
+	height: 50px;
+	display: flex;
+	align-items: flex-end;
+	justify-content: flex-end;
+	transition: all 0.2s ease-out;
+}
+
+.welcome_page .content .content_col > a:hover {
+	border-color: #04182c;
+	background: #072B4F;
+}
+
+.welcome_page .content .content_col > a:hover h3,
+.welcome_page .content .content_col > a:hover p {
+	color: #fff;
+}
+
+.welcome_page .content .content_col > a:hover svg path {
+	fill: #fff;
+}
+
 .fadeInDown300{
 	animation: fadeInDown .3s ease-in;
 }
