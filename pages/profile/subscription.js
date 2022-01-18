@@ -113,6 +113,16 @@ export default function profileSubscription() {
       setCancelAt(result.data.response.cancel_at)
       setOpenCancelConfirmationDialog(false)
       setIsCanceling(false)
+
+      if (authUser) {
+        firebaseDatabase
+          .ref()
+          .child('users')
+          .child(authUser.uid)
+          .update({
+            'cancelAt': result.data.response.cancel_at
+          })
+      }
     })
   }
 
@@ -128,6 +138,16 @@ export default function profileSubscription() {
       setCancelAt('')
       setOpenRenewConfirmationDialog(false)
       setIsRenewing(false)
+
+      if (authUser) {
+        firebaseDatabase
+          .ref()
+          .child('users')
+          .child(authUser.uid)
+          .update({
+            'cancelAt': null
+          })
+      }
     })
   }
 

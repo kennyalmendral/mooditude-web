@@ -1895,7 +1895,7 @@ exports.stripeWebhooks = functions.https.onRequest((req, res) => {
               })
               .catch(error => {
                 functions.logger.error(error);
-              })
+              });
           })
           .catch(err => {
             functions.logger.error(err);
@@ -1942,7 +1942,7 @@ exports.stripeWebhooks = functions.https.onRequest((req, res) => {
                 })
                 .catch(error => {
                   functions.logger.error(error);
-                })
+                });
             })
             .catch(err => {
               functions.logger.error(err);
@@ -1992,7 +1992,7 @@ exports.stripeWebhooks = functions.https.onRequest((req, res) => {
                 })
                 .catch(error => {
                   functions.logger.error(error);
-                })
+                });
             })
             .catch(err => {
               functions.logger.error(err);
