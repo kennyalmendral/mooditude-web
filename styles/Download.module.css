@@ -1,0 +1,155 @@
+.download_wrapper{
+  padding: 30px 63px;
+  display: flex;
+  flex-direction: column;
+  /*justify-content: center;*/
+  min-height: 100vh;
+  position: relative;
+}
+
+
+
+.download_wrapper{
+  min-height: 75vh;
+  display: flex;
+  flex-direction: column;
+   
+}
+
+
+.download_main_wrap{
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+
+.download_main_wrap h1{
+  font-family: Circular Std;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 46px;
+  text-align: center;
+
+  /* Primary */
+
+  color: #072B4F;
+  margin-bottom: 29px;
+}
+
+.gray_apps a:first-child,
+.green_apps a:first-child{
+  margin-right: 16px;
+}
+
+.gray_apps{
+  margin-bottom: 80px;
+}
+
+.green_apps{
+  margin-bottom: 20px;
+}
+
+.footer_text{
+  font-family: Circular Std;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 23px;
+  /* identical to box height */
+
+
+  color: #000000;
+
+}
+
+.item_list{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 100px;
+}
+
+.item_list > div{
+  padding-right: 100px;
+  margin-bottom: 30px;
+}
+
+.item_list p{
+  text-align: left;
+  position: relative;
+  /* Bold */
+  display: flex;
+  font-family: Circular Std;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 23px;
+
+  /* Primary */
+
+  color: #072B4F;
+}
+
+.item_list p img{
+  margin-right: 16px;
+  margin-bottom: auto;
+  margin-top: 0;
+}
+
+.qr_code{
+  margin-bottom: 40px;
+}
+
+
+@media(max-width:  991px) and (min-width:  768px){
+  .download_wrapper{
+    padding: 20px 30px;
+    width: 100%;
+  }
+
+  .download_main_wrap h1{
+    font-size: 26px;
+  }
+}
+
+@media(max-width:  767px){
+ 
+
+
+  .download_wrapper{
+    padding: 20px 30px;
+    width: 100%;
+  }
+
+  .download_main_wrap h1{
+    font-size: 26px;
+  }
+
+  .download_main_wrap h1 br{
+    display: none;
+  }
+  .item_list > div{
+    padding-right: 0;
+    width: 100%;
+  }
+
+  .gray_apps{
+    margin-bottom: 20px;
+  }
+
+  .green_apps{
+    margin-bottom: 20px;
+  }
+
+  .item_list{
+    
+    margin-bottom: 20px;
+  }
+
+}
+
+

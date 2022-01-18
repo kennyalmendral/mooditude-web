@@ -80,6 +80,14 @@ export default function Menu(props) {
                                 </div>
 
                                 <div>
+                                    <Link href="/download"> 
+                                    <a className={styles.menu_item} >
+                                        DOWNLOAD
+                                    </a>
+                                    </Link>
+                                </div>
+
+                                <div>
                                     <Link href="/buy"> 
                                     <a className={styles.menu_item} >
                                         BUY

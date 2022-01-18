@@ -386,3 +386,26 @@ img{
 .MuiButton-root{
   box-shadow: none!important;
 }
+
+.slick-arrow svg{
+  color: white;
+}
+
+.slick-arrow{
+  background: #072B4F;
+  border-radius: 50%;
+  height: 26px;
+  width: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slick-arrow:hover{
+  background: #1DA467;
+}
+
+.slick-arrow:before{
+  display: none;
+}
+

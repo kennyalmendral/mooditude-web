@@ -97,17 +97,9 @@ export default function Assessment19() {
     <Layout title={`Question 19 | ${SITE_NAME}`}>
       <div className={`${styles.onboarding_wrapper} ${styles.on_assessment_wrapper}`}>
         <div className={styles.onboarding_inner_wrapper}>
-          <h2 className={styles.wellBeingText}>Assess Your Wellbeing Score</h2>
-          <p className={styles.step_text}>Question 19 of 29</p>
-
-          <div className={`custom_stepper_wrap ${styles.custom_stepper_wrapper}`}>
-            <Stepper activeStep={18} alternativeLabel={true} epand="true">
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
+          <div className={styles.line_header_wrap}>
+            <p className={styles.step_text}>Question 19 of 29</p>
+            <h2 className={styles.wellBeingText}>Assess Your Wellbeing Score</h2>
           </div>
           
             <div className={styles.fadeInDown500}>

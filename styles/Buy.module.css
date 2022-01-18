@@ -372,6 +372,187 @@
   margin-right: 20px;
 }
 
+.new_buy_image{
+  text-align: center;
+}
+.buy_slider h4{
+  font-family: Circular Std;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  /* identical to box height */
+  text-align: center;
+  /* OnPrimary */
+  color: #072B4F;
+  margin-top: 34px;
+}
+
+
+.buy_inner_slider h3{
+  font-family: Circular Std;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 30px;
+  text-align: center;
+
+  /* OnPrimary */
+
+  color: #072B4F;
+}
+
+
+.buy_inner_slider{
+  width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+  
+}
+
+.buy_selection_wrap{
+  margin-top: 80px;
+}
+
+.buy_selection_inner_wrap{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+
+.buy_selection_item{
+  text-align: left;
+  width: 300px;
+  display: flex;
+  margin-bottom: 24px;
+}
+
+.buy_selection_item p{
+  /* H3 */
+
+  font-family: Circular Std;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 30px;
+
+  /* Primary */
+
+  color: #072B4F;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.buy_selection_item p span{
+  font-family: Circular Std;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  /* identical to box height */
+
+  text-align: center;
+
+  /* Primary */
+
+  color: #072B4F;
+
+}
+
+.buy_circle{
+  border: 2px solid #072B4F;
+  box-sizing: border-box;
+  width: 24px;
+  display: inline-flex;
+  border-radius: 50%;
+  height: 24px;
+  margin-right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.buy_selection_item p span.trial_text{
+  font-family: Circular Std;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  /* identical to box height */
+
+
+  /* Secondary */
+
+  color: #516B84;
+}
+
+
+.buy_button{
+  background: #1CA566;
+  border-radius: 4px;
+  padding: 12px 24px;
+  font-family: Circular Std;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 25px;
+  cursor: pointer;
+  color: #FFFFFF;
+  border: none;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.buy_button_form{
+  text-align: center;
+}
+
+.buy_text_wrap p{
+  font-family: Circular Std;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+
+  /* Primary */
+
+  color: #072B4F;
+}
+
+.buy_disclaimer_wrap{
+  margin-top: 64px;
+  background: #F3F4F6;
+  border-radius: 8px;
+  max-width: 380px;
+  padding: 16px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.buy_selection_item.active .buy_circle{
+  background: #F8E71C;
+  border-color: #F8E71C;
+  color: #072B4F;
+}
+
+
+.buy_disclaimer_wrap p{
+  font-family: Circular Std;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 15px;
+
+  /* Textbox-border */
+
+  color: rgba(7, 43, 79, 0.5);
+
+}
+
 @media(min-width: 768px) and (max-width: 992px){
   .thankYouApp{
     max-width: 90%;

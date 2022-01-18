@@ -76,18 +76,12 @@ export default function Onboarding6() {
     <Layout title={`Step 6 | ${SITE_NAME}`}>
       <div className={styles.onboarding_wrapper}>
         <div className={styles.onboarding_inner_wrapper}>
-          <h2>Personalize Mooditude</h2>
-          <p className={styles.step_text}>Step 6 of 7</p>
 
-          <div className={`custom_stepper_wrap ${styles.custom_stepper_wrapper}`}>
-            <Stepper activeStep={currentStep} alternativeLabel={true} epand="true">
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
+          <div className={styles.line_header_wrap}>
+            <p className={styles.step_text}>Step 6 of 7</p>
+            <h2>Personalize Mooditude</h2>
           </div>
+
           <Grow in={true} timeout={1000}>
             <div>
               <h1>Are you familiar with Cognitive Behavioral Therapy (CBT)?</h1>  

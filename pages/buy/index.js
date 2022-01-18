@@ -17,11 +17,34 @@ import Firebase from 'lib/Firebase'
 import TextField from '@mui/material/TextField'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import MoonLoader from "react-spinners/MoonLoader"
+import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import Slider from "react-slick";
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
 const firebaseFunctions = Firebase.functions()
+
+const NextArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      onClick={onClick}><ChevronRightRoundedIcon /></div>
+  );
+}
+
+const PrevArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      onClick={onClick}><ChevronLeftRoundedIcon /></div>
+  );
+}
+
 
 export default function OnboardingWelcomePage() {
   const router = useRouter()
@@ -33,6 +56,7 @@ export default function OnboardingWelcomePage() {
   const [name, setName] = useState('')
   const [showCoupon, setShowCoupon] = useState(false)
   const [showCouponApplied, setShowCouponApplied] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState(null)
 
   const [error, setError] = useState('')
 
@@ -40,6 +64,18 @@ export default function OnboardingWelcomePage() {
   const [licenseType, setLicenseType] = useState('Free')
 
   const [subscription, setSubscription] = useState({})
+
+  const settings = {
+      dots: true,
+      infinite: true,
+      arrows: true,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      nextArrow: <NextArrow />,
+            prevArrow: <PrevArrow />
+    };
+
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -186,62 +222,7 @@ export default function OnboardingWelcomePage() {
           </div>
         : 
         <>
-          {
-            showCoupon ? 
-            <div className={styles.promoCodeWrapper}>
-              <div className={styles.promoCodeInnerWrapper}>
-                <CloseRoundedIcon className={styles.promoWrapperClose} onClick={e => {setShowCoupon(false)}}/>
-                <div>
-                  <h2>Promo Code</h2>
-
-                  <form onSubmit={handleRedeemPromoCode}>
-                    <TextField 
-                      label="Enter Promo Code" 
-                      variant="outlined" 
-                      type="text" 
-                      required
-                      fullWidth={true}
-                      size={"small"}
-                      className={styles.promoField} 
-                      value={promoCode} 
-                      onChange={e => setPromoCode(e.target.value)} 
-                      error={error}
-                      helperText={error ? error : ''}
-                      required
-                    />
-
-                    <Button 
-                      type="submit"
-                      size="large" 
-                      variant="contained"
-                    >
-                      REDEEM
-                    </Button>
-                  </form>
-                </div>
-              </div>
-            </div> : ''
-          }
-
-          {
-            showCouponApplied ? 
-            <div className={styles.promoCodeWrapper}>
-              <div className={styles.promoCodeAppliedInner}>
-                <div className={styles.promoCodeInnerTop}>
-                  <CloseRoundedIcon className={styles.promoWrapperClose} onClick={e => {setShowCouponApplied(false)}}/>
-                  <h2>Free for a month!</h2>
-                  <p>Start your wellbeing journey <br/>with Mooditude Premium</p>
-                </div>
-
-                <div className={styles.promoCodeInnerBottom}>
-                  <img src="/buy_icon.svg" />
-                  <p >Start with a 30-Day Free Trial</p>
-                  <button>$89.99 / YEAR <span>After 30-Day FREE Trial</span></button>  
-                  <p className={styles.promoCodeInnerCancelText}>Cancel Anytime.</p>
-                </div>
-              </div>
-            </div> : ''
-          }
+          
           {
             licenseType == 'Premium' ? 
             <div className={styles.promoCodeWrapper}>
@@ -258,74 +239,94 @@ export default function OnboardingWelcomePage() {
             </div> : ''
           }
           <div className={styles.buy_wrapper}>
-            {
-              showLoader ? 
-                <div 
-                  className={styles.custom_loader} 
-                  style={{
-                    position: 'absolute',
-                    width: '100%',
-                    height: '100%',
-                    background: 'rgba(255,255,255,.8)',
-                    zIndex: 10,
-                    display: 'flex',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <MoonLoader color={'#1CA566'} loading={true} size={30} />
+            <div className={styles.new_buy_wrapper}>
+              <div className={styles.new_buy_image}>
+                <img src="/buy_icon.svg" />
+              </div>
+
+              <div className={styles.buy_slider}>
+                <h4>WITH MOOTIDUTE PREMIUM YOU WILL BE ABLE TO</h4>
+                <div className={styles.buy_inner_slider}>
+                  <Slider {...settings}>
+                    <div>
+                      <h3>Take Control of Your <br/>Mental Health </h3>
+                    </div>
+                    <div>
+                      <h3>Take Control of Your <br/>Mental Health </h3>
+                    </div>
+                    <div>
+                      <h3>Take Control of Your <br/>Mental Health </h3>
+                    </div>
+                    <div>
+                      <h3>Take Control of Your <br/>Mental Health </h3>
+                    </div>
+                    <div>
+                      <h3>Take Control of Your <br/>Mental Health </h3>
+                    </div>
+                  </Slider>
                 </div>
-              : 
-              ''
-            }
-            <div className={`${styles.buy_inner_wrapper} `}>
-              <h1>Take Control of Your Mental Health </h1> 
-              <h3>With Mooditude Premium</h3>
-
-              <div className={styles.list_wrap}>
-                <p><img src="/check.png"/> Unlimited Mental Health Assessments</p>
-                <p><img src="/check.png"/> 800+ minutes of self-care activities including guided journaling, meditations, and coping activities</p>
-                <p><img src="/check.png"/> Problem-specific programs with workbooks</p>
-                <p><img src="/check.png"/> Goal Tracker and Positve Habit Builder</p>
-                <p><img src="/check.png"/> Mood Tracker</p>
-                <p><img src="/check.png"/> Progress Tracking &amp; Reports</p>
-                <p><img src="/check.png"/> Supportive Community</p>
-                <p><img src="/check.png"/> Ask-the-Expert, and</p>
-                <p><img src="/check.png"/> Find the  Right Therapist</p>
               </div>
 
+              <div className={styles.buy_selection_wrap}>
+                <div className={styles.buy_selection_inner_wrap}>
+                  <div className={`${styles.buy_selection_item} ${ selectedPlan == 'month' ? styles.active : '' }`} onClick={e => {setSelectedPlan('month')}}>
+                    <span className={styles.buy_circle}>{ selectedPlan == 'month' ? <CheckRoundedIcon /> : '' }</span>
 
-              <div className={styles.buy_wrap}>
-                <Stack direction="row" spacing={2}>
-                  <form onSubmit={handleMonthlySubscription}>
-                    <button
-                      type="submit" 
-                      style={{
-                        height: '100%'
-                      }} 
-                    >
-                      $12.99 / month
-                    </button>
-                  </form>
-                      
-                  <form onSubmit={handleYearlySubscription}>
-                    <button
-                      type="submit" 
-                      style={{
-                        height: '100%'
-                      }} 
-                      className={styles.yearly}
-                    >
-                      $89.99 / YEAR <br/>
-                      <span>ONLY $7.50/MONTH — Save 42%</span>
-                    </button>
-                  </form>
-                </Stack>
+                    <p>$14.99 <span>/ MONTH</span></p>
+                  </div>
+
+                  <div className={`${styles.buy_selection_item} ${ selectedPlan == '3months' ? styles.active : '' }`} onClick={e => {setSelectedPlan('3months')}}>
+                    <span className={styles.buy_circle}>{ selectedPlan == '3months' ? <CheckRoundedIcon /> : '' }</span>
+
+                    <p>$39.00 <span>/ 3-MONTH</span></p>
+                  </div>
+
+                  <div className={`${styles.buy_selection_item} ${ selectedPlan == 'year' ? styles.active : '' }`} onClick={e => {setSelectedPlan('year')}}>
+                    <span className={styles.buy_circle}>{ selectedPlan == 'year' ? <CheckRoundedIcon /> : '' }</span>
+
+                    <p>$89.99 <span>/ YEAR  — <b>Save $65</b></span> <br/> <span className={styles.trial_text}>with 3-day free trial</span></p>
+                  </div>
+                </div>
+
+
+                <form onSubmit={handleYearlySubscription} className={styles.buy_button_form}>
+                  <button
+                    type="submit" 
+                    style={{
+                      height: '100%'
+                    }} 
+                    className={styles.buy_button}
+                  >
+                    SUBSCRIBE
+                  </button>
+                </form>
+
               </div>
 
-              <a className={styles.promoCode} href="#" onClick={e => {e.preventDefault();setShowCoupon(true)}}>Have a Promo Code?</a>
+              <div className={styles.buy_text_wrap}>
+
+                <p>The annual subscription is $89.99 and renew <br /> each year. You can cancel it anytime. You will <br/> be charged after the trial period.</p>
+              </div>
+
+              <div className={styles.buy_disclaimer_wrap}>
+
+                <p>Payments will be charged to your Credit Card.</p>
+
+                <p>There is no re-fund.</p>
+
+                <p>Subscription will auto-renew within 24-hours before the current subscription period ends.</p>
+
+                <p>Purchasing a subscription during a trial period will forfeit any remaining trial period.</p>
+
+                <p>Manage or cancel your subscription from your iTunes Account settings.</p>
+
+
+              </div>
             </div>
+
+
+            
+            
           </div>
         </>
       }
