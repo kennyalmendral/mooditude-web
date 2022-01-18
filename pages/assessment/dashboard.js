@@ -13,6 +13,8 @@ import { useAuth } from '@/context/AuthUserContext'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 
+import { format, differenceInWeeks } from 'date-fns'
+
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 import { Line } from 'react-chartjs-3'
@@ -23,6 +25,7 @@ const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
 const firebaseFunctions = Firebase.functions()
+
 import GridLoader from "react-spinners/GridLoader"
 
 export default function AssessmentWelcomePage() {
@@ -44,9 +47,13 @@ export default function AssessmentWelcomePage() {
 
   const [assessments, setAssessments] = useState([])
 
+  const [weekDifference, setWeekDifference] = useState('')
+
   useEffect(() => {
     if (Object.keys(assessments).length > 0) {
       setHasNoAssessment(false)
+
+      setWeekDifference(differenceInWeeks(new Date(), new Date(assessments[0].createDate.seconds * 1000)))
 
       assessments[0] && setCurrentRiskScore(assessments[0].allScore)
 
@@ -347,14 +354,27 @@ export default function AssessmentWelcomePage() {
                   </>
                 )}
 
-                <Button 
-                  size="large" 
-                  className={styles.full_report_btn} 
-                  variant="contained" 
-                  onClick={() => router.push(currentFullReportLink)}
-                >
-                  FULL REPORT
-                </Button>
+                {weekDifference < 2 && (
+                  <Button 
+                    size="large" 
+                    className={styles.full_report_btn} 
+                    variant="contained" 
+                    onClick={() => router.push(currentFullReportLink)}
+                  >
+                    FULL REPORT
+                  </Button>
+                )}
+
+                {weekDifference > 2 && (
+                  <Button 
+                    size="large" 
+                    className={styles.full_report_btn} 
+                    variant="contained" 
+                    onClick={handleTakeAssessment}
+                  >
+                    TAKE ASSESSMENT
+                  </Button>
+                )}
               </>
              }
               

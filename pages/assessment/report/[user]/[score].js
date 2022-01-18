@@ -16,6 +16,8 @@ import Stack from '@mui/material/Stack'
 
 import RingLoader from "react-spinners/RingLoader"
 
+import { format, differenceInWeeks } from 'date-fns'
+
 import Firebase from 'lib/Firebase'
 
 const firebaseStore = Firebase.firestore()
@@ -74,6 +76,8 @@ export default function AssessmentReport(props) {
   const [licenseType, setLicenseType] = useState('Free')
   const [checking, setChecking] = useState(true)
 
+  const [weekDifference, setWeekDifference] = useState('')
+  const [isReportOutdated, setIsReportOutdated] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
   const [reportLink, setReportLink] = useState('')
 
@@ -104,16 +108,34 @@ export default function AssessmentReport(props) {
   }, [authUser, oneTimeReportUrl])
 
   useEffect(() => {
-    console.log(oneTimeReportUrl)
+    // console.log(oneTimeReportUrl)
   }, [oneTimeReportUrl])
 
   useEffect(() => {
-    reportLink && console.log(reportLink)
+    // reportLink && console.log(reportLink)
   }, [reportLink])
 
   useEffect(() => {
     userProfile && console.log(userProfile)
   }, [userProfile])
+
+  useEffect(() => {
+    setWeekDifference(differenceInWeeks(new Date(), new Date(assessmentDate)))
+  }, [assessmentDate])
+
+  useEffect(() => {
+    if ((allRiskLevel == 'high') && (weekDifference > 2)) {
+      setIsReportOutdated(true)
+    } else if ((allRiskLevel == 'medium') && (weekDifference > 4)) {
+      setIsReportOutdated(true)
+    } else if ((allRiskLevel == 'low') && (weekDifference > 8)) {
+      setIsReportOutdated(true)
+    } else if ((allRiskLevel == 'unlikely') && (weekDifference > 26)) {
+      setIsReportOutdated(true)
+    } else {
+      setIsReportOutdated(false)
+    }
+  }, [weekDifference])
 
   useEffect(() => {
     setMostOfTheTimeAnswerQuestions([])
@@ -386,11 +408,27 @@ export default function AssessmentReport(props) {
     }
   }
 
+  const selectPlan = (plan, duration) => {
+    setChecking(true)
+
+    const processStripeSubscriptionOnSignUp = firebaseFunctions.httpsCallable('processStripeSubscriptionOnSignUp')
+
+    processStripeSubscriptionOnSignUp({
+      type: plan,
+      duration: duration,
+      mode: plan == 'subscription' ? 'subscription' : 'payment',
+      customerEmail: authUser && authUser.email,
+      redirectUrl: window.location.origin + '/buy/thank-you',
+      cancelUrl: window.location.origin + '/buy'
+    }).then(result => {
+      location.href = result.data.session.url
+    })
+  }
+
   return (
     <Layout title={`Assessment Full Report | ${SITE_NAME}`}>
       {
         checking ? 
-
           <div 
             className={styles.custom_loader} 
             style={{
@@ -481,20 +519,34 @@ export default function AssessmentReport(props) {
                 )}
               </div>
 
-              <div className={styles.report_right_wrap}>
-                <div className={styles.yellow_wrap}>
-                  <h4>Your Score is valid for 2-weeks</h4>
-                  <p>Recommended frequency to test your mental <br/> health conditions:</p>
-                  <p>If your risk is:</p>
-                  <ul>
-                    <li><span>High</span> <span>Test every two week</span></li>
-                    <li><span>Medium</span> <span>Test every month</span></li>
-                    <li><span>Low</span> <span>Test once every other month</span></li>
-                    <li><span>None</span> <span>Test every six months</span></li>
-                  </ul>          
-                      
+              {isReportOutdated && (
+                <div className={styles.report_right_wrap}>
+                  <div>
+                    <img src="/outdated.png" />
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {!isReportOutdated && (
+                <div className={styles.report_right_wrap}>
+                  <div className={styles.yellow_wrap}>
+                    {allRiskLevel == 'high' && <h4>Your score is valid for two weeks</h4>}
+                    {allRiskLevel == 'medium' && <h4>Your score is valid for one month</h4>}
+                    {allRiskLevel == 'low' && <h4>Your score is valid for two months</h4>}
+                    {allRiskLevel == 'unlikely' && <h4>Your score is valid for six months</h4>}
+
+                    <p>Recommended frequency to test your mental <br/> health conditions:</p>
+                    <p>If your risk is:</p>
+
+                    <ul>
+                      <li><span>High</span> <span>Test every two week</span></li>
+                      <li><span>Medium</span> <span>Test every month</span></li>
+                      <li><span>Low</span> <span>Test once every other month</span></li>
+                      <li><span>None</span> <span>Test every six months</span></li>
+                    </ul>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className={styles.results_bottom_wrap}>
@@ -546,16 +598,17 @@ export default function AssessmentReport(props) {
                       <h4>Full Report</h4>
 
                       <h3>$14</h3>
-                      <p>One-time </p>
+                      <p>One-time</p>
+
                       <Button 
                         size="large" 
                         className={styles.report_btn} 
                         variant="contained" 
-                        
+                        onClick={() => selectPlan('payment', null)} 
                         style={{
                           marginBottom: '15px',
-                          fontSize: '14px',
-                          fontWeight: '300',
+                          fontSize: '18px',
+                          fontWeight: '500',
                           fontFamily: 'Circular STD'
                         }} 
                       >
@@ -564,50 +617,61 @@ export default function AssessmentReport(props) {
                     </div>  
 
                     <div className={styles.result_pricing_section_item}>
-                      <h4>Unlimited Reports & Mooditude App</h4>
+                      <h4>Unlimited Reports &amp; Mooditude App</h4>
 
                       <h3>$39</h3>
                       <p>per 3-month</p>
+
                       <Button 
                         size="large" 
                         className={styles.report_btn} 
                         variant="contained" 
-                        
+                        onClick={() => selectPlan('subscription', 3)} 
                         style={{
                           marginBottom: '15px',
-                          fontSize: '14px',
-                          fontWeight: '300',
+                          fontSize: '18px',
+                          fontWeight: '500',
                           fontFamily: 'Circular STD'
                         }} 
                       >
-                        SUBCRIBE
+                        SUBSCRIBE
                       </Button>  
                     </div>  
 
                     <div className={styles.result_pricing_section_item}>
-                      <h4>Unlimited Reports & Mooditude App</h4>
+                      <div className={styles.discount}>Best Value — Save $80</div>
+
+                      <h4>Unlimited Reports &amp; Mooditude App</h4>
 
                       <h3>$89</h3>
-                      <p>per year </p>
+                      <p>per year</p>
+
                       <Button 
                         size="large" 
                         className={styles.report_btn} 
                         variant="contained" 
-                        
+                        onClick={() => selectPlan('subscription', null)} 
                         style={{
                           marginBottom: '15px',
-                          fontSize: '14px',
-                          fontWeight: '300',
+                          fontSize: '18px',
+                          fontWeight: '500',
                           fontFamily: 'Circular STD'
                         }} 
                       >
-                        SUBCRIBE
+                        SUBSCRIBE
                       </Button>  
                     </div>  
                   </div>
                   <div className={styles.pricing_section_text}>
                     <ul>
-                      <li>Learn more about Mooditude apps <a target="_blank" href="#">here</a>.</li>
+                      <li>
+                        Learn more about Mooditude apps
+                        {' '}
+                        <Link href="/buy">
+                          <a>here</a>
+                        </Link>
+                        .
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -645,13 +709,11 @@ export default function AssessmentReport(props) {
                               )}
                             </div>
                             
-
                             <div className={styles.report_content_crisis_section}>
                               <h4>Your response to a question related to suicidal thoughts raises a red flag.</h4>
                               <h3>Are you in crisis?</h3>
                               <p>Please call National Suicide Prevention Lifeline or proceed <br/>directly to an emergency room.</p>
                             </div>
-                            
                               {licenseType == 'Free' && (
                                 <>
                                   { buyPremium ? 
@@ -769,8 +831,6 @@ export default function AssessmentReport(props) {
                                   </div>
                                 </>
                               )}
-                            
-                            
 
                             {((licenseType == 'Premium') || (userProfile.customerType == 'premium')) && (
                               <>
@@ -941,12 +1001,7 @@ export default function AssessmentReport(props) {
                                         </>
                                       )}
                                     </div>
-
                                   </div>
-
-                                  
-
-                                  
                                 </div>
 
                                 <div className={styles.results_recommendations}>
@@ -1010,9 +1065,6 @@ export default function AssessmentReport(props) {
                                 </div>
 
                                 <div className={styles.results_thoughts_wrap}>
-                                  
-
-
                                   {usedDrug && (
                                     <div className={styles.results_thoughts_item}>
                                       <h4>Substance Abuse</h4>
@@ -1062,11 +1114,6 @@ export default function AssessmentReport(props) {
                                     </>
                                   )}
                                 </div>
-                                
-
-                               
-
-                                
                                 
                                 <div className={styles.disclaimer}>
                                   <h5>Disclaimer</h5>

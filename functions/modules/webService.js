@@ -1901,7 +1901,73 @@ exports.stripeWebhooks = functions.https.onRequest((req, res) => {
             functions.logger.error(err);
           });
         break;
+      case 'payment_intent.succeeded':
+        responseData = reqBody.data;
+
+        axios.post('/receipts', {
+          app_user_id: userId,
+          fetch_token: reqDataObj.id,
+          attributes: {
+            '$stripeCustomerId': {
+              value: userId
+            },
+            'payment_status': {
+              value: paymentStatus
+            },
+            "$displayName": {
+              value: reqDataObj.charges.data[0].billing_details.name
+            },
+            "$email": {
+              value: reqDataObj.charges.data[0].billing_details.email
+            }
+          }
+        }).then(response => {
+          responseData = response;
+        }).catch(error => {
+          errorData = error;
+        });
+
+        admin.auth()
+          .getUserByEmail(reqDataObj.charges.data[0].billing_details.email)
+          .then(response => {
+            let userId = response.uid;
+          
+            admin.database()
+              .ref()
+              .child('users')
+              .child(userId)
+              .once('value')
+              .then(snapshot => {
+                const snapshotValue = snapshot.val()
+
+                if (snapshotValue != null) {
+                  const url = `https://api.mailjet.com/v3/REST/contactdata/${snapshotValue.mailJetUserId}`;
+
+                  const requestData = {
+                    'Data': [
+                      {
+                        'Name': 'paymentstatus',
+                        'Value': snapshotValue.paymentStatus
+                      }
+                    ]
+                  };
+
+                  needle('put', url, requestData, mailjetOptions);
+                }
+              })
+              .catch(error => {
+                functions.logger.error(error);
+              });
+          })
+          .catch(err => {
+            functions.logger.error(err);
+          });
+        break;
       case 'invoice.payment_failed':
+      case 'payment_intent.canceled':
+      // case 'payment_intent.created':
+      case 'payment_intent.payment_failed':
+      case 'payment_intent.processing':
       case 'customer.subscription.updated':
       case 'customer.subscription.deleted':
         axios.post(`/subscribers/${userId}/attributes`, {

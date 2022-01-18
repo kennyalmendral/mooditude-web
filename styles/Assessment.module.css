@@ -882,9 +882,28 @@ h2.assessmentDashRiskText{
 	border-radius: 8px;
 	padding: 24px;
 	text-align: center;
-    display: inline-flex;
-    flex-direction: column;
-    justify-content: space-between;
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.result_pricing_section .result_pricing_section_item:last-of-type {
+	border-color: #1CA566;
+}
+
+.result_pricing_section .result_pricing_section_item .discount {
+	font-family: 'Circular STD';
+	padding: 7px 10px;
+	background: #F8E71C;
+	color: #000;
+	font-size: 12px;
+	border-radius: 4px;
+	text-transform: uppercase;
+	width: 200px;
+	margin: 0 auto;
+	position: relative;
+	top: -40px;
+	font-weight: 500;
 }
 
 .pricing_section_text{
