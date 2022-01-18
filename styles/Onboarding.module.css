@@ -379,6 +379,7 @@
 	display: flex;
 	justify-content: flex-start;
 	align-items: stretch;
+	flex-wrap: wrap;
 	margin: 0 -13px;
 }
 
@@ -387,6 +388,7 @@
 	margin: 0 13px;
 	display: flex;
 	align-items: stretch;
+	margin-bottom: 20px;
 }
 
 .welcome_page .content .content_col a > div:first-of-type {
