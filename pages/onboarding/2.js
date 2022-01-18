@@ -77,18 +77,11 @@ export default function Onboarding2() {
     <Layout title={`Step 2 | ${SITE_NAME}`}>
       <div className={styles.onboarding_wrapper}>
         <div className={styles.onboarding_inner_wrapper}>
-          <h2>Personalize Mooditude</h2>
-          <p className={styles.step_text}>Step 2 of 7</p>
-
-          <div className={`custom_stepper_wrap ${styles.custom_stepper_wrapper}`}>
-            <Stepper activeStep={currentStep} alternativeLabel={true} epand="true">
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
+          <div className={styles.line_header_wrap}>
+            <p className={styles.step_text}>Step 2 of 7</p>
+            <h2>Personalize Mooditude</h2>
           </div>
+
           <Grow in={true} timeout={1000}>
             <h1>What’s your gender?</h1>  
           </Grow>

@@ -62,6 +62,22 @@
 	color: #FFFFFF;
 }
 
+.line_header_wrap{
+	border-bottom: 4px solid #F3F4F6;
+	margin-bottom: 60px;
+	position: relative;
+}
+
+.line_header_wrap:before{
+	content: '';
+	position: absolute;
+	bottom: -4px;
+	left: 0;
+	width: 150px;
+	background: #F8E71C;	
+	height: 4px;
+	z-index: 2;
+}
 
 .onboarding_wrapper h2{
 	font-family: 'Circular Std';
@@ -69,9 +85,10 @@
 	font-weight: bold;
 	font-size: 24px;
 	line-height: 30px;
-	margin-bottom: 0;
+	margin-bottom: 8px;
+	padding-bottom: 0;
 	/* Secondary */
-
+	margin-top: 0;
 	color: #516B84;
 }
 
@@ -82,7 +99,7 @@
 	font-size: 14px;
 	line-height: 18px;
 	margin-top: 5px;
-	margin-bottom: 25px;
+	margin-bottom: 4px;
 	/* Secondary */
 
 	color: #516B84;
@@ -337,6 +354,47 @@
 
 }
 
+.max_80{
+	width: 80%;
+}
+
+.custom_choices{
+	display: flex;
+	flex-wrap: wrap;
+	width: 80%;
+}
+
+.custom_choices .custom_choice_item{
+	height: 36px;
+	width: 36px;
+	border: 1px solid #072B4F;
+	box-sizing: border-box;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 20px;
+	cursor: pointer!important;
+	/* Bold */
+
+	font-family: Circular Std;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 18px;
+	line-height: 23px;
+	/* identical to box height */
+
+	margin-bottom: 30px;
+	/* Primary */
+
+	color: #072B4F;
+}
+
+.custom_choices .custom_choice_item.active{
+	background: #F8E71C;
+	border-color: #F8E71C;
+}
+
 .download_app_wrap .app_btns a{
 	/*border-radius: 50%;*/
 	margin-right: 20px;
@@ -348,6 +406,20 @@
 	align-items: center;
 }
 
+.btn_wrap button{
+	font-family: Circular Std;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 15px;
+	line-height: 25px;
+}
+
+.btn_wrap button:hover{
+	background: #F8E71C;
+	border-color: #F8E71C;
+	color: #072B4F;
+}
+
 .download_app_wrap .app_btns a img{
 	max-width: 100%;
 }
@@ -355,7 +427,7 @@
 .welcome_page .top_section {
 	font-family: 'Circular Std';
 	border-bottom: 4px solid #F3F4F6;
-	margin-bottom: 70px;
+	margin-bottom: 40px;
 }
 
 .welcome_page .top_section h1 {
@@ -373,6 +445,7 @@
 
 .welcome_page .content {
 	font-family: 'Circular Std';
+	margin-top: 40px;
 }
 
 .welcome_page .content .content_row {
@@ -461,6 +534,49 @@
 
 .welcome_page .content .content_col > a:hover svg path {
 	fill: #fff;
+}
+
+.error_alert,
+.success_alert {
+	position: relative;
+	background: #D6443F;
+	font-family: 'Circular Std';
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	border-radius: 8px;
+	padding: 20px;
+}
+
+.success_alert {
+	background: #1CA566;
+}
+
+.error_alert h2,
+.success_alert h2 {
+	color: #fff;
+	margin: 0 0 6px;
+	font-size: 24px;
+	font-weight: 400;
+}
+
+.error_alert p,
+.success_alert p {
+	color: #fff;
+	opacity: 0.7;
+	margin: 0;
+	font-size: 16px;
+	font-weight: 400;
+	max-width: 100%;
+}
+
+.error_alert span,
+.success_alert span {
+	position: absolute;
+	right: 15px;
+	top: 15px;
+	cursor: pointer;
 }
 
 .fadeInDown300{
@@ -583,6 +699,11 @@
   .onboarding_wrapper{
     min-height: auto!important;
     padding: 40px 25px;
+  }
+
+  .max_80,
+  .custom_choices{
+  	width: 100%;
   }
 
   .btn_wrap{

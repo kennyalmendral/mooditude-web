@@ -62,30 +62,33 @@ export default function OnboardingWelcomePage() {
               paymentStatus: 'active',
               paymentType: 'stripe'
             })
-          
-          firebaseStore
-            .collection('Users')
-            .doc(authUser.uid)
-            .update({
-              customerType: 'premium'
-            })
-
-          firebaseStore
-            .collection('Subscribers')
-            .doc(authUser.uid)
-            .set({
-              grant: {
-                expiryDate: format(subscription.current_period_end * 1000, 'LLLL dd, yyyy'),
-                grantType: 'Purchase',
-                licenseType: 'Premium',
-                productType: 'Subscription',
-                transactionDate: format(subscription.created * 1000, 'LLLL dd, yyyy'),
-                transactionId: subscription.id
-              }
-            })
             .then(() => {
-              setExpiryDate(format(new Date(subscription.current_period_end * 1000), 'LLLL dd, yyyy'))
-              setShowLoader(false)
+              firebaseStore
+                .collection('Users')
+                .doc(authUser.uid)
+                .update({
+                  customerType: 'premium'
+                })
+                .then(() => {
+                  firebaseStore
+                    .collection('Subscribers')
+                    .doc(authUser.uid)
+                    .set({
+                      grant: {
+                        expiryDate: format(subscription.current_period_end * 1000, 'LLLL dd, yyyy'),
+                        grantType: 'Purchase',
+                        licenseType: 'Premium',
+                        productType: 'Subscription',
+                        transactionDate: format(subscription.created * 1000, 'LLLL dd, yyyy'),
+                        transactionId: subscription.id
+                      }
+                    })
+                    .then(() => {
+                      setExpiryDate(format(new Date(subscription.current_period_end * 1000), 'LLLL dd, yyyy'))
+                      // setShowLoader(false)
+                      router.push('/?payment_success=true')
+                    })
+                })
             })
         }
       })
@@ -111,26 +114,29 @@ export default function OnboardingWelcomePage() {
               paymentStatus: 'active',
               paymentType: 'stripe'
             })
-          
-          firebaseStore
-            .collection('Users')
-            .doc(authUser.uid)
-            .update({
-              customerType: 'premium'
-            })
-
-          firebaseStore
-            .collection('Subscribers')
-            .doc(authUser.uid)
-            .set({
-              payment: {
-                usedOneTimeDownload: false,
-                transactionDate: format(paymentIntent.created * 1000, 'LLLL dd, yyyy'),
-                transactionId: paymentIntent.id
-              }
-            })
             .then(() => {
-              setShowLoader(false)
+              firebaseStore
+                .collection('Users')
+                .doc(authUser.uid)
+                .update({
+                  customerType: 'premium'
+                })
+                .then(() => {
+                  firebaseStore
+                    .collection('Subscribers')
+                    .doc(authUser.uid)
+                    .set({
+                      payment: {
+                        usedOneTimeDownload: false,
+                        transactionDate: format(paymentIntent.created * 1000, 'LLLL dd, yyyy'),
+                        transactionId: paymentIntent.id
+                      }
+                    })
+                    .then(() => {
+                      // setShowLoader(false)
+                      router.push('/?payment_success=true')
+                    })
+                })
             })
         }
       })
