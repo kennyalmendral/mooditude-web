@@ -56,7 +56,7 @@ export default function OnboardingWelcomePage() {
   const [name, setName] = useState('')
   const [showCoupon, setShowCoupon] = useState(false)
   const [showCouponApplied, setShowCouponApplied] = useState(false)
-  const [selectedPlan, setSelectedPlan] = useState(null)
+  const [duration, setDuration] = useState('')
 
   const [error, setError] = useState('')
 
@@ -66,23 +66,20 @@ export default function OnboardingWelcomePage() {
   const [subscription, setSubscription] = useState({})
 
   const settings = {
-      dots: true,
-      infinite: true,
-      arrows: true,
-      speed: 500,
-      slidesToShow: 1,
-      slidesToScroll: 1,
-      nextArrow: <NextArrow />,
-            prevArrow: <PrevArrow />
-    };
-
+    dots: true,
+    infinite: true,
+    arrows: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />
+  };
 
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/login')
     }
-
-    authUser && console.log(authUser)
   }, [authUser, loading, router])
 
   useEffect(() => {
@@ -100,6 +97,25 @@ export default function OnboardingWelcomePage() {
         })
     }
   }, [authUser])
+
+  const handleSubscription = async (e) => {
+    e.preventDefault()
+
+    setChecking(true)
+
+    const processStripeSubscriptionOnSignUp = firebaseFunctions.httpsCallable('processStripeSubscriptionOnSignUp')
+  
+    processStripeSubscriptionOnSignUp({
+      type: 'subscription',
+      duration: duration,
+      mode: 'subscription',
+      customerEmail: authUser && authUser.email,
+      redirectUrl: window.location.origin + '/buy/thank-you',
+      cancelUrl: window.location.origin
+    }).then(result => {
+      location.href = result.data.session.url
+    })
+  }
 
   const handleMonthlySubscription = async (e) => {
     e.preventDefault()
@@ -269,27 +285,27 @@ export default function OnboardingWelcomePage() {
 
               <div className={styles.buy_selection_wrap}>
                 <div className={styles.buy_selection_inner_wrap}>
-                  <div className={`${styles.buy_selection_item} ${ selectedPlan == 'month' ? styles.active : '' }`} onClick={e => {setSelectedPlan('month')}}>
-                    <span className={styles.buy_circle}>{ selectedPlan == 'month' ? <CheckRoundedIcon /> : '' }</span>
+                  <div className={`${styles.buy_selection_item} ${ duration == 1 ? styles.active : '' }`} onClick={e => {setDuration(1)}}>
+                    <span className={styles.buy_circle}>{ duration == 1 ? <CheckRoundedIcon /> : '' }</span>
 
                     <p>$14.99 <span>/ MONTH</span></p>
                   </div>
 
-                  <div className={`${styles.buy_selection_item} ${ selectedPlan == '3months' ? styles.active : '' }`} onClick={e => {setSelectedPlan('3months')}}>
-                    <span className={styles.buy_circle}>{ selectedPlan == '3months' ? <CheckRoundedIcon /> : '' }</span>
+                  <div className={`${styles.buy_selection_item} ${ duration == 3 ? styles.active : '' }`} onClick={e => {setDuration(3)}}>
+                    <span className={styles.buy_circle}>{ duration == 3 ? <CheckRoundedIcon /> : '' }</span>
 
                     <p>$39.00 <span>/ 3-MONTH</span></p>
                   </div>
 
-                  <div className={`${styles.buy_selection_item} ${ selectedPlan == 'year' ? styles.active : '' }`} onClick={e => {setSelectedPlan('year')}}>
-                    <span className={styles.buy_circle}>{ selectedPlan == 'year' ? <CheckRoundedIcon /> : '' }</span>
+                  <div className={`${styles.buy_selection_item} ${ duration == null ? styles.active : '' }`} onClick={e => {setDuration(null)}}>
+                    <span className={styles.buy_circle}>{ duration == null ? <CheckRoundedIcon /> : '' }</span>
 
                     <p>$89.99 <span>/ YEAR  — <b>Save $65</b></span> <br/> <span className={styles.trial_text}>with 3-day free trial</span></p>
                   </div>
                 </div>
 
 
-                <form onSubmit={handleYearlySubscription} className={styles.buy_button_form}>
+                <form onSubmit={handleSubscription} className={styles.buy_button_form}>
                   <button
                     type="submit" 
                     style={{
