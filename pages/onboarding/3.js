@@ -59,6 +59,10 @@ export default function Onboarding3() {
     if (authUser && localStorage.getItem(`${authUser.uid}_profileStep3Answer`) !== '') {
       setProfileStepAnswer(localStorage.getItem(`${authUser.uid}_profileStep3Answer`))
     }
+
+    if (authUser && localStorage.getItem(`${authUser.uid}_profileStep3AnswerOtherReason`) !== '') {
+      setOther(localStorage.getItem(`${authUser.uid}_profileStep3AnswerOtherReason`))
+    }
   }, [])
 
   useEffect(() => {
@@ -69,6 +73,10 @@ export default function Onboarding3() {
     setFormError(false)
     if (profileStepAnswer !== '') {
       localStorage.setItem(`${authUser.uid}_profileStep3Answer`, profileStepAnswer)
+
+      if (profileStepAnswer == 'other') {
+        localStorage.setItem(`${authUser.uid}_profileStep3AnswerOtherReason`, other)
+      }
       
       router.push('/onboarding/4')
     } else {
@@ -152,7 +160,7 @@ export default function Onboarding3() {
                     multiline
                     rows={5}
                     placeholder={'Write down your reason, it will help you feel better.'} 
-                    value={name} 
+                    value={other} 
                     onChange={e => setOther(e.target.value)} 
                     required
                   /> : ''

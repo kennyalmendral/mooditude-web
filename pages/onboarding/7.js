@@ -41,7 +41,7 @@ export default function Onboarding7() {
   const { authUser, loading, signOut } = useAuth()
   const steps = [1, 2, 3, 4, 5, 6, 7]
   const current_step = 2
-  const [other, setOther] = useState('')
+  const [reason, setReason] = useState('')
 
   const [profileStepAnswer, setProfileStepAnswer] = useState(null)
   const [formError, setFormError] = useState(false)
@@ -61,6 +61,10 @@ export default function Onboarding7() {
 
     if (authUser && localStorage.getItem(`${authUser.uid}_profileStep7Answer`) !== null) {
       setProfileStepAnswer(localStorage.getItem(`${authUser.uid}_profileStep7Answer`))
+    }
+
+    if (authUser && localStorage.getItem(`${authUser.uid}_profileStep7AnswerReason`) !== '') {
+      setReason(localStorage.getItem(`${authUser.uid}_profileStep7AnswerReason`))
     }
   }, [])
 
@@ -82,20 +86,24 @@ export default function Onboarding7() {
             ageGroup: parseInt(localStorage.getItem(`${authUser.uid}_profileStep1Answer`)) || 0,
             gender: parseInt(localStorage.getItem(`${authUser.uid}_profileStep2Answer`)) || 0,
             topGoal: localStorage.getItem(`${authUser.uid}_profileStep3Answer`) || '',
+            topGoalOtherReason: localStorage.getItem(`${authUser.uid}_profileStep3AnswerOtherReason`) || '',
             topChallenges: localStorage.getItem(`${authUser.uid}_profileStep4Answer`) || '',
             goingToTherapy: localStorage.getItem(`${authUser.uid}_profileStep5Answer`) || false,
             knowCbt: localStorage.getItem(`${authUser.uid}_profileStep6Answer`) || false,
             committedToSelfhelp: localStorage.getItem(`${authUser.uid}_profileStep7Answer`) || false,
+            committedToSelfhelpReason: reason || '',
             onboardingStep: 'profileCreated'
           })
           .then(() => {
             localStorage.removeItem(`${authUser.uid}_profileStep1Answer`)
             localStorage.removeItem(`${authUser.uid}_profileStep2Answer`)
             localStorage.removeItem(`${authUser.uid}_profileStep3Answer`)
+            localStorage.removeItem(`${authUser.uid}_profileStep3AnswerOtherReason`)
             localStorage.removeItem(`${authUser.uid}_profileStep4Answer`)
             localStorage.removeItem(`${authUser.uid}_profileStep5Answer`)
             localStorage.removeItem(`${authUser.uid}_profileStep6Answer`)
             localStorage.removeItem(`${authUser.uid}_profileStep7Answer`)
+            localStorage.removeItem(`${authUser.uid}_profileStep7AnswerReason`)
             
             if (localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
               localStorage.setItem(`${authUser.uid}_onboardingStep`, 'profileCreated')
@@ -168,8 +176,8 @@ export default function Onboarding7() {
                     multiline
                     rows={5}
                     placeholder={'Why not 5?'} 
-                    value={name} 
-                    onChange={e => setOther(e.target.value)} 
+                    value={reason} 
+                    onChange={e => setReason(e.target.value)} 
                     required
                   /> : ''
                 }
