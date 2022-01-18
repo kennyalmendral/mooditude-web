@@ -1901,56 +1901,8 @@ exports.stripeWebhooks = functions.https.onRequest((req, res) => {
             functions.logger.error(err);
           });
         break;
+      case 'invoice.payment_failed':
       case 'customer.subscription.updated':
-        axios.post(`/subscribers/${userId}/attributes`, {
-          app_user_id: userId,
-          attributes: {
-            'payment_status': {
-              value: paymentStatus
-            }
-          }
-        }).then(response => {
-          responseData = response;
-
-          admin.auth()
-            .getUserByEmail(reqDataObj.customer_email)
-            .then(response => {
-              let userId = response.uid;
-            
-              admin.database()
-                .ref()
-                .child('users')
-                .child(userId)
-                .once('value')
-                .then(snapshot => {
-                  const snapshotValue = snapshot.val()
-
-                  if (snapshotValue != null) {
-                    const url = `https://api.mailjet.com/v3/REST/contactdata/${snapshotValue.mailJetUserId}`;
-
-                    const requestData = {
-                      'Data': [
-                        {
-                          'Name': 'paymentstatus',
-                          'Value': snapshotValue.paymentStatus
-                        }
-                      ]
-                    };
-
-                    needle('put', url, requestData, mailjetOptions);
-                  }
-                })
-                .catch(error => {
-                  functions.logger.error(error);
-                });
-            })
-            .catch(err => {
-              functions.logger.error(err);
-            });
-        }).catch(error => {
-          errorData = error;
-        });
-        break;
       case 'customer.subscription.deleted':
         axios.post(`/subscribers/${userId}/attributes`, {
           app_user_id: userId,
