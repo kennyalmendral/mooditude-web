@@ -233,8 +233,8 @@ img{
 .MuiRadio-root.Mui-checked:before{
   content: '';
   position: absolute;
-  width: 12px;
-  height: 10px;
+  width: 18px;
+  height: 18px;
   background: #072B4F;
   z-index: -1;
   margin: auto;

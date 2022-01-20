@@ -77,7 +77,7 @@ export default function Onboarding5() {
       <div className={styles.onboarding_wrapper}>
         <div className={styles.onboarding_inner_wrapper}>
           
-          <div className={styles.line_header_wrap}>
+          <div className={`${styles.line_header_wrap} ${styles.onboarding_step5}`}>
             <p className={styles.step_text}>Step 5 of 7</p>
             <h2>Personalize Mooditude</h2>
           </div>

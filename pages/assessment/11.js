@@ -94,7 +94,7 @@ export default function Assessment11() {
     <Layout title={`Question 11 | ${SITE_NAME}`}>
       <div className={`${styles.onboarding_wrapper} ${styles.on_assessment_wrapper}`}>
         <div className={styles.onboarding_inner_wrapper}>
-          <div className={styles.line_header_wrap}>
+          <div className={`${styles.line_header_wrap} ${styles.assessment_step11}`}>
             <p className={styles.step_text}>Question 11 of 29</p>
             <h2 className={styles.wellBeingText}>Assess Your Wellbeing Score</h2>
           </div>

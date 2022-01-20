@@ -10,16 +10,13 @@ import styles from '@/styles/Onboarding.module.css'
 
 import { useAuth } from '@/context/AuthUserContext'
 
-import Animation from '@mui/material/Grow';
-import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
-import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import Animation from '@mui/material/Grow'
 import RingLoader from "react-spinners/RingLoader"
 
 import Firebase from 'lib/Firebase'
 
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
-// const firebaseDatabase = Firebase.database()
 
 export default function AssessmentAnalyzing() {
   const router = useRouter()

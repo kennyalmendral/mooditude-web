@@ -60,7 +60,7 @@ export default function Assessment27() {
     <Layout title={`Take a breather | ${SITE_NAME}`}>
       <div className={`${styles.onboarding_wrapper} ${styles.on_assessment_wrapper}`}>
         <div className={styles.onboarding_inner_wrapper}>
-          <div className={styles.line_header_wrap}>
+          <div className={`${styles.line_header_wrap} ${styles.assessment_step25}`}>
             
             <h2 className={styles.wellBeingText}>Assess Your Wellbeing Score</h2>
           </div>

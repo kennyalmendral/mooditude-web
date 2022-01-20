@@ -73,7 +73,6 @@
 	position: absolute;
 	bottom: -4px;
 	left: 0;
-	width: 150px;
 	background: #F8E71C;	
 	height: 4px;
 	z-index: 2;
@@ -92,7 +91,7 @@
 	color: #516B84;
 }
 
-.onboarding_wrapper .step_text{
+.onboarding_wrapper .step_text {
 	font-family: 'Circular Std';
 	font-style: normal;
 	font-weight: normal;
@@ -101,10 +100,66 @@
 	margin-top: 5px;
 	margin-bottom: 4px;
 	/* Secondary */
-
 	color: #516B84;
-
 }
+
+.onboarding_wrapper .onboarding_step1::before {
+	width: 14.3%;
+}
+
+.onboarding_wrapper .onboarding_step2::before {
+	width: 29%;
+}
+
+.onboarding_wrapper .onboarding_step3::before {
+	width: 43%;
+}
+
+.onboarding_wrapper .onboarding_step4::before {
+	width: 57.2%;
+}
+
+.onboarding_wrapper .onboarding_step5::before {
+	width: 71.5%;
+}
+
+.onboarding_wrapper .onboarding_step6::before {
+	width: 86%;
+}
+
+.onboarding_wrapper .onboarding_step7::before {
+	width: 100%;
+}
+
+.onboarding_wrapper .assessment_step1::before { width: 3.45%; }
+.onboarding_wrapper .assessment_step2::before { width: 6.9%; }
+.onboarding_wrapper .assessment_step3::before { width: 10.35%; }
+.onboarding_wrapper .assessment_step4::before { width: 13.8%; }
+.onboarding_wrapper .assessment_step5::before { width: 17.25%; }
+.onboarding_wrapper .assessment_step6::before { width: 20.7%; }
+.onboarding_wrapper .assessment_step7::before { width: 24.15%; }
+.onboarding_wrapper .assessment_step8::before { width: 27.6%; }
+.onboarding_wrapper .assessment_step9::before { width: 31.05%; }
+.onboarding_wrapper .assessment_step10::before { width: 34.5%; }
+.onboarding_wrapper .assessment_step11::before { width: 37.95%; }
+.onboarding_wrapper .assessment_step12::before { width: 41.4%; }
+.onboarding_wrapper .assessment_step13::before { width: 44.85%; }
+.onboarding_wrapper .assessment_step14::before { width: 48.3%; }
+.onboarding_wrapper .assessment_step15::before { width: 51.75%; }
+.onboarding_wrapper .assessment_step16::before { width: 55.2%; }
+.onboarding_wrapper .assessment_step17::before { width: 58.65%; }
+.onboarding_wrapper .assessment_step18::before { width: 62.1%; }
+.onboarding_wrapper .assessment_step19::before { width: 65.55%; }
+.onboarding_wrapper .assessment_step20::before { width: 69%; }
+.onboarding_wrapper .assessment_step21::before { width: 72.45%; }
+.onboarding_wrapper .assessment_step22::before { width: 75.9%; }
+.onboarding_wrapper .assessment_step23::before { width: 79.35%; }
+.onboarding_wrapper .assessment_step24::before { width: 82.8%; }
+.onboarding_wrapper .assessment_step25::before { width: 86.25%; }
+.onboarding_wrapper .assessment_step26::before { width: 89.7%; }
+.onboarding_wrapper .assessment_step27::before { width: 93.15%; }
+.onboarding_wrapper .assessment_step28::before { width: 96.6%; }
+.onboarding_wrapper .assessment_step29::before { width: 100%; }
 
 .custom_stepper_wrapper{
 	margin-bottom: 93px;
@@ -120,7 +175,6 @@
 	font-weight: bold;
 	font-size: 32px;
 	line-height: 40px;
-
 	color: #000000;
 }
 
@@ -407,7 +461,7 @@
 }
 
 .btn_wrap button{
-	font-family: Circular Std;
+	font-family: 'Circular Std';
 	font-style: normal;
 	font-weight: bold;
 	font-size: 15px;

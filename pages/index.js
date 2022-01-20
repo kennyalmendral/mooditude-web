@@ -282,24 +282,26 @@ export default function OnboardingWelcomePage() {
                     </a>
                   </Link>
                 </div>
+                
+                {(isReportOutdated || (latestAssessment == null)) && (
+                  <div className={`${styles.content_col} ${styles.stats}`}>
+                    <Link href="/assessment">
+                      <a>
+                        <div>
+                          <img src="/stats.svg" />
+                        </div>
+                        
+                        <h3>Assess Your Mental Health Conditions</h3>
 
-                <div className={`${styles.content_col} ${styles.stats}`}>
-                  <Link href="/assessment">
-                    <a>
-                      <div>
-                        <img src="/stats.svg" />
-                      </div>
-                      
-                      <h3>Assess Your Mental Health Conditions</h3>
-
-                      <div className={styles.arrow_container}>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M12.172 7L6.808 1.636L8.222 0.222L16 8L8.222 15.778L6.808 14.364L12.172 9H0V7H12.172Z" fill="#1CA566"/>
-                        </svg>
-                      </div>
-                    </a>
-                  </Link>
-                </div>
+                        <div className={styles.arrow_container}>
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12.172 7L6.808 1.636L8.222 0.222L16 8L8.222 15.778L6.808 14.364L12.172 9H0V7H12.172Z" fill="#1CA566"/>
+                          </svg>
+                        </div>
+                      </a>
+                    </Link>
+                  </div>
+                )}
                 
                 {!grant && (
                   <div className={`${styles.content_col} ${styles.buy}`}>
