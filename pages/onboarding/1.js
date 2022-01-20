@@ -61,6 +61,14 @@ export default function Onboarding1() {
     profileStepAnswer > 0 && console.log(`Profile step 1 answer: ${profileStepAnswer}`)
   }, [profileStepAnswer])
 
+  const handleChange = e => {
+    localStorage.setItem(`${authUser.uid}_profileStep1Answer`, e.target.value)    
+
+    setProfileStepAnswer(e.target.value)
+
+    router.push('/onboarding/2')
+  }
+
   const handleNextStep = () => {
     setFormError(false)
     if (profileStepAnswer !== '') {
@@ -94,13 +102,13 @@ export default function Onboarding1() {
                 <FormControlLabel 
                   value="1" 
                   className={styles.with_text_wrap}
-                  control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 1} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                  control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == '1'} onChange={handleChange} />} 
                   label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `< 18 <div>Since you're under 18, get permission from your parents before you use this app. (Just let 'em know what you're up to.)</div>`}} />} />
                 
-                <FormControlLabel value="2" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 2} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="19 — 24" />
-                <FormControlLabel value="3" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 3} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="25 — 39" />
-                <FormControlLabel value="4" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 4} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="40 — 59" />
-                <FormControlLabel value="5" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 5} onChange={(event) => setProfileStepAnswer(event.target.value)} />} label="> 60" />
+                <FormControlLabel value="2" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == '2'} onChange={handleChange} />} label="19 — 24" />
+                <FormControlLabel value="3" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == '3'} onChange={handleChange} />} label="25 — 39" />
+                <FormControlLabel value="4" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == '4'} onChange={handleChange} />} label="40 — 59" />
+                <FormControlLabel value="5" control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == '5'} onChange={handleChange} />} label="> 60" />
               </RadioGroup>
               {
                 formError ? 

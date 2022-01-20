@@ -61,6 +61,14 @@ export default function Onboarding5() {
     profileStepAnswer !== null && console.log(`Profile step 5 answer: ${profileStepAnswer}`)
   }, [profileStepAnswer])
 
+  const handleChange = e => {
+    localStorage.setItem(`${authUser.uid}_profileStep5Answer`, e.target.value)    
+
+    setProfileStepAnswer(e.target.value)
+
+    router.push('/onboarding/6')
+  }
+
   const handleNextStep = () => {
     setFormError(false)
     if (profileStepAnswer !== null) {
@@ -93,14 +101,14 @@ export default function Onboarding5() {
                   <FormControlLabel 
                     value={true} 
                     className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == "true"} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == "true"} onChange={handleChange} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `Yes <div>Wonderful. You can use Mooditude as a companion app between therapy sessions. Tell your therapist about Mooditude.</div>`}} />} 
                   />
 
                   <FormControlLabel 
                     value={false} 
                     className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == "false"} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == "false"} onChange={handleChange} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `No <div>That’s okay. You can use Mooditude’s self-paced programs to learn life-changing skills.</div>`}} />} 
                   />
                 </RadioGroup>

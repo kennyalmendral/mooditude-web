@@ -69,6 +69,14 @@ export default function Onboarding3() {
     profileStepAnswer > 0 && console.log(`Profile step 3 answer: ${profileStepAnswer}`)
   }, [profileStepAnswer])
 
+  const handleChange = e => {
+    localStorage.setItem(`${authUser.uid}_profileStep3Answer`, e.target.value)    
+
+    setProfileStepAnswer(e.target.value)
+
+    router.push('/onboarding/4')
+  }
+
   const handleNextStep = () => {
     setFormError(false)
     if (profileStepAnswer !== '') {
@@ -110,37 +118,37 @@ export default function Onboarding3() {
                   <FormControlLabel 
                     value="lonely" 
                     className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'lonely'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'lonely'} onChange={handleChange} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `I’m lonely <div>In addition to being emotionally painful, loneliness can bring on serious mental health concerns. Mooditude’s supportive community is available 24/7 to give and get support.</div>`}} />} />
                   <FormControlLabel 
                     value="masterDepression" 
                     className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'masterDepression'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'masterDepression'} onChange={handleChange} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `I’m feeling depressed <div>Depression is the absence of hope. you look forward to feeling alive again. We’ll introduce you to tools and techniques that inspire hope.</div>`}} />} />
                   <FormControlLabel 
                     value="relationships" 
                     className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'relationships'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'relationships'} onChange={handleChange} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `I’m struggling in my relationships <div>Healthy interpersonal relationships are a vital part of our life and overall mental health. We'll give you boundary-setting tactics and healthy communication skills with those around you.</div>`}} />} />
                   <FormControlLabel 
                     value="overcomeAnxiety" 
                     className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'overcomeAnxiety'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'overcomeAnxiety'} onChange={handleChange} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `I’m restless and anxious <div>The overwhelming feeling of worry or fear can take many forms, and have various levels of severity. We'll introduce you to self-care techniques and coping skills for managing your anxiety, no matter how severe.</div>`}} />} />
                   <FormControlLabel 
                     value="trauma" 
                     className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'trauma'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'trauma'} onChange={handleChange} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `I don’t know how to cope with past trauma <div>Trauma can cause overwhelming emotional and physical reactions when least expected. We'll give you self-help strategies that will help you work through your trauma. </div>`}} />} />
                   <FormControlLabel 
                     value="handleStress" 
                     className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'handleStress'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'handleStress'} onChange={handleChange} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `I’m burnt out <div>Emotional, physical, and mental exhaustion brought on by prolonged stress - burnout can cause severe health conditions if not treated. We'll provide you with tools and techniques to manage burnout.</div>`}} />} />
                   <FormControlLabel 
                     value="controlAnger" 
                     className={styles.with_text_wrap}
-                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'controlAnger'} onChange={(event) => setProfileStepAnswer(event.target.value)} />} 
+                    control={<Radio icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon  />} sx={{'&.Mui-checked': {color: '#F8E71C'}}} checked={profileStepAnswer == 'controlAnger'} onChange={handleChange} />} 
                     label={<div className={styles.radio_option_text_wrap} dangerouslySetInnerHTML={{__html: `I’m struggling to control my anger <div>Anger is a natural response to a threat. It became a problem when you have difficulty controlling it. We'll give you coping activities that you can use when you feel hurt, annoyed, or disappointed. </div>`}} />} />
                   <FormControlLabel 
                     value="other" 
