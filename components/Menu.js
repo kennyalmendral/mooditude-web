@@ -7,12 +7,17 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Link from "next/link"
 import Router from 'next/router';
 
+import Firebase from 'lib/Firebase'
+
+const firebaseStore = Firebase.firestore()
+
 export default function Menu(props) {
     const { signOut } = useAuth()
     const [open, setOpen] = React.useState(false);
     const [width, setWidth] = React.useState(null);
     const [showMenu, setShowMenu] = React.useState(false);
     const [mainMenuCollapse, setMainMenuCollapse] = React.useState(true);
+    const [customerType, setCustomerType] = React.useState('free')
     const { authUser, loading, signInWithEmailAndPassword } = useAuth()
 
     useEffect(() => {
@@ -24,6 +29,20 @@ export default function Menu(props) {
         setShowMenu(false)
       }
     }, [Router])
+
+    useEffect(() => {
+      if (authUser) {
+        firebaseStore
+          .collection('Users')
+          .doc(authUser.uid)
+          .get()
+          .then(doc => {
+            if (doc.data()) {
+              setCustomerType(doc.data().customerType)
+            }
+          })
+      }
+    }, [authUser])
 
     const collapseMenu = () => {
         
@@ -87,13 +106,15 @@ export default function Menu(props) {
                                     </Link>
                                 </div>
 
-                                <div>
+                                {customerType == 'free' && (
+                                  <div>
                                     <Link href="/buy"> 
-                                    <a className={styles.menu_item} >
-                                        BUY
-                                    </a>
+                                      <a className={styles.menu_item} >
+                                          BUY
+                                      </a>
                                     </Link>
-                                </div>
+                                  </div>
+                                )}
                             </div> : ''
 
                         }

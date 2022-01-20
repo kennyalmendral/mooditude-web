@@ -42,7 +42,7 @@ export default function OnboardingWelcomePage() {
   const [paymentFailed, setPaymentFailed] = useState(false)
   const [paymentSuccess, setPaymentSuccess] = useState(false)
 
-  const [grant, setGrant] = useState(null)
+  const [customerType, setCustomerType] = useState(null)
 
   const [checking, setChecking] = useState(true)
 
@@ -79,41 +79,34 @@ export default function OnboardingWelcomePage() {
         .doc(authUser.uid)
         .get()
         .then(doc => {
-          doc.data() && setName(doc.data().name)
+          if (doc.data()) {
+            setName(doc.data().name)
+            setCustomerType(doc.data().customerType)
 
-          firebaseStore
-            .collection('Subscribers')
-            .doc(authUser.uid)
-            .get()
-            .then(doc => {
-              if (doc && doc.data()) {
-                doc.data().grant && setGrant(doc.data().grant)
-              }
+            firebaseStore
+              .collection('M3Assessment')
+              .doc(authUser.uid)
+              .collection('scores')
+              .get()
+              .then(querySnapshot => {
+                if ((querySnapshot != null) || (querySnapshot != undefined)) {
+                  querySnapshot.forEach(doc => {
+                    let assessment = {
+                      date: new Date(doc.data().createDate.seconds * 1000),
+                      data: doc.data()
+                    }
+        
+                    assessments.push(assessment)
+                  })
+        
+                  assessments.sort((prevDate, nextDate) => nextDate.date - prevDate.date)
+        
+                  setLatestAssessment(assessments[0])
 
-              firebaseStore
-                .collection('M3Assessment')
-                .doc(authUser.uid)
-                .collection('scores')
-                .get()
-                .then(querySnapshot => {
-                  if ((querySnapshot != null) || (querySnapshot != undefined)) {
-                    querySnapshot.forEach(doc => {
-                      let assessment = {
-                        date: new Date(doc.data().createDate.seconds * 1000),
-                        data: doc.data()
-                      }
-          
-                      assessments.push(assessment)
-                    })
-          
-                    assessments.sort((prevDate, nextDate) => nextDate.date - prevDate.date)
-          
-                    setLatestAssessment(assessments[0])
-
-                    setChecking(false)
-                  }
-                })
-            })
+                  setChecking(false)
+                }
+              })
+          }
         })
     }
   }, [authUser])
@@ -303,7 +296,7 @@ export default function OnboardingWelcomePage() {
                   </div>
                 )}
                 
-                {!grant && (
+                {(customerType == 'free') && (
                   <div className={`${styles.content_col} ${styles.buy}`}>
                     <Link href="/buy">
                       <a>

@@ -149,13 +149,13 @@ export default function AssessmentReport(props) {
       let assessmentScoreId = router.query.score
 
       firebaseStore
-        .collection('Subscribers')
+        .collection('Users')
         .doc(authUser.uid)
         .get()
         .then(doc => {
           if (doc.data()) {
-            if (doc.data().grant) {
-              setLicenseType(doc.data().grant.licenseType)
+            if (doc.data().customerType) {
+              setLicenseType(doc.data().customerType)
             }
           }
         })
@@ -1360,7 +1360,7 @@ export default function AssessmentReport(props) {
                     {isDownloadVisible && (
                       <div className={styles.report_content_item} key={'report_content_paid_wrap'}>
                         {/* {oneTimeReportUrl != null && ( */}
-                          <p className={styles.download_text}>Click here to download full report as a Pdf. </p>
+                          <p className={styles.download_text}>Click here to download full report as a PDF.</p>
                           <Button 
                             className={styles.report_btn} 
                             variant="contained" 
