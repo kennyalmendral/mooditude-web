@@ -44,8 +44,10 @@ export default function AssessmentWelcomePage() {
            <h1>Assess Your <br/>Wellbeing Score</h1>
             
             <p>You are about to take a 3-minute mental health assessment that effectively measures the pulse of your mental wellbeing.</p>
+
             <p>Please read each statement carefully and select a choice that indicates how that statement applied to you OVER THE PAST TWO WEEKS. </p>
-            <p>There are no right or wrong answers.  Take your time</p>
+
+            <p>There are no right or wrong answers. Take your time.</p>
 
             <div className={styles.btn_wrap}>
               <Stack direction="row" spacing={2}>
@@ -55,7 +57,7 @@ export default function AssessmentWelcomePage() {
                   // onClick={() => router.push(`/assessment/1`)}
                   onClick={handleStart}
                 >
-                  Start Now
+                  Start
                 </Button>
               </Stack>
             </div>

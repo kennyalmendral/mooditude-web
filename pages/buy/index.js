@@ -261,7 +261,8 @@ export default function OnboardingWelcomePage() {
               </div>
 
               <div className={styles.buy_slider}>
-                <h4>WITH MOOTIDUTE PREMIUM YOU WILL BE ABLE TO</h4>
+                <h4>WITH MOODITUDE PREMIUM YOU WILL BE ABLE TO</h4>
+                
                 <div className={styles.buy_inner_slider}>
                   <Slider {...settings}>
                     <div>

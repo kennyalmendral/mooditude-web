@@ -440,7 +440,7 @@ export default function AssessmentWelcomePage() {
 
           {Object.keys(assessments).length > 0 && (
             <div className={styles.assessment_list_wrap}>
-              <h3>All Assessments</h3>
+              <h3>Past Reports</h3>
 
               <div className={styles.assessment_list_inner_wrap} style={{
                 display: 'flex',

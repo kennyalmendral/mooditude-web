@@ -102,9 +102,9 @@ export default function OnboardingWelcomePage(props) {
             <h1>Welcome!</h1>  
           )}
           
-          <p>Congratulations on taking the first step towards your well-being journey.</p>
-          <p>Mooditude is designed by clinical psychologists and data-science experts using evidence based Cognitive Behavioral Therapy (CBT)  for measureable progress.</p>
-          <p>Let’s start by personalizing Mooditude for you.</p>
+          <p>You&apos;re officially a Moodituder! 🎉</p>
+          <p>Get ready to experience significant improvement in your mental wellbeing ✨</p>
+          <p>Now, it&apos;s time to customize Mooditude to best fit YOU.</p>
 
           <div className={styles.btn_wrap}>
             <Stack direction="row" spacing={2}>

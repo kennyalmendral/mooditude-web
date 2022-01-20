@@ -530,10 +530,7 @@ export default function AssessmentReport(props) {
               {!isReportOutdated && (
                 <div className={styles.report_right_wrap}>
                   <div className={styles.yellow_wrap}>
-                    {allRiskLevel == 'high' && <h4>Your score is valid for two weeks</h4>}
-                    {allRiskLevel == 'medium' && <h4>Your score is valid for one month</h4>}
-                    {allRiskLevel == 'low' && <h4>Your score is valid for two months</h4>}
-                    {allRiskLevel == 'unlikely' && <h4>Your score is valid for six months</h4>}
+                    <h4>Your score is valid for 2-weeks</h4>
 
                     <p>Recommended frequency to test your mental <br/> health conditions:</p>
                     <p>If your risk is:</p>
