@@ -47,18 +47,20 @@ export default function OnboardingFinishPage() {
             />
 
           </div>
-          <h1 className={`mb_0`}>Congratulations</h1>  
+          <h1 className={`mb_0`}>🙌 High five!</h1>  
           
-          <p>You have already accomplished so much!</p>
+          <p style={{ fontWeight: '600', fontSize: '16px' }}>You&apos;ve already accomplished so much!</p>
 
           <div className={styles.list_wrap}>
-            <p><img src="/check.png"/> You have priortized your mental health goals</p>
-            <p><img src="/check.png"/> You identified the obstacles to your happiness </p>
-            <p><img src="/check.png"/> You committed to take care of yourself</p>
+            <p style={{ fontWeight: '400', fontSize: '16px' }}><img src="/check.png"/> You prioritized your mental health goals</p>
+            <p style={{ fontWeight: '400', fontSize: '16px' }}><img src="/check.png"/> You&apos;ve identified the obstacles to your happiness</p>
           </div>
 
-          <div className={styles.high_five}>
-            🙌 <span>High five!</span>
+          <div>
+            <p style={{
+              fontSize: '16px',
+              fontWeight: '700'
+            }}>Next Step: Uncover what’s really going on with your Mental Health</p>
           </div>
 
           <div className={styles.btn_wrap}>

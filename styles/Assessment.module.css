@@ -872,7 +872,8 @@ h2.assessmentDashRiskText{
 	justify-content: center;
 }
 
-.result_pricing_section .result_pricing_section_item{
+.result_pricing_section .result_pricing_section_item {
+	position: relative;
 	width: 30%;
 	max-width: 280px;
 	border: 1px solid #A8B5C1;
@@ -901,8 +902,10 @@ h2.assessmentDashRiskText{
 	text-transform: uppercase;
 	width: 200px;
 	margin: 0 auto;
-	position: relative;
-	top: -40px;
+	position: absolute;
+	top: -16px;
+	left: 50%;
+	transform: translateX(-50%);
 	font-weight: 500;
 }
 

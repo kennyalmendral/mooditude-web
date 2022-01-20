@@ -24,6 +24,7 @@ export default function OnboardingWelcomePage(props) {
 
   const { authUser, loading, signOut } = useAuth()
 
+  const [isMobileView, setIsMobileView] = useState(false)
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -31,46 +32,54 @@ export default function OnboardingWelcomePage(props) {
     }
   }, [authUser, loading, router])
 
-  
+  useEffect(() => {
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      setIsMobileView(true)
+    } else {
+      setIsMobileView(false)
+    }
+  }, [])
 
   return (
     <Layout title={`Download | ${SITE_NAME}`}>
       <div className={styles.download_wrapper}>
         <div className={`${styles.download_inner_wrapper} ${styles.download_main_wrap}` }>
           <div>
-            <img src="/d-main-image.svg" a/>
+            <img src="/iphones.svg" />
           </div>
 
           <h1>Take Control of Your Mental Health <br/>with Mooditude Apps</h1>
 
           <div className={styles.gray_apps}>
-            <a href="https://apps.apple.com/us/app/mooditude-cbt-therapy/id1450661800" target="_blank"><img src="/d-apple-gray.svg" alt="" /></a>
-            <a href="https://play.google.com/store/apps/details?id=com.health.mental.mooditude" target="_blank"><img src="/d-android-gray.svg" alt="" /></a>
+            <a href="https://apps.apple.com/us/app/mooditude-cbt-therapy/id1450661800" target="_blank"><img src="/apple.svg" alt="" /></a>
+            <a href="https://play.google.com/store/apps/details?id=com.health.mental.mooditude" target="_blank"><img src="/android.svg" alt="" /></a>
           </div>
 
           <div className={styles.item_list}>
             <div>
-              <p><img src="/check.png" /> <span>Understand your symptoms with <br/> unlimited Assessments & Reporting</span></p>
-              <p><img src="/check.png" /> <span>Change the way you feel with CBT <br/>Courses & Exercises</span></p>
-              <p><img src="/check.png" /> <span>Feel happy daily with goals and habit <br/>building routines</span></p>
+              <p><img src="/check-icon.svg" /> <span>Understand your symptoms with <br/> unlimited Assessments &amp; Reporting</span></p>
+              <p><img src="/check-icon.svg" /> <span>Change the way you feel with CBT <br/>Courses &amp; Exercises</span></p>
+              <p><img src="/check-icon.svg" /> <span>Feel happy daily with goals and habit <br/>building routines</span></p>
             </div>
             <div>
-              <p><img src="/check.png" /><span> Take care of yourself with over <br/>800 minutes of self-care activities</span></p>
-              <p><img src="/check.png" /> <span>Discuss and get advice in 24/7 supportive  <br/>community moderated by experts</span></p>
-              <p><img src="/check.png" /> <span>Track how your lifestyle changes are <br/>affecting your mental health overtime</span></p>
+              <p><img src="/check-icon.svg" /><span> Take care of yourself with over <br/>800 minutes of self-care activities</span></p>
+              <p><img src="/check-icon.svg" /> <span>Discuss and get advice in 24/7 supportive  <br/>community moderated by experts</span></p>
+              <p><img src="/check-icon.svg" /> <span>Track how your lifestyle changes are <br/>affecting your mental health overtime</span></p>
             </div>
           </div>
 
-          <div className={styles.qr_code}>
-            <img src="/d-image-qr.png" />
-          </div>
+          {!isMobileView && (
+            <div className={styles.qr_code}>
+              <img src="/barcode.svg" />
+            </div>
+          )}
 
           <div className={styles.green_apps}>
-            <a href="https://apps.apple.com/us/app/mooditude-cbt-therapy/id1450661800" target="_blank"><img src="/d-apple-green.svg" alt="" /></a>
-            <a href="https://play.google.com/store/apps/details?id=com.health.mental.mooditude" target="_blank"><img src="/d-android-green.svg" alt="" /></a>
+            <a href="https://apps.apple.com/us/app/mooditude-cbt-therapy/id1450661800" target="_blank"><img src="/appstore.svg" alt="" /></a>
+            <a href="https://play.google.com/store/apps/details?id=com.health.mental.mooditude" target="_blank"><img src="/googleplay.svg" alt="" /></a>
           </div>
 
-          <p className={styles.footer_text}>After downloading, login with exististing account.</p>
+          <p className={styles.footer_text}>After downloading, login with existing account.</p>
         </div>
       </div>
     </Layout>

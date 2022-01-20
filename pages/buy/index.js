@@ -266,19 +266,28 @@ export default function OnboardingWelcomePage() {
                 <div className={styles.buy_inner_slider}>
                   <Slider {...settings}>
                     <div>
-                      <h3>Take Control of Your <br/>Mental Health </h3>
+                      <h3>Take control of your<br />mental health</h3>
                     </div>
                     <div>
-                      <h3>Take Control of Your <br/>Mental Health </h3>
+                      <h3>Understand your<br />symptoms with unlimited<br />assessments &amp; reporting</h3>
                     </div>
                     <div>
-                      <h3>Take Control of Your <br/>Mental Health </h3>
+                      <h3>Change the way<br />you feel with CBT<br />courses &amp; exercises</h3>
                     </div>
                     <div>
-                      <h3>Take Control of Your <br/>Mental Health </h3>
+                      <h3>Feel happy daily<br />with goals and<br />habit building routines</h3>
                     </div>
                     <div>
-                      <h3>Take Control of Your <br/>Mental Health </h3>
+                      <h3>Take care of yourself<br />with over 800 minutes<br />of self-care activities</h3>
+                    </div>
+                    <div>
+                      <h3>Discuss and get advice<br />in 24/7 supportive community moderated<br />by experts</h3>
+                    </div>
+                    <div>
+                      <h3>Track how your<br />lifestyle changes are affecting your mental<br />health over time</h3>
+                    </div>
+                    <div>
+                      <h3>Find expert help.<br />Connect with a clinician<br />who understands you<br />and will help you</h3>
                     </div>
                   </Slider>
                 </div>
