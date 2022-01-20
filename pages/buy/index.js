@@ -219,6 +219,7 @@ export default function OnboardingWelcomePage() {
   
   return (
     <Layout title={`Buy | ${SITE_NAME}`}>
+      <div>
       {
         checking ? 
           <div 
@@ -356,7 +357,7 @@ export default function OnboardingWelcomePage() {
           </div>
         </>
       }
-      
+      </div>
     </Layout>
   )
 }
