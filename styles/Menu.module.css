@@ -10,7 +10,7 @@
   background: #F8E71C;
   position: fixed;
   height: 100%;
-  z-index: 2;
+  z-index: 99;
 
 }
 
