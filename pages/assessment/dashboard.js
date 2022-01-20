@@ -53,21 +53,23 @@ export default function AssessmentWelcomePage() {
     if (Object.keys(assessments).length > 0) {
       setHasNoAssessment(false)
 
-      setWeekDifference(differenceInWeeks(new Date(), new Date(assessments[0].createDate.seconds * 1000)))
+      let sortedAssessments = assessments.sort((prevValue, nextValue) => new Date(nextValue.createDate.seconds * 1000) - new Date(prevValue.createDate.seconds * 1000))
 
-      assessments[0] && setCurrentRiskScore(assessments[0].allScore)
+      setWeekDifference(differenceInWeeks(new Date(), new Date(sortedAssessments[0].createDate.seconds * 1000)))
 
-      assessments[0] && setCurrentAssessmentDate(new Date(assessments[0].createDate.seconds * 1000).toLocaleString('en-US', {
+      sortedAssessments[0] && setCurrentRiskScore(sortedAssessments[0].allScore)
+
+      sortedAssessments[0] && setCurrentAssessmentDate(new Date(sortedAssessments[0].createDate.seconds * 1000).toLocaleString('en-US', {
         month: 'long',
         day: 'numeric',
         year: 'numeric'
       }))
 
-      assessments[0] && setCurrentAllRiskLevel(assessments[0].allRiskLevel)
+      sortedAssessments[0] && setCurrentAllRiskLevel(sortedAssessments[0].allRiskLevel)
 
-      assessments[0] && setCurrentChartData({
+      sortedAssessments[0] && setCurrentChartData({
         labels: [
-          new Date(assessments[0].createDate.seconds * 1000).toLocaleString('en-US', {
+          new Date(sortedAssessments[0].createDate.seconds * 1000).toLocaleString('en-US', {
             month: 'long',
             day: 'numeric',
             year: 'numeric'
@@ -76,31 +78,31 @@ export default function AssessmentWelcomePage() {
         datasets: [
           {
             label: 'Depression',
-            data: [parseInt(assessments[0].depressionScore)],
+            data: [parseInt(sortedAssessments[0].depressionScore)],
             backgroundColor: '#6FCF97', 
             type: 'bar'
           },
           {
             label: 'Anxiety',
-            data: [parseInt(assessments[0].anxietyScore)],
+            data: [parseInt(sortedAssessments[0].anxietyScore)],
             backgroundColor: '#D68AFA',
             type: 'bar'
           },
           {
             label: 'PTSD',
-            data: [parseInt(assessments[0].ptsdScore)],
+            data: [parseInt(sortedAssessments[0].ptsdScore)],
             backgroundColor: '#56CCF2',
             type: 'bar'
           },
           {
             label: 'Bipolar',
-            data: [parseInt(assessments[0].bipolarScore)],
+            data: [parseInt(sortedAssessments[0].bipolarScore)],
             backgroundColor: '#DC957E',
             type: 'bar'
           },
           {
             label: 'Overall Score',
-            data: [parseInt(assessments[0].overallScore)],
+            data: [parseInt(sortedAssessments[0].overallScore)],
             backgroundColor: '#2968EA',
             type: 'line'
           }
@@ -115,9 +117,7 @@ export default function AssessmentWelcomePage() {
         }
       })
       
-      assessments[0] && setCurrentFullReportLink(`/assessment/report/${authUser.uid}/${assessments[0].id}`)
-
-      console.log(assessments)
+      sortedAssessments[0] && setCurrentFullReportLink(`/assessment/report/${authUser.uid}/${sortedAssessments[0].id}`)
     } else {
       setHasNoAssessment(true)
     }
@@ -131,18 +131,14 @@ export default function AssessmentWelcomePage() {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    let usersM3AssessmentScoresRef
-    let unsubscribe
     setChecking(true)
+
     firebaseAuth.onAuthStateChanged(user => {
-      
       if (user) {
-        usersM3AssessmentScoresRef = firebaseStore
+        firebaseStore
           .collection('M3Assessment')
           .doc(user.uid)
           .collection('scores')
-
-        unsubscribe = usersM3AssessmentScoresRef
           .onSnapshot(querySnapshot => {
             if (!querySnapshot.empty) {
               querySnapshot.forEach(doc => {
@@ -160,9 +156,9 @@ export default function AssessmentWelcomePage() {
                       ...docData,
                       ...result.data
                     }
+
                     setChecking(false)
                     setAssessments(assessments => [...assessments, mergedData])
-  
                   })
                 } else {
                   setChecking(false)
@@ -174,7 +170,6 @@ export default function AssessmentWelcomePage() {
           })
       } else {
         setChecking(false)
-        unsubscribe && unsubscribe()
       }
     })
 
@@ -257,8 +252,6 @@ export default function AssessmentWelcomePage() {
   }
 
   const handleClickAssessment = (riskScore, assessmentDate, riskLevel, chartData, fullReportLink) => {
-    console.log(riskScore, assessmentDate, riskLevel, chartData, fullReportLink)
-
     setCurrentRiskScore(riskScore)
     setCurrentAssessmentDate(assessmentDate)
     setCurrentAllRiskLevel(riskLevel)
@@ -270,7 +263,6 @@ export default function AssessmentWelcomePage() {
     <Layout title={`Assessments | ${SITE_NAME}`}>
       {
         checking ? 
-
           <div 
             className={styles.custom_loader} 
             style={{
@@ -347,10 +339,6 @@ export default function AssessmentWelcomePage() {
                         <p>Score of {currentRiskScore} suggests that you have a high risk of a mental health condition.</p>
                       </>
                     )}
-                
-                    {/* <div className={styles.scale_img_wrap}>
-                      <img src="/scale.svg" />
-                    </div> */}
                   </>
                 )}
 
@@ -450,65 +438,13 @@ export default function AssessmentWelcomePage() {
                   <>
                     {assessments.map(assessment => (
                       <div 
-                        className={`${styles.assessment_item} 
-                        `} 
+                        className={`${styles.assessment_item}`} 
                         style={{ 
                           width: '100%', 
-                          alignItems: 'center', 
+                          alignItems: 'center'
                         }} 
                         key={assessment.id} 
-                        onClick={() => router.push(`/assessment/report/${authUser.uid}/${assessment.id}`)} 
-                        // onClick={() => handleClickAssessment(
-                        //   assessment.allScore, 
-                        //   new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
-                        //     month: 'long',
-                        //     day: 'numeric',
-                        //     year: 'numeric'
-                        //   }),
-                        //   assessment.allRiskLevel,
-                        //   {
-                        //     labels: [
-                        //       new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
-                        //         month: 'long',
-                        //         day: 'numeric',
-                        //         year: 'numeric'
-                        //       }),
-                        //     ],
-                        //     datasets: [
-                        //       {
-                        //         label: 'Depression',
-                        //         data: [parseInt(assessment.depressionScore)],
-                        //         backgroundColor: '#6FCF97',
-                        //         type: 'bar'
-                        //       },
-                        //       {
-                        //         label: 'Anxiety',
-                        //         data: [parseInt(assessment.anxietyScore)],
-                        //         backgroundColor: '#D68AFA',
-                        //         type: 'bar'
-                        //       },
-                        //       {
-                        //         label: 'PTSD',
-                        //         data: [parseInt(assessment.ptsdScore)],
-                        //         backgroundColor: '#56CCF2',
-                        //         type: 'bar'
-                        //       },
-                        //       {
-                        //         label: 'Bipolar',
-                        //         data: [parseInt(assessment.bipolarScore)],
-                        //         backgroundColor: '#DC957E',
-                        //         type: 'bar'
-                        //       },
-                        //       {
-                        //         label: 'Overall Score',
-                        //         data: [parseInt(assessment.overallScore)],
-                        //         backgroundColor: '#2968EA',
-                        //         type: 'line'
-                        //       }
-                        //     ]
-                        //   },
-                        //   `/assessment/report/${authUser.uid}/${assessment.id}`
-                        // )}
+                        onClick={() => router.push(`/assessment/report/${authUser.uid}/${assessment.id}`)}
                       >
                         <div className={styles.ai_score}>
                           <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
@@ -517,7 +453,6 @@ export default function AssessmentWelcomePage() {
                         </div>
         
                         <div className={styles.ai_details} style={{ textAlign: 'left' }}>
-                          
                           <h4>{assessment.allRiskLevel.charAt(0).toUpperCase() + assessment.allRiskLevel.slice(1)} Risk</h4>
 
                           <p>{new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
@@ -526,7 +461,6 @@ export default function AssessmentWelcomePage() {
                             year: 'numeric'
                           })}</p>
                         </div>
-                        
                         
                         <div 
                           className={styles.ai_action}
@@ -540,41 +474,11 @@ export default function AssessmentWelcomePage() {
                     ))}
                   </>
                 )}
-                {/* <div className={styles.assessment_item}>
-                  <div className={styles.ai_score}>
-                    <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
-                      {currentRiskScore}  
-                    </div>
-                  </div>
-
-                  <div className={styles.ai_details}>
-                    <h4>High Risk</h4>
-                    <p>July 12, 2021</p>
-                  </div>
-
-                  <div className={styles.ai_action}><ArrowForwardIcon /></div>
-                </div>
-                
-                <div className={`${styles.assessment_item} ${styles.active}`}>
-                  <div className={styles.ai_score}>
-                    <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
-                      {currentRiskScore}  
-                    </div>
-                  </div>
-
-                  <div className={styles.ai_details}>
-                    <h4>High Risk</h4>
-                    <p>July 12, 2021</p>
-                  </div>
-
-                  <div className={styles.ai_action}><ArrowForwardIcon /></div>
-                </div> */}
               </div>
             </div>
           )}
         </div>
-      }
-      
+      }  
     </Layout>
   )
 }
