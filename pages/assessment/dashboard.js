@@ -111,7 +111,8 @@ export default function AssessmentWelcomePage() {
           legend: {
             display: true,
             labels: {
-              fontSize: 10
+              fontSize: 10,
+              usePointStyle: true
             }
           }
         }

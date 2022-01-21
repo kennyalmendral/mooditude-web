@@ -65,11 +65,11 @@ export default function Assessment22() {
           </div>
         
           <div className={styles.fadeInDown500}>
-              <h1 className={styles.breather_wrap}>Since you last took this test, <br/>have there ever been phases or periods when you have noticed the following...</h1>  
+              <h1 className={styles.breather_wrap} style={{ marginBottom: '0', paddingBottom: '0' }}>Since you last took this test, <br/>have there ever been phases or periods when you have noticed the following...</h1>  
             </div>
           
           
-          <div className={styles.btn_wrap}>
+          <div className={styles.btn_wrap} style={{ marginTop: '30px' }}>
             <Stack direction="row" spacing={2}>
               <Button 
                 size="large" 
