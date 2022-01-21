@@ -178,15 +178,15 @@ export default function profileDelete() {
           <div className={styles.profileWrapper}>
               <div className={styles.profileInnerWrapper}>
                 <div className={styles.profileInnerHeader}>
-                  <Link href="/profile"><a>← Go Back</a></Link>
+                  <h4>ACCOUNT</h4>
                   <h1>Delete Account</h1>
                 </div>
                 <div className={styles.profileInnerPage}>
                   <div className={styles.deleteInnerPage}>
                     <img src="/error.svg" />
-                    <h3>Please enter your password to<br/> delete your account.</h3>
+                    <h3 style={{ fontSize: '34px', fontWeight: '500', lineHeight: '43px' }}>Please enter your password to delete<br/>your account.</h3>
 
-                    <p>All your data from this device and our servers<br/> will be permanently deleted.</p>
+                    <p style={{ fontSize: '16px', lineHeight: '20px', marginBottom: '40px' }}>All your data from this device and our servers will be permanently deleted.</p>
 
                     <div className={styles.formItem}>
                       <FormLabel>CURRENT PASSWORD</FormLabel>
@@ -209,7 +209,11 @@ export default function profileDelete() {
                       type="submit"
                       size="large" 
                       variant="contained" 
-                      onClick={handleDeleteAccount}
+                      onClick={handleDeleteAccount} 
+                      style={{
+                        fontSize: '18px',
+                        fontWeight: '600'
+                      }}
                     >
                       Delete Account
                     </Button>

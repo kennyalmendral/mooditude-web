@@ -158,7 +158,7 @@ export default function ProfilePasswordReset(props) {
           <div className={styles.profileWrapper}>
               <div className={styles.profileInnerWrapper}>
                 <div className={styles.profileInnerHeader}>
-                  <Link href="/profile"><a>← Go Back</a></Link>
+                  <h4>ACCOUNT</h4>
                   <h1>Reset Password</h1>
                 </div>
                 <div className={styles.profileInnerPage}>
@@ -234,7 +234,11 @@ export default function ProfilePasswordReset(props) {
                   <div className={styles.button_wrapper}>
                     <Button 
                       size="large" 
-                      variant="contained"
+                      variant="contained" 
+                      style={{
+                        fontSize: '18px',
+                        fontWeight: '600'
+                      }}
                     >
                       Reset Password
                     </Button>

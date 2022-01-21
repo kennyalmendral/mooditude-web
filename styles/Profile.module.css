@@ -21,14 +21,15 @@
 .profileInnerHeader h1{
   font-family: 'Circular Std';
   font-style: normal;
-  font-weight: bold;
-  font-size: 32px;
+  font-weight: 500;
+  font-size: 22px;
   line-height: 40px;
   margin-top: 0;
   /* Primary */
-  margin-bottom: 0;
+  margin-bottom: 45px;
 
   color: #072B4F;
+  border-bottom: 4px solid #F3F4F6;
 }
 
 .profileInnerHeader h4{
@@ -37,6 +38,7 @@
   font-weight: normal;
   font-size: 14px;
   margin-top: 5px;
+  margin-bottom: 0;
   line-height: 18px;
   /* identical to box height */
 
@@ -104,15 +106,15 @@
   font-family: 'Circular Std';
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 18px;
   /* identical to box height */
 
-  margin-bottom: 5px;
+  margin-bottom: 3px;
   margin-top: 0;
   /* Primary */
 
-  color: #072B4F;
+  color: #516B84;
 }
 
 .profileDetails{
@@ -123,21 +125,23 @@
 .profileButtons{
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 }
 
-.profileButtons button{
-  border: 1px solid #516B84;
+.profileButtons button {
+  border: 1px solid #A8B5C1;
+  padding: 10px 20px;
   box-sizing: border-box;
   border-radius: 4px;
   font-family: 'Circular Std';
   font-style: normal;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 18px;
   line-height: 18px;
   /* identical to box height */
   margin-bottom: 16px;
 
-  width: 270px;
+  width: auto;
   /* Primary */
 
   color: #072B4F;
@@ -153,7 +157,7 @@
 .formItem label{
   font-family: 'Circular Std';
   font-style: normal;
-  font-weight: normal;
+  font-weight: 500;
   font-size: 10px;
   line-height: 13px;
   /* identical to box height */
@@ -166,11 +170,12 @@
   color: #516B84;
 }
 
-.formItem input{
+.formItem input {
   background: #F3F4F6;
   border: none;
   border-radius: 4px;
-
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .formItem > div fieldset{
@@ -179,7 +184,7 @@
 }
 
 .normal_btn{
-  border: 1px solid #516B84;
+  border: 1px solid #A8B5C1;
   box-sizing: border-box;
   border-radius: 4px;
   font-family: 'Circular Std';
@@ -208,6 +213,7 @@
 
 .button_wrapper{
   text-align: right;
+  margin-top: 35px;
 }
 
 .profileInnerHeader a{
@@ -228,7 +234,7 @@
 
 
 .profileInnerPage{
-  margin-top: 100px;
+  margin-top: 0;
 }
 
 .profileInnerPage .subscriptionInnerItem{

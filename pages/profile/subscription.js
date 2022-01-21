@@ -225,7 +225,7 @@ export default function profileSubscription() {
           <div className={styles.profileWrapper}>
               <div className={styles.profileInnerWrapper}>
                 <div className={styles.profileInnerHeader}>
-                  <Link href="/profile"><a>← Go Back</a></Link>
+                  <h4>ACCOUNT</h4>
                   <h1>Manage Subscription</h1>
                 </div>
                 <div className={styles.profileInnerPage}>

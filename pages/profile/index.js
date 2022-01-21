@@ -48,6 +48,7 @@ export default function Profile(props) {
   const [customerType, setCustomerType] = useState('')
 
   const [name, setName] = useState('')
+  const [topGoal, setTopGoal] = useState('')
   const [challenges, setChallenges] = useState([])
   const [goingToTherapy, setGoingToTherapy] = useState(false)
   const [ageGroup, setAgeGroup] = useState('')
@@ -116,8 +117,9 @@ export default function Profile(props) {
 
   useEffect(() => {
     if (Object.keys(profile).length > 0) {
-      setName(profile.name)
+      // setName(profile.name)
       profile.topChallenges && setChallenges(profile.topChallenges.split(','))
+      profile.topGoal && setTopGoal(profile.topGoal)
       setAgeGroup(profile.ageGroup)
       setGender(profile.gender)
       setPhone(profile.phone)
@@ -196,7 +198,8 @@ export default function Profile(props) {
         .child('users')
         .child(authUser.uid)
         .update({
-          name: name,
+          // name: name,
+          topGoal: topGoal,
           topChallenges: challenges.join(','),
           ageGroup: ageGroup,
           gender: gender,
@@ -248,8 +251,8 @@ export default function Profile(props) {
           <div className={styles.profileWrapper}>
             <div className={styles.profileInnerWrapper}>
               <div className={styles.profileInnerHeader}>
+                <h4>JOIN DATE: {format(new Date(profile.memberSince), 'mm/dd/yyyy')}</h4>
                 <h1>Profile</h1>
-                <h4>Join Date: {format(new Date(profile.memberSince), 'LLLL dd, yyyy')}</h4>
               </div>
 
               <div className={styles.profileInnerMain}>
@@ -386,7 +389,7 @@ export default function Profile(props) {
                   {isSaved && <Alert severity="success" style={{ marginBottom: '20px' }}>Profile has been successfully updated.</Alert>}
 
                   <form onSubmit={handleSaveChanges}>
-                    <div className={styles.formItem}>
+                    {/* <div className={styles.formItem}>
                       <FormLabel>NAME</FormLabel>
                       <TextField 
                         type="text" 
@@ -397,6 +400,35 @@ export default function Profile(props) {
                         onChange={e => setName(e.target.value)} 
                         required
                       />
+                    </div> */}
+
+                    <div className={styles.formItem}>
+                      <FormLabel>GOAL</FormLabel>
+
+                      <Select
+                        fullWidth={true} 
+                        value={topGoal} 
+                        label="Goal" 
+                        onChange={e => setTopGoal(e.target.value)} 
+                        disabled={isEditEnabled ? false : true} 
+                        style={{
+                          background: '#F3F4F6',
+                          border: 'none',
+                          borderRadius: '4px',
+                          fontSize: '16px',
+                          fontWeight: '600'
+                        }} 
+                        required
+                      >
+                        <MenuItem value='lonely'>Lonely</MenuItem>
+                        <MenuItem value='masterDepression'>Master Depression</MenuItem>
+                        <MenuItem value='relationships'>Relationships</MenuItem>
+                        <MenuItem value='overcomeAnxiety'>Overcome Anxiety</MenuItem>
+                        <MenuItem value='trauma'>Trauma</MenuItem>
+                        <MenuItem value='handleStress'>Handle Stress</MenuItem>
+                        <MenuItem value='controlAnger'>Control Anger</MenuItem>
+                        <MenuItem value='other'>Other</MenuItem>
+                      </Select>
                     </div>
 
                     <div className={styles.formItem}>
@@ -413,7 +445,8 @@ export default function Profile(props) {
                           background: '#F3F4F6',
                           border: 'none',
                           borderRadius: '4px',
-                          fontSize: '14px'
+                          fontSize: '16px',
+                          fontWeight: '600'
                         }} 
                         required
                       >
@@ -438,7 +471,8 @@ export default function Profile(props) {
                           background: '#F3F4F6',
                           border: 'none',
                           borderRadius: '4px',
-                          fontSize: '14px'
+                          fontSize: '16px',
+                          fontWeight: '600'
                         }} 
                         required
                       >
@@ -460,7 +494,8 @@ export default function Profile(props) {
                           background: '#F3F4F6',
                           border: 'none',
                           borderRadius: '4px',
-                          fontSize: '14px'
+                          fontSize: '16px',
+                          fontWeight: '600'
                         }} 
                         required
                       >
@@ -485,7 +520,8 @@ export default function Profile(props) {
                           background: '#F3F4F6',
                           border: 'none',
                           borderRadius: '4px',
-                          fontSize: '14px'
+                          fontSize: '16px',
+                          fontWeight: '600'
                         }} 
                         required
                       >
@@ -523,7 +559,8 @@ export default function Profile(props) {
                           background: '#F3F4F6',
                           border: 'none',
                           borderRadius: '4px',
-                          fontSize: '14px'
+                          fontSize: '16px',
+                          fontWeight: '600'
                         }} 
                         required
                       >
@@ -540,6 +577,7 @@ export default function Profile(props) {
                           className={styles.normal_btn} 
                           style={{
                             lineHeight: '26px',
+                            fontSize: '18px',
                             marginTop: '10px'
                           }}
                           onClick={() => setIsEditEnabled(false)}
@@ -556,7 +594,7 @@ export default function Profile(props) {
                             minWidth: '123px',
                             marginTop: '10px',
                             marginLeft: '20px',
-                            fontSize: '14px',
+                            fontSize: '18px',
                             fontWeight: '700',
                             letterSpacing: '1px',
                             lineHeight: '28px'
@@ -576,7 +614,9 @@ export default function Profile(props) {
                           className={styles.normal_btn} 
                           style={{
                             marginTop: '10px',
-                            lineHeight: '26px'
+                            lineHeight: '26px',
+                            fontWeight: '700',
+                            fontSize: '18px'
                           }}
                           onClick={() => {
                             setIsEditEnabled(true)

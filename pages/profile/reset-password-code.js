@@ -125,7 +125,7 @@ export default function ResetPasswordCode(props) {
           <div className={styles.profileWrapper}>
               <div className={styles.profileInnerWrapper}>
                 <div className={styles.profileInnerHeader}>
-                  <Link href="/profile"><a>← Go Back</a></Link>
+                  <h4>ACCOUNT</h4>
                   <h1>Reset Password</h1>
                 </div>
 
@@ -158,7 +158,11 @@ export default function ResetPasswordCode(props) {
                         size="large" 
                         variant="contained" 
                         type="submit" 
-                        disabled={isSending && true}
+                        disabled={isSending && true} 
+                        style={{
+                          fontSize: '18px',
+                          fontWeight: '600'
+                        }}
                       >
                         {isSending && (
                           <>PLEASE WAIT</>
