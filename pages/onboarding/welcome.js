@@ -112,9 +112,10 @@ export default function OnboardingWelcomePage(props) {
                 size="large" 
                 variant="contained" 
                 onClick={handlePersonalize}
-                // onClick={() => router.push(`/onboarding/1`)}
+                // onClick={() => router.push(`/onboarding/1`)} 
+                style={{ fontWeight: '700' }}
               >
-                PERSONALIZE MOODITUDE
+                LET'S CUSTOMIZE
               </Button>
             </Stack>
           </div>

@@ -73,7 +73,7 @@ export default function AssessmentReport(props) {
   const [noneAnswerQuestions, setNoneAnswerQuestions] = useState([])
 
   const [assessmentDate, setAssessmentDate] = useState(null)
-  const [licenseType, setLicenseType] = useState('Free')
+  const [licenseType, setLicenseType] = useState('free')
   const [checking, setChecking] = useState(true)
 
   const [weekDifference, setWeekDifference] = useState('')
@@ -548,7 +548,7 @@ export default function AssessmentReport(props) {
 
             <div className={styles.results_bottom_wrap}>
               {
-                licenseType != 'Free' ? 
+                licenseType != 'free' ? 
                   <div className={styles.report_btns_wrapper}>
                       <a
                         href="#" 
@@ -559,7 +559,7 @@ export default function AssessmentReport(props) {
                           setIsReportVisible(true)
                         }}>REPORT</a>
 
-                      {((licenseType == 'Premium') || (userProfile.customerType == 'premium')) && (
+                      {((licenseType == 'premium') || (userProfile.customerType == 'premium')) && (
                         <>
                           <a 
                             href="#" 
@@ -588,7 +588,7 @@ export default function AssessmentReport(props) {
               }
               
               {
-                licenseType == 'Free' ? 
+                licenseType == 'free' ? 
                 <div>
                   <div className={styles.result_pricing_section}>
                     <div className={styles.result_pricing_section_item}>
@@ -711,7 +711,7 @@ export default function AssessmentReport(props) {
                               <h3>Are you in crisis?</h3>
                               <p>Please call National Suicide Prevention Lifeline or proceed <br/>directly to an emergency room.</p>
                             </div>
-                              {licenseType == 'Free' && (
+                              {licenseType == 'free' && (
                                 <>
                                   { buyPremium ? 
                                   <div className={styles.bold_text_wrap}
