@@ -260,11 +260,11 @@ export default function profileSubscription() {
                         <div className={styles.subscriptionInnerItem}>
                           <p><b>Cancel Subscription:</b></p>
                           <div>
-                            <p>Statement or action here depends on where user purchased the subscription from. For example:</p>
+                            <p>Statement or action here depends on where user purchased the subscription from, for example:</p>
 
-                            <p>You purchased Mooditude Premium from Apple App Store. Cancel  your subscription from the App Store.</p>
+                            <p>You purchased Mooditude Premium from Apple App Store, cancel  your subscription from the App Store.</p>
 
-                            <p>You purchased Mooditude Premium from Google Play. Cancel your subscription from the Google Play Store.</p>
+                            <p>You purchased Mooditude Premium from Google Play, cancel your subscription from the Google Play Store.</p>
 
                             {cancelAt != '' && (
                               <p>

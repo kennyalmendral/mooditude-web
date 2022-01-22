@@ -604,7 +604,7 @@
 }
 
 .success_alert {
-	background: #1CA566;
+	background: #1CA566 !important;
 }
 
 .error_alert h2,
@@ -798,4 +798,34 @@
   	padding-top: 10px;
   	padding-bottom: 30px;
   }
+}
+
+@media (max-width: 600px) {
+	.error_alert,
+	.success_alert {
+		position: relative;
+		background: #D6443F;
+		font-family: 'Circular Std';
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		flex-direction: column;
+		border-radius: 8px;
+		padding: 20px 50px 20px 20px;
+	}
+
+	.error_alert h2,
+	.success_alert h2 {
+		font-size: 20px;
+	}
+}
+
+@media (max-width: 500px) {
+	.welcome_page .content .content_row {
+		justify-content: 'stretch';
+	}
+
+	.welcome_page .content .content_col {
+		width: 100%;
+	}
 }

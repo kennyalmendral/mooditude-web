@@ -574,13 +574,14 @@ export default function Profile(props) {
                         <Button 
                           type="button" 
                           size="large" 
-                          className={styles.normal_btn} 
+                          className={`${styles.normal_btn} profileButton`} 
+                          onClick={() => setIsEditEnabled(false)} 
                           style={{
+                            marginTop: '10px',
                             lineHeight: '26px',
-                            fontSize: '18px',
-                            marginTop: '10px'
+                            fontWeight: '700',
+                            fontSize: '18px'
                           }}
-                          onClick={() => setIsEditEnabled(false)}
                         >
                           CANCEL
                         </Button>
@@ -589,15 +590,12 @@ export default function Profile(props) {
                           type="submit" 
                           size="large" 
                           variant="contained" 
-                          disabled={isSaving ? true : false}
+                          disabled={isSaving ? true : false} 
                           style={{
-                            minWidth: '123px',
                             marginTop: '10px',
-                            marginLeft: '20px',
-                            fontSize: '18px',
+                            lineHeight: '28px',
                             fontWeight: '700',
-                            letterSpacing: '1px',
-                            lineHeight: '28px'
+                            fontSize: '18px'
                           }}
                         >
                           {isSaving && 'PLEASE WAIT'}
@@ -614,6 +612,7 @@ export default function Profile(props) {
                           className={styles.normal_btn} 
                           style={{
                             marginTop: '10px',
+                            marginRight: 0,
                             lineHeight: '26px',
                             fontWeight: '700',
                             fontSize: '18px'

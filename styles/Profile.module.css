@@ -114,6 +114,8 @@
   margin-top: 0;
   /* Primary */
 
+  word-break: break-all;
+
   color: #516B84;
 }
 
@@ -190,14 +192,24 @@
   font-family: 'Circular Std';
   font-style: normal;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 18px;
   line-height: 18px;
   /* identical to box height */
   width: 123px;
   margin-top: 25px;
   /* Primary */
-
+  margin-right: 20px;
   color: #072B4F;
+}
+
+.profileButton {
+  min-width: 123px;
+  margin-top: 25px;
+  margin-left: 0;
+  font-size: 18px !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+  line-height: 28px;
 }
 
 .btn_primary {
@@ -318,4 +330,113 @@
 
   color: #516B84;
 
+}
+
+@media (max-width: 1200px) {
+  .profileInnerMain{
+    justify-content: space-between;
+  }
+
+  .profileInnerLeft{
+    width: 50%;
+  }
+
+  .profilePicture{
+    margin-top: 0;
+  }
+  
+  .profileInnerRight{
+    width: 65%;
+    max-width: 350px;
+  }
+}
+
+@media (max-width: 1170px) {
+  .profileInnerPage .subscriptionInnerItem:last-of-type {
+    flex-direction: column;
+  }
+
+  .profileInnerPage .subscriptionInnerItem:last-of-type > p {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 1040px) {
+  .profileInnerMain{
+    justify-content: flex-start;
+    flex-direction: column;
+  }
+
+  .profileInnerLeft{
+    width: 100%;
+    margin-bottom: 40px;
+  }
+  
+  .profileInnerRight{
+    width: 100%;
+    max-width: 350px;
+  }
+
+  .button_wrapper{
+    text-align: left;
+  }
+}
+
+@media (max-width: 430px) {
+  .profileInnerHeader h1 {
+    margin-bottom: 15px;
+  }
+
+  .profileInnerPage .subscriptionInnerItem {
+    flex-direction: column;
+  }
+
+  .profileInnerPage .subscriptionInnerItem > p:first-of-type {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 400px) {
+  .profilePicture{
+    display: flex;
+    justify-content: center;
+  }
+
+  .profileButtons{
+    align-items: stretch;
+  }
+
+  .profileStars {
+    justify-content: center;
+  }
+
+  .profileStars > div {
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+
+  .profileInnerRight{
+    max-width: 100%;
+  }
+
+  .profileButton {
+    margin-left: 0 !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .profileWrapper {
+    padding: 30px 30px;
+  }
+
+  .normal_btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .button_wrapper{
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+  }
 }
