@@ -16,7 +16,7 @@
 
 .main_menu_logo{
   display: block;
-  margin-top: 34px;
+  margin-top: -50px;
   margin-left: -20px;
 }
 
@@ -67,7 +67,7 @@ a.menu_item{
 }
 
 .menu_items_wrap{
-  margin-top: 50px;
+  margin-top: 30px;
 }
 
 .menu_items_wrap a{

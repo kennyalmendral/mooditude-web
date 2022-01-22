@@ -139,7 +139,8 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding-top: 60px;
   background: white;
   z-index: 2;
 

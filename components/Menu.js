@@ -68,7 +68,7 @@ export default function Menu(props) {
                 <Grow in={mainMenuCollapse}>
                     <div>
                         <div className={`${styles.main_menu_logo}`}>
-                            <a href="/"><img src={`/logo_inner.svg`}  /></a>
+                            <a href="/"><img src={`/logo-small.svg`}  /></a>
                         </div>
 
                         {
@@ -147,7 +147,7 @@ export default function Menu(props) {
                     <Grow in={mainMenuCollapse}>
                         <div>
                             <div className={`${styles.mobile_main_menu_logo}`}>
-                                <img src={`/logo_inner.svg`}  />   
+                                <img src={`/logo-small.svg`}  />   
                             </div>
                             {
                                 showMenu ? 
