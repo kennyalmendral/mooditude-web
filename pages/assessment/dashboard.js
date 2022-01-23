@@ -100,22 +100,28 @@ export default function AssessmentWelcomePage() {
             backgroundColor: '#DC957E',
             type: 'bar'
           },
-          {
-            label: 'Overall Score',
-            data: [parseInt(sortedAssessments[0].overallScore)],
-            backgroundColor: '#2968EA',
-            type: 'line'
-          }
+          // {
+          //   label: 'Overall Score',
+          //   data: [parseInt(sortedAssessments[0].overallScore)],
+          //   backgroundColor: '#2968EA',
+          //   type: 'line'
+          // }
         ],
-        options: {
-          legend: {
-            display: true,
-            labels: {
-              fontSize: 10,
-              usePointStyle: true
-            }
-          }
-        }
+        // options: {
+        //   scales: {
+        //     y: {
+        //       suggestedMin: 50,
+        //       suggestedMax: 100
+        //     }
+        //   },
+        //   legend: {
+        //     display: true,
+        //     labels: {
+        //       fontSize: 10,
+        //       usePointStyle: true
+        //     }
+        //   }
+        // }
       })
       
       sortedAssessments[0] && setCurrentFullReportLink(`/assessment/report/${authUser.uid}/${sortedAssessments[0].id}`)
@@ -388,14 +394,20 @@ export default function AssessmentWelcomePage() {
                       options={{
                         responsive: true,
                         maintainAspectRatio: false,
+                        legend: {
+                          labels: {
+                            boxWidth: 12
+                          }
+                        },
                         scales: {
                           xAxes: [{
                             offset: true
                           }],
                           yAxes: [{
                             ticks: {
+                              stepSize: 10,
                               min: 0,
-                              max: 100,
+                              max: 20,
                               callback: function(value) {
                                 return value + '%'
                               }
@@ -408,6 +420,7 @@ export default function AssessmentWelcomePage() {
                               var index = tooltipItem.index;
                               var currentValue = data.datasets[tooltipItem.datasetIndex].data[index];
                               var total = 0;
+                              
                               data.datasets.forEach(function(el){
                                 total = total + el.data[index];
                               });
