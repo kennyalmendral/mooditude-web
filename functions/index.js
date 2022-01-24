@@ -8,6 +8,7 @@ exports.renewStripeSubscription = webService.renewStripeSubscription;
 exports.getStripeSubscription = webService.getStripeSubscription;
 exports.getStripeSubscriptionDirect = webService.getStripeSubscriptionDirect;
 exports.getStripePayment = webService.getStripePayment;
+exports.getStripeProduct = webService.getStripeProduct;
 exports.generatePDFReport = webService.generatePDFReport;
 exports.uploadProfilePicture = webService.uploadProfilePicture;
 exports.stripeWebhooks = webService.stripeWebhooks;

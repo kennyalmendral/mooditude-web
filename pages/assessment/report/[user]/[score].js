@@ -122,6 +122,10 @@ export default function AssessmentReport(props) {
   useEffect(() => {
     setWeekDifference(differenceInWeeks(new Date(), new Date(assessmentDate)))
   }, [assessmentDate])
+  
+  useEffect(() => {
+    console.log(`usedDrug: ${usedDrug}`, `usedAlcohol: ${usedAlcohol}`)
+  }, [usedDrug, usedAlcohol])
 
   useEffect(() => {
     if ((allRiskLevel == 'high') && (weekDifference >= 2)) {
@@ -225,6 +229,16 @@ export default function AssessmentReport(props) {
             setSometimesAnswerCount(docData.rawData.split(',').filter(x => x == 2).length)
             setRarelyAnswerCount(docData.rawData.split(',').filter(x => x == 1).length)
             setNoneAnswerCount(docData.rawData.split(',').filter(x => x == 0).length)
+
+            firebaseDatabase
+              .ref()
+              .child('users')
+              .child(authUser.uid)
+              .update({
+                lastAssessmentScore: result.data.allScore,
+                lastAssessmentDate: docData.createDate.seconds
+              })
+
             setChecking(false)
           })
         })
@@ -395,6 +409,15 @@ export default function AssessmentReport(props) {
                 .doc(authUser.uid)
                 .update({
                   reportUrl: result.data.url[0]
+                })
+
+              firebaseStore
+                .collection('M3Assessment')
+                .doc(router.query.user)
+                .collection('scores')
+                .doc(router.query.score)
+                .update({
+                  pdfDoc: result.data.url[0]
                 })
             })
         }
@@ -1062,9 +1085,22 @@ export default function AssessmentReport(props) {
                                 </div>
 
                                 <div className={styles.results_thoughts_wrap}>
-                                  {usedDrug && (
+                                  {(usedDrug && usedAlcohol) && (
                                     <div className={styles.results_thoughts_item}>
                                       <h4>Substance Abuse</h4>
+
+                                      <p>Your responses indicated that you have occasionally used alcohol and non-prescribed drugs to manage some of the symptoms.</p>
+
+                                      <p>Self-medication for such symptoms, even when this appears to be effective, often will make such symptoms worse over the long term. We strongly urge you to share your responses to these questions with your physician and to begin an honest discussion about your alcohol and drug use patterns.</p>
+
+                                      <p>It is likely that a more appropriate and more effective means for managing your symptoms can be found, bringing with it a real chance for improvement in your functioning, quality of life, and overall health.</p>
+                                    </div>
+                                  )}
+
+                                  {(usedDrug && !usedAlcohol) && (
+                                    <div className={styles.results_thoughts_item}>
+                                      <h4>Drug Abuse</h4>
+
                                       <p>Your responses indicated that you have occasionally used non-prescribed drugs to manage some of the symptoms.</p>
 
                                       <p>Self-medication for such symptoms, even when this appears to be effective, is likely to make such symptoms worse over the long term. We strongly urge you to share the responses to these questions with your physician and to begin an honest discussion about your drug use patterns.</p>
@@ -1073,9 +1109,10 @@ export default function AssessmentReport(props) {
                                     </div>
                                   )}
 
-                                  {usedAlcohol && (
+                                  {(usedAlcohol && !usedDrug) && (
                                     <div className={styles.results_thoughts_item}>
-                                      <h4>Substance Abuse</h4>
+                                      <h4>Alcohol Abuse</h4>
+
                                       <p>Your responses suggest that you have occasionally used alcohol to manage some of the symptoms.</p>
 
                                       <p>Self-medication for such symptoms, even when this appears to be effective, often will make such symptoms worse over the long term. We strongly urge you to share your assessment results with your physician and to begin an honest discussion about your alcohol use patterns.</p>
@@ -1359,21 +1396,31 @@ export default function AssessmentReport(props) {
 
                     {isDownloadVisible && (
                       <div className={styles.report_content_item} key={'report_content_paid_wrap'}>
-                        {/* {oneTimeReportUrl != null && ( */}
-                          <p className={styles.download_text}>Click here to download full report as a PDF.</p>
-                          <Button 
-                            className={styles.report_btn} 
-                            variant="contained" 
-                            onClick={handleDownload} 
-                            disabled={isDownloading ? true : false} 
-                            style={{ marginTop: '0', marginBottom: '0', marginRight: '20px', textTransform: 'none', fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}
-                          >
-                            {isDownloading && 'Downloading'}
-                            {(!isDownloading) && 'Download'}
-                          </Button>
-                        {/* )} */}
+                        {assessmentScores.pdfDoc == null && (
+                          <>
+                            <p className={styles.download_text}>Click here to download full report as a PDF.</p>
 
-                        {(!isDownloading && reportLink != '') && <a href={reportLink} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>}
+                            <Button 
+                              className={styles.report_btn} 
+                              variant="contained" 
+                              onClick={handleDownload} 
+                              disabled={isDownloading ? true : false} 
+                              style={{ marginTop: '0', marginBottom: '0', marginRight: '20px', textTransform: 'none', fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}
+                            >
+                              {isDownloading && 'Downloading'}
+                              {(!isDownloading) && 'Download'}
+                            </Button>
+
+                            {(!isDownloading && reportLink != '') && (
+                              <a href={reportLink} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>
+                            )}
+                          </>
+                        )}
+                        
+
+                        {assessmentScores.pdfDoc != null && (
+                          <a href={assessmentScores.pdfDoc} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>
+                        )}
 
                         {/* {oneTimeReportUrl == null && <a href={oneTimeReportUrl} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>} */}
                       </div>

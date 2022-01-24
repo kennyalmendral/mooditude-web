@@ -49,6 +49,10 @@ export default function AssessmentWelcomePage() {
 
   const [weekDifference, setWeekDifference] = useState('')
 
+  // useEffect(() => {
+  //   currentChartData && console.log(currentChartData.datasets[4])
+  // }, [currentChartData])
+
   useEffect(() => {
     if (Object.keys(assessments).length > 0) {
       setHasNoAssessment(false)
@@ -100,12 +104,12 @@ export default function AssessmentWelcomePage() {
             backgroundColor: '#DC957E',
             type: 'bar'
           },
-          // {
-          //   label: 'Overall Score',
-          //   data: [parseInt(sortedAssessments[0].overallScore)],
-          //   backgroundColor: '#2968EA',
-          //   type: 'line'
-          // }
+          {
+            label: 'Overall Score',
+            data: [parseInt(sortedAssessments[0].overallScore)],
+            backgroundColor: '#2968EA',
+            type: 'line'
+          }
         ],
         // options: {
         //   scales: {
@@ -125,8 +129,14 @@ export default function AssessmentWelcomePage() {
       })
       
       sortedAssessments[0] && setCurrentFullReportLink(`/assessment/report/${authUser.uid}/${sortedAssessments[0].id}`)
+
+      setTimeout(() => {
+        setChecking(false)
+      }, 1000)
     } else {
       setHasNoAssessment(true)
+
+      setChecking(false)
     }
   }, [assessments])
 
@@ -164,19 +174,19 @@ export default function AssessmentWelcomePage() {
                       ...result.data
                     }
 
-                    setChecking(false)
+                    // setChecking(false)
                     setAssessments(assessments => [...assessments, mergedData])
                   })
                 } else {
-                  setChecking(false)
+                  // setChecking(false)
                 }
               })
             } else {
-              setChecking(false)
+              // setChecking(false)
             }
           })
       } else {
-        setChecking(false)
+        // setChecking(false)
       }
     })
 
@@ -390,7 +400,7 @@ export default function AssessmentWelcomePage() {
                   {currentChartData && (
                     <Line 
                       data={currentChartData}
-                      height={400}
+                      height={308}
                       options={{
                         responsive: true,
                         maintainAspectRatio: false,
@@ -407,7 +417,7 @@ export default function AssessmentWelcomePage() {
                             ticks: {
                               stepSize: 10,
                               min: 0,
-                              max: 20,
+                              max: currentChartData.datasets[4].data[0],
                               callback: function(value) {
                                 return value + '%'
                               }
@@ -424,7 +434,9 @@ export default function AssessmentWelcomePage() {
                               data.datasets.forEach(function(el){
                                 total = total + el.data[index];
                               });
-                              var percentage = parseFloat((currentValue/total*100).toFixed(1));
+
+                              var percentage = parseFloat((currentValue/total * 100).toFixed(1));
+
                               return currentValue + ' (' + percentage + '%)';
                             },
                             title: function(tooltipItem, data) {

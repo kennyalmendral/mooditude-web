@@ -86,12 +86,11 @@ export default function Onboarding7() {
             ageGroup: parseInt(localStorage.getItem(`${authUser.uid}_profileStep1Answer`)) || 0,
             gender: parseInt(localStorage.getItem(`${authUser.uid}_profileStep2Answer`)) || 0,
             topGoal: localStorage.getItem(`${authUser.uid}_profileStep3Answer`) || '',
-            // topGoalOtherReason: localStorage.getItem(`${authUser.uid}_profileStep3AnswerOtherReason`) || '',
             topChallenges: localStorage.getItem(`${authUser.uid}_profileStep4Answer`) || '',
-            goingToTherapy: localStorage.getItem(`${authUser.uid}_profileStep5Answer`) || false,
-            knowCbt: localStorage.getItem(`${authUser.uid}_profileStep6Answer`) || false,
-            committedToSelfhelp: localStorage.getItem(`${authUser.uid}_profileStep7Answer`) || false,
-            // committedToSelfhelpReason: reason || '',
+            goingToTherapy: localStorage.getItem(`${authUser.uid}_profileStep5Answer`) === 'true' || false,
+            knowCbt: localStorage.getItem(`${authUser.uid}_profileStep6Answer`) === 'true' || false,
+            committedToSelfhelp: (parseInt(localStorage.getItem(`${authUser.uid}_profileStep7Answer`)) > 1) ? true : false,
+            committedToSelfHelpScaleValue: parseInt(localStorage.getItem(`${authUser.uid}_profileStep7Answer`)) || null,
             onboardingStep: 'profileCreated'
           })
           .then(() => {

@@ -132,6 +132,7 @@ export default function SignUp(props) {
                       topChallenges: null,
                       memberSince: new Date().getTime(),
                       committedToSelfhelp: false,
+                      committedToSelfHelpScaleValue: null,
                       activatedReminderAtStartup: false,
                       knowCbt: false,
                       ageGroup: 0,

@@ -502,8 +502,8 @@
 
 .scores_section .diagnosis_risks > div > div.risk_level_unlikely,
 .scores_section .functional_impairments > div > div.risk_level_unlikely {
-	background: #F8E71C !important;
-	color: #072B4F !important;
+	background: #5BA23F !important;
+	color: #fff !important;
 }
 
 .scores_section .diagnosis_risks > div > div.risk_level_low,
@@ -583,7 +583,7 @@
 }
 
 .assessment_list_wrap{
-	margin-top: 90px;
+	margin-top: 0;
 	padding: 0 65px;
 }
 

@@ -42,6 +42,9 @@ export default function OnboardingWelcomePage() {
   const [paymentFailed, setPaymentFailed] = useState(false)
   const [paymentSuccess, setPaymentSuccess] = useState(false)
 
+  const [activeProduct, setActiveProduct] = useState(null)
+  const [activeProductPrice, setActiveProductPrice] = useState(null)
+
   const [customerType, setCustomerType] = useState(null)
 
   const [checking, setChecking] = useState(true)
@@ -59,6 +62,19 @@ export default function OnboardingWelcomePage() {
 
     if (router.query.checkout_cancelled) {
       setPaymentFailed(true)
+
+      if (router.query.price) {
+        const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
+    
+        getStripeProduct({
+          price: router.query.price
+        }).then(result => {
+          // console.log(result.data)
+
+          setActiveProduct(result.data.product.name)
+          setActiveProductPrice(result.data.productPrice.id)
+        })
+      }
     } else {
       setPaymentFailed(false)
     }
@@ -69,6 +85,10 @@ export default function OnboardingWelcomePage() {
       setPaymentSuccess(false)
     }
   }, [router])
+
+  useEffect(() => {
+    console.log(activeProduct, activeProductPrice)
+  }, [activeProduct, activeProductPrice])
 
   useEffect(() => {
     if (authUser) {
@@ -142,6 +162,42 @@ export default function OnboardingWelcomePage() {
   useEffect(() => {
     weekDifference >= 2 && setIsReportOutdated(true)
   }, [weekDifference])
+
+  const buy = async (e) => {
+    e.preventDefault()
+
+    setChecking(true)
+
+    let duration
+    let type
+
+    if (activeProductPrice == 'price_1K09ueAuTlAR8JLMqv6RVsh8') {
+      duration = 1
+      type = 'subscription'
+    } else if (activeProductPrice == 'price_1KHXXoAuTlAR8JLM1hdixwNI') {
+      duration = 3
+      type = 'subscription'
+    } else if (activeProductPrice == 'price_1K09ueAuTlAR8JLM3JmfvSgj') {
+      duration = null
+      type = 'subscription'
+    } else {
+      duration = null
+      type = 'payment'
+    }
+
+    const processStripeSubscriptionOnSignUp = firebaseFunctions.httpsCallable('processStripeSubscriptionOnSignUp')
+  
+    processStripeSubscriptionOnSignUp({
+      type: type,
+      duration: duration,
+      mode: type,
+      customerEmail: authUser && authUser.email,
+      redirectUrl: window.location.origin + '/buy/thank-you',
+      cancelUrl: window.location.origin
+    }).then(result => {      
+      location.href = result.data.session.url
+    })
+  }
 
   return (
     <Layout title={`Welcome | ${SITE_NAME}`}>
@@ -238,23 +294,21 @@ export default function OnboardingWelcomePage() {
                   </div>
                 )}
                 
-                {((router.query.product != null) && paymentFailed) && (
+                {(paymentFailed && (activeProduct != null)) && (
                   <div className={`${styles.content_col} ${styles.retry_buy}`}>
-                    <Link href="https://play.google.com/store/apps/details?id=com.health.mental.mooditude">
-                      <a target="_blank">
-                        <div>
-                          <img src="/dollar.svg" />
-                        </div>
-                        
-                        <h3>Retry Buying [Product Title]</h3>
+                    <a onClick={buy} style={{ cursor: 'pointer' }}>
+                      <div>
+                        <img src="/dollar.svg" />
+                      </div>
+                      
+                      <h3>Retry Buying {activeProduct}</h3>
 
-                        <div className={styles.arrow_container}>
-                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12.172 7L6.808 1.636L8.222 0.222L16 8L8.222 15.778L6.808 14.364L12.172 9H0V7H12.172Z" fill="#1CA566"/>
-                          </svg>
-                        </div>
-                      </a>
-                    </Link>
+                      <div className={styles.arrow_container}>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12.172 7L6.808 1.636L8.222 0.222L16 8L8.222 15.778L6.808 14.364L12.172 9H0V7H12.172Z" fill="#1CA566"/>
+                        </svg>
+                      </div>
+                    </a>
                   </div>
                 )}
                 

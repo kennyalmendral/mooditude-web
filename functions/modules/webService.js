@@ -6,8 +6,8 @@ const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
 
 const fs = require('fs');
-const stream = require('stream')
-const path = require('path')
+const stream = require('stream');
+const path = require('path');
 
 const PDFDocument = require('pdfkit');
 
@@ -19,7 +19,7 @@ const mailjetOptions = {
   'json': true,
   'username': config.mailJet.apiKey,
   'password': config.mailJet.apiSecret
-}
+};
 
 exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) => {
   let allScore = 0;
@@ -351,7 +351,7 @@ exports.processStripeSubscriptionOnSignUp = functions.https.onCall(async (data, 
     mode: data.mode == 'subscription' ? 'subscription' : 'payment',
     customer_email: data.customerEmail,
     success_url: `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&type=${data.type}&duration=${data.duration}`,
-    cancel_url: `${data.cancelUrl}?checkout_cancelled=true`,
+    cancel_url: `${data.cancelUrl}?checkout_cancelled=true&price=${price}`,
   };
 
   const session = await stripe.checkout.sessions.create(stripeData);
@@ -418,6 +418,18 @@ exports.getStripePayment = functions.https.onCall(async (data, context) => {
     return {
       session,
       paymentIntent
+    };
+  }
+});
+
+exports.getStripeProduct = functions.https.onCall(async (data, context) => {
+  const productPrice = await stripe.prices.retrieve(data.price);
+  const product = await stripe.products.retrieve(productPrice.product);
+  
+  if (productPrice) {
+    return {
+      product,
+      productPrice
     };
   }
 });
@@ -1014,19 +1026,6 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     // End Header 4
 
     doc
-      .image('images/recommended-actions.png', doc.x, doc.y + 23, {
-        // width: 28,
-        height: 28,
-        valign: 'bottom'
-      });
-
-    doc
-      .moveDown(5)
-      .fontSize(14)
-      .font('fonts/CircularStd-Bold.ttf')
-      .text('RecommendedActions', doc.x + 40, doc.y - 25, { width: 100 });
-
-    doc
       .moveDown(1.5)
       .fillColor('#516B84')
       .fontSize(11)
@@ -1153,7 +1152,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     let depressionRiskLevelColor;
 
     if (data.depressionRiskLevel == 'unlikely') {
-      depressionRiskLevelColor = '#F8E71C';
+      depressionRiskLevelColor = '#5BA23F';
     } else if (data.depressionRiskLevel == 'low') {
       depressionRiskLevelColor = '#22A1D1';
     } else if (data.depressionRiskLevel == 'medium') {
@@ -1171,7 +1170,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc
       .fontSize(10)
       .font('fonts/CircularStd-Medium.ttf')
-      .fillColor(data.depressionRiskLevel == 'unlikely' ? '#072B4F' : '#ffffff')
+      .fillColor('#ffffff')
       .text(
         data.assessmentScores.depressionScore, 
         data.assessmentScores.depressionScore > 9 ? defaultMarginLeft + 4 : defaultMarginLeft + 6, 
@@ -1192,7 +1191,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     let anxietyRiskLevelColor;
 
     if (data.anxietyRiskLevel == 'unlikely') {
-      anxietyRiskLevelColor = '#F8E71C';
+      anxietyRiskLevelColor = '#5BA23F';
     } else if (data.anxietyRiskLevel == 'low') {
       anxietyRiskLevelColor = '#22A1D1';
     } else if (data.anxietyRiskLevel == 'medium') {
@@ -1210,7 +1209,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc
       .fontSize(10)
       .font('fonts/CircularStd-Medium.ttf')
-      .fillColor(data.anxietyRiskLevel == 'unlikely' ? '#072B4F' : '#ffffff')
+      .fillColor('#ffffff')
       .text(
         data.anxietyRiskScore, 
         data.anxietyRiskScore > 9 ? defaultMarginLeft + 4 : defaultMarginLeft + 6, 
@@ -1231,7 +1230,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     let ptsdRiskLevelColor;
 
     if (data.ptsdRiskLevel == 'unlikely') {
-      ptsdRiskLevelColor = '#F8E71C';
+      ptsdRiskLevelColor = '#5BA23F';
     } else if (data.ptsdRiskLevel == 'low') {
       ptsdRiskLevelColor = '#22A1D1';
     } else if (data.ptsdRiskLevel == 'medium') {
@@ -1249,7 +1248,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc
       .fontSize(10)
       .font('fonts/CircularStd-Medium.ttf')
-      .fillColor(data.ptsdRiskLevel == 'unlikely' ? '#072B4F' : '#ffffff')
+      .fillColor('#ffffff')
       .text(
         data.ptsdRiskScore, 
         data.ptsdRiskScore > 9 ? defaultMarginLeft + 4 : defaultMarginLeft + 6, 
@@ -1270,7 +1269,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     let bipolarRiskLevelColor;
 
     if (data.bipolarRiskLevel == 'unlikely') {
-      bipolarRiskLevelColor = '#F8E71C';
+      bipolarRiskLevelColor = '#5BA23F';
     } else if (data.bipolarRiskLevel == 'low') {
       bipolarRiskLevelColor = '#22A1D1';
     } else if (data.bipolarRiskLevel == 'medium') {
@@ -1288,7 +1287,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc
       .fontSize(10)
       .font('fonts/CircularStd-Medium.ttf')
-      .fillColor(data.bipolarRiskLevel == 'unlikely' ? '#072B4F' : '#ffffff')
+      .fillColor('#ffffff')
       .text(
         data.bipolarRiskScore, 
         data.bipolarRiskScore > 9 ? defaultMarginLeft + 4 : defaultMarginLeft + 6, 
@@ -1317,10 +1316,10 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     let thoughtsOfSuicideAnswerText;
 
     if (data.thoughtsOfSuicideAnswer == 0) {
-      thoughtsOfSuicideAnswerColor = '#F8E71C';
+      thoughtsOfSuicideAnswerColor = '#5BA23F';
       thoughtsOfSuicideAnswerText = 'None';
     } else if (data.thoughtsOfSuicideAnswer == 1) {
-      thoughtsOfSuicideAnswerColor = '#F8E71C';
+      thoughtsOfSuicideAnswerColor = '#5BA23F';
       thoughtsOfSuicideAnswerText = 'Rarely';
     } else if (data.thoughtsOfSuicideAnswer == 2) {
       thoughtsOfSuicideAnswerColor = '#22A1D1';
@@ -1359,10 +1358,10 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     let impairsWorkSchoolAnswerText;
 
     if (data.impairsWorkSchoolAnswer == 0) {
-      impairsWorkSchoolAnswerColor = '#F8E71C';
+      impairsWorkSchoolAnswerColor = '#5BA23F';
       impairsWorkSchoolAnswerText = 'None';
     } else if (data.impairsWorkSchoolAnswer == 1) {
-      impairsWorkSchoolAnswerColor = '#F8E71C';
+      impairsWorkSchoolAnswerColor = '#5BA23F';
       impairsWorkSchoolAnswerText = 'Rarely';
     } else if (data.impairsWorkSchoolAnswer == 2) {
       impairsWorkSchoolAnswerColor = '#22A1D1';
@@ -1399,10 +1398,10 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     let impairsFriendsFamilyAnswerText;
 
     if (data.impairsFriendsFamilyAnswer == 0) {
-      impairsFriendsFamilyAnswerColor = '#F8E71C';
+      impairsFriendsFamilyAnswerColor = '#5BA23F';
       impairsFriendsFamilyAnswerText = 'None';
     } else if (data.impairsFriendsFamilyAnswer == 1) {
-      impairsFriendsFamilyAnswerColor = '#F8E71C';
+      impairsFriendsFamilyAnswerColor = '#5BA23F';
       impairsFriendsFamilyAnswerText = 'Rarely';
     } else if (data.impairsFriendsFamilyAnswer == 2) {
       impairsFriendsFamilyAnswerColor = '#22A1D1';
@@ -1439,10 +1438,10 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     let ledToUsingAlcoholAnswerText;
 
     if (data.ledToUsingAlcoholAnswer == 0) {
-      ledToUsingAlcoholAnswerColor = '#F8E71C';
+      ledToUsingAlcoholAnswerColor = '#5BA23F';
       ledToUsingAlcoholAnswerText = 'None';
     } else if (data.ledToUsingAlcoholAnswer == 1) {
-      ledToUsingAlcoholAnswerColor = '#F8E71C';
+      ledToUsingAlcoholAnswerColor = '#5BA23F';
       ledToUsingAlcoholAnswerText = 'Rarely';
     } else if (data.ledToUsingAlcoholAnswer == 2) {
       ledToUsingAlcoholAnswerColor = '#22A1D1';
@@ -1479,10 +1478,10 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     let ledToUsingDrugAnswerText;
 
     if (data.ledToUsingDrugAnswer == 0) {
-      ledToUsingDrugAnswerColor = '#F8E71C';
+      ledToUsingDrugAnswerColor = '#5BA23F';
       ledToUsingDrugAnswerText = 'None';
     } else if (data.ledToUsingDrugAnswer == 1) {
-      ledToUsingDrugAnswerColor = '#F8E71C';
+      ledToUsingDrugAnswerColor = '#5BA23F';
       ledToUsingDrugAnswerText = 'Rarely';
     } else if (data.ledToUsingDrugAnswer == 2) {
       ledToUsingDrugAnswerColor = '#22A1D1';
