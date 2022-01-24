@@ -49,6 +49,7 @@
 .authBg .oneTime > div:last-of-type {
   font-size: 14px;
   font-weight: 300;
+  width: 400px;
 }
 
 .error {
@@ -282,8 +283,100 @@
   color: #072B4F;
 
 }
+.desktop{
+  margin-bottom: 50px;
+}
+
+.desktop{
+  display: flex;
+  justify-content: space-between;
+  width: 400px;
+  position: relative;
+}
+
+.desktop .step_item{
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 80px;
+  position: relative;
+  z-index: 2;
+}
+
+.desktop .step_active_item .step_number{
+  background: #F8E71C;
+  color: #000000;
+}
+
+.desktop .step_number{
+  
+  background: #072B4F;
+
+  height: 30px;
+  width: 30px;
+  font-family: Circular Std;
+  font-style: normal;
+  font-weight: 900;
+  font-size: 16px;
+  line-height: 30px;
+  border-radius: 50%;
+
+  color: #F8E71C;
+  text-align: center;
+  
+}
+
+.desktop .step_item p{
+  margin-top: 0;
+  margin-top: 7px;
+  font-family: Circular Std;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 23px;
+  /* identical to box height */
+
+
+  /* Primary */
+
+  color: #072B4F;
+
+}
+
+.desktop:before{
+  content: '';
+  height: 2px;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  background: #F8E71C;
+  position: absolute;
+  z-index: 1;
+  top: 15px;
+}
 
 /*Responsive*/
+
+@media(min-width:  768px) and (max-width:  991px){
+    .authBg .mooditudePremium > div:last-of-type,
+    .authBg .oneTime > div:last-of-type {
+      width: 260px;
+      
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .desktop{
+      width: 260px;
+      
+      margin-left: auto;
+      margin-right: auto;
+    }
+}
 
 @media(max-width:  767px){
 
@@ -396,6 +489,10 @@
     position: absolute;
     z-index: -1;
     top: 15px;
+  }
+
+  .mobile_steps.mobile_steps_small:before{
+    width: 100px;
   }
 
   .step_active_item .step_number{

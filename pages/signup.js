@@ -208,32 +208,88 @@ export default function SignUp(props) {
               <img src={`/logo-small.svg`}  />
           </div>
 
-          <div className={styles.mobile_steps}>
-              <div className={`${styles.step_item} ${styles.step_active_item}`}>
-                <div className={styles.step_number}>1</div>
-                <p>Account</p>
-              </div>
+          {((router.query.type != 'subscription') && (router.query.type != 'payment')) && (
+            <div className={`${styles.mobile_steps} ${styles.mobile_steps_small}`}>
+                <div className={`${styles.step_item} ${styles.step_active_item}`}>
+                  <div className={styles.step_number}>1</div>
+                  <p>Account</p>
+                </div>
 
-              <div className={styles.step_item}>
-                <div className={styles.step_number}>2</div>
-                <p>Buy</p>
-              </div>
+                <div className={styles.step_item}>
+                  <div className={styles.step_number}>2</div>
+                  <p>Assessment</p>
+                </div>
+            </div>
+          )}
 
-              <div className={styles.step_item}>
-                <div className={styles.step_number}>3</div>
-                <p>Assessment</p>
-              </div>
-          </div>
+          {((router.query.type == 'subscription') || (router.query.type == 'payment')) && (
+            <div className={styles.mobile_steps}>
+               <div className={`${styles.step_item} ${styles.step_active_item}`}>
+                  <div className={styles.step_number}>1</div>
+                  <p>Account</p>
+                </div>
+
+                <div className={styles.step_item}>
+                  <div className={styles.step_number}>2</div>
+                  <p>Buy</p>
+                </div>
+
+                <div className={styles.step_item}>
+                  <div className={styles.step_number}>2</div>
+                  <p>Assessment</p>
+                </div>
+            </div>
+          )}
+          
         </div>
         <div className={styles.authBg}>
           {((router.query.type != 'subscription') && (router.query.type != 'payment')) && (
             <div className={styles.free}>
               {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3-info.svg" alt="M3Information" />}
+
+
+                <div className={styles.oneTime}>
+                  <div className={styles.mobile_hidden}>
+                    <div className={`${styles.mobile_steps} ${styles.desktop}`}>
+                        <div className={`${styles.step_item} ${styles.step_active_item}`}>
+                          <div className={styles.step_number}>1</div>
+                          <p>Account</p>
+                        </div>
+
+    
+
+                        <div className={styles.step_item}>
+                          <div className={styles.step_number}>2</div>
+                          <p>Assessment</p>
+                        </div>
+                    </div>
+                  </div>
+              
+                </div>
+              
             </div>
           )}
 
           {router.query.type == 'subscription' && (
             <div className={styles.mooditudePremium}>
+              <div className={styles.mobile_hidden}>
+                <div className={`${styles.mobile_steps} ${styles.desktop}`}>
+                    <div className={`${styles.step_item} ${styles.step_active_item}`}>
+                      <div className={styles.step_number}>1</div>
+                      <p>Account</p>
+                    </div>
+
+                    <div className={styles.step_item}>
+                      <div className={styles.step_number}>2</div>
+                      <p>Buy</p>
+                    </div>
+
+                    <div className={styles.step_item}>
+                      <div className={styles.step_number}>3</div>
+                      <p>Assessment</p>
+                    </div>
+                </div>
+              </div>
               <div>
                 {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
                 {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3-info.svg" alt="M3Information" />}
@@ -275,6 +331,24 @@ export default function SignUp(props) {
 
           {router.query.type == 'payment' && (
             <div className={styles.oneTime}>
+              <div className={styles.mobile_hidden}>
+                <div className={`${styles.mobile_steps} ${styles.desktop}`}>
+                    <div className={`${styles.step_item} ${styles.step_active_item}`}>
+                      <div className={styles.step_number}>1</div>
+                      <p>Account</p>
+                    </div>
+
+                    <div className={styles.step_item}>
+                      <div className={styles.step_number}>2</div>
+                      <p>Buy</p>
+                    </div>
+
+                    <div className={styles.step_item}>
+                      <div className={styles.step_number}>3</div>
+                      <p>Assessment</p>
+                    </div>
+                </div>
+              </div>
               <div>
                 {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
                 {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3-info.svg" alt="M3Information" />}
@@ -291,6 +365,8 @@ export default function SignUp(props) {
               </div>
             </div>
           )}
+
+  
         </div>
 
         <div className={styles.authForm}>
