@@ -968,13 +968,30 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
           width: 200,
           align: 'center'
         })
-        .moveDown(1.5);
+        .moveDown(2.5);
     }
 
-    if (data.usedDrug) {
+    if (data.usedDrug && data.usedAlcohol) {
       doc
         .font('fonts/CircularStd-Medium.ttf')
+        .fontSize(11)
+        .text(`Drug and Alcohol Abuse`, defaultMarginLeft)
         .moveDown()
+        .fontSize(9)
+        .text(`Your responses indicated that you have occasionally used alcohol and non-prescribed drugs to manage some of the symptoms.`, defaultMarginLeft)
+        .moveDown()
+        .text(`Self-medication for such symptoms, even when this appears to be effective, often will make such symptoms worse over the long term. We strongly urge you to share your responses to these questions with your physician and to begin an honest discussion about your alcohol and drug use patterns.`, defaultMarginLeft)
+        .moveDown()
+        .text(`It is likely that a more appropriate and more effective means for managing your symptoms can be found, bringing with it a real chance for improvement in your functioning, quality of life, and overall health.`, defaultMarginLeft);
+    }
+
+    if (data.usedDrug && !data.usedAlcohol) {
+      doc
+        .font('fonts/CircularStd-Medium.ttf')
+        .fontSize(11)
+        .text(`Drug Abuse`, defaultMarginLeft)
+        .moveDown()
+        .fontSize(9)
         .text(`Your responses indicated that you have occasionally used non-prescribed drugs to manage some of the symptoms.`, defaultMarginLeft)
         .moveDown()
         .text(`Self-medication for such symptoms, even when this appears to be effective, is likely to make such symptoms worse over the long term. We strongly urge you to share the responses to these questions with your physician and to begin an honest discussion about your drug use patterns.`, defaultMarginLeft)
@@ -982,10 +999,13 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
         .text(`It is likely that a more appropriate and more effective means for managing your symptoms can be found, bringing with it a real chance for improvement in your functioning, quality of life, and overall health.`, defaultMarginLeft);
     }
 
-    if (data.usedAlcohol) {
+    if (data.usedAlcohol && !data.usedDrug) {
       doc
         .font('fonts/CircularStd-Medium.ttf')
+        .fontSize(11)
+        .text(`Alcohol Abuse`, defaultMarginLeft)
         .moveDown()
+        .fontSize(9)
         .text(`Your responses suggest that you have occasionally used alcohol to manage some of the symptoms.`, defaultMarginLeft)
         .moveDown()
         .text(`Self-medication for such symptoms, even when this appears to be effective, often will make such symptoms worse over the long term. We strongly urge you to share your assessment results with your physician and to begin an honest discussion about your alcohol use patterns.`, defaultMarginLeft)

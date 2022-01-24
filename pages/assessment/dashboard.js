@@ -186,11 +186,13 @@ export default function AssessmentWelcomePage() {
             }
           })
       } else {
-        // setChecking(false)
+        setChecking(false)
       }
     })
 
-    // setChecking(false)
+    setTimeout(() => {
+      setChecking(false)
+    }, 1000)
   }, [])
 
   const handleTakeAssessment = () => {

@@ -65,6 +65,11 @@ export default function OnboardingWelcomePage() {
 
   const [subscription, setSubscription] = useState({})
 
+  const [paymentFailed, setPaymentFailed] = useState(false)
+  const [paymentSuccess, setPaymentSuccess] = useState(false)
+
+  const [activeProductPrice, setActiveProductPrice] = useState(null)
+
   const settings = {
     dots: true,
     infinite: true,
@@ -98,6 +103,38 @@ export default function OnboardingWelcomePage() {
     }
   }, [authUser])
 
+  useEffect(() => {
+    console.log(router.query)
+
+    if (router.query.checkout_cancelled) {
+      setPaymentFailed(true)
+    } else {
+      setPaymentFailed(false)
+    }
+
+    if (router.query.price) {
+      setActiveProductPrice(router.query.price)
+    }
+
+    if (router.query.payment_success) {
+      setPaymentSuccess(true)
+    } else {
+      setPaymentSuccess(false)
+    }
+  }, [router])
+
+  useEffect(() => {
+    if (activeProductPrice) {
+      if (activeProductPrice == 'price_1K09ueAuTlAR8JLMqv6RVsh8') {
+        setDuration(1)
+      } else if (activeProductPrice == 'price_1KHXXoAuTlAR8JLM1hdixwNI') {
+        setDuration(3)
+      } else if (activeProductPrice == 'price_1K09ueAuTlAR8JLM3JmfvSgj') {
+        setDuration(null)
+      }
+    }
+  }, [activeProductPrice])
+
   const handleSubscription = async (e) => {
     e.preventDefault()
 
@@ -111,110 +148,10 @@ export default function OnboardingWelcomePage() {
       mode: 'subscription',
       customerEmail: authUser && authUser.email,
       redirectUrl: window.location.origin + '/buy/thank-you',
-      cancelUrl: window.location.origin
+      cancelUrl: window.location.origin + '/buy'
     }).then(result => {
       location.href = result.data.session.url
     })
-  }
-
-  const handleMonthlySubscription = async (e) => {
-    e.preventDefault()
-    const processStripeSubscription = firebaseFunctions.httpsCallable('processStripeSubscription')
-    setShowLoader(true)
-    processStripeSubscription({
-      plan: 'monthly',
-      type: 'subscription',
-      codeType: null,
-      duration: null,
-      message: null,
-      customerEmail: authUser ? authUser.email : '',
-      redirectUrl: window.location.origin + '/buy/thank-you',
-      cancelUrl: `${window.location.origin}`
-    }).then(result => {
-      location.href = result.data.session.url
-    })
-  }
-
-  const handleYearlySubscription = async (e) => {
-    e.preventDefault()
-    console.log('handleYearlySubscription')
-    setShowLoader(true)
-
-    const processStripeSubscription = firebaseFunctions.httpsCallable('processStripeSubscription')
-  
-    processStripeSubscription({
-      plan: 'yearly',
-      type: 'subscription',
-      codeType: null,
-      duration: null,
-      message: null,
-      customerEmail: authUser ? authUser.email : '',
-      redirectUrl: window.location.origin + '/buy/thank-you',
-      cancelUrl: `${window.location.origin}`
-    }).then(result => {
-      location.href = result.data.session.url
-    })
-  }
-
-  const handleRedeemPromoCode = async (e) => {
-    e.preventDefault()
-    console.log('handleRedeemPromoCode')
-    setShowLoader(true)
-
-    if (authUser) {
-      const processInvitationCode = firebaseFunctions.httpsCallable('processInvitationCode')
-  
-      processInvitationCode({
-        code: promoCode,
-        platform: 'web',
-        userId: authUser.uid
-      }).then(result => {
-        let resultData = result.data
-
-        console.log('then', resultData)
-
-        if (!resultData.error) {
-          setError('')
-
-          if (resultData.codeInfo.codeType == 'purchased') {
-            firebaseStore
-              .collection('Users')
-              .doc(authUser.uid)
-              .update({
-                customerType: 'premium'
-              })
-              .then(() => {
-                firebaseDatabase
-                  .ref()
-                  .child('users')
-                  .child(authUser.uid)
-                  .update({
-                    customerType: 'premium',
-                    expiryDate: resultData.expiryDate ? resultData.expiryDate : '',
-                  })
-                  .then(() => {
-                    if (resultData.codeInfo.duration === undefined) {
-                      router.push(`/buy/coupon-applied?code_type=purchased&expiry_date=${resultData.expiryDate}&message=${resultData.codeInfo.message}&success=true`)
-                    } else {
-                      router.push(`/buy/coupon-applied?code_type=purchased&duration=${resultData.codeInfo.duration}&message=${resultData.codeInfo.message}&success=true`)
-                    }
-                  })
-              })
-          } else if (resultData.codeInfo.codeType == 'discount') {
-            router.push(`/buy/coupon-applied?code_type=discount&message=${resultData.codeInfo.message}&success=true`)
-          } else if (resultData.codeInfo.codeType == 'trial') {
-            router.push(`/buy/coupon-applied?code_type=trial&duration=${resultData.codeInfo.duration}&message=${resultData.codeInfo.message}&success=true`)
-          }
-        } else {
-          setError(resultData.error.message)
-        }
-
-        setShowLoader(false)
-      }).catch((e) => {
-        console.log('catch', e.message)
-        setShowLoader(false)
-      })
-    }
   }
   
   return (
@@ -257,6 +194,24 @@ export default function OnboardingWelcomePage() {
           }
           <div className={styles.buy_wrapper}>
             <div className={styles.new_buy_wrapper}>
+              {paymentFailed && (
+                <div className={styles.error_alert}>
+                  <span onClick={() => router.push('/buy')}><img src="/close.svg" /></span>
+
+                  <h2>Payment didn't go through</h2>
+                  <p>Either you cancelled your payment or your card didn't work.</p>
+                </div>
+              )}
+
+              {paymentSuccess && (
+                <div className={styles.success_alert}>
+                  <span onClick={() => router.push('/')}><img src="/close.svg" /></span>
+
+                  <h2>Thank you for your patronage!</h2>
+                  <p>You took the right step in managing your mental health.</p>
+                </div>
+              )}
+
               <div className={styles.new_buy_image}>
                 <img src="/buy_icon.svg" />
               </div>

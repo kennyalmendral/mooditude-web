@@ -8,7 +8,48 @@
   overflow-x: hidden;
 }
 
+.error_alert,
+.success_alert {
+	position: relative;
+	background: #D6443F;
+	font-family: 'Circular Std';
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	border-radius: 8px;
+	padding: 20px;
+}
 
+.success_alert {
+	background: #1CA566 !important;
+}
+
+.error_alert h2,
+.success_alert h2 {
+	color: #fff;
+	margin: 0 0 6px;
+	font-size: 24px;
+	font-weight: 400;
+}
+
+.error_alert p,
+.success_alert p {
+	color: #fff;
+	opacity: 0.7;
+	margin: 0;
+	font-size: 16px;
+	font-weight: 400;
+	max-width: 100%;
+}
+
+.error_alert span,
+.success_alert span {
+	position: absolute;
+	right: 15px;
+	top: 15px;
+	cursor: pointer;
+}
 
 .buy_inner_wrapper{
   min-height: 75vh;
@@ -374,6 +415,7 @@
 }
 
 .new_buy_image{
+  margin-top: 40px;
   text-align: center;
 }
 .buy_slider h4{

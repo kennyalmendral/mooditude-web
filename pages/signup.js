@@ -404,7 +404,7 @@ export default function SignUp(props) {
             <div className={styles.headingContainer}>
               <div>
                 <h1 className={styles.heading}>Join {SITE_NAME}</h1>
-                <h4 className={styles.subHeading}>You deserve to be happy!</h4>
+                <h4 className={styles.subHeading}><strong>You deserve to be happy!</strong></h4>
               </div>
               
               <div>
@@ -511,11 +511,11 @@ export default function SignUp(props) {
 
                       <label htmlFor="privacy-policy" style={{ marginLeft: '-16px' }}>
                         <div className={styles.privacyPolicyText}>
-                          <span>I agree with the</span>
+                          <span>By continuing you agree to Mooditude's</span>
+                          <br />
+                          <a href="https://mooditude.app/terms" target="_blank">Terms &amp; Conditions</a>
                           {' '}
-                          <a href="https://mooditude.app/terms" target="_blank">Terms</a>
-                          {' '}
-                          &amp;
+                          and 
                           {' '}
                           <a href="https://mooditude.app/privacy" target="_blank">Privacy Policy</a>
                         </div>
@@ -575,7 +575,7 @@ export default function SignUp(props) {
                     )}
 
                     {!isSigningUp && (
-                      <>SIGN UP</>
+                      <>CREATE ACCOUNT</>
                     )}
                   </button>
                 </div>

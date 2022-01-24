@@ -38,6 +38,8 @@ export default function AssessmentReport(props) {
   const [isReportVisible, setIsReportVisible] = useState(true)
   const [isScoresVisible, setIsScoresVisible] = useState(false)
   const [isDownloadVisible, setIsDownloadVisible] = useState(false)
+
+  const [loadingText, setLoadingText] = useState('Analyzing your responses...')
   
   const [assessmentScores, setAssessmentScores] = useState({})
   const [riskScore, setRiskScore] = useState(0)
@@ -83,37 +85,14 @@ export default function AssessmentReport(props) {
 
   const [userProfile, setUserProfile] = useState({})
 
-  const [oneTimeReportUrl, setOneTimeReportUrl] = useState(null)
+  const [paymentFailed, setPaymentFailed] = useState(false)
+  const [paymentSuccess, setPaymentSuccess] = useState(false)
 
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/login')
     }
   }, [authUser, loading, router])
-
-  useEffect(() => {
-    if (authUser) {
-      firebaseStore
-        .collection('Subscribers')
-        .doc(authUser.uid)
-        .get()
-        .then(doc => {
-          if (doc && doc.data()) {
-            if (doc.data().payment != undefined) {
-              setOneTimeReportUrl(doc.data().payment.reportUrl)
-            }
-          }
-        })
-    }
-  }, [authUser, oneTimeReportUrl])
-
-  useEffect(() => {
-    // console.log(oneTimeReportUrl)
-  }, [oneTimeReportUrl])
-
-  useEffect(() => {
-    // reportLink && console.log(reportLink)
-  }, [reportLink])
 
   useEffect(() => {
     userProfile && console.log(userProfile)
@@ -290,7 +269,6 @@ export default function AssessmentReport(props) {
   }, [noneAnswerCount])
 
   useEffect(() => {
-    
     if (isDownloading) {
       const unloadCallback = (event) => {
         event.preventDefault();
@@ -303,7 +281,116 @@ export default function AssessmentReport(props) {
     }
   }, [isDownloading])
 
+  useEffect(() => {
+    if (router.query.checkout_cancelled) {
+      setPaymentFailed(true)
+    } else {
+      setPaymentFailed(false)
+    }
+  }, [router])
+
+  useEffect(() => {
+    if (router.query.type == 'subscription') {
+      const getStripeSubscription = firebaseFunctions.httpsCallable('getStripeSubscription')
     
+      getStripeSubscription({
+        session_id: new URLSearchParams(window.location.search).get('session_id')
+      }).then(result => {
+        let session = result.data.session
+        let subscription = result.data.subscription
+
+        console.log(session, subscription)
+
+        if (authUser) {
+          firebaseDatabase
+            .ref()
+            .child('users')
+            .child(authUser.uid)
+            .update({
+              customerType: 'premium',
+              expiryDate: subscription.current_period_end * 1000,
+              paymentStatus: 'active',
+              paymentType: 'stripe'
+            })
+            .then(() => {
+              firebaseStore
+                .collection('Users')
+                .doc(authUser.uid)
+                .update({
+                  customerType: 'premium'
+                })
+                .then(() => {
+                  firebaseStore
+                    .collection('Subscribers')
+                    .doc(authUser.uid)
+                    .set({
+                      grant: {
+                        expiryDate: format(subscription.current_period_end * 1000, 'LLLL dd, yyyy'),
+                        grantType: 'Purchase',
+                        licenseType: 'Premium',
+                        productType: 'Subscription',
+                        transactionDate: format(subscription.created * 1000, 'LLLL dd, yyyy'),
+                        transactionId: subscription.id
+                      }
+                    })
+                    .then(() => {
+                      setPaymentSuccess(true)
+                      setLicenseType('premium')
+                      // setExpiryDate(format(new Date(subscription.current_period_end * 1000), 'LLLL dd, yyyy'))
+                    })
+                })
+            })
+        }
+      })
+    } else if (router.query.type == 'payment') {
+      const getStripePayment = firebaseFunctions.httpsCallable('getStripePayment')
+    
+      getStripePayment({
+        session_id: new URLSearchParams(window.location.search).get('session_id')
+      }).then(result => {
+        let session = result.data.session
+        let paymentIntent = result.data.paymentIntent
+
+        console.log(session, paymentIntent)
+
+        if (authUser) {
+          firebaseDatabase
+            .ref()
+            .child('users')
+            .child(authUser.uid)
+            .update({
+              customerType: 'premium',
+              expiryDate: '',
+              paymentStatus: 'active',
+              paymentType: 'stripe'
+            })
+            .then(() => {
+              firebaseStore
+                .collection('Users')
+                .doc(authUser.uid)
+                .update({
+                  customerType: 'premium'
+                })
+                .then(() => {
+                  firebaseStore
+                    .collection('M3Assessment')
+                    .doc(router.query.user)
+                    .collection('scores')
+                    .doc(router.query.score)
+                    .update({
+                      purchasedDate: paymentIntent.created * 1000,
+                      stripeInvoiceId: paymentIntent.id
+                    })
+                    .then(() => {
+                      setPaymentSuccess(true)
+                      setLicenseType('premium')
+                    })
+                })
+            })
+        }
+      })
+    }
+  }, [router, authUser])
 
   const getQuestion = (index) => {
     switch (index) {
@@ -412,30 +499,14 @@ export default function AssessmentReport(props) {
         setIsDownloading(false)
         
         if (authUser) {
-          let usedOneTimeDownload = {}
-          usedOneTimeDownload[`payment.usedOneTimeDownload`] = true
-
           firebaseStore
-            .collection('Subscribers')
-            .doc(authUser.uid)
-            .update(usedOneTimeDownload)
-            .then(() => {
-              firebaseStore
-                .collection('Subscribers')
-                .doc(authUser.uid)
-                .update({
-                  reportUrl: result.data.url[0]
-                })
-
-              firebaseStore
-                .collection('M3Assessment')
-                .doc(router.query.user)
-                .collection('scores')
-                .doc(router.query.score)
-                .update({
-                  pdfDoc: result.data.url[0]
-                })
-            })
+            .collection('M3Assessment')
+            .doc(router.query.user)
+            .collection('scores')
+            .doc(router.query.score)
+            .update({
+              pdfDoc: result.data.url[0]
+            })     
         }
         
         setReportLink(result.data.url[0])
@@ -450,6 +521,8 @@ export default function AssessmentReport(props) {
   const selectPlan = (plan, duration) => {
     setChecking(true)
 
+    setLoadingText('Please wait...')
+
     const processStripeSubscriptionOnSignUp = firebaseFunctions.httpsCallable('processStripeSubscriptionOnSignUp')
 
     processStripeSubscriptionOnSignUp({
@@ -457,8 +530,8 @@ export default function AssessmentReport(props) {
       duration: duration,
       mode: plan == 'subscription' ? 'subscription' : 'payment',
       customerEmail: authUser && authUser.email,
-      redirectUrl: window.location.origin + '/buy/thank-you',
-      cancelUrl: window.location.origin + '/buy'
+      redirectUrl: window.location.origin + `/assessment/report/${router.query.user}/${router.query.score}`,
+      cancelUrl: window.location.origin + `/assessment/report/${router.query.user}/${router.query.score}`
     }).then(result => {
       location.href = result.data.session.url
     })
@@ -480,7 +553,7 @@ export default function AssessmentReport(props) {
           >
             <RingLoader color={'#f8e71c'} loading={true} size={250} />
             
-            <p>Analyzing your responses...</p>
+            <p>{loadingText}</p>
           </div>
         : 
           <div className={`${styles.onboarding_wrapper}`} style={{ position: 'relative' }}>
@@ -504,10 +577,11 @@ export default function AssessmentReport(props) {
               {assessmentDate && (
                 <p className={styles.date_text}>{assessmentDate}</p> 
               )}
+
               <h1>Your Mental Wellbeing Score</h1>
             </div>
-            <div className={`${styles.assessment_wrap} ${styles.report_page}`}>
 
+            <div className={`${styles.assessment_wrap} ${styles.report_page}`}>
               <div className={styles.white_wrap}>
                 {/*<h1>Your Mental <br/>Wellbeing Score</h1>*/}
 
@@ -588,6 +662,23 @@ export default function AssessmentReport(props) {
             </div>
 
             <div className={styles.results_bottom_wrap}>
+              {paymentFailed && (
+                <div className={styles.error_alert} style={{ marginBottom: '40px' }}>
+                  <span onClick={() => location.href =`/assessment/report/${router.query.user}/${router.query.score}`}><img src="/close.svg" /></span>
+
+                  <h2>Payment didn't go through</h2>
+                  <p>Either you cancelled your payment or your card didn't work.</p>
+                </div>
+              )}
+
+              {paymentSuccess && (
+                <div className={styles.success_alert} style={{ marginBottom: '40px' }}>
+                  <span onClick={() => location.href =`/assessment/report/${router.query.user}/${router.query.score}`}><img src="/close.svg" /></span>
+
+                  <h2>Thank you for your patronage!</h2>
+                  <p>You took the right step in managing your mental health.</p>
+                </div>
+              )}
               {
                 licenseType != 'free' ? 
                   <div className={styles.report_btns_wrapper}>
@@ -877,7 +968,7 @@ export default function AssessmentReport(props) {
                                 </>
                               )}
 
-                            {((licenseType == 'Premium') || (userProfile.customerType == 'premium')) && (
+                            {((licenseType == 'premium') || (userProfile.customerType == 'premium')) && (
                               <>
                                 <div className={styles.report_risks_wrap} >
                                   {/*<img src="/warning.svg" alt="Disorder Risks" />*/}
@@ -1112,7 +1203,7 @@ export default function AssessmentReport(props) {
                                 <div className={styles.results_thoughts_wrap}>
                                   {(usedDrug && usedAlcohol) && (
                                     <div className={styles.results_thoughts_item}>
-                                      <h4>Substance Abuse</h4>
+                                      <h4>Drug and Alcohol Abuse</h4>
 
                                       <p>Your responses indicated that you have occasionally used alcohol and non-prescribed drugs to manage some of the symptoms.</p>
 
@@ -1169,7 +1260,7 @@ export default function AssessmentReport(props) {
                                         </ul>
                                       </div>
 
-                                      <p style={{ margin: '20px 0' }}>It is very important, first of all, to point out that having such a thought does not automatically place you at risk for actual suicide. On the other hand, individuals who report suicidal thinking on closer examination are often found to have a mood or anxiety disorder. This is true even for those who feel that, due to life circumstances, they have legitimate reasons for having such thoughts. Given this fact, it is crucial that you present your responses to these questions to your physician and begin a discussion of this issue.</p>
+                                      <p style={{ fontFamily: 'Circular Std', margin: '20px 0' }}>It is very important, first of all, to point out that having such a thought does not automatically place you at risk for actual suicide. On the other hand, individuals who report suicidal thinking on closer examination are often found to have a mood or anxiety disorder. This is true even for those who feel that, due to life circumstances, they have legitimate reasons for having such thoughts. Given this fact, it is crucial that you present your responses to these questions to your physician and begin a discussion of this issue.</p>
                                     </>
                                   )}
                                 </div>
@@ -1446,8 +1537,6 @@ export default function AssessmentReport(props) {
                         {assessmentScores.pdfDoc != null && (
                           <a href={assessmentScores.pdfDoc} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>
                         )}
-
-                        {/* {oneTimeReportUrl == null && <a href={oneTimeReportUrl} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>} */}
                       </div>
                     )}
 

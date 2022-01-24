@@ -187,7 +187,7 @@ export default function Login(props) {
             <div className={styles.headingContainer}>
               <div>
                 <h1 className={styles.heading}>Log In</h1>
-                <h4 className={styles.subHeading}>Welcome back!</h4>
+                <h4 className={styles.subHeading}><strong>Welcome back!</strong></h4>
               </div>
               
               <div>
@@ -250,7 +250,7 @@ export default function Login(props) {
                     )}
 
                     {!isLoggingIn && (
-                      <>SUBMIT</>
+                      <>LOG IN</>
                     )}
                   </button>
                 </div>
