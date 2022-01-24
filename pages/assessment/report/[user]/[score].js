@@ -703,30 +703,37 @@ export default function AssessmentReport(props) {
                         {riskScore > -1 && (
                           <>
                             <div className={styles.normal_text_wrap}>
+                              <p>Your responses have been analyzed and compared to the responses of other individuals with and without mood and anxiety disorders.</p>
+
                               {allRiskLevel == 'unlikely' && (
-                                <p>Your score is below the level usually found for individuals already known to be suffering from a mood or anxiety disorder. Despite this low score, it is still important to refer to the information and recommendations below concerning your risk for each of the four conditions described.</p>
+                                <p><strong>Your score is below the level usually found for individuals already known to be suffering from a mood or anxiety disorder.</strong></p>
                               )}
 
                               {allRiskLevel == 'low' && (
                                 <>
-                                  <p>Your score is in the lower range as compared to individuals already known to be suffering from a mood or anxiety disorder.</p>
-                                  <p>Despite this relatively low score, your symptoms may be impacting your life, livelihood, and general well-being. Read closely the information and recommendations below concerning your risk of each of the four conditions described.</p>
+                                  <p><strong>Your score is in the lower range as compared to individuals already known to be suffering from a mood or anxiety disorder.</strong></p>
+
+                                  <p><strong>Despite this relatively low score, your symptoms may be impacting your life, livelihood, and general well-being.</strong></p>
                                 </>
                               )}
 
                               {allRiskLevel == 'medium' && (
                                 <>
-                                  <p>Your score is in the mid-range as compared to individuals already known to be suffering from a mood or anxiety disorder.</p>
-                                  <p>This is a significant finding, as it suggests that your symptoms are probably impacting your life and general well-being. Read carefully the information and recommendations below concerning your risk of each of the four conditions described.</p>
+                                  <p><strong>Your score is in the mid-range as compared to individuals already known to be suffering from a mood or anxiety disorder.</strong></p>
+
+                                  <p><strong>This is a significant finding, as it suggests that your symptoms are probably impacting your life and general well-being.</strong></p>
                                 </>
                               )}
 
                               {allRiskLevel == 'high' && (
                                 <>
-                                  <p>Your score is in the high range as compared to individuals already known to be suffering from a mood or anxiety disorder.</p>
-                                  <p>This is cause for real concern, as it suggests that your symptoms are impacting your life and general health. Read carefully the information and recommendations below concerning your risk of each of the four conditions described.</p>
+                                  <p><strong>Your score is in the high range as compared to individuals already known to be suffering from a mood or anxiety disorder.</strong></p>
+
+                                  <p><strong>This is cause for real concern, as it suggests that your symptoms are impacting your life and general health.</strong></p>
                                 </>
                               )}
+
+                              <p>Read carefully the information and recommendations below concerning your risk of each of the four conditions described.</p>
                             </div>
                             
                             <div className={styles.report_content_crisis_section}>
@@ -875,28 +882,28 @@ export default function AssessmentReport(props) {
                                       {depressionRiskLevel == 'unlikely' && (
                                         <>
                                           {/*<img src="/unlikely-risk.svg" alt="Unlikely" />*/}
-                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>This low score means you have few symptoms of depression at this time.</p>
+                                          <p style={{ fontFamily: 'Circular Std', color: '#072B4F', marginTop: '5px' }}>This low score means you have few symptoms of depression at this time.</p>
                                         </>
                                       )}
 
                                       {depressionRiskLevel == 'low' && (
                                         <>
                                           {/*<img src="/low-risk.svg" alt="Low" />*/}
-                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the depression scale tend to have a 1 in 3 chance of suffering from depression.</p>
+                                          <p style={{ fontFamily: 'Circular Std', color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the depression scale tend to have a 1 in 3 chance of suffering from depression.</p>
                                         </>
                                       )}
 
                                       {depressionRiskLevel == 'medium' && (
                                         <>
                                           {/*<img src="/medium-risk.svg" alt="Medium" />*/}
-                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the depression scale tend to have a 2 in 3 chance of suffering from depression.</p>
+                                          <p style={{ fontFamily: 'Circular Std', color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the depression scale tend to have a 2 in 3 chance of suffering from depression.</p>
                                         </>
                                       )}
 
                                       {depressionRiskLevel == 'high' && (
                                         <>
                                           {/*<img src="/high-risk.svg" alt="High" />*/}
-                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the depression scale typically have a 90% chance of suffering from depression.</p>
+                                          <p style={{ fontFamily: 'Circular Std', color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the depression scale typically have a 90% chance of suffering from depression.</p>
                                         </>
                                       )}
                                     </div>
@@ -915,28 +922,28 @@ export default function AssessmentReport(props) {
                                       {anxietyRiskLevel == 'unlikely' && (
                                         <>
                                           {/*<img src="/unlikely-risk.svg" alt="Unlikely" />*/}
-                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>This low score means you do not have symptoms of an anxiety disorder at this time.</p>
+                                          <p style={{ fontFamily: 'Circular Std', color: '#072B4F', marginTop: '5px' }}>This low score means you do not have symptoms of an anxiety disorder at this time.</p>
                                         </>
                                       )}
 
                                       {anxietyRiskLevel == 'low' && (
                                         <>
                                           {/*<img src="/low-risk.svg" alt="Low" />*/}
-                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the anxiety scale tend to have a 1 in 3 chance of suffering from an anxiety disorder.</p>
+                                          <p style={{ fontFamily: 'Circular Std', color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the anxiety scale tend to have a 1 in 3 chance of suffering from an anxiety disorder.</p>
                                         </>
                                       )}
 
                                       {anxietyRiskLevel == 'medium' && (
                                         <>
                                           {/*<img src="/medium-risk.svg" alt="Medium" />*/}
-                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the anxiety scale tend to have about a 50% chance of suffering from an anxiety disorder.</p>
+                                          <p style={{ fontFamily: 'Circular Std', color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the anxiety scale tend to have about a 50% chance of suffering from an anxiety disorder.</p>
                                         </>
                                       )}
 
                                       {anxietyRiskLevel == 'high' && (
                                         <>
                                           {/*<img src="/high-risk.svg" alt="High" />*/}
-                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the anxiety scale tend to have a 90% chance of suffering from an anxiety disorder.</p>
+                                          <p style={{ fontFamily: 'Circular Std', color: '#072B4F', marginTop: '5px' }}>People scoring in this range on the anxiety scale tend to have a 90% chance of suffering from an anxiety disorder.</p>
                                         </>
                                       )}
                                     </div>
@@ -958,28 +965,28 @@ export default function AssessmentReport(props) {
                                       {ptsdRiskLevel == 'unlikely' && (
                                         <>
                                           {/*<img src="/unlikely-risk.svg" alt="Unlikely" />*/}
-                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>This low score means you do not have symptoms of posttraumatic stress disorder (PTSD) at this time.</p>
+                                          <p style={{ fontFamily: 'Circular Std', color: '#072B4F', marginTop: '5px' }}>This low score means you do not have symptoms of posttraumatic stress disorder (PTSD) at this time.</p>
                                         </>
                                       )}
 
                                       {ptsdRiskLevel == 'low' && (
                                         <>
                                           {/*<img src="/low-risk.svg" alt="Low" />*/}
-                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>Many individuals who have posttraumatic stress disorder (PTSD) respond to the scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, your risk of PTSD is just 1 in 8, though there could be another underlying mood or anxiety condition. (Naturally, if you have experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)</p>
+                                          <p style={{ fontFamily: 'Circular Std', color: '#072B4F', marginTop: '5px' }}>Many individuals who have posttraumatic stress disorder (PTSD) respond to the scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, your risk of PTSD is just 1 in 8, though there could be another underlying mood or anxiety condition. (Naturally, if you have experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)</p>
                                         </>
                                       )}
 
                                       {ptsdRiskLevel == 'medium' && (
                                         <>
                                           {/*<img src="/medium-risk.svg" alt="Medium" />*/}
-                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>Most individuals who have posttraumatic stress disorder (PTSD) respond to the scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, your risk of PTSD is just 1 in 5, though there could be another underlying mood or anxiety condition. (Naturally, if you have experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)</p>
+                                          <p style={{ fontFamily: 'Circular Std', color: '#072B4F', marginTop: '5px' }}>Most individuals who have posttraumatic stress disorder (PTSD) respond to the scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, your risk of PTSD is just 1 in 5, though there could be another underlying mood or anxiety condition. (Naturally, if you have experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)</p>
                                         </>
                                       )}
 
                                       {ptsdRiskLevel == 'high' && (
                                         <>
                                           {/*<img src="/high-risk.svg" alt="High" />*/}
-                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>Most individuals who have posttraumatic stress disorder (PTSD) respond to the PTSD scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, the likelihood that you have PTSD is about 1 in 3, though there is a high likelihood of another underlying mood or anxiety condition. Further assessment may help clarify these results. (Naturally, if you are aware of having experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)</p>
+                                          <p style={{ fontFamily: 'Circular Std', color: '#072B4F', marginTop: '5px' }}>Most individuals who have posttraumatic stress disorder (PTSD) respond to the PTSD scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, the likelihood that you have PTSD is about 1 in 3, though there is a high likelihood of another underlying mood or anxiety condition. Further assessment may help clarify these results. (Naturally, if you are aware of having experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)</p>
                                         </>
                                       )}
                                     </div>
@@ -1003,21 +1010,21 @@ export default function AssessmentReport(props) {
                                       {bipolarRiskLevel == 'low' && (
                                         <>
                                           {/*<img src="/low-risk.svg" alt="Low" />*/}
-                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range of the bipolar scale tend to have a 1 in 9 chance of having bipolar disorder. Nonetheless, more than a third of people in this range have some type of mood or anxiety condition. Further assessment may help clarify these results.</p>
+                                          <p style={{ fontFamily: 'Circular Std', color: '#072B4F', marginTop: '5px' }}>People scoring in this range of the bipolar scale tend to have a 1 in 9 chance of having bipolar disorder. Nonetheless, more than a third of people in this range have some type of mood or anxiety condition. Further assessment may help clarify these results.</p>
                                         </>
                                       )}
 
                                       {bipolarRiskLevel == 'medium' && (
                                         <>
                                           {/*<img src="/medium-risk.svg" alt="Medium" />*/}
-                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range of the bipolar scale tend to have a 1 in 3 chance of having bipolar disorder, or possible another mood or anxiety condition. Further assessment may help clarify these results.</p>
+                                          <p style={{ fontFamily: 'Circular Std', color: '#072B4F', marginTop: '5px' }}>People scoring in this range of the bipolar scale tend to have a 1 in 3 chance of having bipolar disorder, or possible another mood or anxiety condition. Further assessment may help clarify these results.</p>
                                         </>
                                       )}
 
                                       {bipolarRiskLevel == 'high' && (
                                         <>
                                           {/*<img src="/high-risk.svg" alt="High" />*/}
-                                          <p style={{ color: '#072B4F', marginTop: '5px' }}>People scoring in this range of the bipolar scale tend to have a 50% likelihood of having bipolar disorder. Though the score is high, there is a high false positive rate, so further assessment may help clarify these results.</p>
+                                          <p style={{ fontFamily: 'Circular Std', color: '#072B4F', marginTop: '5px' }}>People scoring in this range of the bipolar scale tend to have a 50% likelihood of having bipolar disorder. Though the score is high, there is a high false positive rate, so further assessment may help clarify these results.</p>
                                         </>
                                       )}
                                     </div>
