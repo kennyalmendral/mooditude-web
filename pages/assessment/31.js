@@ -26,7 +26,7 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 
-import Animation from '@mui/material/Grow';
+import Animation from '@mui/material/Fade';
 import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
@@ -37,6 +37,7 @@ const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
 const firebaseFunctions = Firebase.functions()
 import GridLoader from "react-spinners/GridLoader"
+import RingLoader from "react-spinners/RingLoader"
 
 export default function Assessment31(props) {
   const router = useRouter()
@@ -432,7 +433,10 @@ export default function Assessment31(props) {
                 zIndex: 10
               }}
             >
-              <GridLoader color={'#1CA566'} loading={true} size={10} />
+              {/*<GridLoader color={'#1CA566'} loading={true} size={10} />*/}
+              <RingLoader color={'#f8e71c'} loading={true} size={250} />
+              
+              <p>Analyzing your responses...</p>
             </div>
           : 
           <div className={`${styles.onboarding_wrapper} ${styles.on_assessment_wrapper}`}>

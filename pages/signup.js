@@ -203,6 +203,28 @@ export default function SignUp(props) {
   return (
     <Layout title={`Join ${SITE_NAME} | ${SITE_NAME}`}>
       <div className={`${styles.container} auth_page_wrapper`}>
+        <div className={styles.mobile_visible}>
+          <div className={styles.mobile_logo}>
+              <img src={`/logo-small.svg`}  />
+          </div>
+
+          <div className={styles.mobile_steps}>
+              <div className={`${styles.step_item} ${styles.step_active_item}`}>
+                <div className={styles.step_number}>1</div>
+                <p>Account</p>
+              </div>
+
+              <div className={styles.step_item}>
+                <div className={styles.step_number}>2</div>
+                <p>Buy</p>
+              </div>
+
+              <div className={styles.step_item}>
+                <div className={styles.step_number}>3</div>
+                <p>Assessment</p>
+              </div>
+          </div>
+        </div>
         <div className={styles.authBg}>
           {((router.query.type != 'subscription') && (router.query.type != 'payment')) && (
             <div className={styles.free}>
@@ -225,7 +247,7 @@ export default function SignUp(props) {
                         <strong>$14.99</strong>/<span>month</span>
                       </div>
 
-                      {/* <div>after 3-day free trial</div> */}
+                      
                     </>
                   )}
 
@@ -234,6 +256,7 @@ export default function SignUp(props) {
                       <div>
                         <strong>$14.99</strong>/<span>3 months</span>
                       </div>
+                      
                     </>
                   )}
 
@@ -242,6 +265,7 @@ export default function SignUp(props) {
                       <div>
                         <strong>$89.99</strong>/<span>year</span>
                       </div>
+                      <div className={styles.trial_text}>after 3-day free trial</div>
                     </>
                   )}
                 </div>
@@ -298,6 +322,7 @@ export default function SignUp(props) {
               width="113" 
               height="113" 
               alt="Mooditude"
+              className={styles.mobile_hidden}
             />
 
             <div className={styles.headingContainer}>

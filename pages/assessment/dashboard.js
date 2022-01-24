@@ -294,10 +294,15 @@ export default function AssessmentWelcomePage() {
           </div>
         : 
         <div className={`${styles.onboarding_wrapper} ${styles.with_gray}`}>
+          <div className={`${styles.line_header_as} `}>
+            <div className={`${styles.line_header_wrap} `}>
+              <h2 className={styles.wellBeingText}>Your Mental Wellbeing Score</h2>
+            </div>
+          </div>
           <div className={`${styles.assessment_wrap} ${styles.dashboard_page}`}>
-            <div className={styles.dashboard_left}>
-             <h1>Your Mental<br/> Wellbeing Score</h1>
 
+            <div className={styles.dashboard_left}>
+             
              {
               hasNoAssessment == true ? 
                 <div className={styles.dashboard_expired}>

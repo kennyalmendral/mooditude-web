@@ -1230,6 +1230,42 @@ h2.assessmentDashRiskText{
 
 }
 
+
+.line_header_wrap{
+	border-bottom: 4px solid #F3F4F6;
+	margin-bottom: 0;
+	position: relative;
+}
+
+.line_header_wrap:before{
+	content: '';
+	position: absolute;
+	bottom: -4px;
+	left: 0;
+	background: #F8E71C;	
+	height: 4px;
+	z-index: 2;
+}
+
+.line_header_wrap h2{
+	font-family: Circular Std;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 24px;
+	line-height: 30px;
+
+	/* Primary */
+
+	color: #072B4F;
+
+}
+
+.line_header_as{
+	padding-left: 63px;
+	padding-right: 63px;
+	padding-top: 50px;
+}
+
 @media (max-width: 1200px) {
 	.result_pricing_section .result_pricing_section_item {
 		width: 98%;
@@ -1283,6 +1319,12 @@ h2.assessmentDashRiskText{
 	.results_header_wrap{
 		padding: 20px 30px;
 		width: 100%;
+	}
+
+	.line_header_as{
+		padding-left: 30px;
+		padding-right: 30px;
+		padding-top: 20px;
 	}
 
 	.report_risks_wrap h2,
@@ -1361,6 +1403,12 @@ h2.assessmentDashRiskText{
 	.results_header_wrap{
 		padding: 20px 30px;
 		width: 100%;
+	}
+
+	.line_header_as{
+		padding-left: 30px;
+		padding-right: 30px;
+		padding-top: 20px;
 	}
 
 	.report_risks_wrap h2,

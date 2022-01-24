@@ -213,7 +213,7 @@
 	margin-top: 8px;
 	display: none;
 	color: #516B84;
-	animation: fadeInDown .3s ease-in;
+	animation: fadeIn .3s ease-in;
 
 }
 
@@ -633,21 +633,48 @@
 	cursor: pointer;
 }
 
+.animate__fadeIn {
+  -webkit-animation-name: fadeIn;
+  animation-name: fadeIn;
+}
+
 .fadeInDown300{
-	animation: fadeInDown .3s ease-in;
+	animation: fadeIn .3s ease-in;
 }
 
 .fadeInDown400{
-	animation: fadeInDown .4s ease-in;
+	animation: fadeIn .4s ease-in;
 }
 
 .fadeInDown500{
-	animation: fadeInDown .5s ease-in;
+	animation: fadeIn .5s ease-in;
 }
 
 .fadeInDown600{
-	animation: fadeInDown .6s ease-in;
+	animation: fadeIn .6s ease-in;
 }
+
+
+/* Fading entrances  */
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 
 @-webkit-keyframes fadeInDown {
   from {

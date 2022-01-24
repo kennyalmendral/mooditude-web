@@ -289,6 +289,22 @@ export default function AssessmentReport(props) {
     }
   }, [noneAnswerCount])
 
+  useEffect(() => {
+    
+    if (isDownloading) {
+      const unloadCallback = (event) => {
+        event.preventDefault();
+        event.returnValue = "";
+        return "";
+      };
+
+      window.addEventListener("beforeunload", unloadCallback);
+      return () => window.removeEventListener("beforeunload", unloadCallback);
+    }
+  }, [isDownloading])
+
+    
+
   const getQuestion = (index) => {
     switch (index) {
       case 0:
@@ -462,7 +478,9 @@ export default function AssessmentReport(props) {
               zIndex: 10
             }}
           >
-            <GridLoader color={'#1CA566'} loading={true} size={10} />
+            <RingLoader color={'#f8e71c'} loading={true} size={250} />
+            
+            <p>Analyzing your responses...</p>
           </div>
         : 
           <div className={`${styles.onboarding_wrapper}`} style={{ position: 'relative' }}>
