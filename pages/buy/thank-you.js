@@ -75,11 +75,11 @@ export default function OnboardingWelcomePage() {
                     .doc(authUser.uid)
                     .set({
                       grant: {
-                        expiryDate: format(subscription.current_period_end * 1000, 'LLLL dd, yyyy'),
+                        expiryDate: subscription.current_period_end * 1000,
                         grantType: 'Purchase',
                         licenseType: 'Premium',
                         productType: 'Subscription',
-                        transactionDate: format(subscription.created * 1000, 'LLLL dd, yyyy'),
+                        transactionDate: subscription.created * 1000,
                         transactionId: subscription.id
                       }
                     })

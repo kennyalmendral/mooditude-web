@@ -319,7 +319,7 @@ export default function Profile(props) {
 
                   <div className={styles.profileDetails}>
                     <h2>{profile.name}</h2>
-                    <p>{authUser.email}</p>
+                    <p>{authUser && authUser.email}</p>
 
                     {Object.keys(grant).length > 0 && (
                       <>
