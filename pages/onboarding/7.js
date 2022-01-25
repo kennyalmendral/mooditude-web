@@ -90,7 +90,7 @@ export default function Onboarding7() {
             goingToTherapy: localStorage.getItem(`${authUser.uid}_profileStep5Answer`) === 'true' || false,
             knowCbt: localStorage.getItem(`${authUser.uid}_profileStep6Answer`) === 'true' || false,
             committedToSelfhelp: (parseInt(localStorage.getItem(`${authUser.uid}_profileStep7Answer`)) > 1) ? true : false,
-            committedToSelfHelpScaleValue: parseInt(localStorage.getItem(`${authUser.uid}_profileStep7Answer`)) || null,
+            committedToSelfHelpScale: parseInt(localStorage.getItem(`${authUser.uid}_profileStep7Answer`)) || null,
             onboardingStep: 'profileCreated'
           })
           .then(() => {

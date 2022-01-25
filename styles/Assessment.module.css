@@ -599,6 +599,7 @@
 .dashboard_page{
 	display: flex;
 	flex-wrap: wrap;
+	align-items: flex-end;
 }
 
 .dashboard_page > div{

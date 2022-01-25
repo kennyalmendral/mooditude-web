@@ -895,58 +895,58 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .text('A Happier You!');
     // End Header 3
 
-    doc
-      .image('images/recommended-actions.png', doc.x, doc.y + 23, {
-        // width: 28,
-        height: 28,
-        valign: 'bottom'
-      });
+    // doc
+    //   .image('images/recommended-actions.png', doc.x, doc.y + 23, {
+    //     // width: 28,
+    //     height: 28,
+    //     valign: 'bottom'
+    //   });
 
-    doc
-      .moveDown(5)
-      .fontSize(14)
-      .font('fonts/CircularStd-Bold.ttf')
-      .text('RecommendedActions', doc.x + 40, doc.y - 25, { width: 100 });
+    // doc
+    //   .moveDown(5)
+    //   .fontSize(14)
+    //   .font('fonts/CircularStd-Bold.ttf')
+    //   .text('RecommendedActions', doc.x + 40, doc.y - 25, { width: 100 });
 
-    doc
-      .moveDown(1)
-      .fontSize(9)
-      .font('fonts/CircularStd-Medium.ttf');
+    // doc
+    //   .moveDown(1)
+    //   .fontSize(9)
+    //   .font('fonts/CircularStd-Medium.ttf');
 
-    if (data.allRiskLevel == 'unlikely') {
-      doc
-        .text(`Your responses suggest that you are not suffering from a significant mood or anxiety disorder at the present time. However, before closing the book on this matter there are a few points you should consider.`, doc.x - 40)
-        .moveDown()
-        .text(`A small percentage of individuals with mood or anxiety disorders fail to be picked up by the assessment. Therefore, if you find yourself experiencing troubling mood or anxiety-related symptoms then you should certainly present your concerns to your primary care practitioner or perhaps to a mental health clinician.`)
-        .moveDown()
-        .text(`A tendency to underestimate the effects of your symptoms on friendships, home, or work-life may have resulted in an “all is well” report when perhaps this is not strictly true. Call it “denial,” not wishing to complain, or simply trying to “tough it out,” underreporting trouble could backfire and cause you more distress in the future. Avoid the pitfall of assuming that the way you feel “is to be expected considering my circumstances.” While bad feelings are naturally the result of difficult and stressful life situations, mood and anxiety disorders are real medical conditions that may be triggered by such stresses. When they do arise, these conditions make it more difficult to cope with the problems confronting you, and so it is always in your best interest to get them evaluated.`)
-        .moveDown()
-        .text(`Milder or subclinical varieties of mood and anxiety occasionally develop into more serious conditions. In such instances, symptoms may be less severe but nonetheless distracting or annoying, slowing you down or making things more stressful than they should be. If you feel this may apply to you, you should consider raising the issue with your physician and sharing your responses to these questions.`)
-        .moveDown()
-        .text(`Mood and anxiety disorders typically come in episodes. Therefore, even if you are feeling fine now, it is in your best interest to revisit this checklist every 6 months or so. Naturally, if at any point you find yourself experiencing some of the symptoms described in the assessment, please return and repeat the checklist at your first opportunity.`)
-        .moveDown()
-        .text(`Mooditude has over 800 minutes of self-care activities. Make a habit of practicing one of them for just 10 minutes per day. This will help you maintain your mental well-being.`);
-    } else if (data.allRiskLevel == 'low') {
-      doc
-        .text(`Your low overall score means that your symptoms are somewhat milder than average. However, mild symptoms still may have a negative effect on your well-being and, when left untreated, can grow worse with time. You may possibly benefit from contacting your physician or a mental health care provider to begin a discussion of your responses to these questions. It is important for you to share these results with your physician.`, doc.x - 40)
-        .moveDown()
-        .text(`Mood and anxiety disorders can affect not only your general sense of well-being but your physical health as well, increasing the risk or severity of heart disease, stroke, diabetes, chronic pain, and other chronic health conditions.`);
-    } else if (data.allRiskLevel == 'medium') {
-      doc
-        .text(`Your overall score suggests that you would benefit from contacting your physician or a mental health care provider to begin a discussion of your responses to these questions.  It is important for you to share these results with your physician.`, doc.x - 40)
-        .moveDown()
-        .text(`Mood and anxiety disorders can affect not only your general sense of well-being but your physical health as well, increasing the risk or severity of heart disease, stroke, diabetes, chronic pain, and other chronic health conditions.`);
-    } else if (data.allRiskLevel == 'high') {
-      doc
-        .text(`Your overall score suggests that you would benefit from contacting your physician or a mental health care provider as soon as possible to begin a discussion of your responses to these questions.  It is important for you to share these results with your physician.`, doc.x - 40)
-        .moveDown()
-        .text(`Mood and anxiety disorders can affect not only your general sense of well-being but your physical health as well, increasing the risk or severity of heart disease, stroke, diabetes, chronic pain, and other chronic health conditions.`);
-    }
+    // if (data.allRiskLevel == 'unlikely') {
+    //   doc
+    //     .text(`Your responses suggest that you are not suffering from a significant mood or anxiety disorder at the present time. However, before closing the book on this matter there are a few points you should consider.`, doc.x - 40)
+    //     .moveDown()
+    //     .text(`A small percentage of individuals with mood or anxiety disorders fail to be picked up by the assessment. Therefore, if you find yourself experiencing troubling mood or anxiety-related symptoms then you should certainly present your concerns to your primary care practitioner or perhaps to a mental health clinician.`)
+    //     .moveDown()
+    //     .text(`A tendency to underestimate the effects of your symptoms on friendships, home, or work-life may have resulted in an “all is well” report when perhaps this is not strictly true. Call it “denial,” not wishing to complain, or simply trying to “tough it out,” underreporting trouble could backfire and cause you more distress in the future. Avoid the pitfall of assuming that the way you feel “is to be expected considering my circumstances.” While bad feelings are naturally the result of difficult and stressful life situations, mood and anxiety disorders are real medical conditions that may be triggered by such stresses. When they do arise, these conditions make it more difficult to cope with the problems confronting you, and so it is always in your best interest to get them evaluated.`)
+    //     .moveDown()
+    //     .text(`Milder or subclinical varieties of mood and anxiety occasionally develop into more serious conditions. In such instances, symptoms may be less severe but nonetheless distracting or annoying, slowing you down or making things more stressful than they should be. If you feel this may apply to you, you should consider raising the issue with your physician and sharing your responses to these questions.`)
+    //     .moveDown()
+    //     .text(`Mood and anxiety disorders typically come in episodes. Therefore, even if you are feeling fine now, it is in your best interest to revisit this checklist every 6 months or so. Naturally, if at any point you find yourself experiencing some of the symptoms described in the assessment, please return and repeat the checklist at your first opportunity.`)
+    //     .moveDown()
+    //     .text(`Mooditude has over 800 minutes of self-care activities. Make a habit of practicing one of them for just 10 minutes per day. This will help you maintain your mental well-being.`);
+    // } else if (data.allRiskLevel == 'low') {
+    //   doc
+    //     .text(`Your low overall score means that your symptoms are somewhat milder than average. However, mild symptoms still may have a negative effect on your well-being and, when left untreated, can grow worse with time. You may possibly benefit from contacting your physician or a mental health care provider to begin a discussion of your responses to these questions. It is important for you to share these results with your physician.`, doc.x - 40)
+    //     .moveDown()
+    //     .text(`Mood and anxiety disorders can affect not only your general sense of well-being but your physical health as well, increasing the risk or severity of heart disease, stroke, diabetes, chronic pain, and other chronic health conditions.`);
+    // } else if (data.allRiskLevel == 'medium') {
+    //   doc
+    //     .text(`Your overall score suggests that you would benefit from contacting your physician or a mental health care provider to begin a discussion of your responses to these questions.  It is important for you to share these results with your physician.`, doc.x - 40)
+    //     .moveDown()
+    //     .text(`Mood and anxiety disorders can affect not only your general sense of well-being but your physical health as well, increasing the risk or severity of heart disease, stroke, diabetes, chronic pain, and other chronic health conditions.`);
+    // } else if (data.allRiskLevel == 'high') {
+    //   doc
+    //     .text(`Your overall score suggests that you would benefit from contacting your physician or a mental health care provider as soon as possible to begin a discussion of your responses to these questions.  It is important for you to share these results with your physician.`, doc.x - 40)
+    //     .moveDown()
+    //     .text(`Mood and anxiety disorders can affect not only your general sense of well-being but your physical health as well, increasing the risk or severity of heart disease, stroke, diabetes, chronic pain, and other chronic health conditions.`);
+    // }
 
     if (data.hasSuicidalThoughts) {
       doc
         .moveDown(1.5)
-        .rect(doc.x + 60, doc.y, 240, 103)
+        .rect(doc.x + 60, doc.y, 240, 80)
         .fill('#FFFFAA');
 
       doc
@@ -975,7 +975,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       doc
         .font('fonts/CircularStd-Medium.ttf')
         .fontSize(11)
-        .text(`Drug and Alcohol Abuse`, defaultMarginLeft)
+        .text(`Substance Abuse`, defaultMarginLeft)
         .moveDown()
         .fontSize(9)
         .text(`Your responses indicated that you have occasionally used alcohol and non-prescribed drugs to manage some of the symptoms.`, defaultMarginLeft)
@@ -1014,35 +1014,35 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     }
     // End Page 3
 
-    doc.addPage()
+    // doc.addPage()
 
     // Start Page 4
-    // Start Header 4
-    doc
-      .rect(0, 0, 3508, 6)
-      .fillAndStroke('#F8E71C')
-      .stroke();
+    // Start Header 4 
+    // doc
+    //   .rect(0, 0, 3508, 6)
+    //   .fillAndStroke('#F8E71C')
+    //   .stroke();
 
-    doc
-      .image('images/mooditude-logo.png', doc.x, 26, {
-        width: 32,
-        height: 32,
-        valign: 'bottom'
-      });
+    // doc
+    //   .image('images/mooditude-logo.png', doc.x, 26, {
+    //     width: 32,
+    //     height: 32,
+    //     valign: 'bottom'
+    //   });
 
-    doc.fillColor('#072B4F');
+    // doc.fillColor('#072B4F');
 
-    doc
-      .font('fonts/CircularStd-Black.ttf')
-      .moveDown(0.1)
-      .fontSize(10)
-      .text('MOODITUDE');
+    // doc
+    //   .font('fonts/CircularStd-Black.ttf')
+    //   .moveDown(0.1)
+    //   .fontSize(10)
+    //   .text('MOODITUDE');
     
-    doc
-      .font('fonts/CircularStd-Medium.ttf')
-      .moveDown(0)
-      .fontSize(7)
-      .text('A Happier You!');
+    // doc
+    //   .font('fonts/CircularStd-Medium.ttf')
+    //   .moveDown(0)
+    //   .fontSize(7)
+    //   .text('A Happier You!');
     // End Header 4
 
     doc

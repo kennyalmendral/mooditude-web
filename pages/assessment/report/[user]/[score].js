@@ -1202,7 +1202,7 @@ export default function AssessmentReport(props) {
                                 <div className={styles.results_thoughts_wrap}>
                                   {(usedDrug && usedAlcohol) && (
                                     <div className={styles.results_thoughts_item}>
-                                      <h4>Drug and Alcohol Abuse</h4>
+                                      <h4>Substance Abuse</h4>
 
                                       <p>Your responses indicated that you have occasionally used alcohol and non-prescribed drugs to manage some of the symptoms.</p>
 
@@ -1240,26 +1240,9 @@ export default function AssessmentReport(props) {
                                     <>
                                       <div className={styles.results_thoughts_item}>
                                         <h4>Suicidality</h4>
-                                        <p ><strong style={{ color: '#EB5757' }}>Your response to a question related to suicidal thoughts raises a red flag.</strong></p>
 
-                                        <p >Are you in crisis?</p>
-
-                                        <p >Please reach out for help:</p>
-
-                                        <ul style={{
-                                          textAlign: 'left',
-                                          marginBottom: '0',
-                                          marginTop: '0',
-                                          paddingLeft: '20px'
-                                        }}>
-                                          <li>call your doctor </li>
-                                          <li>National Suicide Prevention Lifeline: <strong>1-800-273-8255</strong></li>
-                                          <li>text <em>HOME</em> to the Crisis Line at <strong>741741</strong></li>
-                                          <li>call or go to an emergency room.</li>
-                                        </ul>
+                                        <p style={{ fontFamily: 'Circular Std', margin: '20px 0' }}>It is very important, first of all, to point out that having such a thought does not automatically place you at risk for actual suicide. On the other hand, individuals who report suicidal thinking on closer examination are usually found to have a mood or anxiety disorder. This is true even for those who feel that due to life circumstances they have legitimate reasons for having such thoughts. Given this fact, it is crucial that you present your results to your physician and to begin a discussion of this very issue.</p>
                                       </div>
-
-                                      <p style={{ fontFamily: 'Circular Std', margin: '20px 0' }}>It is very important, first of all, to point out that having such a thought does not automatically place you at risk for actual suicide. On the other hand, individuals who report suicidal thinking on closer examination are often found to have a mood or anxiety disorder. This is true even for those who feel that, due to life circumstances, they have legitimate reasons for having such thoughts. Given this fact, it is crucial that you present your responses to these questions to your physician and begin a discussion of this issue.</p>
                                     </>
                                   )}
                                 </div>
@@ -1532,7 +1515,6 @@ export default function AssessmentReport(props) {
                           </>
                         )}
                         
-
                         {assessmentScores.pdfDoc != null && (
                           <a href={assessmentScores.pdfDoc} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>
                         )}

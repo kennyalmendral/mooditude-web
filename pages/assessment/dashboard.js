@@ -422,7 +422,7 @@ export default function AssessmentWelcomePage() {
                           }],
                           yAxes: [{
                             ticks: {
-                              stepSize: 10,
+                              stepSize: 20,
                               min: 0,
                               max: currentChartData.datasets[4].data[0],
                               callback: function(value) {
