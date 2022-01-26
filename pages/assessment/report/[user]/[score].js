@@ -1494,7 +1494,7 @@ export default function AssessmentReport(props) {
 
                     {isDownloadVisible && (
                       <div className={styles.report_content_item} key={'report_content_paid_wrap'}>
-                        {/* {assessmentScores.pdfDoc == null && ( */}
+                        {assessmentScores.pdfDoc == null && (
                           <>
                             <p className={styles.download_text}>Click here to download full report as a PDF.</p>
 
@@ -1513,11 +1513,11 @@ export default function AssessmentReport(props) {
                               <a href={reportLink} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>
                             )}
                           </>
-                        {/* )} */}
+                        )}
                         
-                        {/* {assessmentScores.pdfDoc != null && (
+                        {assessmentScores.pdfDoc != null && (
                           <a href={assessmentScores.pdfDoc} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>
-                        )} */}
+                        )}
                       </div>
                     )}
 
