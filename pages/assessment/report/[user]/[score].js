@@ -121,6 +121,14 @@ export default function AssessmentReport(props) {
   }, [weekDifference])
 
   useEffect(() => {
+    if ((licenseType == 'premium') && (router.query.payment_success)) {
+      setTimeout(() => {
+        setChecking(false)
+      }, 7000)
+    }
+  }, [licenseType, router])
+
+  useEffect(() => {
     setMostOfTheTimeAnswerQuestions([])
     setOftenAnswerQuestions([])
     setSometimesAnswerQuestions([])
@@ -218,7 +226,11 @@ export default function AssessmentReport(props) {
                 assessmentDate: docData.createDate.seconds * 1000
               })
 
-            setChecking(false)
+            // setChecking(false)
+            
+            if (router.query.payment_success == null) {
+              setChecking(false)
+            }
           })
         })
     }
