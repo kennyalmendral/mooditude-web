@@ -684,7 +684,7 @@ export default function AssessmentReport(props) {
             <div className={styles.results_bottom_wrap}>
               {paymentFailed && (
                 <div className={styles.error_alert} style={{ marginBottom: '40px' }}>
-                  <span onClick={() => location.href =`/assessment/report/${router.query.user}/${router.query.score}`}><img src="/close.svg" /></span>
+                  <span onClick={() => setPaymentFailed(false)}><img src="/close.svg" /></span>
 
                   <h2>Payment didn't go through</h2>
                   <p>Either you cancelled your payment or your card didn't work.</p>
@@ -693,7 +693,7 @@ export default function AssessmentReport(props) {
 
               {paymentSuccess && (
                 <div className={styles.success_alert} style={{ marginBottom: '40px' }}>
-                  <span onClick={() => location.href =`/assessment/report/${router.query.user}/${router.query.score}`}><img src="/close.svg" /></span>
+                  <span onClick={() => setPaymentSuccess(false)}><img src="/close.svg" /></span>
 
                   <h2>Thank you for your patronage!</h2>
                   <p>You took the right step in managing your mental health.</p>
