@@ -341,6 +341,14 @@ exports.processStripeSubscriptionOnSignUp = functions.https.onCall(async (data, 
     price = config.stripe.plan.oneTime; // one-time
   }
 
+  let successUrl;
+
+  if ((data.userId != null) && (data.scoreId != null)) {
+    successUrl = `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&type=${data.type}&duration=${data.duration}&payment_success=true&user=${data.userId}&score=${data.scoreId}`;
+  } else {
+    successUrl = `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&type=${data.type}&duration=${data.duration}&payment_success=true`;
+  }
+
   let stripeData = {
     line_items: [
       {
@@ -350,7 +358,7 @@ exports.processStripeSubscriptionOnSignUp = functions.https.onCall(async (data, 
     ],
     mode: data.mode == 'subscription' ? 'subscription' : 'payment',
     customer_email: data.customerEmail,
-    success_url: `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&type=${data.type}&duration=${data.duration}`,
+    success_url: successUrl,
     cancel_url: `${data.cancelUrl}?checkout_cancelled=true&price=${price}`,
   };
 

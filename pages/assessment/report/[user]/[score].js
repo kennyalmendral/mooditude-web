@@ -529,8 +529,12 @@ export default function AssessmentReport(props) {
       duration: duration,
       mode: plan == 'subscription' ? 'subscription' : 'payment',
       customerEmail: authUser && authUser.email,
-      redirectUrl: window.location.origin + `/assessment/report/${router.query.user}/${router.query.score}`,
-      cancelUrl: window.location.origin + `/assessment/report/${router.query.user}/${router.query.score}`
+      userId: router.query.user,
+      scoreId: router.query.score,
+      // redirectUrl: window.location.origin + `/assessment/report/${router.query.user}/${router.query.score}`,
+      // cancelUrl: window.location.origin + `/assessment/report/${router.query.user}/${router.query.score}`
+      redirectUrl: window.location.origin,
+      cancelUrl: window.location.origin
     }).then(result => {
       location.href = result.data.session.url
     })
