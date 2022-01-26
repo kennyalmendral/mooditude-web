@@ -221,7 +221,7 @@ export default function Assessment31(props) {
                       onboardingStep: 'tookAssessment'
                     })
 
-                  router.push(`/assessment/report/${authUser.uid}/${epochMilliseconds}`)
+                  router.push(`/assessment/report?user=${authUser.uid}&score=${epochMilliseconds}`)
                 })
               })
           } else {
@@ -242,7 +242,7 @@ export default function Assessment31(props) {
                   onboardingStep: 'tookAssessment'
                 })
 
-              router.push(`/assessment/report/${authUser.uid}/${epochMilliseconds}`)
+              router.push(`/assessment/report?user=${authUser.uid}&score=${epochMilliseconds}`)
             })
           }
         })
