@@ -155,8 +155,8 @@ export default function SignUp(props) {
                       stats: null,
                       nps: 0,
                       onboardingStep: 'accountCreated',
-                      lastAssessmentScore: null,
-                      lastAssessmentDate: null
+                      assessmentScore: null,
+                      assessmentDate: null
                     })
                     .then(() => {
                       localStorage.setItem(`${user.uid}_currentProfileStep`, 0)

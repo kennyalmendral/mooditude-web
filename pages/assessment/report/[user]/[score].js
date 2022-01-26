@@ -214,8 +214,8 @@ export default function AssessmentReport(props) {
               .child('users')
               .child(authUser.uid)
               .update({
-                lastAssessmentScore: result.data.allScore,
-                lastAssessmentDate: docData.createDate.seconds
+                assessmentScore: result.data.allScore,
+                assessmentDate: docData.createDate.seconds * 1000
               })
 
             setChecking(false)
@@ -1327,7 +1327,7 @@ export default function AssessmentReport(props) {
                         </div>
 
                         <div className={styles.scores_section} style={{ width: '400px' }}>
-                          <h2 style={{ fontWeight: '500' }}>Functional Impairments</h2>
+                          <h2 style={{ fontWeight: '700' }}>Functional Impairments</h2>
 
                           <div className={styles.functional_impairments}>
                             <div>
@@ -1494,7 +1494,7 @@ export default function AssessmentReport(props) {
 
                     {isDownloadVisible && (
                       <div className={styles.report_content_item} key={'report_content_paid_wrap'}>
-                        {assessmentScores.pdfDoc == null && (
+                        {/* {assessmentScores.pdfDoc == null && ( */}
                           <>
                             <p className={styles.download_text}>Click here to download full report as a PDF.</p>
 
@@ -1513,11 +1513,11 @@ export default function AssessmentReport(props) {
                               <a href={reportLink} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>
                             )}
                           </>
-                        )}
+                        {/* )} */}
                         
-                        {assessmentScores.pdfDoc != null && (
+                        {/* {assessmentScores.pdfDoc != null && (
                           <a href={assessmentScores.pdfDoc} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>
-                        )}
+                        )} */}
                       </div>
                     )}
 

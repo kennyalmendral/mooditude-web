@@ -393,7 +393,7 @@ export default function AssessmentWelcomePage() {
             </div>
             <div className={styles.dashboard_right}>
               {hasNoAssessment == true && (
-                 <div style={{ marginBottom: '40px' }}>
+                 <div>
                   <img src="/graph.svg" />
                 </div>
               )}

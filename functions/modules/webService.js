@@ -435,6 +435,8 @@ exports.getStripeProduct = functions.https.onCall(async (data, context) => {
 });
 
 exports.generatePDFReport = functions.https.onCall(async (data, context) => {
+  functions.logger.log(data.assessmentScores);
+  
   const doc = new PDFDocument({
     size: 'A5',
     margins: {
@@ -644,18 +646,24 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       allScoreMarginLeft = col1LeftPos - 44;
     }
 
-    if (data.assessmentScores.allScore > 9) {
+    if ((data.assessmentScores.allScore > 9) && (data.assessmentScores.allScore < 20)) {
       doc
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
-        .text(data.assessmentScores.allScore, (40 / 2) + parseInt(doc.widthOfString(data.assessmentScores.allScore.toString())), colTop + 88);
+        .text(data.assessmentScores.allScore, col1LeftPos - 52, colTop + 88);
     } else if (data.assessmentScores.allScore == 0) {
       doc
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
         .text(data.assessmentScores.allScore, col1LeftPos - 48, colTop + 88);
+    } else {
+      doc
+        .fillColor('#fff')
+        .fontSize(24)
+        .font('fonts/CircularStd-Medium.ttf')
+        .text(data.assessmentScores.allScore, (40 / 2) + parseInt(doc.widthOfString(data.assessmentScores.allScore.toString())), colTop + 88);
     }
 
     let allRiskLevelShortDescription;
@@ -1114,24 +1122,24 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       allScoreMarginLeft = col1LeftPos - 44;
     }
 
-    doc
-      .fillColor('#fff')
-      .fontSize(24)
-      .font('fonts/CircularStd-Medium.ttf')
-      .text(data.assessmentScores.allScore, (40 / 2) + parseInt(doc.widthOfString(data.assessmentScores.allScore.toString())), colTop + 4);
-
-    if (data.assessmentScores.allScore > 9) {
+    if ((data.assessmentScores.allScore > 9) && (data.assessmentScores.allScore < 20)) {
       doc
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
-        .text(data.assessmentScores.allScore, (40 / 2) + parseInt(doc.widthOfString(data.assessmentScores.allScore.toString())), colTop + 4);
+        .text(data.assessmentScores.allScore, col1LeftPos - 52, colTop + 4);
     } else if (data.assessmentScores.allScore == 0) {
       doc
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
         .text(data.assessmentScores.allScore, col1LeftPos - 48, colTop + 4);
+    } else {
+      doc
+        .fillColor('#fff')
+        .fontSize(24)
+        .font('fonts/CircularStd-Medium.ttf')
+        .text(data.assessmentScores.allScore, (40 / 2) + parseInt(doc.widthOfString(data.assessmentScores.allScore.toString())), colTop + 4);
     }
 
     if (data.allRiskLevel == 'unlikely') {
