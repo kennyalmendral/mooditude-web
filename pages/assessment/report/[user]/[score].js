@@ -287,6 +287,11 @@ export default function AssessmentReport(props) {
     } else {
       setPaymentFailed(false)
     }
+
+    if (router.query.payment_success) {
+      setPaymentSuccess(true)
+      setLicenseType('premium')
+    }
   }, [router])
 
   useEffect(() => {

@@ -60,6 +60,12 @@ export default function OnboardingWelcomePage() {
   useEffect(() => {
     console.log(router.query)
 
+    if (router.query.score && router.query.user) {
+      setChecking(true)
+
+      router.push(`/assessment/report/${router.query.user}/${router.query.score}?session_id=${router.query.session_id}&type=${router.query.type}&duration=${router.query.duration}&payment_success=true`)
+    }
+
     if (router.query.checkout_cancelled) {
       setPaymentFailed(true)
 
@@ -123,7 +129,9 @@ export default function OnboardingWelcomePage() {
         
                   setLatestAssessment(assessments[0])
 
-                  setChecking(false)
+                  if (!router.query.score && !router.query.user) {
+                    setChecking(false)
+                  }
                 }
               })
           }
