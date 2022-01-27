@@ -64,9 +64,14 @@ export default function Home() {
           <div>
             <img src="/get-started.png" alt="" className={styles.onboarding_inner_logo}/>
           </div>
-          <h1>Let’s find out your <br/>well-being score</h1>  
           
-          <p>The next step in our journey is to assess the pulse of your mental wellbeing. It will show your risk of mental health conditions. We use this score in guiding your towards appropriate actions and show progress over time.</p>
+          <h1>Assess Your Mental<br/>Health</h1>  
+          
+          <p>The next step in our journey is to assess the pulse of your mental health. It will show your risks of various conditions.</p>
+
+          <p>You will get a full report showing risks and recommendations to overcome them.</p>
+
+          <p>We will use the same report to create a personalized plan for you and show your progress over time.</p>
 
           <div className={styles.btn_wrap}>
             <Stack direction="row" spacing={2}>
@@ -74,7 +79,7 @@ export default function Home() {
                 size="large" 
                 variant="contained"
                 onClick={handleFind}
-              >FIND YOUR WELLBEING SCORE</Button>
+              >GET YOUR SCORE</Button>
             </Stack>
           </div>
         </div>

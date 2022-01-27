@@ -659,7 +659,13 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
-        .text(data.assessmentScores.allScore, col1LeftPos - 52, colTop + 88);
+        .text(data.assessmentScores.allScore, col1LeftPos - 50, colTop + 88);
+    } else if (data.assessmentScores.allScore > 99) {
+      doc
+        .fillColor('#fff')
+        .fontSize(24)
+        .font('fonts/CircularStd-Medium.ttf')
+        .text(data.assessmentScores.allScore, col1LeftPos - 60, colTop + 88);
     } else if (data.assessmentScores.allScore == 0) {
       doc
         .fillColor('#fff')
@@ -1135,7 +1141,13 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
-        .text(data.assessmentScores.allScore, col1LeftPos - 52, colTop + 4);
+        .text(data.assessmentScores.allScore, col1LeftPos - 50, colTop + 4);
+    } else if (data.assessmentScores.allScore > 99) {
+      doc
+        .fillColor('#fff')
+        .fontSize(24)
+        .font('fonts/CircularStd-Medium.ttf')
+        .text(data.assessmentScores.allScore, col1LeftPos - 60, colTop + 4);
     } else if (data.assessmentScores.allScore == 0) {
       doc
         .fillColor('#fff')

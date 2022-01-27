@@ -14,6 +14,10 @@
         ".read": "true"
       }
     },
+    "userCollection": {
+      ".read": true,
+      ".write": true
+    },
     "postCategories": {
       ".read": true
     },

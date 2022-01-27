@@ -384,7 +384,7 @@ export default function Assessment31(props) {
                       .child('users')
                       .child(authUser.uid)
                       .update({
-                        onboardingStep: 'tookAssessment'
+                        onboardingStep: 'onboardingCompleted'
                       })
 
                     router.push(`/assessment/report/${authUser.uid}/${epochMilliseconds}`)
@@ -405,7 +405,7 @@ export default function Assessment31(props) {
                   .child('users')
                   .child(authUser.uid)
                   .update({
-                    onboardingStep: 'tookAssessment'
+                    onboardingStep: 'onboardingCompleted'
                   })
 
                 router.push(`/assessment/report/${authUser.uid}/${epochMilliseconds}`)

@@ -57,7 +57,7 @@ export default function AssessmentWelcomePage() {
                   // onClick={() => router.push(`/assessment/1`)}
                   onClick={handleStart}
                 >
-                  <strong>Start</strong>
+                  Start
                 </Button>
               </Stack>
             </div>

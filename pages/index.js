@@ -58,13 +58,11 @@ export default function OnboardingWelcomePage() {
   }, [])
 
   useEffect(() => {
-    console.log(router.query)
+    // if (router.query.score && router.query.user) {
+    //   setChecking(true)
 
-    if (router.query.score && router.query.user) {
-      setChecking(true)
-
-      router.push(`/assessment/report/${router.query.user}/${router.query.score}?session_id=${router.query.session_id}&type=${router.query.type}&duration=${router.query.duration}&payment_success=true`)
-    }
+    //   router.push(`/assessment/report?user=${router.query.user}&score=${router.query.score}&session_id=${router.query.session_id}&type=${router.query.type}&duration=${router.query.duration}&payment_success=true`)
+    // }
 
     if (router.query.checkout_cancelled) {
       setPaymentFailed(true)
@@ -129,9 +127,11 @@ export default function OnboardingWelcomePage() {
         
                   setLatestAssessment(assessments[0])
 
-                  if (!router.query.score && !router.query.user) {
-                    setChecking(false)
-                  }
+                  // if (!router.query.score && !router.query.user) {
+                  //   setChecking(false)
+                  // }
+
+                  setChecking(false)
                 }
               })
           }
@@ -158,7 +158,7 @@ export default function OnboardingWelcomePage() {
           setRiskLevel('high')
         }
   
-        authUser && setLatestAssessmentReportUrl(`/assessment/report/${authUser.uid}/${latestAssessment.data.id}`)
+        authUser && setLatestAssessmentReportUrl(`/assessment/report?user=${authUser.uid}&score=${latestAssessment.data.id}`)
   
         setRiskScore(latestAssessment.data.allScore)
   

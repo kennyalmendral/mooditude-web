@@ -121,14 +121,6 @@ export default function AssessmentReport(props) {
   }, [weekDifference])
 
   useEffect(() => {
-    if ((licenseType == 'premium') && (router.query.payment_success)) {
-      setTimeout(() => {
-        setChecking(false)
-      }, 7000)
-    }
-  }, [licenseType, router])
-
-  useEffect(() => {
     setMostOfTheTimeAnswerQuestions([])
     setOftenAnswerQuestions([])
     setSometimesAnswerQuestions([])
@@ -225,12 +217,11 @@ export default function AssessmentReport(props) {
                 assessmentScore: result.data.allScore,
                 assessmentDate: docData.createDate.seconds * 1000
               })
-
-            // setChecking(false)
-            
-            if (router.query.payment_success == null) {
-              setChecking(false)
-            }
+              .then(() => {
+                setTimeout(() => {
+                  setChecking(false)
+                }, 5000)
+              })
           })
         })
     }
@@ -294,6 +285,12 @@ export default function AssessmentReport(props) {
   }, [isDownloading])
 
   useEffect(() => {
+    console.log(router)
+
+    // if (!router.query.user && !router.query.score) {
+    //   router.push('/')
+    // }
+
     if (router.query.checkout_cancelled) {
       setPaymentFailed(true)
     } else {
@@ -394,7 +391,7 @@ export default function AssessmentReport(props) {
                     .collection('scores')
                     .doc(router.query.score)
                     .update({
-                      purchasedDate: paymentIntent.created * 1000,
+                      purchasedDate: paymentIntent.created,
                       stripeInvoiceId: paymentIntent.id
                     })
                     .then(() => {
@@ -548,10 +545,8 @@ export default function AssessmentReport(props) {
       customerEmail: authUser && authUser.email,
       userId: router.query.user,
       scoreId: router.query.score,
-      // redirectUrl: window.location.origin + `/assessment/report/${router.query.user}/${router.query.score}`,
-      // cancelUrl: window.location.origin + `/assessment/report/${router.query.user}/${router.query.score}`
-      redirectUrl: window.location.origin,
-      cancelUrl: window.location.origin
+      redirectUrl: window.location.origin + `/assessment/report`,
+      cancelUrl: window.location.origin + `/assessment/report`
     }).then(result => {
       location.href = result.data.session.url
     })

@@ -148,7 +148,7 @@ export default function OnboardingWelcomePage() {
       mode: 'subscription',
       customerEmail: authUser && authUser.email,
       redirectUrl: window.location.origin + '/buy/thank-you',
-      cancelUrl: window.location.origin + '/buy'
+      cancelUrl: window.location.origin
     }).then(result => {
       location.href = result.data.session.url
     })

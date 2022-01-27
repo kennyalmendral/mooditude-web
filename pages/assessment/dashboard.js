@@ -128,7 +128,7 @@ export default function AssessmentWelcomePage() {
         // }
       })
       
-      sortedAssessments[0] && setCurrentFullReportLink(`/assessment/report/${authUser.uid}/${sortedAssessments[0].id}`)
+      sortedAssessments[0] && setCurrentFullReportLink(`/assessment/report?user=${authUser.uid}&score=${sortedAssessments[0].id}`)
 
       setTimeout(() => {
         setChecking(false)
@@ -477,7 +477,7 @@ export default function AssessmentWelcomePage() {
                           alignItems: 'center'
                         }} 
                         key={assessment.id} 
-                        onClick={() => router.push(`/assessment/report/${authUser.uid}/${assessment.id}`)}
+                        onClick={() => router.push(`/assessment/report?user=${authUser.uid}&score=${assessment.id}`)}
                       >
                         <div className={styles.ai_score}>
                           <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>

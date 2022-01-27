@@ -66,10 +66,12 @@ export default function OnboardingFinishPage() {
           <div className={styles.btn_wrap}>
           <Stack direction="row" spacing={2} className={styles.finish_btn}>
             <Button 
-            size="large" 
-            variant="contained"
-            onClick={() => router.push(`/onboarding/get-started`)}
-          >CONTINUE</Button>
+              size="large" 
+              variant="contained"
+              onClick={() => router.push(`/onboarding/get-started`)}
+            >
+              CONTINUE
+            </Button>
           </Stack>
           </div>
         </div>

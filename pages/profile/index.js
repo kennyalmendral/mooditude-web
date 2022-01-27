@@ -251,7 +251,7 @@ export default function Profile(props) {
           <div className={styles.profileWrapper}>
             <div className={styles.profileInnerWrapper}>
               <div className={styles.profileInnerHeader}>
-                <h4>JOIN DATE: {format(new Date(profile.memberSince), 'mm/dd/yyyy')}</h4>
+                <h4>JOIN DATE: {format(new Date(profile.memberSince), 'LLLL dd, yyyy')}</h4>
                 <h1>Profile</h1>
               </div>
 

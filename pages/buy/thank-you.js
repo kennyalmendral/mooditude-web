@@ -75,17 +75,20 @@ export default function OnboardingWelcomePage() {
                     .doc(authUser.uid)
                     .set({
                       grant: {
-                        expiryDate: subscription.current_period_end * 1000,
+                        // expiryDate: subscription.current_period_end * 1000,
+                        expiryDate: subscription.current_period_end,
                         grantType: 'Purchase',
                         licenseType: 'Premium',
                         productType: 'Subscription',
-                        transactionDate: subscription.created * 1000,
+                        transactionDate: subscription.created,
                         transactionId: subscription.id
                       }
                     })
                     .then(() => {
-                      setExpiryDate(format(new Date(subscription.current_period_end * 1000), 'LLLL dd, yyyy'))
+                      // setExpiryDate(format(new Date(subscription.current_period_end * 1000), 'LLLL dd, yyyy'))
                       // setShowLoader(false)
+                      setExpiryDate(subscription.current_period_end)
+
                       router.push('/?payment_success=true')
                     })
                 })
@@ -122,20 +125,7 @@ export default function OnboardingWelcomePage() {
                   customerType: 'premium'
                 })
                 .then(() => {
-                  firebaseStore
-                    .collection('Subscribers')
-                    .doc(authUser.uid)
-                    .set({
-                      payment: {
-                        usedOneTimeDownload: false,
-                        transactionDate: format(paymentIntent.created * 1000, 'LLLL dd, yyyy'),
-                        transactionId: paymentIntent.id
-                      }
-                    })
-                    .then(() => {
-                      // setShowLoader(false)
-                      router.push('/?payment_success=true')
-                    })
+                  router.push('/?payment_success=true')
                 })
             })
         }
