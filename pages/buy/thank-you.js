@@ -75,18 +75,15 @@ export default function OnboardingWelcomePage() {
                     .doc(authUser.uid)
                     .set({
                       grant: {
-                        // expiryDate: subscription.current_period_end * 1000,
-                        expiryDate: subscription.current_period_end,
+                        expiryDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
                         grantType: 'Purchase',
                         licenseType: 'Premium',
                         productType: 'Subscription',
-                        transactionDate: subscription.created,
+                        transactionDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.created * 1000)),
                         transactionId: subscription.id
                       }
                     })
                     .then(() => {
-                      // setExpiryDate(format(new Date(subscription.current_period_end * 1000), 'LLLL dd, yyyy'))
-                      // setShowLoader(false)
                       setExpiryDate(subscription.current_period_end)
 
                       router.push('/?payment_success=true')
@@ -112,21 +109,13 @@ export default function OnboardingWelcomePage() {
             .child('users')
             .child(authUser.uid)
             .update({
-              customerType: 'premium',
+              // customerType: 'premium',
               expiryDate: '',
               paymentStatus: 'active',
               paymentType: 'stripe'
             })
             .then(() => {
-              firebaseStore
-                .collection('Users')
-                .doc(authUser.uid)
-                .update({
-                  customerType: 'premium'
-                })
-                .then(() => {
-                  router.push('/?payment_success=true')
-                })
+              router.push('/?payment_success=true')
             })
         }
       })

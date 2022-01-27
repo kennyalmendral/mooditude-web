@@ -33,9 +33,10 @@ import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUnch
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import Firebase from 'lib/Firebase'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-const firebaseAuth = Firebase.auth()
-const firebaseDatabase = Firebase.database()
 import TextField from '@mui/material/TextField'
+
+const firebaseDatabase = Firebase.database()
+const firebaseFunctions = Firebase.functions()
 
 export default function Onboarding7() {
   const router = useRouter()
@@ -76,7 +77,7 @@ export default function Onboarding7() {
     profileStepAnswer !== null && console.log(`Profile step 7 answer: ${profileStepAnswer}`)
   }, [profileStepAnswer])
 
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
     setFormError(false)
 
     setChecking(true)
@@ -87,58 +88,28 @@ export default function Onboarding7() {
       localStorage.setItem(`${authUser.uid}_profileStep7Answer`, profileStepAnswer)
 
       if (authUser) {
-        setTimeout(() => {
-          firebaseDatabase
-            .ref()
-            .child('users')
-            .child(authUser.uid)
-            .update({
-              ageGroup: parseInt(localStorage.getItem(`${authUser.uid}_profileStep1Answer`)) || 0,
-              gender: parseInt(localStorage.getItem(`${authUser.uid}_profileStep2Answer`)) || 0,
-              topGoal: localStorage.getItem(`${authUser.uid}_profileStep3Answer`) || '',
-              topChallenges: localStorage.getItem(`${authUser.uid}_profileStep4Answer`) || '',
-              goingToTherapy: localStorage.getItem(`${authUser.uid}_profileStep5Answer`) === 'true' || false,
-              knowCbt: localStorage.getItem(`${authUser.uid}_profileStep6Answer`) === 'true' || false,
-              committedToSelfhelp: (parseInt(localStorage.getItem(`${authUser.uid}_profileStep7Answer`)) > 1) ? true : false,
-              committedToSelfHelpScale: parseInt(localStorage.getItem(`${authUser.uid}_profileStep7Answer`)) || null,
-              onboardingStep: 'profileCreated'
-            })
-            .then(() => {
-              firebaseDatabase
-                .ref()
-                .child('userCollection')
-                .child('MakePromise')
-                .update({
-                  [authUser.uid]: reason || ''
-                })
-                .then(() => {
-                  firebaseDatabase
-                    .ref()
-                    .child('userCollection')
-                    .child('TopGoal')
-                    .update({
-                      [authUser.uid]: localStorage.getItem(`${authUser.uid}_profileStep3AnswerOtherReason`) || ''
-                    })
-                    .then(() => {
-                      localStorage.removeItem(`${authUser.uid}_profileStep1Answer`)
-                      localStorage.removeItem(`${authUser.uid}_profileStep2Answer`)
-                      localStorage.removeItem(`${authUser.uid}_profileStep3Answer`)
-                      localStorage.removeItem(`${authUser.uid}_profileStep3AnswerOtherReason`)
-                      localStorage.removeItem(`${authUser.uid}_profileStep4Answer`)
-                      localStorage.removeItem(`${authUser.uid}_profileStep5Answer`)
-                      localStorage.removeItem(`${authUser.uid}_profileStep6Answer`)
-                      localStorage.removeItem(`${authUser.uid}_profileStep7Answer`)
-                      localStorage.removeItem(`${authUser.uid}_profileStep7AnswerReason`)
-                      
-                      if (localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
-                        localStorage.setItem(`${authUser.uid}_onboardingStep`, 'profileCreated')
-                      }
+        const updateUserProfileOnboarding = firebaseFunctions.httpsCallable('updateUserProfileOnboarding')
 
-                      location.href = '/onboarding/finish'
-                    })
-                })
-            })
-        }, 4000)
+        updateUserProfileOnboarding({
+          userId: authUser.uid,
+          ageGroup: parseInt(localStorage.getItem(`${authUser.uid}_profileStep1Answer`)) || 0,
+          gender: parseInt(localStorage.getItem(`${authUser.uid}_profileStep2Answer`)) || 0,
+          topGoal: localStorage.getItem(`${authUser.uid}_profileStep3Answer`) || '',
+          topChallenges: localStorage.getItem(`${authUser.uid}_profileStep4Answer`) || '',
+          goingToTherapy: localStorage.getItem(`${authUser.uid}_profileStep5Answer`) === 'true' || false,
+          knowCbt: localStorage.getItem(`${authUser.uid}_profileStep6Answer`) === 'true' || false,
+          committedToSelfhelp: (parseInt(localStorage.getItem(`${authUser.uid}_profileStep7Answer`)) > 1) ? true : false,
+          committedToSelfHelpScale: parseInt(localStorage.getItem(`${authUser.uid}_profileStep7Answer`)) || null,
+          onboardingStep: 'profileCreated',
+          makePromiseReason: reason || '',
+          topGoalOtherReason: localStorage.getItem(`${authUser.uid}_profileStep3AnswerOtherReason`) || ''
+        }).then(result => {
+          if (result.data.updated) {
+            location.href = '/onboarding/finish'
+          } else {
+            setChecking(false)
+          }
+        })
       }
     } else {
       setFormError(true)

@@ -326,7 +326,7 @@ export default function Profile(props) {
                         {grant.licenseType == 'Premium' && (
                           <>
                             {grant.expiryDate.hasOwnProperty('seconds') && (
-                              <p>{grant.licenseType.charAt(0).toUpperCase() + grant.licenseType.slice(1)} — Expires {format(new Date(grant.expiryDate.seconds * 1000), 'LLLL dd, yyyy')}</p>
+                              <p>{grant.licenseType.charAt(0).toUpperCase() + grant.licenseType.slice(1)} — Expires {format(new Date(grant.expiryDate.toMillis()), 'LLLL dd, yyyy')}</p>
                             )}
 
                             {!grant.expiryDate.hasOwnProperty('seconds') && (

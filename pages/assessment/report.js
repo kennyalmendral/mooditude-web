@@ -16,7 +16,7 @@ import Stack from '@mui/material/Stack'
 
 import RingLoader from "react-spinners/RingLoader"
 
-import { format, differenceInWeeks } from 'date-fns'
+import { format, differenceInWeeks, startOfDay } from 'date-fns'
 
 import Firebase from 'lib/Firebase'
 
@@ -167,7 +167,7 @@ export default function AssessmentReport(props) {
         .get()
         .then(doc => {
           let docData = doc.data()
-          
+
           setAssessmentScores(docData)
 
           const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
@@ -215,7 +215,7 @@ export default function AssessmentReport(props) {
               .child(authUser.uid)
               .update({
                 assessmentScore: result.data.allScore,
-                assessmentDate: docData.createDate.seconds * 1000
+                assessmentDate: new Date(startOfDay(new Date(docData.createDate.toMillis()))).getTime()
               })
               .then(() => {
                 setTimeout(() => {
@@ -339,11 +339,12 @@ export default function AssessmentReport(props) {
                     .doc(authUser.uid)
                     .set({
                       grant: {
-                        expiryDate: subscription.current_period_end * 1000,
+                        expiryDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
                         grantType: 'Purchase',
                         licenseType: 'Premium',
                         productType: 'Subscription',
-                        transactionDate: subscription.created * 1000,
+                        paymentProcessor: 'stripe',
+                        transactionDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.created * 1000)),
                         transactionId: subscription.id
                       }
                     })
@@ -379,26 +380,27 @@ export default function AssessmentReport(props) {
             })
             .then(() => {
               firebaseStore
-                .collection('Users')
-                .doc(authUser.uid)
+                .collection('M3Assessment')
+                .doc(router.query.user)
+                .collection('scores')
+                .doc(router.query.score)
                 .update({
-                  customerType: 'premium'
+                  purchasedDate: Firebase.firestore.Timestamp.fromDate(new Date(paymentIntent.created * 1000)),
+                  stripeInvoiceId: paymentIntent.id
                 })
                 .then(() => {
-                  firebaseStore
-                    .collection('M3Assessment')
-                    .doc(router.query.user)
-                    .collection('scores')
-                    .doc(router.query.score)
-                    .update({
-                      purchasedDate: paymentIntent.created,
-                      stripeInvoiceId: paymentIntent.id
-                    })
-                    .then(() => {
-                      setPaymentSuccess(true)
-                      setLicenseType('premium')
-                    })
+                  setPaymentSuccess(true)
+                  setLicenseType('premium')
                 })
+              // firebaseStore
+              //   .collection('Users')
+              //   .doc(authUser.uid)
+              //   .update({
+              //     customerType: 'premium'
+              //   })
+              //   .then(() => {
+                  
+              //   })
             })
         }
       })

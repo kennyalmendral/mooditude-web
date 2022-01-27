@@ -55,6 +55,8 @@ export default function OnboardingWelcomePage() {
     } else {
       setIsMobileView(false)
     }
+
+    console.log(Firebase.firestore.Timestamp.fromDate(new Date(1643260753)))
   }, [])
 
   useEffect(() => {
@@ -90,9 +92,9 @@ export default function OnboardingWelcomePage() {
     }
   }, [router])
 
-  useEffect(() => {
-    console.log(activeProduct, activeProductPrice)
-  }, [activeProduct, activeProductPrice])
+  // useEffect(() => {
+  //   console.log(activeProduct, activeProductPrice)
+  // }, [activeProduct, activeProductPrice])
 
   useEffect(() => {
     if (authUser) {
@@ -126,10 +128,6 @@ export default function OnboardingWelcomePage() {
                   assessments.sort((prevDate, nextDate) => nextDate.date - prevDate.date)
         
                   setLatestAssessment(assessments[0])
-
-                  // if (!router.query.score && !router.query.user) {
-                  //   setChecking(false)
-                  // }
 
                   setChecking(false)
                 }

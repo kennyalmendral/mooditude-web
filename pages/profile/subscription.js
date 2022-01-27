@@ -44,6 +44,7 @@ export default function profileSubscription() {
   const [error, setError] = useState('')
 
   const [grant, setGrant] = useState({})
+  const [paymentProcessor, setPaymentProcessor] = useState(null)
   const [subscription, setSubscription] = useState({})
   const [cancelAt, setCancelAt] = useState('')
 
@@ -101,6 +102,10 @@ export default function profileSubscription() {
       subscription.cancel_at != null && setCancelAt(subscription.cancel_at)
     }
   }, [subscription])
+
+  useEffect(() => {
+    Object.keys(grant).length && setPaymentProcessor(grant.paymentProcessor)
+  }, [grant])
 
   const handleProceedCancelation = () => {
     setIsCanceling(true)
@@ -259,23 +264,28 @@ export default function profileSubscription() {
 
                         <div className={styles.subscriptionInnerItem}>
                           <p><b>Cancel Subscription:</b></p>
+
                           <div>
-                            <p>Statement or action here depends on where user purchased the subscription from, for example:</p>
+                            {paymentProcessor == 'apple' && <p>You purchased Mooditude Premium from Apple App Store, cancel your subscription from the App Store.</p>}
 
-                            <p>You purchased Mooditude Premium from Apple App Store, cancel  your subscription from the App Store.</p>
+                            {paymentProcessor == 'google' && <p>You purchased Mooditude Premium from Google Play Store, cancel your subscription from the Google Play Store.</p>}
 
-                            <p>You purchased Mooditude Premium from Google Play, cancel your subscription from the Google Play Store.</p>
+                            {paymentProcessor == 'Mooditude' && <p>You purchased Mooditude Premium from Mooditude, cancel your subscription from Mooditude.</p>}
 
-                            {cancelAt != '' && (
-                              <p>
-                                Your subscription will be canceled on {format(new Date(parseInt(cancelAt) * 1000), 'LLLL dd, yyyy')}.
-                                {' '}
-                                <a onClick={() => setOpenRenewConfirmationDialog(true)} style={{ cursor: 'pointer' }}>Click here to renew</a>
-                              </p>
-                            )}
+                            {paymentProcessor == 'stripe' && (
+                              <>
+                                {cancelAt != '' && (
+                                  <p>
+                                    Your subscription will be canceled on {format(new Date(parseInt(cancelAt) * 1000), 'LLLL dd, yyyy')}.
+                                    {' '}
+                                    <a onClick={() => setOpenRenewConfirmationDialog(true)} style={{ cursor: 'pointer' }}>Click here to renew</a>
+                                  </p>
+                                )}
 
-                            {cancelAt == '' && (
-                              <p><a onClick={() => setOpenCancelConfirmationDialog(true)} style={{ cursor: 'pointer' }}>Click here to cancel your subscription</a></p>
+                                {cancelAt == '' && (
+                                  <p><a onClick={() => setOpenCancelConfirmationDialog(true)} style={{ cursor: 'pointer' }}>Click here to cancel your subscription</a></p>
+                                )}
+                              </>
                             )}
                           </div> 
                         </div> 

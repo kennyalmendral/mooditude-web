@@ -2075,3 +2075,64 @@ exports.stripeWebhooks = functions.https.onRequest((req, res) => {
     res.status(400).json(errorData);
   }
 });
+
+exports.updateUserCollection = functions.https.onCall(async (data, context) => {
+  const userCollection = admin.database().ref().child('userCollection');
+
+  await userCollection
+    .child('MakePromise')
+    .update({
+      [data.userId]: data.makePromiseReason,
+    });
+  
+  await userCollection
+    .child('TopGoal')
+    .update({
+      [data.userId]: data.topGoalOtherReason
+    });
+
+  return {
+    updated: true
+  };
+});
+
+exports.updateUserProfileOnboarding = functions.https.onCall(async (data, context) => {
+  await admin
+    .database()
+    .ref()
+    .child('users')
+    .child(data.userId)
+    .update({
+      ageGroup: data.ageGroup,
+      gender: data.gender,
+      topGoal: data.topGoal,
+      topChallenges: data.topChallenges,
+      goingToTherapy: data.goingToTherapy,
+      knowCbt: data.knowCbt,
+      committedToSelfhelp: data.committedToSelfhelp,
+      committedToSelfHelpScale: data.committedToSelfHelpScale,
+      onboardingStep: data.onboardingStep
+    });
+
+  await admin
+    .database()
+    .ref()
+    .child('userCollection')
+    .child('MakePromise')
+    .update({
+      [data.userId]: data.makePromiseReason,
+    });
+  
+  await admin
+    .database()
+    .ref()
+    .child('userCollection')
+    .child('TopGoal')
+    .update({
+      [data.userId]: data.topGoalOtherReason
+    });
+
+  return {
+    updated: true
+  };
+});

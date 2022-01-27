@@ -12,3 +12,5 @@ exports.getStripeProduct = webService.getStripeProduct;
 exports.generatePDFReport = webService.generatePDFReport;
 exports.uploadProfilePicture = webService.uploadProfilePicture;
 exports.stripeWebhooks = webService.stripeWebhooks;
+exports.updateUserCollection = webService.updateUserCollection;
+exports.updateUserProfileOnboarding = webService.updateUserProfileOnboarding;
