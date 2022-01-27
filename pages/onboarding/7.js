@@ -104,26 +104,10 @@ export default function Onboarding7() {
           makePromiseReason: reason || '',
           topGoalOtherReason: localStorage.getItem(`${authUser.uid}_profileStep3AnswerOtherReason`) || ''
         }).then(result => {
-          localStorage.removeItem(`${authUser.uid}_profileStep1Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep2Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep3Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep3AnswerOtherReason`)
-          localStorage.removeItem(`${authUser.uid}_profileStep4Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep5Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep6Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep7Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep7AnswerReason`)
-          
-          if (localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
-            localStorage.setItem(`${authUser.uid}_onboardingStep`, 'profileCreated')
-          }
-
-          if (result.data.updated) {
-            location.href = '/onboarding/finish'
-          } else {
-            setChecking(false)
-          }
-        })
+          Router.push('/onboarding/finish')
+        }).catch(error => { // (**)
+            console.log(error)
+        });
       }
     } else {
       setFormError(true)
