@@ -117,7 +117,7 @@ export default function Onboarding7() {
           if (localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
             localStorage.setItem(`${authUser.uid}_onboardingStep`, 'profileCreated')
           }
-          
+
           if (result.data.updated) {
             location.href = '/onboarding/finish'
           } else {

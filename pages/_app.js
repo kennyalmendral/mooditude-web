@@ -97,7 +97,7 @@ function App({ Component, pageProps }) {
                         ((snapshotValue != null && snapshotValue.committedToSelfhelp == 'true') || 
                         (snapshotValue != null && snapshotValue.committedToSelfhelp == 'false'))
                       ) {
-                        router.push('/')
+                        // router.push('/')
                         setCheckAuth(true)
                         removePageLoader()
                       } else if (
