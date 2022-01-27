@@ -2076,26 +2076,6 @@ exports.stripeWebhooks = functions.https.onRequest((req, res) => {
   }
 });
 
-exports.updateUserCollection = functions.https.onCall(async (data, context) => {
-  const userCollection = admin.database().ref().child('userCollection');
-
-  await userCollection
-    .child('MakePromise')
-    .update({
-      [data.userId]: data.makePromiseReason,
-    });
-  
-  await userCollection
-    .child('TopGoal')
-    .update({
-      [data.userId]: data.topGoalOtherReason
-    });
-
-  return {
-    updated: true
-  };
-});
-
 exports.updateUserProfileOnboarding = functions.https.onCall(async (data, context) => {
   await admin
     .database()
