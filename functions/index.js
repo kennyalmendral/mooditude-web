@@ -14,3 +14,4 @@ exports.uploadProfilePicture = webService.uploadProfilePicture;
 exports.applyReportCredit = webService.applyReportCredit;
 exports.stripeWebhooks = webService.stripeWebhooks;
 exports.updateUserProfileOnboarding = webService.updateUserProfileOnboarding;
+exports.updateSubscriptionData = webService.updateSubscriptionData;

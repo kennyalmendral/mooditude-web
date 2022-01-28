@@ -71,24 +71,37 @@ export default function OnboardingWelcomePage() {
                   customerType: 'premium'
                 })
                 .then(() => {
-                  firebaseStore
-                    .collection('Subscribers')
-                    .doc(authUser.uid)
-                    .set({
-                      grant: {
-                        expiryDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
-                        grantType: 'Purchase',
-                        licenseType: 'Premium',
-                        productType: 'Subscription',
-                        transactionDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.created * 1000)),
-                        transactionId: subscription.id
-                      }
-                    })
-                    .then(() => {
-                      setExpiryDate(subscription.current_period_end)
+                  const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
+    
+                  getStripeProduct({
+                    price: subscription.plan.id
+                  }).then(result => {
+                    console.log(result.data)
 
-                      router.push('/?payment_success=true')
-                    })
+                    firebaseStore
+                      .collection('Subscribers')
+                      .doc(authUser.uid)
+                      .set({
+                        grant: {
+                          expiryDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
+                          grantType: 'Purchase',
+                          licenseType: 'Premium',
+                          productType: 'Subscription',
+                          paymentProcessor: 'stripe',
+                          platform: 'web',
+                          productId: subscription.plan.id,
+                          trialDurationInDays: subscription.plan.trial_period_days || 0,
+                          duration: `${result.data.productPrice.recurring.interval_count} ${result.data.productPrice.recurring.interval}`,
+                          transactionDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.created * 1000)),
+                          transactionId: subscription.id
+                        }
+                      })
+                      .then(() => {
+                        setExpiryDate(subscription.current_period_end)
+
+                        router.push('/?payment_success=true')
+                      })
+                  })
                 })
             })
         }

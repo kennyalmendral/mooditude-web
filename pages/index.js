@@ -56,7 +56,22 @@ export default function OnboardingWelcomePage() {
       setIsMobileView(false)
     }
 
-    console.log(Firebase.firestore.Timestamp.fromDate(new Date(1643260753)))
+    // console.log(Firebase.firestore.Timestamp.fromDate(new Date(1643260753)))
+
+    const updateSubscriptionData = firebaseFunctions.httpsCallable('updateSubscriptionData')
+    
+    updateSubscriptionData({
+      userId: 'P0hr85Np4RWAMIU7isq4QVLYyAx1',
+      platform: 'app',
+      productId: '123',
+      expiryDate: 'Jan 28, 2023 04:43:51 PM',
+      trialDurationInDays: 3,
+      duration: '2 year',
+      transactionId: '456',
+      transactionDate: 'Jan 28, 2021 04:43:51 PM'
+    }).then(result => {
+      console.log(result)
+    })
   }, [])
 
   useEffect(() => {

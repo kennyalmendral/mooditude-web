@@ -269,6 +269,57 @@ exports.updateUserM3AssessmentScores = functions.https.onCall(async (data, conte
   };
 });
 
+exports.updateSubscriptionData = functions.https.onCall(async (data, context) => {
+  const userId = data.userId;
+  const platform = data.platform;
+  const productId = data.productId;
+  const expiryDate = data.expiryDate;
+  const trialDurationInDays = data.trialDurationInDays;
+  const duration = data.duration;
+  const transactionId = data.transactionId;
+  const transactionDate = data.transactionDate;
+
+  let grantObj = {};
+
+  if (platform != '') {
+    grantObj[`grant.platform`] = platform;
+  }
+
+  if (productId != '') {
+    grantObj[`grant.productId`] = productId;
+  }
+
+  if (expiryDate != '') {
+    grantObj[`grant.expiryDate`] = expiryDate;
+  }
+
+  if (parseInt(trialDurationInDays) > 0) {
+    grantObj[`grant.trialDurationInDays`] = trialDurationInDays;
+  }
+
+  if (duration > 0) {
+    grantObj[`grant.duration`] = duration;
+  }
+
+  if (transactionId != '') {
+    grantObj[`grant.transactionId`] = transactionId;
+  }
+  
+  if (transactionDate != '') {
+    grantObj[`grant.transactionDate`] = transactionDate;
+  }
+
+  await admin
+    .firestore()
+    .collection('Subscribers')
+    .doc(userId)
+    .update(grantObj);
+
+  return {
+    updated: true
+  };
+});
+
 exports.processStripeSubscription = functions.https.onCall(async (data, context) => {
   let price = config.stripe.plan.monthly;
 

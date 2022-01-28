@@ -249,7 +249,13 @@ export default function AssessmentReport(props) {
   }, [authUser, router])
 
   useEffect(() => {
-    assessmentScores && console.log('Assessment scores: ', assessmentScores)
+    if (Object.keys(assessmentScores).length > 0) {
+      if (assessmentScores.hasOwnProperty('purchasedDate')) {
+        setShowOneTimePayment(false)
+      } else {
+        setShowOneTimePayment(true)
+      }
+    }
   }, [assessmentScores])
 
   useEffect(() => {
@@ -355,24 +361,36 @@ export default function AssessmentReport(props) {
                   customerType: 'premium'
                 })
                 .then(() => {
-                  firebaseStore
-                    .collection('Subscribers')
-                    .doc(authUser.uid)
-                    .set({
-                      grant: {
-                        expiryDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
-                        grantType: 'Purchase',
-                        licenseType: 'Premium',
-                        productType: 'Subscription',
-                        paymentProcessor: 'stripe',
-                        transactionDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.created * 1000)),
-                        transactionId: subscription.id
-                      }
-                    })
-                    .then(() => {
-                      setPaymentSuccess(true)
-                      setLicenseType('premium')
-                    })
+                  const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
+    
+                  getStripeProduct({
+                    price: subscription.plan.id
+                  }).then(result => {
+                    console.log(result.data)
+
+                    firebaseStore
+                      .collection('Subscribers')
+                      .doc(authUser.uid)
+                      .set({
+                        grant: {
+                          expiryDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
+                          grantType: 'Purchase',
+                          licenseType: 'Premium',
+                          productType: 'Subscription',
+                          paymentProcessor: 'stripe',
+                          platform: 'web',
+                          productId: subscription.plan.id,
+                          trialDurationInDays: subscription.plan.trial_period_days || 0,
+                          duration: `${result.data.productPrice.recurring.interval_count} ${result.data.productPrice.recurring.interval}`,
+                          transactionDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.created * 1000)),
+                          transactionId: subscription.id
+                        }
+                      })
+                      .then(() => {
+                        setPaymentSuccess(true)
+                        setLicenseType('premium')
+                      })
+                  })
                 })
             })
         }
@@ -714,48 +732,47 @@ export default function AssessmentReport(props) {
                   <p>You took the right step in managing your mental health.</p>
                 </div>
               )}
-              {
-                licenseType != 'free' ? 
-                  <div className={styles.report_btns_wrapper}>
-                      <a
-                        href="#" 
-                        className={isReportVisible ? styles.active : ''} 
-                        onClick={() => {
-                          setIsScoresVisible(false)
-                          setIsDownloadVisible(false)
-                          setIsReportVisible(true)
-                        }}>REPORT</a>
 
-                      {((licenseType == 'premium') || (userProfile.customerType == 'premium')) && (
-                        <>
-                          <a 
-                            href="#" 
-                            className={isScoresVisible ? styles.active : ''} 
-                            onClick={() => {
-                              setIsReportVisible(false)
-                              setIsDownloadVisible(false)
-                              setIsScoresVisible(true)
-                            }}
-                          >
-                            SCORES
-                          </a>
+              {((licenseType != 'free') || (assessmentScores.hasOwnProperty('purchasedDate'))) ? 
+                <div className={styles.report_btns_wrapper}>
+                    <a
+                      href="#" 
+                      className={isReportVisible ? styles.active : ''} 
+                      onClick={() => {
+                        setIsScoresVisible(false)
+                        setIsDownloadVisible(false)
+                        setIsReportVisible(true)
+                      }}>REPORT</a>
 
-                          <a 
-                            href="#" 
-                            className={isDownloadVisible ? styles.active : ''}
-                            onClick={() => {
-                              setIsScoresVisible(false)
-                              setIsDownloadVisible(true)
-                              setIsReportVisible(false)
-                            }}>DOWNLOAD</a>
-                        </>
-                      )}
-                  </div>
+                    {((licenseType == 'premium') || (userProfile.customerType == 'premium') || (assessmentScores.hasOwnProperty('purchasedDate'))) && (
+                      <>
+                        <a 
+                          href="#" 
+                          className={isScoresVisible ? styles.active : ''} 
+                          onClick={() => {
+                            setIsReportVisible(false)
+                            setIsDownloadVisible(false)
+                            setIsScoresVisible(true)
+                          }}
+                        >
+                          SCORES
+                        </a>
+
+                        <a 
+                          href="#" 
+                          className={isDownloadVisible ? styles.active : ''}
+                          onClick={() => {
+                            setIsScoresVisible(false)
+                            setIsDownloadVisible(true)
+                            setIsReportVisible(false)
+                          }}>DOWNLOAD</a>
+                      </>
+                    )}
+                </div>
                 : ''
               }
               
-              {
-                licenseType == 'free' ? 
+              {((licenseType == 'free') && (!assessmentScores.hasOwnProperty('purchasedDate'))) ? 
                 <div>
                   <div className={styles.result_pricing_section}>
                     {showOneTimePayment && (
@@ -887,7 +904,7 @@ export default function AssessmentReport(props) {
                               <h3>Are you in crisis?</h3>
                               <p>Please call National Suicide Prevention Lifeline or proceed <br/>directly to an emergency room.</p>
                             </div>
-                              {licenseType == 'free' && (
+                              {((licenseType == 'free') && (!assessmentScores.hasOwnProperty('purchasedDate'))) && (
                                 <>
                                   { buyPremium ? 
                                   <div className={styles.bold_text_wrap}
@@ -1005,7 +1022,7 @@ export default function AssessmentReport(props) {
                                 </>
                               )}
 
-                            {((licenseType == 'premium') || (userProfile.customerType == 'premium')) && (
+                            {((licenseType == 'premium') || (userProfile.customerType == 'premium') || (assessmentScores.hasOwnProperty('purchasedDate'))) && (
                               <>
                                 <div className={styles.report_risks_wrap} >
                                   {/*<img src="/warning.svg" alt="Disorder Risks" />*/}
