@@ -300,9 +300,7 @@ export default function OnboardingWelcomePage() {
 
                 <p>Purchasing a subscription during a trial period will forfeit any remaining trial period.</p>
 
-                <p>Manage or cancel your subscription from your iTunes Account settings.</p>
-
-
+                {/* <p>Manage or cancel your subscription from your iTunes Account settings.</p> */}
               </div>
             </div>
 

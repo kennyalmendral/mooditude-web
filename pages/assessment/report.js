@@ -88,6 +88,8 @@ export default function AssessmentReport(props) {
   const [paymentFailed, setPaymentFailed] = useState(false)
   const [paymentSuccess, setPaymentSuccess] = useState(false)
 
+  const [showOneTimePayment, setShowOneTimePayment] = useState(true)
+
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/login')
@@ -95,15 +97,29 @@ export default function AssessmentReport(props) {
   }, [authUser, loading, router])
 
   useEffect(() => {
-    userProfile && console.log(userProfile)
-  }, [userProfile])
+    if (Object.keys(userProfile).length > 0) {
+      if (userProfile.hasOwnProperty('assessmentCredit')) {
+        const applyReportCredit = firebaseFunctions.httpsCallable('applyReportCredit')
+
+        applyReportCredit({
+          user: router.query.user,
+          score: router.query.score,
+        }).then(result => {
+          setShowOneTimePayment(false)
+          console.log('applyReportCredit', result)
+        })
+      } else {
+        setShowOneTimePayment(true)
+      }
+    }
+  }, [userProfile, router])
 
   useEffect(() => {
     setWeekDifference(differenceInWeeks(new Date(), new Date(assessmentDate)))
   }, [assessmentDate])
   
   useEffect(() => {
-    console.log(`usedDrug: ${usedDrug}`, `usedAlcohol: ${usedAlcohol}`)
+    // console.log(`usedDrug: ${usedDrug}`, `usedAlcohol: ${usedAlcohol}`)
   }, [usedDrug, usedAlcohol])
 
   useEffect(() => {
@@ -153,82 +169,93 @@ export default function AssessmentReport(props) {
 
           if (snapshotValue != null) {
             setUserProfile(snapshotValue)
+
+            firebaseStore
+              .collection('M3Assessment')
+              .doc(assessmentUserId)
+              .collection('scores')
+              .doc(assessmentScoreId)
+              .get()
+              .then(doc => {
+                let docData = doc.data()
+
+                setAssessmentScores(docData)
+
+                const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
+        
+                updateUserM3AssessmentScores({
+                  userId: assessmentUserId,
+                  epochId: assessmentScoreId,
+                  rawData: docData.rawData,
+                }).then(result => {
+                  setRiskScore(result.data.allScore)
+                  setAllRiskLevel(result.data.allRiskLevel)
+                  setDepressionRiskScore(result.data.depressionScore)
+                  setDepressionRiskLevel(result.data.depressionRiskLevel)
+                  setAnxietyRiskScore(result.data.anxietyScore)
+                  setAnxietyRiskLevel(result.data.anxietyRiskLevel)
+                  setPtsdRiskScore(result.data.ptsdScore)
+                  setPtsdRiskLevel(result.data.ptsdRiskLevel)
+                  setBipolarRiskScore(result.data.bipolarScore)
+                  setBipolarRiskLevel(result.data.bipolarRiskLevel)
+                  setHasSuicidalThoughts(result.data.hasSuicidalThoughts)
+                  setUsedAlcohol(result.data.usedAlcohol)
+                  setUsedDrug(result.data.usedDrug)
+                  setThoughtsOfSuicideAnswer(result.data.thoughtsOfSuicideAnswer)
+                  setImpairsWorkSchoolAnswer(result.data.impairsWorkSchoolAnswer)
+                  setImpairsFriendsFamilyAnswer(result.data.impairsFriendsFamilyAnswer)
+                  setLedToUsingAlcoholAnswer(result.data.ledToUsingAlcoholAnswer)
+                  setLedToUsingDrugAnswer(result.data.ledToUsingDrugAnswer)
+                  
+                  if (docData.createDate) {
+                    setAssessmentDate(new Date(docData.createDate.seconds * 1000).toLocaleString('en-US', {
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric'
+                    }))
+                  }
+
+                  setMostOfTheTimeAnswerCount(docData.rawData.split(',').filter(x => x == 4).length)
+                  setOftenAnswerCount(docData.rawData.split(',').filter(x => x == 3).length)
+                  setSometimesAnswerCount(docData.rawData.split(',').filter(x => x == 2).length)
+                  setRarelyAnswerCount(docData.rawData.split(',').filter(x => x == 1).length)
+                  setNoneAnswerCount(docData.rawData.split(',').filter(x => x == 0).length)
+
+                  firebaseDatabase
+                    .ref()
+                    .child('users')
+                    .child(authUser.uid)
+                    .update({
+                      assessmentScore: result.data.allScore,
+                      assessmentDate: new Date(startOfDay(new Date(docData.createDate.toMillis()))).getTime()
+                    })
+                    .then(() => {
+                      if (router.query.session_id) {
+                        setTimeout(() => {
+                          setChecking(false)
+                        }, 5000)
+                      } else {
+                        setChecking(false)
+                      }
+                    })
+                })
+              })
           }
         })
         .catch(error => {
           console.log('error', error)
         })
-
-      firebaseStore
-        .collection('M3Assessment')
-        .doc(assessmentUserId)
-        .collection('scores')
-        .doc(assessmentScoreId)
-        .get()
-        .then(doc => {
-          let docData = doc.data()
-
-          setAssessmentScores(docData)
-
-          const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
-  
-          updateUserM3AssessmentScores({
-            userId: assessmentUserId,
-            epochId: assessmentScoreId,
-            rawData: docData.rawData,
-          }).then(result => {
-            setRiskScore(result.data.allScore)
-            setAllRiskLevel(result.data.allRiskLevel)
-            setDepressionRiskScore(result.data.depressionScore)
-            setDepressionRiskLevel(result.data.depressionRiskLevel)
-            setAnxietyRiskScore(result.data.anxietyScore)
-            setAnxietyRiskLevel(result.data.anxietyRiskLevel)
-            setPtsdRiskScore(result.data.ptsdScore)
-            setPtsdRiskLevel(result.data.ptsdRiskLevel)
-            setBipolarRiskScore(result.data.bipolarScore)
-            setBipolarRiskLevel(result.data.bipolarRiskLevel)
-            setHasSuicidalThoughts(result.data.hasSuicidalThoughts)
-            setUsedAlcohol(result.data.usedAlcohol)
-            setUsedDrug(result.data.usedDrug)
-            setThoughtsOfSuicideAnswer(result.data.thoughtsOfSuicideAnswer)
-            setImpairsWorkSchoolAnswer(result.data.impairsWorkSchoolAnswer)
-            setImpairsFriendsFamilyAnswer(result.data.impairsFriendsFamilyAnswer)
-            setLedToUsingAlcoholAnswer(result.data.ledToUsingAlcoholAnswer)
-            setLedToUsingDrugAnswer(result.data.ledToUsingDrugAnswer)
-            
-            if (docData.createDate) {
-              setAssessmentDate(new Date(docData.createDate.seconds * 1000).toLocaleString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-              }))
-            }
-            setMostOfTheTimeAnswerCount(docData.rawData.split(',').filter(x => x == 4).length)
-            setOftenAnswerCount(docData.rawData.split(',').filter(x => x == 3).length)
-            setSometimesAnswerCount(docData.rawData.split(',').filter(x => x == 2).length)
-            setRarelyAnswerCount(docData.rawData.split(',').filter(x => x == 1).length)
-            setNoneAnswerCount(docData.rawData.split(',').filter(x => x == 0).length)
-
-            firebaseDatabase
-              .ref()
-              .child('users')
-              .child(authUser.uid)
-              .update({
-                assessmentScore: result.data.allScore,
-                assessmentDate: new Date(startOfDay(new Date(docData.createDate.toMillis()))).getTime()
-              })
-              .then(() => {
-                setTimeout(() => {
-                  setChecking(false)
-                }, 5000)
-              })
-          })
-        })
     }
   }, [authUser, router])
 
   useEffect(() => {
-    assessmentScores && console.log('Assessment scores: ', assessmentScores)
+    if (Object.keys(assessmentScores).length > 0) {
+      if (assessmentScores.hasOwnProperty('purchasedDate')) {
+        setShowOneTimePayment(false)
+      } else {
+        setShowOneTimePayment(true)
+      }
+    }
   }, [assessmentScores])
 
   useEffect(() => {
@@ -334,24 +361,36 @@ export default function AssessmentReport(props) {
                   customerType: 'premium'
                 })
                 .then(() => {
-                  firebaseStore
-                    .collection('Subscribers')
-                    .doc(authUser.uid)
-                    .set({
-                      grant: {
-                        expiryDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
-                        grantType: 'Purchase',
-                        licenseType: 'Premium',
-                        productType: 'Subscription',
-                        paymentProcessor: 'stripe',
-                        transactionDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.created * 1000)),
-                        transactionId: subscription.id
-                      }
-                    })
-                    .then(() => {
-                      setPaymentSuccess(true)
-                      setLicenseType('premium')
-                    })
+                  const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
+    
+                  getStripeProduct({
+                    price: subscription.plan.id
+                  }).then(result => {
+                    console.log(result.data)
+
+                    firebaseStore
+                      .collection('Subscribers')
+                      .doc(authUser.uid)
+                      .set({
+                        grant: {
+                          expiryDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
+                          grantType: 'Purchase',
+                          licenseType: 'Premium',
+                          productType: 'Subscription',
+                          paymentProcessor: 'stripe',
+                          platform: 'web',
+                          productId: subscription.plan.id,
+                          trialDurationInDays: subscription.plan.trial_period_days || 0,
+                          duration: `${result.data.productPrice.recurring.interval_count} ${result.data.productPrice.recurring.interval}`,
+                          transactionDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.created * 1000)),
+                          transactionId: subscription.id
+                        }
+                      })
+                      .then(() => {
+                        setPaymentSuccess(true)
+                        setLicenseType('premium')
+                      })
+                  })
                 })
             })
         }
@@ -368,40 +407,37 @@ export default function AssessmentReport(props) {
         console.log(session, paymentIntent)
 
         if (authUser) {
-          firebaseDatabase
+          const usersDbRef = firebaseDatabase
             .ref()
             .child('users')
             .child(authUser.uid)
-            .update({
-              customerType: 'premium',
-              expiryDate: '',
-              paymentStatus: 'active',
-              paymentType: 'stripe'
-            })
-            .then(() => {
-              firebaseStore
-                .collection('M3Assessment')
-                .doc(router.query.user)
-                .collection('scores')
-                .doc(router.query.score)
-                .update({
-                  purchasedDate: Firebase.firestore.Timestamp.fromDate(new Date(paymentIntent.created * 1000)),
-                  stripeInvoiceId: paymentIntent.id
-                })
-                .then(() => {
-                  setPaymentSuccess(true)
-                  setLicenseType('premium')
-                })
-              // firebaseStore
-              //   .collection('Users')
-              //   .doc(authUser.uid)
-              //   .update({
-              //     customerType: 'premium'
-              //   })
-              //   .then(() => {
-                  
-              //   })
-            })
+
+            usersDbRef
+              .update({
+                customerType: 'free',
+                expiryDate: '',
+                paymentStatus: 'active',
+                paymentType: 'stripe'
+              })
+              .then(() => {
+                usersDbRef
+                  .child('expiryDate')
+                  .remove()
+
+                firebaseStore
+                  .collection('M3Assessment')
+                  .doc(router.query.user)
+                  .collection('scores')
+                  .doc(router.query.score)
+                  .update({
+                    purchasedDate: Firebase.firestore.Timestamp.fromDate(new Date(paymentIntent.created * 1000)),
+                    stripeInvoiceId: paymentIntent.id
+                  })
+                  .then(() => {
+                    setPaymentSuccess(true)
+                    setLicenseType('premium')
+                  })
+              })
         }
       })
     }
@@ -696,71 +732,72 @@ export default function AssessmentReport(props) {
                   <p>You took the right step in managing your mental health.</p>
                 </div>
               )}
-              {
-                licenseType != 'free' ? 
-                  <div className={styles.report_btns_wrapper}>
-                      <a
-                        href="#" 
-                        className={isReportVisible ? styles.active : ''} 
-                        onClick={() => {
-                          setIsScoresVisible(false)
-                          setIsDownloadVisible(false)
-                          setIsReportVisible(true)
-                        }}>REPORT</a>
 
-                      {((licenseType == 'premium') || (userProfile.customerType == 'premium')) && (
-                        <>
-                          <a 
-                            href="#" 
-                            className={isScoresVisible ? styles.active : ''} 
-                            onClick={() => {
-                              setIsReportVisible(false)
-                              setIsDownloadVisible(false)
-                              setIsScoresVisible(true)
-                            }}
-                          >
-                            SCORES
-                          </a>
+              {((licenseType != 'free') || (assessmentScores.hasOwnProperty('purchasedDate'))) ? 
+                <div className={styles.report_btns_wrapper}>
+                    <a
+                      href="#" 
+                      className={isReportVisible ? styles.active : ''} 
+                      onClick={() => {
+                        setIsScoresVisible(false)
+                        setIsDownloadVisible(false)
+                        setIsReportVisible(true)
+                      }}>REPORT</a>
 
-                          <a 
-                            href="#" 
-                            className={isDownloadVisible ? styles.active : ''}
-                            onClick={() => {
-                              setIsScoresVisible(false)
-                              setIsDownloadVisible(true)
-                              setIsReportVisible(false)
-                            }}>DOWNLOAD</a>
-                        </>
-                      )}
-                  </div>
+                    {((licenseType == 'premium') || (userProfile.customerType == 'premium') || (assessmentScores.hasOwnProperty('purchasedDate'))) && (
+                      <>
+                        <a 
+                          href="#" 
+                          className={isScoresVisible ? styles.active : ''} 
+                          onClick={() => {
+                            setIsReportVisible(false)
+                            setIsDownloadVisible(false)
+                            setIsScoresVisible(true)
+                          }}
+                        >
+                          SCORES
+                        </a>
+
+                        <a 
+                          href="#" 
+                          className={isDownloadVisible ? styles.active : ''}
+                          onClick={() => {
+                            setIsScoresVisible(false)
+                            setIsDownloadVisible(true)
+                            setIsReportVisible(false)
+                          }}>DOWNLOAD</a>
+                      </>
+                    )}
+                </div>
                 : ''
               }
               
-              {
-                licenseType == 'free' ? 
+              {((licenseType == 'free') && (!assessmentScores.hasOwnProperty('purchasedDate'))) ? 
                 <div>
                   <div className={styles.result_pricing_section}>
-                    <div className={styles.result_pricing_section_item}>
-                      <h4>Full Report</h4>
+                    {showOneTimePayment && (
+                      <div className={styles.result_pricing_section_item}>
+                        <h4>Full Report</h4>
 
-                      <h3>$14</h3>
-                      <p>One-time</p>
+                        <h3>$14</h3>
+                        <p>One-time</p>
 
-                      <Button 
-                        size="large" 
-                        className={styles.report_btn} 
-                        variant="contained" 
-                        onClick={() => selectPlan('payment', null)} 
-                        style={{
-                          marginBottom: '15px',
-                          fontSize: '18px',
-                          fontWeight: '500',
-                          fontFamily: 'Circular STD'
-                        }} 
-                      >
-                        Buy
-                      </Button>  
-                    </div>  
+                        <Button 
+                          size="large" 
+                          className={styles.report_btn} 
+                          variant="contained" 
+                          onClick={() => selectPlan('payment', null)} 
+                          style={{
+                            marginBottom: '15px',
+                            fontSize: '18px',
+                            fontWeight: '500',
+                            fontFamily: 'Circular STD'
+                          }} 
+                        >
+                          Buy
+                        </Button>  
+                      </div> 
+                    )}
 
                     <div className={styles.result_pricing_section_item}>
                       <h4>Unlimited Reports &amp; Mooditude App</h4>
@@ -832,12 +869,12 @@ export default function AssessmentReport(props) {
                               <p>Your responses have been analyzed and compared to the responses of other individuals with and without mood and anxiety disorders.</p>
 
                               {allRiskLevel == 'unlikely' && (
-                                <p><strong>Your score is below the level usually found for individuals already known to be suffering from a mood or anxiety disorder.</strong></p>
+                                <p><strong>Your score of {riskScore} is below the level usually found for individuals already known to be suffering from a mood or anxiety disorder.</strong></p>
                               )}
 
                               {allRiskLevel == 'low' && (
                                 <>
-                                  <p><strong>Your score is in the lower range as compared to individuals already known to be suffering from a mood or anxiety disorder.</strong></p>
+                                  <p><strong>Your score of {riskScore} is in the lower range as compared to individuals already known to be suffering from a mood or anxiety disorder.</strong></p>
 
                                   <p><strong>Despite this relatively low score, your symptoms may be impacting your life, livelihood, and general well-being.</strong></p>
                                 </>
@@ -845,7 +882,7 @@ export default function AssessmentReport(props) {
 
                               {allRiskLevel == 'medium' && (
                                 <>
-                                  <p><strong>Your score is in the mid-range as compared to individuals already known to be suffering from a mood or anxiety disorder.</strong></p>
+                                  <p><strong>Your score of {riskScore} is in the mid-range as compared to individuals already known to be suffering from a mood or anxiety disorder.</strong></p>
 
                                   <p><strong>This is a significant finding, as it suggests that your symptoms are probably impacting your life and general well-being.</strong></p>
                                 </>
@@ -853,7 +890,7 @@ export default function AssessmentReport(props) {
 
                               {allRiskLevel == 'high' && (
                                 <>
-                                  <p><strong>Your score is in the high range as compared to individuals already known to be suffering from a mood or anxiety disorder.</strong></p>
+                                  <p><strong>Your score of {riskScore} is in the high range as compared to individuals already known to be suffering from a mood or anxiety disorder.</strong></p>
 
                                   <p><strong>This is cause for real concern, as it suggests that your symptoms are impacting your life and general health.</strong></p>
                                 </>
@@ -867,7 +904,7 @@ export default function AssessmentReport(props) {
                               <h3>Are you in crisis?</h3>
                               <p>Please call National Suicide Prevention Lifeline or proceed <br/>directly to an emergency room.</p>
                             </div>
-                              {licenseType == 'free' && (
+                              {((licenseType == 'free') && (!assessmentScores.hasOwnProperty('purchasedDate'))) && (
                                 <>
                                   { buyPremium ? 
                                   <div className={styles.bold_text_wrap}
@@ -985,7 +1022,7 @@ export default function AssessmentReport(props) {
                                 </>
                               )}
 
-                            {((licenseType == 'premium') || (userProfile.customerType == 'premium')) && (
+                            {((licenseType == 'premium') || (userProfile.customerType == 'premium') || (assessmentScores.hasOwnProperty('purchasedDate'))) && (
                               <>
                                 <div className={styles.report_risks_wrap} >
                                   {/*<img src="/warning.svg" alt="Disorder Risks" />*/}

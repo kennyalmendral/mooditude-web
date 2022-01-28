@@ -420,13 +420,13 @@ export default function Profile(props) {
                         }} 
                         required
                       >
-                        <MenuItem value='lonely'>Lonely</MenuItem>
-                        <MenuItem value='masterDepression'>Master Depression</MenuItem>
-                        <MenuItem value='relationships'>Relationships</MenuItem>
-                        <MenuItem value='overcomeAnxiety'>Overcome Anxiety</MenuItem>
-                        <MenuItem value='trauma'>Trauma</MenuItem>
-                        <MenuItem value='handleStress'>Handle Stress</MenuItem>
-                        <MenuItem value='controlAnger'>Control Anger</MenuItem>
+                        <MenuItem value='lonely'>I'm lonely</MenuItem>
+                        <MenuItem value='masterDepression'>I'm feeling depressed</MenuItem>
+                        <MenuItem value='relationships'>I'm struggling in my relationships</MenuItem>
+                        <MenuItem value='overcomeAnxiety'>I'm restless and anxious</MenuItem>
+                        <MenuItem value='trauma'>I don't know how to cope with past trauma</MenuItem>
+                        <MenuItem value='handleStress'>I'm burnt out</MenuItem>
+                        <MenuItem value='controlAnger'>I'm struggling to control my anger</MenuItem>
                         <MenuItem value='other'>Other</MenuItem>
                       </Select>
                     </div>

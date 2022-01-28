@@ -56,7 +56,22 @@ export default function OnboardingWelcomePage() {
       setIsMobileView(false)
     }
 
-    console.log(Firebase.firestore.Timestamp.fromDate(new Date(1643260753)))
+    // console.log(Firebase.firestore.Timestamp.fromDate(new Date(1643260753)))
+
+    // const updateSubscriptionData = firebaseFunctions.httpsCallable('updateSubscriptionData')
+    
+    // updateSubscriptionData({
+    //   userId: userId,
+    //   platform: 'web',
+    //   productId: subscription.plan.id,
+    //   expiryDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
+    //   trialDurationInDays: subscription.plan.trial_period_days || 0,
+    //   duration: `${result.data.productPrice.recurring.interval_count} ${result.data.productPrice.recurring.interval}`,
+    //   transactionId: subscription.id,
+    //   transactionDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.created * 1000))
+    // }).then(result => {
+    //   console.log(result)
+    // })
   }, [])
 
   useEffect(() => {

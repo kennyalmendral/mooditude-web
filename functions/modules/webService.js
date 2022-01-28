@@ -21,7 +21,7 @@ const mailjetOptions = {
   'password': config.mailJet.apiSecret
 };
 
-exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) => {
+exports.updateUserM3AssessmentScores = functions.https.onCall(async (data, context) => {
   let allScore = 0;
   let gatewayScore = 0;
   let depressionScore = 0;
@@ -223,9 +223,8 @@ exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) =>
     return 0;
   }
 
-  const fireStore = admin.firestore();
-
-  fireStore
+  admin
+    .firestore()
     .collection('M3Assessment')
     .doc(data.userId)
     .collection('scores')
@@ -267,6 +266,57 @@ exports.updateUserM3AssessmentScores = functions.https.onCall((data, context) =>
     impairsFriendsFamilyAnswer,
     ledToUsingAlcoholAnswer,
     ledToUsingDrugAnswer
+  };
+});
+
+exports.updateSubscriptionData = functions.https.onCall(async (data, context) => {
+  const userId = data.userId;
+  const platform = data.platform;
+  const productId = data.productId;
+  const expiryDate = data.expiryDate;
+  const trialDurationInDays = data.trialDurationInDays;
+  const duration = data.duration;
+  const transactionId = data.transactionId;
+  const transactionDate = data.transactionDate;
+
+  let grantObj = {};
+
+  if (platform != '') {
+    grantObj[`grant.platform`] = platform;
+  }
+
+  if (productId != '') {
+    grantObj[`grant.productId`] = productId;
+  }
+
+  if (expiryDate != '') {
+    grantObj[`grant.expiryDate`] = expiryDate;
+  }
+
+  if (parseInt(trialDurationInDays) > 0) {
+    grantObj[`grant.trialDurationInDays`] = trialDurationInDays;
+  }
+
+  if (duration > 0) {
+    grantObj[`grant.duration`] = duration;
+  }
+
+  if (transactionId != '') {
+    grantObj[`grant.transactionId`] = transactionId;
+  }
+  
+  if (transactionDate != '') {
+    grantObj[`grant.transactionDate`] = transactionDate;
+  }
+
+  await admin
+    .firestore()
+    .collection('Subscribers')
+    .doc(userId)
+    .update(grantObj);
+
+  return {
+    updated: true
   };
 });
 
@@ -2074,6 +2124,63 @@ exports.stripeWebhooks = functions.https.onRequest((req, res) => {
   } else {
     res.status(400).json(errorData);
   }
+});
+
+exports.applyReportCredit = functions.https.onCall((data, context) => {
+  functions.logger.log(data)
+
+  admin
+    .database()
+    .ref()
+    .child('users')
+    .child(data.user)
+    .get()
+    .then(snapshot => {
+      if (snapshot.val() != null) {
+        if (snapshot.val().assessmentCredit) {
+          let assessmentCredit = snapshot.val().assessmentCredit
+
+          functions.logger.log(assessmentCredit)
+
+          admin
+            .firestore()
+            .collection('M3Assessment')
+            .doc(data.user)
+            .collection('scores')
+            .doc(data.score)
+            .update({
+              purchasedDate: assessmentCredit.purchasedDate,
+              stripeInvoiceId: assessmentCredit.stripeInvoiceId
+            })
+            .then(() => {
+              functions.logger.log(assessmentCredit.purchasedDate)
+              functions.logger.log(assessmentCredit.stripeInvoiceId)
+
+              admin
+                .database()
+                .ref()
+                .child('users')
+                .child(data.user)
+                .child('assessmentCredit')
+                .remove()
+                .then(() => {
+                  return true;
+                })
+                .catch(error => {
+                  return false;
+                });
+            })
+            .catch(error => {
+              return false;
+            });
+        }
+      }
+    })
+    .catch(error => {
+      return false;
+    });
+
+    return true;
 });
 
 exports.updateUserProfileOnboarding = functions.https.onCall(async (data, context) => {
