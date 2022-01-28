@@ -58,20 +58,20 @@ export default function OnboardingWelcomePage() {
 
     // console.log(Firebase.firestore.Timestamp.fromDate(new Date(1643260753)))
 
-    const updateSubscriptionData = firebaseFunctions.httpsCallable('updateSubscriptionData')
+    // const updateSubscriptionData = firebaseFunctions.httpsCallable('updateSubscriptionData')
     
-    updateSubscriptionData({
-      userId: 'P0hr85Np4RWAMIU7isq4QVLYyAx1',
-      platform: 'app',
-      productId: '123',
-      expiryDate: 'Jan 28, 2023 04:43:51 PM',
-      trialDurationInDays: 3,
-      duration: '2 year',
-      transactionId: '456',
-      transactionDate: 'Jan 28, 2021 04:43:51 PM'
-    }).then(result => {
-      console.log(result)
-    })
+    // updateSubscriptionData({
+    //   userId: userId,
+    //   platform: 'web',
+    //   productId: subscription.plan.id,
+    //   expiryDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
+    //   trialDurationInDays: subscription.plan.trial_period_days || 0,
+    //   duration: `${result.data.productPrice.recurring.interval_count} ${result.data.productPrice.recurring.interval}`,
+    //   transactionId: subscription.id,
+    //   transactionDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.created * 1000))
+    // }).then(result => {
+    //   console.log(result)
+    // })
   }, [])
 
   useEffect(() => {
