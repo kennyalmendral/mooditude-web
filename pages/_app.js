@@ -65,66 +65,73 @@ function App({ Component, pageProps }) {
 
   useEffect(() => {
     if (router) {
-      firebaseAuth.onAuthStateChanged(user => {
-        if (user) {
-          if (
-            router.pathname == '/onboarding/welcome' || 
-            router.pathname == '/onboarding/1' || 
-            router.pathname == '/onboarding/2' || 
-            router.pathname == '/onboarding/3' || 
-            router.pathname == '/onboarding/4' || 
-            router.pathname == '/onboarding/5' || 
-            router.pathname == '/onboarding/6' || 
-            router.pathname == '/onboarding/7'
-          ) {
-            firebaseDatabase
-              .ref()
-              .child('users')
-              .child(user.uid)
-              .once('value')
-              .then((snapshot) => {
-                const snapshotValue = snapshot.val()
 
-                if (snapshotValue != null) {
-                  firebaseStore
-                    .collection('M3Assessment')
-                    .doc(user.uid)
-                    .collection('scores')
-                    .get()
-                    .then(doc => {
-                      if (
-                        (doc.docs.length > 0) && 
-                        ((snapshotValue != null && snapshotValue.committedToSelfhelp == 'true') || 
-                        (snapshotValue != null && snapshotValue.committedToSelfhelp == 'false'))
-                      ) {
-                        // router.push('/')
-                        setCheckAuth(true)
-                        removePageLoader()
-                      } else if (
-                        (snapshotValue != null && snapshotValue.committedToSelfhelp == 'true') || 
-                        (snapshotValue != null && snapshotValue.committedToSelfhelp == 'false')
-                      ) {
-                        router.push('/onboarding/get-started')
-                        setCheckAuth(true)
-                        removePageLoader()
-                      }else{
-                        setCheckAuth(true)
-                        removePageLoader()
-                      }
-                    })
-                } else {
-                  removePageLoader()
-                }
-              })
+      if (sessionStorage.getItem('end_update') == 'yes') {
+        router.push('/onboarding/finish')
+      }else{
+        firebaseAuth.onAuthStateChanged(user => {
+          if (user) {
+            if (
+              router.pathname == '/onboarding/welcome' || 
+              router.pathname == '/onboarding/1' || 
+              router.pathname == '/onboarding/2' || 
+              router.pathname == '/onboarding/3' || 
+              router.pathname == '/onboarding/4' || 
+              router.pathname == '/onboarding/5' || 
+              router.pathname == '/onboarding/6' || 
+              router.pathname == '/onboarding/7'
+            ) {
+              firebaseDatabase
+                .ref()
+                .child('users')
+                .child(user.uid)
+                .once('value')
+                .then((snapshot) => {
+                  const snapshotValue = snapshot.val()
+
+                  if (snapshotValue != null) {
+                    firebaseStore
+                      .collection('M3Assessment')
+                      .doc(user.uid)
+                      .collection('scores')
+                      .get()
+                      .then(doc => {
+                        if (
+                          (doc.docs.length > 0) && 
+                          ((snapshotValue != null && snapshotValue.committedToSelfhelp == 'true') || 
+                          (snapshotValue != null && snapshotValue.committedToSelfhelp == 'false'))
+                        ) {
+                          // router.push('/')
+                          setCheckAuth(true)
+                          removePageLoader()
+                        } else if (
+                          (snapshotValue != null && snapshotValue.committedToSelfhelp == 'true') || 
+                          (snapshotValue != null && snapshotValue.committedToSelfhelp == 'false')
+                        ) {
+                          router.push('/onboarding/get-started')
+                          setCheckAuth(true)
+                          removePageLoader()
+                        }else{
+                          setCheckAuth(true)
+                          removePageLoader()
+                        }
+                      })
+                  } else {
+                    removePageLoader()
+                  }
+                })
+            }else{
+              setCheckAuth(true)
+              removePageLoader()
+            }
           }else{
-            setCheckAuth(true)
+            setCheckAuth(false)
             removePageLoader()
           }
-        }else{
-          setCheckAuth(false)
-          removePageLoader()
-        }
-      })
+        })
+      }
+
+      
     }
   }, [router])
 

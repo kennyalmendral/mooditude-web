@@ -48,7 +48,6 @@ export default function Onboarding7() {
 
   const [profileStepAnswer, setProfileStepAnswer] = useState(null)
   const [formError, setFormError] = useState(false)
-
   const [checking, setChecking] = useState(false)
 
   useEffect(() => {
@@ -73,58 +72,21 @@ export default function Onboarding7() {
     }
   }, [])
 
-  useEffect(() => {
-    profileStepAnswer !== null && console.log(`Profile step 7 answer: ${profileStepAnswer}`)
-  }, [profileStepAnswer])
+  // useEffect(() => {
+  //   profileStepAnswer !== null && console.log(`Profile step 7 answer: ${profileStepAnswer}`)
+  // }, [profileStepAnswer])
 
   const handleNextStep = () => {
     setFormError(false)
 
-    setChecking(true)
+    // setChecking(true)
 
     console.log(profileStepAnswer)
 
     if (profileStepAnswer !== null) {
       localStorage.setItem(`${authUser.uid}_profileStep7Answer`, profileStepAnswer)
-
-      if (authUser) {
-        const updateUserProfileOnboarding = firebaseFunctions.httpsCallable('updateUserProfileOnboarding')
-
-        updateUserProfileOnboarding({
-          userId: authUser.uid,
-          ageGroup: parseInt(localStorage.getItem(`${authUser.uid}_profileStep1Answer`)) || 0,
-          gender: parseInt(localStorage.getItem(`${authUser.uid}_profileStep2Answer`)) || 0,
-          topGoal: localStorage.getItem(`${authUser.uid}_profileStep3Answer`) || '',
-          topChallenges: localStorage.getItem(`${authUser.uid}_profileStep4Answer`) || '',
-          goingToTherapy: localStorage.getItem(`${authUser.uid}_profileStep5Answer`) === 'true' || false,
-          knowCbt: localStorage.getItem(`${authUser.uid}_profileStep6Answer`) === 'true' || false,
-          committedToSelfhelp: (parseInt(localStorage.getItem(`${authUser.uid}_profileStep7Answer`)) > 1) ? true : false,
-          committedToSelfHelpScale: parseInt(localStorage.getItem(`${authUser.uid}_profileStep7Answer`)) || null,
-          onboardingStep: 'profileCreated',
-          makePromiseReason: reason || '',
-          topGoalOtherReason: localStorage.getItem(`${authUser.uid}_profileStep3AnswerOtherReason`) || ''
-        }).then(result => {
-          localStorage.removeItem(`${authUser.uid}_profileStep1Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep2Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep3Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep3AnswerOtherReason`)
-          localStorage.removeItem(`${authUser.uid}_profileStep4Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep5Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep6Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep7Answer`)
-          localStorage.removeItem(`${authUser.uid}_profileStep7AnswerReason`)
-          
-          if (localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
-            localStorage.setItem(`${authUser.uid}_onboardingStep`, 'profileCreated')
-          }
-
-          if (result.data.updated) {
-            location.href = '/onboarding/finish'
-          } else {
-            setChecking(false)
-          }
-        })
-      }
+      localStorage.setItem(`${authUser.uid}_profileStep7ReasonAnswer`, reason)
+      router.push('/onboarding/finish')
     } else {
       setFormError(true)
     }
@@ -228,15 +190,15 @@ export default function Onboarding7() {
                 color="secondary"
                 variant="outlined"
                 onClick={() => {router.push(`/onboarding/6`)}}
-                // onClick={handlePrevStep}
+                
               >Back</Button>
 
               <Button 
                 size="large" 
                 variant="contained"
                 disabled={profileStepAnswer == null ? true : false}
-                // onClick={() => {router.push(`/onboarding/finish`)}}
-                onClick={handleNextStep}
+                
+                onClick={e => {handleNextStep()}}
               >Next</Button>
             </Stack>
           </div>
