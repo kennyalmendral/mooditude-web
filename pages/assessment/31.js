@@ -30,14 +30,17 @@ import Animation from '@mui/material/Fade';
 import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
+import GridLoader from "react-spinners/GridLoader"
+import RingLoader from "react-spinners/RingLoader"
+
+import { format, startOfDay } from 'date-fns'
+
 import Firebase from 'lib/Firebase'
 
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
 const firebaseFunctions = Firebase.functions()
-import GridLoader from "react-spinners/GridLoader"
-import RingLoader from "react-spinners/RingLoader"
 
 export default function Assessment31(props) {
   const router = useRouter()
@@ -66,7 +69,7 @@ export default function Assessment31(props) {
     if (authUser && localStorage.getItem(`${authUser.uid}_currentAssessmentStep`) !== null) {
       localStorage.setItem(`${authUser.uid}_currentAssessmentStep`, 31)
 
-      console.log(`Current assessment step: ${localStorage.getItem(`${authUser.uid}_currentAssessmentStep`)}`)
+      // console.log(`Current assessment step: ${localStorage.getItem(`${authUser.uid}_currentAssessmentStep`)}`)
     }
 
     if (authUser && localStorage.getItem(`${authUser.uid}_assessmentStep31Answer`) > 0) {
@@ -74,7 +77,7 @@ export default function Assessment31(props) {
     }
 
     setTimer(setInterval(() => {
-      console.log(`Time to answer: ${assessmentStep31Time}`)
+      // console.log(`Time to answer: ${assessmentStep31Time}`)
       setAssessmentStep31Time(assessmentStep31Time++)
     }, 1000))
   }, [])
@@ -156,16 +159,20 @@ export default function Assessment31(props) {
 
       let usersM3AssessmentScoresRef
 
-      const d = new Date()
-      const year = d.getUTCFullYear()
-      const month = d.getUTCMonth()
-      const day = d.getUTCDate()
-      const startTime = Date.UTC(year, month, day, 0, 0, 0, 0)
+      // const d = new Date()
+      // const year = d.getUTCFullYear()
+      // const month = d.getUTCMonth()
+      // const day = d.getUTCDate()
+      // const startTime = Date.UTC(year, month, day, 0, 0, 0, 0)
 
-      let epochMilliseconds = startTime.toString()
+      // let epochMilliseconds = startTime.toString()
+
+      let epochMilliseconds = new Date(startOfDay(new Date().getTime())).getTime().toString()
 
       let isNewCollection = false
+
       setshowLoader(true)
+      
       usersM3AssessmentScoresRef = firebaseStore
         .collection('M3Assessment')
         .doc(authUser.uid)
@@ -211,17 +218,26 @@ export default function Assessment31(props) {
                   epochId: epochMilliseconds,
                   rawData: assessmentAnswers.join(','),
                 }).then(result => {
-                  console.log('updateUserM3AssessmentScores', result.data)
+                  // console.log('updateUserM3AssessmentScores', result.data)
 
                   firebaseDatabase
                     .ref()
                     .child('users')
                     .child(authUser.uid)
                     .update({
-                      onboardingStep: 'tookAssessment'
+                      onboardingStep: 'onboardingCompleted'
                     })
-
-                  router.push(`/assessment/report?user=${authUser.uid}&score=${epochMilliseconds}`)
+                    .then(() => {
+                      const applyReportCredit = firebaseFunctions.httpsCallable('applyReportCredit')
+  
+                      applyReportCredit({
+                        user: authUser.uid,
+                        score: epochMilliseconds,
+                      }).then(result => {
+                        console.log(result)
+                        router.push(`/assessment/report?user=${authUser.uid}&score=${epochMilliseconds}`)
+                      })
+                    })
                 })
               })
           } else {
@@ -232,14 +248,14 @@ export default function Assessment31(props) {
               epochId: epochMilliseconds,
               rawData: assessmentAnswers.join(','),
             }).then(result => {
-              console.log('updateUserM3AssessmentScores', result.data)
+              // console.log('updateUserM3AssessmentScores', result.data)
 
               firebaseDatabase
                 .ref()
                 .child('users')
                 .child(authUser.uid)
                 .update({
-                  onboardingStep: 'tookAssessment'
+                  onboardingStep: 'onboardingCompleted'
                 })
 
               router.push(`/assessment/report?user=${authUser.uid}&score=${epochMilliseconds}`)
@@ -377,7 +393,7 @@ export default function Assessment31(props) {
                     epochId: epochMilliseconds,
                     rawData: assessmentAnswers.join(','),
                   }).then(result => {
-                    console.log('updateUserM3AssessmentScores', result.data)
+                    // console.log('updateUserM3AssessmentScores', result.data)
 
                     firebaseDatabase
                       .ref()
@@ -398,7 +414,7 @@ export default function Assessment31(props) {
                 epochId: epochMilliseconds,
                 rawData: assessmentAnswers.join(','),
               }).then(result => {
-                console.log('updateUserM3AssessmentScores', result.data)
+                // console.log('updateUserM3AssessmentScores', result.data)
 
                 firebaseDatabase
                   .ref()

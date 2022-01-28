@@ -101,8 +101,8 @@ export default function Onboarding7() {
           committedToSelfhelp: (parseInt(localStorage.getItem(`${authUser.uid}_profileStep7Answer`)) > 1) ? true : false,
           committedToSelfHelpScale: parseInt(localStorage.getItem(`${authUser.uid}_profileStep7Answer`)) || null,
           onboardingStep: 'profileCreated',
-          makePromiseReason: reason || '',
-          topGoalOtherReason: localStorage.getItem(`${authUser.uid}_profileStep3AnswerOtherReason`) || ''
+          makePromiseReason: reason || '-',
+          topGoalOtherReason: localStorage.getItem(`${authUser.uid}_profileStep3AnswerOtherReason`) || '-'
         }).then(result => {
           localStorage.removeItem(`${authUser.uid}_profileStep1Answer`)
           localStorage.removeItem(`${authUser.uid}_profileStep2Answer`)

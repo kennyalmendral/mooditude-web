@@ -15,10 +15,11 @@ import { format } from 'date-fns'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 
-import Firebase from 'lib/Firebase'
 import TextField from '@mui/material/TextField';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import GridLoader from "react-spinners/GridLoader"
+
+import Firebase from 'lib/Firebase'
 
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
@@ -104,18 +105,34 @@ export default function OnboardingWelcomePage() {
         console.log(session, paymentIntent)
 
         if (authUser) {
-          firebaseDatabase
+          const usersDbRef = firebaseDatabase
             .ref()
             .child('users')
             .child(authUser.uid)
+            
+          usersDbRef
             .update({
-              // customerType: 'premium',
+              customerType: 'free',
               expiryDate: '',
               paymentStatus: 'active',
               paymentType: 'stripe'
             })
             .then(() => {
-              router.push('/?payment_success=true')
+              usersDbRef
+                .child('expiryDate')
+                .remove()
+                .then(() => {
+                  usersDbRef
+                    .update({
+                      assessmentCredit: {
+                        stripeInvoiceId: paymentIntent.id,
+                        purchasedDate: Firebase.firestore.Timestamp.fromDate(new Date(paymentIntent.created * 1000))
+                      }
+                    })
+                    .then(() => {
+                      router.push('/?payment_success=true')
+                    })
+                })              
             })
         }
       })
