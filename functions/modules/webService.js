@@ -269,7 +269,9 @@ exports.updateUserM3AssessmentScores = functions.https.onCall(async (data, conte
   };
 });
 
-exports.updateSubscriptionData = functions.https.onCall(async (data, context) => {
+exports.addSubscriptionData = functions.https.onCall(async (data, context) => {
+  functions.logger.log(data);
+
   const userId = data.userId;
   const platform = data.platform;
   const productId = data.productId;
@@ -278,42 +280,53 @@ exports.updateSubscriptionData = functions.https.onCall(async (data, context) =>
   const duration = data.duration;
   const transactionId = data.transactionId;
   const transactionDate = data.transactionDate;
+  const paymentProcessor = data.paymentProcessor;
 
   let grantObj = {};
 
   if (platform != '') {
-    grantObj[`grant.platform`] = platform;
+    grantObj['platform'] = platform;
   }
 
   if (productId != '') {
-    grantObj[`grant.productId`] = productId;
+    grantObj['productId'] = productId;
   }
 
-  if (expiryDate != '') {
-    grantObj[`grant.expiryDate`] = expiryDate;
+  if (expiryDate) {
+    grantObj['expiryDate'] = admin.firestore.Timestamp.fromDate(new Date(expiryDate));
   }
 
   if (parseInt(trialDurationInDays) > 0) {
-    grantObj[`grant.trialDurationInDays`] = trialDurationInDays;
+    grantObj['trialDurationInDays'] = trialDurationInDays;
   }
 
-  if (duration > 0) {
-    grantObj[`grant.duration`] = duration;
+  if (paymentProcessor != '') {
+    grantObj['paymentProcessor'] = paymentProcessor;
+  }
+
+  if (duration != '') {
+    grantObj['duration'] = duration;
   }
 
   if (transactionId != '') {
-    grantObj[`grant.transactionId`] = transactionId;
+    grantObj['transactionId'] = transactionId;
   }
   
-  if (transactionDate != '') {
-    grantObj[`grant.transactionDate`] = transactionDate;
+  if (transactionDate) {
+    grantObj['transactionDate'] = admin.firestore.Timestamp.fromDate(new Date(transactionDate));
   }
+
+  grantObj['grantType'] = 'Purchase';
+  grantObj['licenseType'] = 'Premium';
+  grantObj['productType'] = 'Subscription';
 
   await admin
     .firestore()
     .collection('Subscribers')
     .doc(userId)
-    .update(grantObj);
+    .set({
+      grant: grantObj
+    });
 
   return {
     updated: true
@@ -493,8 +506,34 @@ exports.getStripeProduct = functions.https.onCall(async (data, context) => {
 });
 
 exports.generatePDFReport = functions.https.onCall(async (data, context) => {
-  functions.logger.log(data.assessmentScores);
-  
+  let assessment;
+  let userProfile;
+
+  await admin
+    .firestore()
+    .collection('M3Assessment')
+    .doc(data.userId)
+    .collection('scores')
+    .doc(data.assessmentId)
+    .get()
+    .then(doc => {
+      assessment = doc.data();
+    });
+
+  functions.logger.log(assessment);
+
+  await admin
+    .database()
+    .ref()
+    .child('users')
+    .child(data.userId)
+    .get()
+    .then(snapshot => {
+      userProfile = snapshot.val();
+    });
+
+  functions.logger.log(userProfile);
+
   const doc = new PDFDocument({
     size: 'A5',
     margins: {
@@ -509,7 +548,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
   const file = admin
     .storage()
     .bucket()
-    .file(`reports/${data.userId}/${data.scoreId}.pdf`);
+    .file(`reports/${data.userId}/${assessment.id}.pdf`);
 
   await new Promise((resolve, reject) => {
     const getQuestion = (index) => {
@@ -619,7 +658,11 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     
     doc
       .moveDown(3.2)
-      .text(data.assessmentDate);
+      .text(new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      }));
 
     doc.fontSize(14);
     doc.font('fonts/CircularStd-Bold.ttf');
@@ -647,15 +690,15 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .fillColor('#072B4F')
-      .text(data.userProfile.name, col2LeftPos, colTop, { width: colWidth * 2 });
+      .text(userProfile.name, col2LeftPos, colTop, { width: colWidth * 2 });
 
     let age;
 
-    if (data.userProfile.ageGroup == 1) age = '< 18';
-    else if (data.userProfile.ageGroup == 2) age = '18 — 24';
-    else if (data.userProfile.ageGroup == 3) age = '25 — 39';
-    else if (data.userProfile.ageGroup == 4) age = '40 — 59';
-    else if (data.userProfile.ageGroup == 5) age = '> 60';
+    if (userProfile.ageGroup == 1) age = '< 18';
+    else if (userProfile.ageGroup == 2) age = '18 — 24';
+    else if (userProfile.ageGroup == 3) age = '25 — 39';
+    else if (userProfile.ageGroup == 4) age = '40 — 59';
+    else if (userProfile.ageGroup == 5) age = '> 60';
 
     doc
       .moveDown(0.5)
@@ -673,11 +716,11 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     let gender;
 
-    if (data.userProfile.gender == 1) gender = 'Male';
-    else if (data.userProfile.gender == 2) gender = 'Female';
-    else if (data.userProfile.gender == 3) gender = 'Transgender';
-    else if (data.userProfile.gender == 4) gender = 'Non-binary';
-    else if (data.userProfile.gender == 5) gender = 'Other';
+    if (userProfile.gender == 1) gender = 'Male';
+    else if (userProfile.gender == 2) gender = 'Female';
+    else if (userProfile.gender == 3) gender = 'Transgender';
+    else if (userProfile.gender == 4) gender = 'Non-binary';
+    else if (userProfile.gender == 5) gender = 'Other';
 
     doc
       .fillColor('#072B4F')
@@ -696,57 +739,68 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     let allScoreMarginLeft;
 
-    if (data.assessmentScores.allScore > 9) {
+    if (assessment.allScore > 9) {
       allScoreMarginLeft = col1LeftPos - 54;
-    } else if (data.assessmentScores.allScore == 0) {
+    } else if (assessment.allScore == 0) {
       allScoreMarginLeft = col1LeftPos - 48;
     } else {
       allScoreMarginLeft = col1LeftPos - 44;
     }
 
-    if ((data.assessmentScores.allScore > 9) && (data.assessmentScores.allScore < 20)) {
+    if ((assessment.allScore > 9) && (assessment.allScore < 20)) {
       doc
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
-        .text(data.assessmentScores.allScore, col1LeftPos - 50, colTop + 88);
-    } else if (data.assessmentScores.allScore > 99) {
+        .text(assessment.allScore, col1LeftPos - 50, colTop + 88);
+    } else if (assessment.allScore > 99) {
       doc
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
-        .text(data.assessmentScores.allScore, col1LeftPos - 60, colTop + 88);
-    } else if (data.assessmentScores.allScore == 0) {
+        .text(assessment.allScore, col1LeftPos - 60, colTop + 88);
+    } else if (assessment.allScore == 0) {
       doc
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
-        .text(data.assessmentScores.allScore, col1LeftPos - 48, colTop + 88);
+        .text(assessment.allScore, col1LeftPos - 48, colTop + 88);
     } else {
       doc
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
-        .text(data.assessmentScores.allScore, (40 / 2) + parseInt(doc.widthOfString(data.assessmentScores.allScore.toString())), colTop + 88);
+        .text(assessment.allScore, (40 / 2) + parseInt(doc.widthOfString(assessment.allScore.toString())), colTop + 88);
     }
 
+    let allRiskLevel;
     let allRiskLevelShortDescription;
 
-    if (data.allRiskLevel == 'unlikely') {
-      allRiskLevelShortDescription = `Score of ${data.assessmentScores.allScore} shows that it is unlikely you are suffering from a mental health condition at this time.`;
-    } else if (data.allRiskLevel == 'low') {
-      allRiskLevelShortDescription = `Score of ${data.assessmentScores.allScore} suggests that you have a low risk of a mental health condition.`;
-    } else if (data.allRiskLevel == 'medium') {
-      allRiskLevelShortDescription = `Score of ${data.assessmentScores.allScore} suggests that you have a medium risk of a mental health condition.`;
-    } else if (data.allRiskLevel == 'high') {
-      allRiskLevelShortDescription = `Score of ${data.assessmentScores.allScore} suggests that you have a high risk of a mental health condition.`;
+    if (assessment.allScore <= 1) {
+      allRiskLevel = 'unlikely';
+    } else if ((assessment.allScore >= 2) && (assessment.allScore <= 32)) {
+      allRiskLevel = 'low';
+    } else if ((assessment.allScore >= 33) && (assessment.allScore <= 50)) {
+      allRiskLevel = 'medium';
+    } else if ((assessment.allScore >= 51) && (assessment.allScore <= 108)) {
+      allRiskLevel = 'high';
+    }
+
+    if (allRiskLevel == 'unlikely') {
+      allRiskLevelShortDescription = `Score of ${assessment.allScore} shows that it is unlikely you are suffering from a mental health condition at this time.`;
+    } else if (allRiskLevel == 'low') {
+      allRiskLevelShortDescription = `Score of ${assessment.allScore} suggests that you have a low risk of a mental health condition.`;
+    } else if (allRiskLevel == 'medium') {
+      allRiskLevelShortDescription = `Score of ${assessment.allScore} suggests that you have a medium risk of a mental health condition.`;
+    } else if (allRiskLevel == 'high') {
+      allRiskLevelShortDescription = `Score of ${assessment.allScore} suggests that you have a high risk of a mental health condition.`;
     }
 
     doc
       .fillColor('#072B4F')
       .font('fonts/CircularStd-Bold.ttf')
       .fontSize(18)
-      .text((data.allRiskLevel.charAt(0).toUpperCase() + data.allRiskLevel.slice(1)) + ' Risk', col2LeftPos, colTop + 72, { width: colWidth })
+      .text((allRiskLevel.charAt(0).toUpperCase() + allRiskLevel.slice(1)) + ' Risk', col2LeftPos, colTop + 72, { width: colWidth })
       .fillColor('#516B84')
       .fontSize(10)
       .font('fonts/CircularStd-Medium.ttf')
@@ -760,13 +814,13 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     let allRiskLevelDesciption;
 
-    if (data.allRiskLevel == 'unlikely') {
+    if (allRiskLevel == 'unlikely') {
       allRiskLevelDesciption = `Your score is below the level usually found for individuals already known to be suffering from a mood or anxiety disorder. Despite this low score, it is still important to refer to the information and recommendations below concerning your risk for each of the four conditions described.`;
-    } else if (data.allRiskLevel == 'low') {
+    } else if (allRiskLevel == 'low') {
       allRiskLevelDesciption = `Your score is in the lower range as compared to individuals already known to be suffering from a mood or anxiety disorder. Despite this relatively low score, your symptoms may be impacting your life, livelihood, and general well-being. Read closely the information and recommendations below concerning your risk of each of the four conditions described.`;
-    } else if (data.allRiskLevel == 'medium') {
+    } else if (allRiskLevel == 'medium') {
       allRiskLevelDesciption = `Your score is in the mid-range as compared to individuals already known to be suffering from a mood or anxiety disorder. This is a significant finding, as it suggests that your symptoms are probably impacting your life and general well-being. Read carefully the information and recommendations below concerning your risk of each of the four conditions described.`;
-    } else if (data.allRiskLevel == 'high') {
+    } else if (allRiskLevel == 'high') {
       allRiskLevelDesciption = `Your score is in the high range as compared to individuals already known to be suffering from a mood or anxiety disorder. This is cause for real concern, as it suggests that your symptoms are impacting your life and general health. Read carefully the information and recommendations below concerning your risk of each of the four conditions described.`;
     }
 
@@ -820,15 +874,26 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .font('fonts/CircularStd-Bold.ttf')
       .text('Disorder Risks');
 
+    let depressionRiskLevel;
     let depressionRiskLevelText;
 
-    if (data.depressionRiskLevel == 'unlikely') {
+    if (assessment.depressionScore <= 4) {
+      depressionRiskLevel = 'unlikely';
+    } else if ((assessment.depressionScore >= 5) && (assessment.depressionScore <= 7)) {
+      depressionRiskLevel = 'low';
+    } else if ((assessment.depressionScore >= 8) && (assessment.depressionScore <= 10)) {
+      depressionRiskLevel = 'medium';
+    } else if (assessment.depressionScore > 10) {
+      depressionRiskLevel = 'high';
+    }
+
+    if (depressionRiskLevel == 'unlikely') {
       depressionRiskLevelText = `This low score means you have few symptoms of depression at this time.`;
-    } else if (data.depressionRiskLevel == 'low') {
+    } else if (depressionRiskLevel == 'low') {
       depressionRiskLevelText = `People scoring in this range on the depression scale tend to have a 1 in 3 chance of suffering from depression.`;
-    } else if (data.depressionRiskLevel == 'medium') {
+    } else if (depressionRiskLevel == 'medium') {
       depressionRiskLevelText = `People scoring in this range on the depression scale tend to have a 2 in 3 chance of suffering from depression.`;
-    } else if (data.depressionRiskLevel == 'high') {
+    } else if (depressionRiskLevel == 'high') {
       depressionRiskLevelText = `People scoring in this range on the depression scale typically have a 90% chance of suffering from depression.`;
     }
 
@@ -837,10 +902,10 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .fillColor('#072B4F')
       .font('fonts/CircularStd-Medium.ttf')
       .fontSize(11)
-      .text(`Depression — ${data.depressionRiskLevel.charAt(0).toUpperCase() + data.depressionRiskLevel.slice(1)} Risk`);
+      .text(`Depression — ${depressionRiskLevel.charAt(0).toUpperCase() + depressionRiskLevel.slice(1)} Risk`);
 
     doc
-      .image(`images/${data.depressionRiskLevel}-risk.png`, doc.x, doc.y + 3, {
+      .image(`images/${depressionRiskLevel}-risk.png`, doc.x, doc.y + 3, {
         // width: 227,
         height: 3,
         valign: 'bottom'
@@ -850,26 +915,39 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .moveDown(0.9)
       .fontSize(9)
       .text(depressionRiskLevelText);
-
+    
+    let anxietyScore = assessment.gadScore + assessment.panicScore + assessment.socialAnxietyScore + assessment.ptsdScore + assessment.ocdScore;
+    
+    let anxietyRiskLevel;
     let anxietyRiskLevelText;
 
-    if (data.anxietyRiskLevel == 'unlikely') {
+    if (anxietyScore <= 2) {
+      anxietyRiskLevel = 'unlikely';
+    } else if ((anxietyScore >= 3) && (anxietyScore <= 5)) {
+      anxietyRiskLevel = 'low';
+    } else if ((anxietyScore >= 6) && (anxietyScore <= 11)) {
+      anxietyRiskLevel = 'medium';
+    } else if (anxietyScore > 11) {
+      anxietyRiskLevel = 'high';
+    }
+
+    if (anxietyRiskLevel == 'unlikely') {
       anxietyRiskLevelText = `This low score means you do not have symptoms of an anxiety disorder at this time.`;
-    } else if (data.anxietyRiskLevel == 'low') {
+    } else if (anxietyRiskLevel == 'low') {
       anxietyRiskLevelText = `People scoring in this range on the anxiety scale tend to have a 1 in 3 chance of suffering from an anxiety disorder.`;
-    } else if (data.anxietyRiskLevel == 'medium') {
+    } else if (anxietyRiskLevel == 'medium') {
       anxietyRiskLevelText = `People scoring in this range on the anxiety scale tend to have about a 50% chance of suffering from an anxiety disorder.`;
-    } else if (data.anxietyRiskLevel == 'high') {
+    } else if (anxietyRiskLevel == 'high') {
       anxietyRiskLevelText = `People scoring in this range on the anxiety scale tend to have a 90% chance of suffering from an anxiety disorder.`;
     }
 
     doc
       .moveDown(1.6)
       .fontSize(11)
-      .text(`Anxiety — ${data.anxietyRiskLevel.charAt(0).toUpperCase() + data.anxietyRiskLevel.slice(1)} Risk`);
+      .text(`Anxiety — ${anxietyRiskLevel.charAt(0).toUpperCase() + anxietyRiskLevel.slice(1)} Risk`);
 
     doc
-      .image(`images/${data.anxietyRiskLevel}-risk.png`, doc.x, doc.y + 3, {
+      .image(`images/${anxietyRiskLevel}-risk.png`, doc.x, doc.y + 3, {
         height: 3,
         valign: 'bottom'
       });
@@ -879,25 +957,36 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .fontSize(9)
       .text(anxietyRiskLevelText);
     
+    let ptsdRiskLevel;
     let ptsdRiskLevelText;
 
-    if (data.ptsdRiskLevel == 'unlikely') {
+    if (assessment.ptsdScore <= 1) {
+      ptsdRiskLevel = 'unlikely';
+    } else if ((assessment.ptsdScore >= 2) && (assessment.ptsdScore <= 3)) {
+      ptsdRiskLevel = 'low';
+    } else if ((assessment.ptsdScore >= 4) && (assessment.ptsdScore <= 5)) {
+      ptsdRiskLevel = 'medium';
+    } else if (assessment.ptsdScore > 5) {
+      ptsdRiskLevel = 'high';
+    }
+
+    if (ptsdRiskLevel == 'unlikely') {
       ptsdRiskLevelText = `This low score means you do not have symptoms of posttraumatic stress disorder (PTSD) at this time.`;
-    } else if (data.ptsdRiskLevel == 'low') {
+    } else if (ptsdRiskLevel == 'low') {
       ptsdRiskLevelText = `Many individuals who have posttraumatic stress disorder (PTSD) respond to the scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, your risk of PTSD is just 1 in 8, though there could be another underlying mood or anxiety condition. (Naturally, if you have experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)`;
-    } else if (data.ptsdRiskLevel == 'medium') {
+    } else if (ptsdRiskLevel == 'medium') {
       ptsdRiskLevelText = `Most individuals who have posttraumatic stress disorder (PTSD) respond to the scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, your risk of PTSD is just 1 in 5, though there could be another underlying mood or anxiety condition. (Naturally, if you have experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)`;
-    } else if (data.ptsdRiskLevel == 'high') {
+    } else if (ptsdRiskLevel == 'high') {
       ptsdRiskLevelText = `Most individuals who have posttraumatic stress disorder (PTSD) respond to the PTSD scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, the likelihood that you have PTSD is about 1 in 3, though there is a high likelihood of another underlying mood or anxiety condition. Further assessment may help clarify these results. (Naturally, if you are aware of having experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)`;
     }
 
     doc
       .moveDown(1.6)
       .fontSize(11)
-      .text(`PTSD — ${data.ptsdRiskLevel.charAt(0).toUpperCase() + data.ptsdRiskLevel.slice(1)} Risk`);
+      .text(`PTSD — ${ptsdRiskLevel.charAt(0).toUpperCase() + ptsdRiskLevel.slice(1)} Risk`);
 
     doc
-      .image(`images/${data.ptsdRiskLevel}-risk.png`, doc.x, doc.y + 3, {
+      .image(`images/${ptsdRiskLevel}-risk.png`, doc.x, doc.y + 3, {
         height: 3,
         valign: 'bottom'
       });
@@ -907,25 +996,36 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .fontSize(9)
       .text(ptsdRiskLevelText);
 
+    let bipolarRiskLevel;
     let bipolarRiskLevelText;
 
-    if (data.bipolarRiskLevel == 'unlikely') {
+    if (assessment.bipolarScore <= 1) {
+      bipolarRiskLevel = 'unlikely';
+    } else if ((assessment.bipolarScore >= 2) && (assessment.bipolarScore <= 3)) {
+      bipolarRiskLevel = 'low';
+    } else if ((assessment.bipolarScore >= 4) && (assessment.bipolarScore <= 6)) {
+      bipolarRiskLevel = 'medium';
+    } else if (assessment.bipolarScore > 6) {
+      bipolarRiskLevel = 'high';
+    }
+
+    if (bipolarRiskLevel == 'unlikely') {
       bipolarRiskLevelText = `This low score means you do not have symptoms of bipolar disorder at this time.`;
-    } else if (data.bipolarRiskLevel == 'low') {
+    } else if (bipolarRiskLevel == 'low') {
       bipolarRiskLevelText = `People scoring in this range of the bipolar scale tend to have a 1 in 9 chance of having bipolar disorder. Nonetheless, more than a third of people in this range have some type of mood or anxiety condition. Further assessment may help clarify these results.`;
-    } else if (data.bipolarRiskLevel == 'medium') {
+    } else if (bipolarRiskLevel == 'medium') {
       bipolarRiskLevelText = `People scoring in this range of the bipolar scale tend to have a 1 in 3 chance of having bipolar disorder, or possible another mood or anxiety condition. Further assessment may help clarify these results.`;
-    } else if (data.bipolarRiskLevel == 'high') {
+    } else if (bipolarRiskLevel == 'high') {
       bipolarRiskLevelText = `People scoring in this range of the bipolar scale tend to have a 50% likelihood of having bipolar disorder. Though the score is high, there is a high false positive rate, so further assessment may help clarify these results.`;
     }
 
     doc
       .moveDown(1.6)
       .fontSize(11)
-      .text(`Bipolar Disorder — ${data.bipolarRiskLevel.charAt(0).toUpperCase() + data.bipolarRiskLevel.slice(1)} Risk`);
+      .text(`Bipolar Disorder — ${bipolarRiskLevel.charAt(0).toUpperCase() + bipolarRiskLevel.slice(1)} Risk`);
 
     doc
-      .image(`images/${data.bipolarRiskLevel}-risk.png`, doc.x, doc.y + 3, {
+      .image(`images/${bipolarRiskLevel}-risk.png`, doc.x, doc.y + 3, {
         height: 3,
         valign: 'bottom'
       });
@@ -967,55 +1067,63 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .text('A Happier You!');
     // End Header 3
 
-    // doc
-    //   .image('images/recommended-actions.png', doc.x, doc.y + 23, {
-    //     // width: 28,
-    //     height: 28,
-    //     valign: 'bottom'
-    //   });
+    let hasSuicidalThoughts = false;
+    let usedDrug = false;
+    let usedAlcohol = false;
 
-    // doc
-    //   .moveDown(5)
-    //   .fontSize(14)
-    //   .font('fonts/CircularStd-Bold.ttf')
-    //   .text('RecommendedActions', doc.x + 40, doc.y - 25, { width: 100 });
+    let thoughtsOfSuicideAnswer = 0;
+    let impairsWorkSchoolAnswer = 0;
+    let impairsFriendsFamilyAnswer = 0;
+    let ledToUsingAlcoholAnswer = 0;
+    let ledToUsingDrugAnswer = 0;
 
-    // doc
-    //   .moveDown(1)
-    //   .fontSize(9)
-    //   .font('fonts/CircularStd-Medium.ttf');
+    const questions = assessment.rawData.split(',').map(question => parseInt(question));
 
-    // if (data.allRiskLevel == 'unlikely') {
-    //   doc
-    //     .text(`Your responses suggest that you are not suffering from a significant mood or anxiety disorder at the present time. However, before closing the book on this matter there are a few points you should consider.`, doc.x - 40)
-    //     .moveDown()
-    //     .text(`A small percentage of individuals with mood or anxiety disorders fail to be picked up by the assessment. Therefore, if you find yourself experiencing troubling mood or anxiety-related symptoms then you should certainly present your concerns to your primary care practitioner or perhaps to a mental health clinician.`)
-    //     .moveDown()
-    //     .text(`A tendency to underestimate the effects of your symptoms on friendships, home, or work-life may have resulted in an “all is well” report when perhaps this is not strictly true. Call it “denial,” not wishing to complain, or simply trying to “tough it out,” underreporting trouble could backfire and cause you more distress in the future. Avoid the pitfall of assuming that the way you feel “is to be expected considering my circumstances.” While bad feelings are naturally the result of difficult and stressful life situations, mood and anxiety disorders are real medical conditions that may be triggered by such stresses. When they do arise, these conditions make it more difficult to cope with the problems confronting you, and so it is always in your best interest to get them evaluated.`)
-    //     .moveDown()
-    //     .text(`Milder or subclinical varieties of mood and anxiety occasionally develop into more serious conditions. In such instances, symptoms may be less severe but nonetheless distracting or annoying, slowing you down or making things more stressful than they should be. If you feel this may apply to you, you should consider raising the issue with your physician and sharing your responses to these questions.`)
-    //     .moveDown()
-    //     .text(`Mood and anxiety disorders typically come in episodes. Therefore, even if you are feeling fine now, it is in your best interest to revisit this checklist every 6 months or so. Naturally, if at any point you find yourself experiencing some of the symptoms described in the assessment, please return and repeat the checklist at your first opportunity.`)
-    //     .moveDown()
-    //     .text(`Mooditude has over 800 minutes of self-care activities. Make a habit of practicing one of them for just 10 minutes per day. This will help you maintain your mental well-being.`);
-    // } else if (data.allRiskLevel == 'low') {
-    //   doc
-    //     .text(`Your low overall score means that your symptoms are somewhat milder than average. However, mild symptoms still may have a negative effect on your well-being and, when left untreated, can grow worse with time. You may possibly benefit from contacting your physician or a mental health care provider to begin a discussion of your responses to these questions. It is important for you to share these results with your physician.`, doc.x - 40)
-    //     .moveDown()
-    //     .text(`Mood and anxiety disorders can affect not only your general sense of well-being but your physical health as well, increasing the risk or severity of heart disease, stroke, diabetes, chronic pain, and other chronic health conditions.`);
-    // } else if (data.allRiskLevel == 'medium') {
-    //   doc
-    //     .text(`Your overall score suggests that you would benefit from contacting your physician or a mental health care provider to begin a discussion of your responses to these questions.  It is important for you to share these results with your physician.`, doc.x - 40)
-    //     .moveDown()
-    //     .text(`Mood and anxiety disorders can affect not only your general sense of well-being but your physical health as well, increasing the risk or severity of heart disease, stroke, diabetes, chronic pain, and other chronic health conditions.`);
-    // } else if (data.allRiskLevel == 'high') {
-    //   doc
-    //     .text(`Your overall score suggests that you would benefit from contacting your physician or a mental health care provider as soon as possible to begin a discussion of your responses to these questions.  It is important for you to share these results with your physician.`, doc.x - 40)
-    //     .moveDown()
-    //     .text(`Mood and anxiety disorders can affect not only your general sense of well-being but your physical health as well, increasing the risk or severity of heart disease, stroke, diabetes, chronic pain, and other chronic health conditions.`);
-    // }
+    questions.forEach((value, index) => {
+      if ((index == 7) || (index == 9)) {
+        return;
+      }
 
-    if (data.hasSuicidalThoughts) {
+      if (index == 4) {
+        if (value > 0) {
+          hasSuicidalThoughts = true;
+        } else {
+          hasSuicidalThoughts = false;
+        }
+
+        thoughtsOfSuicideAnswer = value;
+      }
+
+      if (index == 25) {
+        impairsWorkSchoolAnswer = value;
+      }
+  
+      if (index == 26) {
+        impairsFriendsFamilyAnswer = value;
+      }
+
+      if (index == 27) {
+        if (value > 0) {
+          usedAlcohol = true;
+        } else {
+          usedAlcohol = false;
+        }
+
+        ledToUsingAlcoholAnswer = value;
+      }
+
+      if (index == 28) {
+        if (value > 0) {
+          usedDrug = true;
+        } else {
+          usedDrug = false;
+        }
+
+        ledToUsingDrugAnswer = value;
+      }
+    });
+
+    if (hasSuicidalThoughts) {
       doc
         .moveDown(1.5)
         .rect(doc.x + 60, doc.y, 240, 80)
@@ -1040,11 +1148,12 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
           width: 200,
           align: 'center'
         })
-        .moveDown(2.5);
+        .moveDown(1);
     }
 
-    if (data.usedDrug && data.usedAlcohol) {
+    if (usedDrug && usedAlcohol) {
       doc
+        .moveDown(1.5)
         .font('fonts/CircularStd-Medium.ttf')
         .fontSize(11)
         .text(`Substance Abuse`, defaultMarginLeft)
@@ -1057,8 +1166,9 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
         .text(`It is likely that a more appropriate and more effective means for managing your symptoms can be found, bringing with it a real chance for improvement in your functioning, quality of life, and overall health.`, defaultMarginLeft);
     }
 
-    if (data.usedDrug && !data.usedAlcohol) {
+    if (usedDrug && !usedAlcohol) {
       doc
+        .moveDown(1.5)
         .font('fonts/CircularStd-Medium.ttf')
         .fontSize(11)
         .text(`Drug Abuse`, defaultMarginLeft)
@@ -1071,8 +1181,9 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
         .text(`It is likely that a more appropriate and more effective means for managing your symptoms can be found, bringing with it a real chance for improvement in your functioning, quality of life, and overall health.`, defaultMarginLeft);
     }
 
-    if (data.usedAlcohol && !data.usedDrug) {
+    if (usedAlcohol && !usedDrug) {
       doc
+        .moveDown(1.5)
         .font('fonts/CircularStd-Medium.ttf')
         .fontSize(11)
         .text(`Alcohol Abuse`, defaultMarginLeft)
@@ -1084,38 +1195,6 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
         .moveDown()
         .text(`It is virtually certain that a more appropriate and more effective means for managing your symptoms can be found, bringing with it a real chance for improvement in your functioning, quality of life, and overall health.`, defaultMarginLeft);
     }
-    // End Page 3
-
-    // doc.addPage()
-
-    // Start Page 4
-    // Start Header 4 
-    // doc
-    //   .rect(0, 0, 3508, 6)
-    //   .fillAndStroke('#F8E71C')
-    //   .stroke();
-
-    // doc
-    //   .image('images/mooditude-logo.png', doc.x, 26, {
-    //     width: 32,
-    //     height: 32,
-    //     valign: 'bottom'
-    //   });
-
-    // doc.fillColor('#072B4F');
-
-    // doc
-    //   .font('fonts/CircularStd-Black.ttf')
-    //   .moveDown(0.1)
-    //   .fontSize(10)
-    //   .text('MOODITUDE');
-    
-    // doc
-    //   .font('fonts/CircularStd-Medium.ttf')
-    //   .moveDown(0)
-    //   .fontSize(7)
-    //   .text('A Happier You!');
-    // End Header 4
 
     doc
       .moveDown(1.5)
@@ -1132,7 +1211,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .text(`Use of this assessment is not an adequate substitute for obtaining medical or other professional advice, diagnosis, or treatment from a qualified licensed health care provider.`, defaultMarginLeft)
       .moveDown()
       .text(`This assessment is not intended for anyone under eighteen (18) years of age and is provided "as is" without any warranties of any kind, either express or implied, and Mooditude disclaims all warranties, including liability for indirect or consequential damages.`, defaultMarginLeft);
-    // End Page 4
+    // End Page 3
 
     doc.addPage()
 
@@ -1178,55 +1257,55 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .fillOpacity(1)
       .fillAndStroke('#EB5757', '#F8E71C');
 
-    if (data.assessmentScores.allScore > 9) {
+    if (assessment.allScore > 9) {
       allScoreMarginLeft = col1LeftPos - 54;
-    } else if (data.assessmentScores.allScore == 0) {
+    } else if (assessment.allScore == 0) {
       allScoreMarginLeft = col1LeftPos - 48;
     } else {
       allScoreMarginLeft = col1LeftPos - 44;
     }
 
-    if ((data.assessmentScores.allScore > 9) && (data.assessmentScores.allScore < 20)) {
+    if ((assessment.allScore > 9) && (assessment.allScore < 20)) {
       doc
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
-        .text(data.assessmentScores.allScore, col1LeftPos - 50, colTop + 4);
-    } else if (data.assessmentScores.allScore > 99) {
+        .text(assessment.allScore, col1LeftPos - 50, colTop + 4);
+    } else if (assessment.allScore > 99) {
       doc
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
-        .text(data.assessmentScores.allScore, col1LeftPos - 60, colTop + 4);
-    } else if (data.assessmentScores.allScore == 0) {
+        .text(assessment.allScore, col1LeftPos - 60, colTop + 4);
+    } else if (assessment.allScore == 0) {
       doc
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
-        .text(data.assessmentScores.allScore, col1LeftPos - 48, colTop + 4);
+        .text(assessment.allScore, col1LeftPos - 48, colTop + 4);
     } else {
       doc
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
-        .text(data.assessmentScores.allScore, (40 / 2) + parseInt(doc.widthOfString(data.assessmentScores.allScore.toString())), colTop + 4);
+        .text(assessment.allScore, (40 / 2) + parseInt(doc.widthOfString(assessment.allScore.toString())), colTop + 4);
     }
 
-    if (data.allRiskLevel == 'unlikely') {
-      allRiskLevelShortDescription = `Score of ${data.assessmentScores.allScore} shows that it is unlikely you are suffering from a mental health condition at this time.`;
-    } else if (data.allRiskLevel == 'low') {
-      allRiskLevelShortDescription = `Score of ${data.assessmentScores.allScore} suggests that you have a low risk of a mental health condition.`;
-    } else if (data.allRiskLevel == 'medium') {
-      allRiskLevelShortDescription = `Score of ${data.assessmentScores.allScore} suggests that you have a medium risk of a mental health condition.`;
-    } else if (data.allRiskLevel == 'high') {
-      allRiskLevelShortDescription = `Score of ${data.assessmentScores.allScore} suggests that you have a high risk of a mental health condition.`;
+    if (allRiskLevel == 'unlikely') {
+      allRiskLevelShortDescription = `Score of ${assessment.allScore} shows that it is unlikely you are suffering from a mental health condition at this time.`;
+    } else if (allRiskLevel == 'low') {
+      allRiskLevelShortDescription = `Score of ${assessment.allScore} suggests that you have a low risk of a mental health condition.`;
+    } else if (allRiskLevel == 'medium') {
+      allRiskLevelShortDescription = `Score of ${assessment.allScore} suggests that you have a medium risk of a mental health condition.`;
+    } else if (allRiskLevel == 'high') {
+      allRiskLevelShortDescription = `Score of ${assessment.allScore} suggests that you have a high risk of a mental health condition.`;
     }
 
     doc
       .fillColor('#072B4F')
       .font('fonts/CircularStd-Bold.ttf')
       .fontSize(18)
-      .text((data.allRiskLevel.charAt(0).toUpperCase() + data.allRiskLevel.slice(1)) + ' Risk', col2LeftPos, colTop - 10, { width: colWidth })
+      .text((allRiskLevel.charAt(0).toUpperCase() + allRiskLevel.slice(1)) + ' Risk', col2LeftPos, colTop - 10, { width: colWidth })
       .fillColor('#516B84')
       .fontSize(10)
       .font('fonts/CircularStd-Medium.ttf')
@@ -1246,16 +1325,16 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .text('Diagnosis Risks', defaultMarginLeft);
     
     doc.moveDown(2);
-
+      
     let depressionRiskLevelColor;
 
-    if (data.depressionRiskLevel == 'unlikely') {
+    if (depressionRiskLevel == 'unlikely') {
       depressionRiskLevelColor = '#5BA23F';
-    } else if (data.depressionRiskLevel == 'low') {
+    } else if (depressionRiskLevel == 'low') {
       depressionRiskLevelColor = '#22A1D1';
-    } else if (data.depressionRiskLevel == 'medium') {
+    } else if (depressionRiskLevel == 'medium') {
       depressionRiskLevelColor = '#F9982C';
-    } else if (data.depressionRiskLevel == 'high') {
+    } else if (depressionRiskLevel == 'high') {
       depressionRiskLevelColor = '#EB5757';
     }
 
@@ -1270,8 +1349,8 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .font('fonts/CircularStd-Medium.ttf')
       .fillColor('#ffffff')
       .text(
-        data.assessmentScores.depressionScore, 
-        data.assessmentScores.depressionScore > 9 ? defaultMarginLeft + 4 : defaultMarginLeft + 6, 
+        assessment.depressionScore, 
+        assessment.depressionScore > 9 ? defaultMarginLeft + 4 : defaultMarginLeft + 6, 
         doc.y - 11
       );
     
@@ -1282,19 +1361,19 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .fillColor('#516B84')
-      .text(data.depressionRiskLevel.charAt(0).toUpperCase() + data.depressionRiskLevel.slice(1), defaultMarginLeft + 178, doc.y - 11);
+      .text(depressionRiskLevel.charAt(0).toUpperCase() + depressionRiskLevel.slice(1), defaultMarginLeft + 178, doc.y - 11);
 
     doc.moveDown(2);
 
     let anxietyRiskLevelColor;
 
-    if (data.anxietyRiskLevel == 'unlikely') {
+    if (anxietyRiskLevel == 'unlikely') {
       anxietyRiskLevelColor = '#5BA23F';
-    } else if (data.anxietyRiskLevel == 'low') {
+    } else if (anxietyRiskLevel == 'low') {
       anxietyRiskLevelColor = '#22A1D1';
-    } else if (data.anxietyRiskLevel == 'medium') {
+    } else if (anxietyRiskLevel == 'medium') {
       anxietyRiskLevelColor = '#F9982C';
-    } else if (data.anxietyRiskLevel == 'high') {
+    } else if (anxietyRiskLevel == 'high') {
       anxietyRiskLevelColor = '#EB5757';
     }
 
@@ -1309,8 +1388,8 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .font('fonts/CircularStd-Medium.ttf')
       .fillColor('#ffffff')
       .text(
-        data.anxietyRiskScore, 
-        data.anxietyRiskScore > 9 ? defaultMarginLeft + 4 : defaultMarginLeft + 6, 
+        anxietyScore, 
+        anxietyScore > 9 ? defaultMarginLeft + 4 : defaultMarginLeft + 6, 
         doc.y - 11
       );
     
@@ -1321,19 +1400,19 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .fillColor('#516B84')
-      .text(data.anxietyRiskLevel.charAt(0).toUpperCase() + data.anxietyRiskLevel.slice(1), defaultMarginLeft + 178, doc.y - 11);
+      .text(anxietyRiskLevel.charAt(0).toUpperCase() + anxietyRiskLevel.slice(1), defaultMarginLeft + 178, doc.y - 11);
   
     doc.moveDown(2);
 
     let ptsdRiskLevelColor;
 
-    if (data.ptsdRiskLevel == 'unlikely') {
+    if (ptsdRiskLevel == 'unlikely') {
       ptsdRiskLevelColor = '#5BA23F';
-    } else if (data.ptsdRiskLevel == 'low') {
+    } else if (ptsdRiskLevel == 'low') {
       ptsdRiskLevelColor = '#22A1D1';
-    } else if (data.ptsdRiskLevel == 'medium') {
+    } else if (ptsdRiskLevel == 'medium') {
       ptsdRiskLevelColor = '#F9982C';
-    } else if (data.ptsdRiskLevel == 'high') {
+    } else if (ptsdRiskLevel == 'high') {
       ptsdRiskLevelColor = '#EB5757';
     }
 
@@ -1348,8 +1427,8 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .font('fonts/CircularStd-Medium.ttf')
       .fillColor('#ffffff')
       .text(
-        data.ptsdRiskScore, 
-        data.ptsdRiskScore > 9 ? defaultMarginLeft + 4 : defaultMarginLeft + 6, 
+        assessment.ptsdScore, 
+        assessment.ptsdScore > 9 ? defaultMarginLeft + 4 : defaultMarginLeft + 6, 
         doc.y - 11
       );
     
@@ -1360,19 +1439,19 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .fillColor('#516B84')
-      .text(data.ptsdRiskLevel.charAt(0).toUpperCase() + data.ptsdRiskLevel.slice(1), defaultMarginLeft + 178, doc.y - 11);
+      .text(ptsdRiskLevel.charAt(0).toUpperCase() + ptsdRiskLevel.slice(1), defaultMarginLeft + 178, doc.y - 11);
 
     doc.moveDown(2);
 
     let bipolarRiskLevelColor;
 
-    if (data.bipolarRiskLevel == 'unlikely') {
+    if (bipolarRiskLevel == 'unlikely') {
       bipolarRiskLevelColor = '#5BA23F';
-    } else if (data.bipolarRiskLevel == 'low') {
+    } else if (bipolarRiskLevel == 'low') {
       bipolarRiskLevelColor = '#22A1D1';
-    } else if (data.bipolarRiskLevel == 'medium') {
+    } else if (bipolarRiskLevel == 'medium') {
       bipolarRiskLevelColor = '#F9982C';
-    } else if (data.bipolarRiskLevel == 'high') {
+    } else if (bipolarRiskLevel == 'high') {
       bipolarRiskLevelColor = '#EB5757';
     }
 
@@ -1387,8 +1466,8 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .font('fonts/CircularStd-Medium.ttf')
       .fillColor('#ffffff')
       .text(
-        data.bipolarRiskScore, 
-        data.bipolarRiskScore > 9 ? defaultMarginLeft + 4 : defaultMarginLeft + 6, 
+        assessment.bipolarScore, 
+        assessment.bipolarScore > 9 ? defaultMarginLeft + 4 : defaultMarginLeft + 6, 
         doc.y - 11
       );
     
@@ -1399,7 +1478,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .fillColor('#516B84')
-      .text(data.bipolarRiskLevel.charAt(0).toUpperCase() + data.bipolarRiskLevel.slice(1), defaultMarginLeft + 178, doc.y - 11);
+      .text(bipolarRiskLevel.charAt(0).toUpperCase() + bipolarRiskLevel.slice(1), defaultMarginLeft + 178, doc.y - 11);
 
     doc
       .moveDown(1.8)
@@ -1413,22 +1492,22 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     let thoughtsOfSuicideAnswerColor;
     let thoughtsOfSuicideAnswerText;
 
-    if (data.thoughtsOfSuicideAnswer == 0) {
+    if (thoughtsOfSuicideAnswer == 0) {
       thoughtsOfSuicideAnswerColor = '#5BA23F';
       thoughtsOfSuicideAnswerText = 'None';
-    } else if (data.thoughtsOfSuicideAnswer == 1) {
+    } else if (thoughtsOfSuicideAnswer == 1) {
       thoughtsOfSuicideAnswerColor = '#5BA23F';
       thoughtsOfSuicideAnswerText = 'Rarely';
-    } else if (data.thoughtsOfSuicideAnswer == 2) {
+    } else if (thoughtsOfSuicideAnswer == 2) {
       thoughtsOfSuicideAnswerColor = '#22A1D1';
       thoughtsOfSuicideAnswerText = 'Sometimes';
-    } else if (data.thoughtsOfSuicideAnswer == 3) {
+    } else if (thoughtsOfSuicideAnswer == 3) {
       thoughtsOfSuicideAnswerColor = '#F9982C';
       thoughtsOfSuicideAnswerText = 'Often';
-    } else if (data.thoughtsOfSuicideAnswer == 4) {
+    } else if (thoughtsOfSuicideAnswer == 4) {
       thoughtsOfSuicideAnswerColor = '#EB5757';
       thoughtsOfSuicideAnswerText = 'Most of the time';
-    } else if (data.thoughtsOfSuicideAnswer == 5) {
+    } else if (thoughtsOfSuicideAnswer == 5) {
       thoughtsOfSuicideAnswerColor = '#EB5757';
       thoughtsOfSuicideAnswerText = 'Most of the time';
     }
@@ -1455,22 +1534,22 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     let impairsWorkSchoolAnswerColor;
     let impairsWorkSchoolAnswerText;
 
-    if (data.impairsWorkSchoolAnswer == 0) {
+    if (impairsWorkSchoolAnswer == 0) {
       impairsWorkSchoolAnswerColor = '#5BA23F';
       impairsWorkSchoolAnswerText = 'None';
-    } else if (data.impairsWorkSchoolAnswer == 1) {
+    } else if (impairsWorkSchoolAnswer == 1) {
       impairsWorkSchoolAnswerColor = '#5BA23F';
       impairsWorkSchoolAnswerText = 'Rarely';
-    } else if (data.impairsWorkSchoolAnswer == 2) {
+    } else if (impairsWorkSchoolAnswer == 2) {
       impairsWorkSchoolAnswerColor = '#22A1D1';
       impairsWorkSchoolAnswerText = 'Sometimes';
-    } else if (data.impairsWorkSchoolAnswer == 3) {
+    } else if (impairsWorkSchoolAnswer == 3) {
       impairsWorkSchoolAnswerColor = '#F9982C';
       impairsWorkSchoolAnswerText = 'Often';
-    } else if (data.impairsWorkSchoolAnswer == 4) {
+    } else if (impairsWorkSchoolAnswer == 4) {
       impairsWorkSchoolAnswerColor = '#EB5757';
       impairsWorkSchoolAnswerText = 'Most of the time';
-    } else if (data.impairsWorkSchoolAnswer == 5) {
+    } else if (impairsWorkSchoolAnswer == 5) {
       impairsWorkSchoolAnswerColor = '#EB5757';
       impairsWorkSchoolAnswerText = 'Most of the time';
     }
@@ -1495,22 +1574,22 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     let impairsFriendsFamilyAnswerColor;
     let impairsFriendsFamilyAnswerText;
 
-    if (data.impairsFriendsFamilyAnswer == 0) {
+    if (impairsFriendsFamilyAnswer == 0) {
       impairsFriendsFamilyAnswerColor = '#5BA23F';
       impairsFriendsFamilyAnswerText = 'None';
-    } else if (data.impairsFriendsFamilyAnswer == 1) {
+    } else if (impairsFriendsFamilyAnswer == 1) {
       impairsFriendsFamilyAnswerColor = '#5BA23F';
       impairsFriendsFamilyAnswerText = 'Rarely';
-    } else if (data.impairsFriendsFamilyAnswer == 2) {
+    } else if (impairsFriendsFamilyAnswer == 2) {
       impairsFriendsFamilyAnswerColor = '#22A1D1';
       impairsFriendsFamilyAnswerText = 'Sometimes';
-    } else if (data.impairsFriendsFamilyAnswer == 3) {
+    } else if (impairsFriendsFamilyAnswer == 3) {
       impairsFriendsFamilyAnswerColor = '#F9982C';
       impairsFriendsFamilyAnswerText = 'Often';
-    } else if (data.impairsFriendsFamilyAnswer == 4) {
+    } else if (impairsFriendsFamilyAnswer == 4) {
       impairsFriendsFamilyAnswerColor = '#EB5757';
       impairsFriendsFamilyAnswerText = 'Most of the time';
-    } else if (data.impairsFriendsFamilyAnswer == 5) {
+    } else if (impairsFriendsFamilyAnswer == 5) {
       impairsFriendsFamilyAnswerColor = '#EB5757';
       impairsFriendsFamilyAnswerText = 'Most of the time';
     }
@@ -1527,7 +1606,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .text('Impairs friends/family', defaultMarginLeft + 28, doc.y - 11);
 
     doc
-      .fillColor('#516B84')
+      .fillColor('#516B84') 
       .text(impairsFriendsFamilyAnswerText, defaultMarginLeft + 178, doc.y - 11);
 
     doc.moveDown(1.4);
@@ -1535,22 +1614,22 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     let ledToUsingAlcoholAnswerColor;
     let ledToUsingAlcoholAnswerText;
 
-    if (data.ledToUsingAlcoholAnswer == 0) {
+    if (ledToUsingAlcoholAnswer == 0) {
       ledToUsingAlcoholAnswerColor = '#5BA23F';
       ledToUsingAlcoholAnswerText = 'None';
-    } else if (data.ledToUsingAlcoholAnswer == 1) {
+    } else if (ledToUsingAlcoholAnswer == 1) {
       ledToUsingAlcoholAnswerColor = '#5BA23F';
       ledToUsingAlcoholAnswerText = 'Rarely';
-    } else if (data.ledToUsingAlcoholAnswer == 2) {
+    } else if (ledToUsingAlcoholAnswer == 2) {
       ledToUsingAlcoholAnswerColor = '#22A1D1';
       ledToUsingAlcoholAnswerText = 'Sometimes';
-    } else if (data.ledToUsingAlcoholAnswer == 3) {
+    } else if (ledToUsingAlcoholAnswer == 3) {
       ledToUsingAlcoholAnswerColor = '#F9982C';
       ledToUsingAlcoholAnswerText = 'Often';
-    } else if (data.ledToUsingAlcoholAnswer == 4) {
+    } else if (ledToUsingAlcoholAnswer == 4) {
       ledToUsingAlcoholAnswerColor = '#EB5757';
       ledToUsingAlcoholAnswerText = 'Most of the time';
-    } else if (data.ledToUsingAlcoholAnswer == 5) {
+    } else if (ledToUsingAlcoholAnswer == 5) {
       ledToUsingAlcoholAnswerColor = '#EB5757';
       ledToUsingAlcoholAnswerText = 'Most of the time';
     }
@@ -1575,22 +1654,22 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     let ledToUsingDrugAnswerColor;
     let ledToUsingDrugAnswerText;
 
-    if (data.ledToUsingDrugAnswer == 0) {
+    if (ledToUsingDrugAnswer == 0) {
       ledToUsingDrugAnswerColor = '#5BA23F';
       ledToUsingDrugAnswerText = 'None';
-    } else if (data.ledToUsingDrugAnswer == 1) {
+    } else if (ledToUsingDrugAnswer == 1) {
       ledToUsingDrugAnswerColor = '#5BA23F';
       ledToUsingDrugAnswerText = 'Rarely';
-    } else if (data.ledToUsingDrugAnswer == 2) {
+    } else if (ledToUsingDrugAnswer == 2) {
       ledToUsingDrugAnswerColor = '#22A1D1';
       ledToUsingDrugAnswerText = 'Sometimes';
-    } else if (data.ledToUsingDrugAnswer == 3) {
+    } else if (ledToUsingDrugAnswer == 3) {
       ledToUsingDrugAnswerColor = '#F9982C';
       ledToUsingDrugAnswerText = 'Often';
-    } else if (data.ledToUsingDrugAnswer == 4) {
+    } else if (ledToUsingDrugAnswer == 4) {
       ledToUsingDrugAnswerColor = '#EB5757';
       ledToUsingDrugAnswerText = 'Most of the time';
-    } else if (data.ledToUsingDrugAnswer == 5) {
+    } else if (ledToUsingDrugAnswer == 5) {
       ledToUsingDrugAnswerColor = '#EB5757';
       ledToUsingDrugAnswerText = 'Most of the time';
     }
@@ -1648,94 +1727,149 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .font('fonts/CircularStd-Bold.ttf')
       .text('Questions');
 
+    let mostOfTheTimeAnswerCount = assessment.rawData.split(',').filter(x => x == 4).length;
+    let mostOfTheTimeAnswerQuestions = [];
+
+    if (mostOfTheTimeAnswerCount > 0) {
+      assessment.rawData.split(',').forEach((value, index) => {
+        if (value == 4) {
+          mostOfTheTimeAnswerQuestions.push(index);
+        }
+      })
+    }
+
     doc
       .moveDown(1)
       .fontSize(9)
-      .text(`Most of the time (${data.mostOfTheTimeAnswerCount})`);
+      .text(`Most of the time (${mostOfTheTimeAnswerCount})`);
 
     doc
       .fillColor('#516B84')
       .font('fonts/CircularStd-Medium.ttf')
       .fontSize(8);
 
-    if (data.mostOfTheTimeAnswerQuestions.length > 0) {
-      data.mostOfTheTimeAnswerQuestions.map(question => {
+    if (mostOfTheTimeAnswerQuestions.length > 0) {
+      mostOfTheTimeAnswerQuestions.map(question => {
         doc
           .moveDown(0.3)
           .text(getQuestion(parseInt(question)), defaultMarginLeft + 13);
       });
     }
 
-    doc
-      .moveDown(1.5)
-      .fillColor('#072B4F')
-      .fontSize(9)
-      .text(`None (${data.noneAnswerCount})`, defaultMarginLeft);
+    let noneAnswerCount = assessment.rawData.split(',').filter(x => x == 0).length;
+    let noneAnswerQuestions = [];
 
-    doc
-      .fillColor('#516B84')
-      .font('fonts/CircularStd-Medium.ttf')
-      .fontSize(8);
-
-    if (data.noneAnswerQuestions.length > 0) {
-      data.noneAnswerQuestions.map(question => {
-        doc
-          .moveDown(0.3)
-          .text(getQuestion(parseInt(question)), defaultMarginLeft + 13);
-      });
+    if (noneAnswerCount > 0) {
+      assessment.rawData.split(',').forEach((value, index) => {
+        if (value == 0) {
+          noneAnswerQuestions.push(index);
+        }
+      })
     }
 
     doc
       .moveDown(1.5)
       .fillColor('#072B4F')
       .fontSize(9)
-      .text(`Often (${data.oftenAnswerCount})`, defaultMarginLeft);
+      .text(`None (${noneAnswerCount})`, defaultMarginLeft);
 
     doc
       .fillColor('#516B84')
       .font('fonts/CircularStd-Medium.ttf')
       .fontSize(8);
 
-    if (data.oftenAnswerQuestions.length > 0) {
-      data.oftenAnswerQuestions.map(question => {
+    if (noneAnswerQuestions.length > 0) {
+      noneAnswerQuestions.map(question => {
         doc
           .moveDown(0.3)
           .text(getQuestion(parseInt(question)), defaultMarginLeft + 13);
       });
     }
 
-    doc
-      .moveDown(1.5)
-      .fillColor('#072B4F')
-      .fontSize(9)
-      .text(`Sometimes (${data.sometimesAnswerCount})`, defaultMarginLeft);
+    let oftenAnswerCount = assessment.rawData.split(',').filter(x => x == 3).length;
+    let oftenAnswerQuestions = [];
 
-    doc
-      .fillColor('#516B84')
-      .font('fonts/CircularStd-Medium.ttf')
-      .fontSize(8);
-
-    if (data.sometimesAnswerQuestions.length > 0) {
-      data.sometimesAnswerQuestions.map(question => {
-        doc
-          .moveDown(0.3)
-          .text(getQuestion(parseInt(question)), defaultMarginLeft + 13);
-      });
+    if (oftenAnswerCount > 0) {
+      assessment.rawData.split(',').forEach((value, index) => {
+        if (value == 3) {
+          oftenAnswerQuestions.push(index);
+        }
+      })
     }
 
     doc
       .moveDown(1.5)
       .fillColor('#072B4F')
       .fontSize(9)
-      .text(`Rarely (${data.rarelyAnswerCount})`, defaultMarginLeft);
+      .text(`Often (${oftenAnswerCount})`, defaultMarginLeft);
 
     doc
       .fillColor('#516B84')
       .font('fonts/CircularStd-Medium.ttf')
       .fontSize(8);
 
-    if (data.rarelyAnswerQuestions.length > 0) {
-      data.rarelyAnswerQuestions.map(question => {
+    if (oftenAnswerQuestions.length > 0) {
+      oftenAnswerQuestions.map(question => {
+        doc
+          .moveDown(0.3)
+          .text(getQuestion(parseInt(question)), defaultMarginLeft + 13);
+      });
+    }
+
+    let sometimesAnswerCount = assessment.rawData.split(',').filter(x => x == 2).length;
+    let sometimesAnswerQuestions = [];
+
+    if (sometimesAnswerCount > 0) {
+      assessment.rawData.split(',').forEach((value, index) => {
+        if (value == 2) {
+          sometimesAnswerQuestions.push(index);
+        }
+      })
+    }
+
+    doc
+      .moveDown(1.5)
+      .fillColor('#072B4F')
+      .fontSize(9)
+      .text(`Sometimes (${sometimesAnswerCount})`, defaultMarginLeft);
+
+    doc
+      .fillColor('#516B84')
+      .font('fonts/CircularStd-Medium.ttf')
+      .fontSize(8);
+
+    if (sometimesAnswerQuestions.length > 0) {
+      sometimesAnswerQuestions.map(question => {
+        doc
+          .moveDown(0.3)
+          .text(getQuestion(parseInt(question)), defaultMarginLeft + 13);
+      });
+    }
+
+    let rarelyAnswerCount = assessment.rawData.split(',').filter(x => x == 1).length;
+    let rarelyAnswerQuestions = [];
+
+    if (rarelyAnswerCount > 0) {
+      assessment.rawData.split(',').forEach((value, index) => {
+        if (value == 1) {
+          rarelyAnswerQuestions.push(index);
+        }
+      })
+    }
+
+    doc
+      .moveDown(1.5)
+      .fillColor('#072B4F')
+      .fontSize(9)
+      .text(`Rarely (${rarelyAnswerCount})`, defaultMarginLeft);
+
+    doc
+      .fillColor('#516B84')
+      .font('fonts/CircularStd-Medium.ttf')
+      .fontSize(8);
+
+    if (rarelyAnswerQuestions.length > 0) {
+      rarelyAnswerQuestions.map(question => {
         doc
           .moveDown(0.3)
           .text(getQuestion(parseInt(question)), defaultMarginLeft + 13);
@@ -1873,7 +2007,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
   const url = await file.getSignedUrl({
     version: 'v4',
     action: 'read',
-    expires: Date.now() + 24 * 60 * 60 * 1000,
+    expires: Date.now() + 24 * 60 * 60 * 1000
   });
     
   return {

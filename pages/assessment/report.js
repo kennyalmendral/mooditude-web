@@ -250,7 +250,7 @@ export default function AssessmentReport(props) {
 
   useEffect(() => {
     if (Object.keys(assessmentScores).length > 0) {
-      if (assessmentScores.hasOwnProperty('purchasedDate')) {
+      if ((assessmentScores.hasOwnProperty('purchasedDate')) && (assessmentScores.purchasedDate != null)) {
         setShowOneTimePayment(false)
       } else {
         setShowOneTimePayment(true)
@@ -367,6 +367,24 @@ export default function AssessmentReport(props) {
                     price: subscription.plan.id
                   }).then(result => {
                     console.log(result.data)
+
+                    // const updateSubscriptionData = firebaseFunctions.httpsCallable('updateSubscriptionData')
+    
+                    // updateSubscriptionData({
+                    //   userId: userId,
+                    //   platform: 'web',
+                    //   productId: subscription.plan.id,
+                    //   expiryDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
+                    //   trialDurationInDays: subscription.plan.trial_period_days || 0,
+                    //   duration: `${result.data.productPrice.recurring.interval_count} ${result.data.productPrice.recurring.interval}`,
+                    //   transactionId: subscription.id,
+                    //   transactionDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.created * 1000))
+                    // }).then(result => {
+                    //   console.log(result)
+
+                    //   setPaymentSuccess(true)
+                    //   setLicenseType('premium')
+                    // })
 
                     firebaseStore
                       .collection('Subscribers')
@@ -516,36 +534,7 @@ export default function AssessmentReport(props) {
 
       generatePDFReport({
         userId: router.query.user,
-        scoreId: router.query.score,
-        assessmentDate: assessmentDate,
-        assessmentScores: assessmentScores,
-        userProfile: userProfile,
-        allRiskLevel: allRiskLevel,
-        depressionRiskLevel: depressionRiskLevel,
-        anxietyRiskLevel: anxietyRiskLevel,
-        ptsdRiskLevel: ptsdRiskLevel,
-        bipolarRiskLevel: bipolarRiskLevel,
-        hasSuicidalThoughts: hasSuicidalThoughts,
-        usedAlcohol: usedAlcohol,
-        usedDrug: usedDrug,
-        thoughtsOfSuicideAnswer: thoughtsOfSuicideAnswer,
-        impairsWorkSchoolAnswer: impairsWorkSchoolAnswer,
-        impairsFriendsFamilyAnswer: impairsFriendsFamilyAnswer,
-        ledToUsingAlcoholAnswer: ledToUsingAlcoholAnswer,
-        ledToUsingDrugAnswer: ledToUsingDrugAnswer,
-        anxietyRiskScore: anxietyRiskScore,
-        ptsdRiskScore: ptsdRiskScore,
-        bipolarRiskScore, bipolarRiskScore,
-        mostOfTheTimeAnswerCount: mostOfTheTimeAnswerCount,
-        mostOfTheTimeAnswerQuestions: mostOfTheTimeAnswerQuestions,
-        noneAnswerCount: noneAnswerCount,
-        noneAnswerQuestions: noneAnswerQuestions,
-        oftenAnswerCount: oftenAnswerCount,
-        oftenAnswerQuestions: oftenAnswerQuestions,
-        sometimesAnswerCount: sometimesAnswerCount,
-        sometimesAnswerQuestions: sometimesAnswerQuestions,
-        rarelyAnswerCount: rarelyAnswerCount,
-        rarelyAnswerQuestions: rarelyAnswerQuestions
+        assessmentId: router.query.score
       }).then(result => {
         setIsDownloading(false)
         
@@ -733,7 +722,7 @@ export default function AssessmentReport(props) {
                 </div>
               )}
 
-              {((licenseType != 'free') || (assessmentScores.hasOwnProperty('purchasedDate'))) ? 
+              {((licenseType != 'free') || (assessmentScores.hasOwnProperty('purchasedDate') && (assessmentScores.purchasedDate != null))) ? 
                 <div className={styles.report_btns_wrapper}>
                     <a
                       href="#" 
@@ -744,7 +733,7 @@ export default function AssessmentReport(props) {
                         setIsReportVisible(true)
                       }}>REPORT</a>
 
-                    {((licenseType == 'premium') || (userProfile.customerType == 'premium') || (assessmentScores.hasOwnProperty('purchasedDate'))) && (
+                    {((licenseType == 'premium') || (userProfile.customerType == 'premium') || (assessmentScores.hasOwnProperty('purchasedDate') && (assessmentScores.purchasedDate != null))) && (
                       <>
                         <a 
                           href="#" 
@@ -772,7 +761,7 @@ export default function AssessmentReport(props) {
                 : ''
               }
               
-              {((licenseType == 'free') && (!assessmentScores.hasOwnProperty('purchasedDate'))) ? 
+              {(licenseType == 'free') ? 
                 <div>
                   <div className={styles.result_pricing_section}>
                     {showOneTimePayment && (
@@ -1022,7 +1011,7 @@ export default function AssessmentReport(props) {
                                 </>
                               )}
 
-                            {((licenseType == 'premium') || (userProfile.customerType == 'premium') || (assessmentScores.hasOwnProperty('purchasedDate'))) && (
+                            {((licenseType == 'premium') || (userProfile.customerType == 'premium') || (assessmentScores.hasOwnProperty('purchasedDate') && (assessmentScores.purchasedDate != null))) && (
                               <>
                                 <div className={styles.report_risks_wrap} >
                                   {/*<img src="/warning.svg" alt="Disorder Risks" />*/}
@@ -1549,7 +1538,7 @@ export default function AssessmentReport(props) {
 
                     {isDownloadVisible && (
                       <div className={styles.report_content_item} key={'report_content_paid_wrap'}>
-                        {assessmentScores.pdfDoc == null && (
+                        {/* {assessmentScores.pdfDoc == null && ( */}
                           <>
                             <p className={styles.download_text}>Click here to download full report as a PDF.</p>
 
@@ -1568,11 +1557,11 @@ export default function AssessmentReport(props) {
                               <a href={reportLink} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>
                             )}
                           </>
-                        )}
+                        {/* )} */}
                         
-                        {assessmentScores.pdfDoc != null && (
+                        {/* {assessmentScores.pdfDoc != null && (
                           <a href={assessmentScores.pdfDoc} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>
-                        )}
+                        )} */}
                       </div>
                     )}
 
