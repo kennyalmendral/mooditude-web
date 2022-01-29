@@ -45,6 +45,7 @@ export default function Onboarding7() {
   const steps = [1, 2, 3, 4, 5, 6, 7]
   const current_step = 2
   const [reason, setReason] = useState('')
+  const [sent, setSent] = useState(false)
 
   const [profileStepAnswer, setProfileStepAnswer] = useState(null)
   const [formError, setFormError] = useState(false)
@@ -79,14 +80,58 @@ export default function Onboarding7() {
   const handleNextStep = () => {
     setFormError(false)
 
-    // setChecking(true)
+    setChecking(true)
 
-    console.log(profileStepAnswer)
+    
 
     if (profileStepAnswer !== null) {
       localStorage.setItem(`${authUser.uid}_profileStep7Answer`, profileStepAnswer)
       localStorage.setItem(`${authUser.uid}_profileStep7ReasonAnswer`, reason)
-      router.push('/onboarding/finish')
+      
+
+      if (!sent) {
+
+        if (authUser && sessionStorage.getItem('check_update') != 'yes') {
+          const updateUserProfileOnboarding = firebaseFunctions.httpsCallable('updateUserProfileOnboarding')
+          updateUserProfileOnboarding({
+            userId: authUser.uid,
+            ageGroup: parseInt(localStorage.getItem(`${authUser.uid}_profileStep1Answer`)) || 0,
+            gender: parseInt(localStorage.getItem(`${authUser.uid}_profileStep2Answer`)) || 0,
+            topGoal: localStorage.getItem(`${authUser.uid}_profileStep3Answer`) || '',
+            topChallenges: localStorage.getItem(`${authUser.uid}_profileStep4Answer`) || '',
+            goingToTherapy: localStorage.getItem(`${authUser.uid}_profileStep5Answer`) === 'true' || false,
+            knowCbt: localStorage.getItem(`${authUser.uid}_profileStep6Answer`) === 'true' || false,
+            committedToSelfhelp: (parseInt(localStorage.getItem(`${authUser.uid}_profileStep7Answer`)) > 1) ? true : false,
+            committedToSelfHelpScale: parseInt(localStorage.getItem(`${authUser.uid}_profileStep7Answer`)) || '',
+            onboardingStep: 'profileCreated',
+            makePromiseReason: localStorage.getItem(`${authUser.uid}_profileStep7ReasonAnswer`) || '',
+            topGoalOtherReason: localStorage.getItem(`${authUser.uid}_profileStep3AnswerOtherReason`) || null
+          }).then(result => {
+            localStorage.removeItem(`${authUser.uid}_profileStep1Answer`)
+            localStorage.removeItem(`${authUser.uid}_profileStep2Answer`)
+            localStorage.removeItem(`${authUser.uid}_profileStep3Answer`)
+            localStorage.removeItem(`${authUser.uid}_profileStep3AnswerOtherReason`)
+            localStorage.removeItem(`${authUser.uid}_profileStep4Answer`)
+            localStorage.removeItem(`${authUser.uid}_profileStep5Answer`)
+            localStorage.removeItem(`${authUser.uid}_profileStep6Answer`)
+            localStorage.removeItem(`${authUser.uid}_profileStep7Answer`)
+            localStorage.removeItem(`${authUser.uid}_profileStep7AnswerReason`)
+            
+            if (localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
+              localStorage.setItem(`${authUser.uid}_onboardingStep`, 'profileCreated')
+            }
+
+            sessionStorage.setItem('check_update', 'yes')
+            sessionStorage.setItem('end_update', 'yes')
+          }).catch(e => {
+            window.sessionStorage.setItem('error', e);
+            console.log(e)
+          })
+
+        }
+      } else {
+        setFormError(true)
+      }
     } else {
       setFormError(true)
     }

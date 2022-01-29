@@ -117,6 +117,7 @@ export default function Profile(props) {
 
   useEffect(() => {
     if (Object.keys(profile).length > 0) {
+      console.log(profile)
       // setName(profile.name)
       profile.topChallenges && setChallenges(profile.topChallenges.split(','))
       profile.topGoal && setTopGoal(profile.topGoal)

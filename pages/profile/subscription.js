@@ -105,6 +105,7 @@ export default function profileSubscription() {
 
   useEffect(() => {
     Object.keys(grant).length && setPaymentProcessor(grant.paymentProcessor)
+    console.log(grant)
   }, [grant])
 
   const handleProceedCancelation = () => {

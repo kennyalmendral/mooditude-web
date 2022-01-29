@@ -17,11 +17,15 @@
   font-family: 'Circular Std';
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-top: 100px;
   align-items: center;
   height: 100%;
 }
 
+.authBg .oneTime.no_padding{
+  padding-top: 0;
+}
 .authBg .mooditudePremium h2,
 .authBg .oneTime h2 {
   margin: 10px 0 40px;
