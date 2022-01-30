@@ -243,7 +243,7 @@ export default function SignUp(props) {
           
         </div>
         <div className={styles.authBg}>
-          {((router.query.type != 'subscription') && (router.query.type != 'payment')) && (
+          {/* {((router.query.type != 'subscription') && (router.query.type != 'payment')) && (
             <div className={styles.free}>
               {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3-checklist.png" className="m3" alt="M3Information" />}
 
@@ -269,7 +269,7 @@ export default function SignUp(props) {
                 </div>
               
             </div>
-          )}
+          )} */}
 
           {router.query.type == 'subscription' && (
             <div className={styles.mooditudePremium}>

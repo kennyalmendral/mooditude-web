@@ -236,35 +236,35 @@ export default function profileSubscription() {
                 </div>
                 <div className={styles.profileInnerPage}>
                   <div className={styles.subscriptionInnerPage}>
-                    {!grant.transactionId.includes('sub_') && (
+                    {((paymentProcessor == null) || (paymentProcessor == undefined) || (paymentProcessor == '')) && (
                       <p style={{ textAlign: 'center' }}>You have no active subscription yet.</p>
                     )}
 
-                    {grant.transactionId.includes('sub_') && (
+                    {((paymentProcessor != null) || (paymentProcessor != undefined) || (paymentProcessor != '')) && (
                       <>
                         <div className={styles.subscriptionInnerItem}>
-                          <p><b>Subscription Period:</b></p>
-                          <p>{subscription.plan && subscription.plan.interval.charAt(0).toUpperCase() + subscription.plan.interval.slice(1) + 'ly'}</p>
+                          <p><strong>Subscription Period:</strong></p>
+                          {paymentProcessor == 'stripe' && <p>{subscription.plan && subscription.plan.interval.charAt(0).toUpperCase() + subscription.plan.interval.slice(1) + 'ly'}</p>}
                         </div> 
 
                         <div className={styles.subscriptionInnerItem}>
-                          <p><b>Status:</b></p>
-                          <p>{subscription.status && subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}</p>
+                          <p><strong>Status:</strong></p>
+                          {paymentProcessor == 'stripe' && <p>{subscription.status && subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}</p>}
                         </div> 
 
                         <div className={styles.subscriptionInnerItem}>
-                          <p><b>Auto Renewal On:</b></p>
-                          <p>{subscription.status == 'active' ? 'Yes' : 'No'}</p>
+                          <p><strong>Auto Renewal On:</strong></p>
+                          {paymentProcessor == 'stripe' && <p>{subscription.status == 'active' ? 'Yes' : 'No'}</p>}
                         </div> 
 
 
                         <div className={styles.subscriptionInnerItem}>
-                          <p><b>Renewal Date:</b></p>
-                          <p>{format(new Date(parseInt(subscription.current_period_end) * 1000), 'LLLL dd, yyyy')}</p>
+                          <p><strong>Renewal Date:</strong></p>
+                          {paymentProcessor == 'stripe' && <p>{format(new Date(parseInt(subscription.current_period_end) * 1000), 'LLLL dd, yyyy')}</p>}
                         </div> 
 
                         <div className={styles.subscriptionInnerItem}>
-                          <p><b>Cancel Subscription:</b></p>
+                          <p><strong>Cancel Subscription:</strong></p>
 
                           <div>
                             {paymentProcessor == 'apple' && <p>You purchased Mooditude Premium from Apple App Store, cancel your subscription from the App Store.</p>}

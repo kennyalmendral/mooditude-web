@@ -347,7 +347,9 @@ export default function Assessment31(props) {
         let epochMilliseconds = startTime.toString()
   
         let isNewCollection = false
+
         setshowLoader(true)
+
         usersM3AssessmentScoresRef = firebaseStore
           .collection('M3Assessment')
           .doc(authUser.uid)
@@ -385,6 +387,7 @@ export default function Assessment31(props) {
                   socialAnxietyScore: 0,
                   ptsdScore: 0,
                   pdfDoc: null,
+                  purchasedDate: null
                 }).then(() => {
                   const updateUserM3AssessmentScores = firebaseFunctions.httpsCallable('updateUserM3AssessmentScores')
     
