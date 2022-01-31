@@ -91,7 +91,7 @@
   font-family: 'Circular Std';
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 18px;
   /* identical to box height */
   display: flex;
@@ -163,7 +163,7 @@
   font-family: 'Circular Std';
   font-style: normal;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 18px;
   /* identical to box height */
   /* Link */
@@ -262,7 +262,7 @@
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
-  line-height: 20px;
+  line-height: 18px;
   text-align: center;
 
   /* OnPrimary */
@@ -325,7 +325,7 @@
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
-  line-height: 20px;
+  line-height: 18px;
   text-align: center;
   margin-bottom: 10px;
   /* Primary */
@@ -492,7 +492,7 @@
   font-family: Circular Std;
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 18px;
   /* identical to box height */
 
@@ -522,7 +522,7 @@
   font-family: Circular Std;
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 18px;
   /* identical to box height */
 
@@ -557,7 +557,7 @@
   font-family: Circular Std;
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 18px;
   text-align: center;
 

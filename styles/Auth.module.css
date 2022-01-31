@@ -51,7 +51,7 @@
 
 .authBg .mooditudePremium > div:last-of-type,
 .authBg .oneTime > div:last-of-type {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 300;
   width: 400px;
 }
@@ -59,7 +59,7 @@
 .error {
   margin-top: 5px;
   font-size: 10px;
-  line-height: 14px;
+  line-height: 18px;
   color: #D6443F;
 }
 
@@ -78,7 +78,7 @@
   width: 50%;
   color: #072B4F;
   position: relative;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 /*.authForm input[type="text"],
@@ -178,7 +178,7 @@
 
 .authForm .passwordNotice {
   font-size: 10px;
-  line-height: 14px;
+  line-height: 18px;
   padding: 12px 12px;
   border-radius: 4px;
   background: #F3F4F6;
@@ -236,7 +236,7 @@
   white-space: nowrap;
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 18px;
   /* identical to box height */
 
@@ -258,7 +258,7 @@
   font-family: 'Circular Std';
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 18px;
   /* identical to box height */
 
@@ -473,7 +473,7 @@
     font-family: Circular Std;
     font-style: normal;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 18px;
     /* identical to box height */
 

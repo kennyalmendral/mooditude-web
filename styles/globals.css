@@ -212,7 +212,7 @@ img{
   white-space: nowrap;
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 18px;
   /* identical to box height */
 
@@ -249,30 +249,7 @@ img{
   display: none!important;
 }
 
-.MuiTextField-root,
-.MuiTextField-root input{
-  font-family: 'Circular Std';
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 18px;
-  /* identical to box height */
 
-
-  /* Primary */
-
-  color: #072B4F;
-}
-
-.MuiTextField-root label{
-  font-family: 'Circular Std';
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 18px;
-  color: #A8B5C1;
-
-}
 
 @media(min-width: 1025px) and (max-width: 1500px){
   .custom_stepper_wrap .Mui-completed .MuiStepLabel-iconContainer:before{
@@ -303,7 +280,7 @@ img{
   font-family: 'Circular Std';
     font-style: normal;
     font-weight: normal;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.8em;
     /* identical to box height */
 
@@ -316,7 +293,7 @@ img{
   font-family: 'Circular Std';
     font-style: normal;
     font-weight: normal;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.8em;
     /* identical to box height */
 
@@ -329,7 +306,7 @@ img{
   font-family: 'Circular Std';
     font-style: normal;
     font-weight: normal;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.8em;
     /* identical to box height */
 
@@ -342,7 +319,7 @@ img{
   font-family: 'Circular Std';
     font-style: normal;
     font-weight: normal;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.8em;
     /* identical to box height */
 
@@ -352,15 +329,17 @@ img{
     color: #A8B5C1;
 }
 
-
+p{
+  line-height: 18px;
+}
 
 .auth_page_wrapper .MuiTextField-root,
 .auth_page_wrapper .MuiTextField-root span{
   font-family: 'Circular Std';
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
-  line-height: 1.8em;
+  font-size: 16px;
+  /*line-height: 1.8em;*/
   /* identical to box height */
 
 
@@ -369,14 +348,10 @@ img{
   color: #A8B5C1;
 }
 
-.auth_page_wrapper .MuiInputLabel-formControl{
+.MuiInputLabel-formControl{
   font-family: 'Circular Std';
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
-  line-height: 1.8em;
-  /* identical to box height */
-
 
   /* Placeholder */
 

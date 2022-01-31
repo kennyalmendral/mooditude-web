@@ -211,7 +211,7 @@ export default function Login(props) {
                     onChange={e => setEmail(e.target.value)} 
                     required
                     fullWidth={true}
-                    size={"small"}
+                    size={"medium"}
                     
                   />
           
@@ -227,7 +227,7 @@ export default function Login(props) {
                     onChange={e => setPassword(e.target.value)} 
                     required
                     fullWidth={true}
-                    size={"small"}
+                    size={"medium"}
                     error={error}
                     helperText={error ? 'Invalid email or password' : ''}
                   />

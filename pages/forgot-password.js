@@ -84,7 +84,7 @@ export default function ForgotPassword(props) {
                         value={email} 
                         onChange={e => setEmail(e.target.value)} 
                         fullWidth={true}
-                        size={"small"}
+                        size={"medium"}
                         error={error}
                         helperText={error ? error : ''}
                       />

@@ -158,7 +158,7 @@ export default function ResetPassword(props) {
                             checkPass(e.target.value, passwordConfirmation)
                           }} 
                           fullWidth={true}
-                          size={"small"}
+                          size={"medium"}
                           error={error}
                           helperText={error ? error : ''}
                           required
@@ -181,7 +181,7 @@ export default function ResetPassword(props) {
                             checkPass(password, e.target.value)
                           }} 
                           fullWidth={true}
-                          size={"small"}
+                          size={"medium"}
                           error={error}
                           helperText={error ? error : ''}
                           required
@@ -293,7 +293,7 @@ export default function ResetPassword(props) {
                             checkPass(e.target.value, passwordConfirmation)
                           }} 
                           fullWidth={true}
-                          size={"small"}
+                          size={"medium"}
                           error={error}
                           helperText={error ? error : ''}
                           required
@@ -317,7 +317,7 @@ export default function ResetPassword(props) {
                             checkPass(password, e.target.value)
                           }} 
                           fullWidth={true}
-                          size={"small"}
+                          size={"medium"}
                           error={error}
                           helperText={error ? error : ''}
                           required

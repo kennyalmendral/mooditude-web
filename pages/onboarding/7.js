@@ -120,7 +120,7 @@ export default function Onboarding7() {
             if (localStorage.getItem(`${authUser.uid}_currentProfileStep`) !== null) {
               localStorage.setItem(`${authUser.uid}_onboardingStep`, 'profileCreated')
             }
-
+            // router.push('/')
             sessionStorage.setItem('check_update', 'yes')
             sessionStorage.setItem('end_update', 'yes')
           }).catch(e => {

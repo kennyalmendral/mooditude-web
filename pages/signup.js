@@ -440,7 +440,7 @@ export default function SignUp(props) {
                     onChange={e => setName(e.target.value)} 
                     required
                     fullWidth={true}
-                    size={"small"}
+                    size={"medium"}
                     autoComplete="new-password"
                   />
 
@@ -457,7 +457,7 @@ export default function SignUp(props) {
                     onChange={e => setEmail(e.target.value)} 
                     required
                     fullWidth={true}
-                    size={"small"}
+                    size={"medium"}
                     autoComplete="new-password"
                     
                   />
@@ -475,7 +475,7 @@ export default function SignUp(props) {
                     onChange={e => {setPassword(e.target.value);checkPass(e.target.value, passwordConfirmation, isPrivacyPolicyChecked)}} 
                     required
                     fullWidth={true}
-                    size={"small"}
+                    size={"medium"}
                   />
    
                 </div>
@@ -493,7 +493,7 @@ export default function SignUp(props) {
                     onChange={e => {setPasswordConfirmation(e.target.value);checkPass(password, e.target.value, isPrivacyPolicyChecked)}} 
                     required
                     fullWidth={true}
-                    size={"small"}
+                    size={"medium"}
                     autoComplete="new-password"
                   />
                   

@@ -33,7 +33,7 @@
 .main_menu_logout a{
   font-style: normal;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 18px;
   /* identical to box height */
 
@@ -61,7 +61,7 @@ a.menu_item{
   font-family: 'Circular Std';
   font-style: normal;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 18px;
   color: #072B4F;
 }
@@ -74,7 +74,7 @@ a.menu_item{
   font-family: 'Circular Std';
   font-style: normal; 
   font-weight: bold;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 32px;
   /* or 229% */
 
@@ -85,12 +85,30 @@ a.menu_item{
   color: #072B4F;
 }
 
+
+.mobile_menu_wrapper{
+  display: flex;
+  justify-content: space-between;
+}
+
+.mobile_menu_wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+.mobile_hm_menu{
+  height: 60px;
+}
 @media(max-width: 767px){
 
   .main_menu_wrap{
     max-width: 100%;
     min-height: 0;
-    padding: 12px 10px;
+    padding: 0 10px;
+
+    height: 60px;
     padding-right: 20px;
   }
 
@@ -105,7 +123,7 @@ a.menu_item{
   }
 
   .main_menu_btn{
-    height: 24px;
+    height: 60px;
   }
 
   .main_menu_logo,

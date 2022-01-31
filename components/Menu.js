@@ -8,8 +8,9 @@ import Link from "next/link"
 import Router from 'next/router';
 
 import Firebase from 'lib/Firebase'
-
+const firebaseAuth = Firebase.auth()
 const firebaseStore = Firebase.firestore()
+const firebaseDatabase = Firebase.database()
 
 export default function Menu(props) {
     const { signOut } = useAuth()
@@ -18,10 +19,11 @@ export default function Menu(props) {
     const [showMenu, setShowMenu] = React.useState(false);
     const [mainMenuCollapse, setMainMenuCollapse] = React.useState(true);
     const [customerType, setCustomerType] = React.useState('free')
+    const [onboardingStep, setOnboardingStep] = React.useState('')
     const { authUser, loading, signInWithEmailAndPassword } = useAuth()
 
     useEffect(() => {
-      setWidth(window.innerWidth)
+      
 
       if (authUser) {
         setShowMenu(true)
@@ -29,6 +31,10 @@ export default function Menu(props) {
         setShowMenu(false)
       }
     }, [Router])
+
+    useEffect(() => {
+      setWidth(window.innerWidth)
+    }, [window])
 
     useEffect(() => {
       if (authUser) {
@@ -39,6 +45,32 @@ export default function Menu(props) {
           .then(doc => {
             if (doc.data()) {
               setCustomerType(doc.data().customerType)
+            }
+          }) 
+
+
+          firebaseAuth.onAuthStateChanged(user => {
+            if (user) {
+              firebaseDatabase
+                .ref()
+                .child('users')
+                .child(user.uid)
+                .on('value', snapshot => {
+                  if (snapshot.val() != null ) {
+                    console.log(snapshot.val())
+                    if (snapshot.val().onboardingStep == 'accountCreated'  || snapshot.val().onboardingStep == 0) {
+                        setShowMenu(false)
+                    }else{
+                        setShowMenu(true)
+                    }
+                  }
+                }, error => {
+                  console.log(error)
+                })
+
+              
+            } else {
+              unsubscribe && unsubscribe()
             }
           })
       }
@@ -60,7 +92,12 @@ export default function Menu(props) {
             <div
                 className={`${styles.main_menu_wrap} ${!mainMenuCollapse ? styles.main_menu_wrap_collapse : ''}`}
             >
-                <div className={`${styles.main_menu_btn}`}>
+                <div className={`${styles.main_menu_btn} ${width <= 767 ? styles.mobile_menu_wrapper : ''}`}>
+                    {
+                        width <= 767 ?
+                        <a href="/"><img src={`/logo-small.svg`}  className={styles.mobile_hm_menu} /></a> : ''    
+                    }
+                    
                     <MenuIcon 
                         onClick={() => {collapseMenu()}}
                     />
