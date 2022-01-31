@@ -163,9 +163,9 @@ export default function SignUp(props) {
                       localStorage.setItem(`${user.uid}_onboardingStep`, 'accountCreated')
 
                       if (router.query.type != undefined) {
-                        const processStripeSubscriptionOnSignUp = firebaseFunctions.httpsCallable('processStripeSubscriptionOnSignUp')
+                        const processStripeSubscription = firebaseFunctions.httpsCallable('processStripeSubscription')
   
-                        processStripeSubscriptionOnSignUp({
+                        processStripeSubscription({
                           type: router.query.type,
                           duration: router.query.duration,
                           mode: router.query.type == 'subscription' ? 'subscription' : 'payment',

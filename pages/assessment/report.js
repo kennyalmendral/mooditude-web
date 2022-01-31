@@ -578,9 +578,9 @@ export default function AssessmentReport(props) {
 
     setLoadingText('Please wait...')
 
-    const processStripeSubscriptionOnSignUp = firebaseFunctions.httpsCallable('processStripeSubscriptionOnSignUp')
+    const processStripeSubscription = firebaseFunctions.httpsCallable('processStripeSubscription')
 
-    processStripeSubscriptionOnSignUp({
+    processStripeSubscription({
       type: plan,
       duration: duration,
       mode: plan == 'subscription' ? 'subscription' : 'payment',
@@ -834,7 +834,7 @@ export default function AssessmentReport(props) {
                         size="large" 
                         className={styles.report_btn} 
                         variant="contained" 
-                        onClick={() => selectPlan('subscription', null)} 
+                        onClick={() => selectPlan('subscription', 12)} 
                         style={{
                           marginBottom: '15px',
                           fontSize: '18px',

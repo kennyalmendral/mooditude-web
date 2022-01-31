@@ -130,7 +130,7 @@ export default function OnboardingWelcomePage() {
       } else if (activeProductPrice == 'price_1KHXXoAuTlAR8JLM1hdixwNI') {
         setDuration(3)
       } else if (activeProductPrice == 'price_1K09ueAuTlAR8JLM3JmfvSgj') {
-        setDuration(null)
+        setDuration(12)
       }
     }
   }, [activeProductPrice])
@@ -140,9 +140,9 @@ export default function OnboardingWelcomePage() {
 
     setChecking(true)
 
-    const processStripeSubscriptionOnSignUp = firebaseFunctions.httpsCallable('processStripeSubscriptionOnSignUp')
+    const processStripeSubscription = firebaseFunctions.httpsCallable('processStripeSubscription')
   
-    processStripeSubscriptionOnSignUp({
+    processStripeSubscription({
       type: 'subscription',
       duration: duration,
       mode: 'subscription',

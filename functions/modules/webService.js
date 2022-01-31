@@ -336,64 +336,6 @@ exports.addSubscriptionData = functions.https.onCall(async (data, context) => {
 exports.processStripeSubscription = functions.https.onCall(async (data, context) => {
   let price = config.stripe.plan.monthly;
 
-  if (data.plan == 'monthly') {
-    price = config.stripe.plan.monthly;
-  } else if (data.plan == 'yearly') {
-    price = config.stripe.plan.yearly;
-  }
-
-  let couponCode = null;
-
-  if (data.message != null) {
-    if (data.message == '10% OFF') {
-      couponCode = 'TEST10';
-    } else if (data.message == '80% OFF') {
-      couponCode = 'TEST80';
-    } else if (data.message == '50% OFF') {
-      couponCode = 'TEST50';
-    }
-  }
-
-  let stripeData = {
-    line_items: [
-      {
-        price: price,
-        quantity: 1,
-      },
-    ],
-    mode: 'subscription',
-    customer_email: data.customerEmail,
-    success_url: `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&type=${data.type}&code_type=${data.codeType}&discount=${couponCode}&duration=${data.duration}`,
-    cancel_url: `${data.cancelUrl}?checkout_cancelled=true`,
-  };
-
-  if (data.codeType == 'discount') {
-    if (data.message != null) {
-      stripeData.discounts = [
-        {coupon: couponCode}
-      ];
-    }
-  }
-
-  if (data.codeType == 'trial') {
-    if (data.duration != null) {
-      stripeData.subscription_data = {
-        trial_period_days: data.duration
-      };
-    }
-  }
-
-  const session = await stripe.checkout.sessions.create(stripeData);
-
-  return {
-    data,
-    session
-  };
-});
-
-exports.processStripeSubscriptionOnSignUp = functions.https.onCall(async (data, context) => {
-  let price = config.stripe.plan.monthly;
-
   if ((data.type == 'subscription') && (data.duration == '1')) {
     price = config.stripe.plan.monthly; // monthly
   } else if ((data.type == 'subscription') && (data.duration == '3')) {

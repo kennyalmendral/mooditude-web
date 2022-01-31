@@ -199,7 +199,7 @@ export default function OnboardingWelcomePage() {
       duration = 3
       type = 'subscription'
     } else if (activeProductPrice == 'price_1K09ueAuTlAR8JLM3JmfvSgj') {
-      duration = null
+      duration = 12
       type = 'subscription'
     } else {
       duration = null
