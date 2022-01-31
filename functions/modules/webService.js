@@ -398,7 +398,7 @@ exports.processStripeSubscriptionOnSignUp = functions.https.onCall(async (data, 
     price = config.stripe.plan.monthly; // monthly
   } else if ((data.type == 'subscription') && (data.duration == '3')) {
     price = config.stripe.plan.everyThreeMonths; // every 3 months
-  } else if ((data.type == 'subscription') && (data.duration == null)) {
+  } else if ((data.type == 'subscription') && (data.duration == 12)) {
     price = config.stripe.plan.yearly; // yearly
   } else if (data.type == 'payment') {
     price = config.stripe.plan.oneTime; // one-time

@@ -319,7 +319,7 @@ export default function SignUp(props) {
                     </>
                   )}
 
-                  {router.query.duration == null && (
+                  {router.query.duration == 12 && (
                     <>
                       <div>
                         <strong>$89.99</strong>/<span>year</span>
