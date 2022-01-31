@@ -99,7 +99,8 @@ export default function profileDelete() {
           firebaseDatabase
             .ref(`users/${authUser.uid}`)
             .remove()
-
+           sessionStorage.removeItem('end_update')
+           sessionStorage.removeItem('check_update')
           setIsDeleting(false)
           setOpenConfirmationDialog(false)
         })
