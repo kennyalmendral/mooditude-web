@@ -90,6 +90,8 @@ export default function AssessmentReport(props) {
 
   const [showOneTimePayment, setShowOneTimePayment] = useState(true)
 
+  const [grant, setGrant] = useState({})
+
   useEffect(() => {
     if (!loading && !authUser) { 
       router.push('/login')
@@ -106,6 +108,7 @@ export default function AssessmentReport(props) {
           score: router.query.score,
         }).then(result => {
           setShowOneTimePayment(false)
+
           console.log('applyReportCredit', result)
         })
       } else {
@@ -156,6 +159,16 @@ export default function AssessmentReport(props) {
             if (doc.data().customerType) {
               setLicenseType(doc.data().customerType)
             }
+          }
+        })
+
+      firebaseStore
+        .collection('Subscribers')
+        .doc(authUser.uid)
+        .get()
+        .then(doc => {
+          if (doc && doc.data()) {
+            doc.data().grant && setGrant(doc.data().grant)
           }
         })
       
@@ -301,13 +314,15 @@ export default function AssessmentReport(props) {
   useEffect(() => {
     if (isDownloading) {
       const unloadCallback = (event) => {
-        event.preventDefault();
-        event.returnValue = "";
-        return "";
+        event.preventDefault()
+        event.returnValue = ""
+
+        return ""
       };
 
-      window.addEventListener("beforeunload", unloadCallback);
-      return () => window.removeEventListener("beforeunload", unloadCallback);
+      window.addEventListener("beforeunload", unloadCallback)
+
+      return () => window.removeEventListener("beforeunload", unloadCallback)
     }
   }, [isDownloading])
 
@@ -722,7 +737,7 @@ export default function AssessmentReport(props) {
                 </div>
               )}
 
-              {((licenseType != 'free') || (assessmentScores.hasOwnProperty('purchasedDate') && (assessmentScores.purchasedDate != null))) ? 
+              {((licenseType == 'premium') || (assessmentScores.purchasedDate != null)) && (
                 <div className={styles.report_btns_wrapper}>
                     <a
                       href="#" 
@@ -731,62 +746,59 @@ export default function AssessmentReport(props) {
                         setIsScoresVisible(false)
                         setIsDownloadVisible(false)
                         setIsReportVisible(true)
-                      }}>REPORT</a>
+                      }}>
+                        REPORT
+                    </a>
 
-                    {((licenseType == 'premium') || (userProfile.customerType == 'premium') || (assessmentScores.hasOwnProperty('purchasedDate') && (assessmentScores.purchasedDate != null))) && (
-                      <>
-                        <a 
-                          href="#" 
-                          className={isScoresVisible ? styles.active : ''} 
-                          onClick={() => {
-                            setIsReportVisible(false)
-                            setIsDownloadVisible(false)
-                            setIsScoresVisible(true)
-                          }}
-                        >
-                          SCORES
-                        </a>
+                    <a 
+                      href="#" 
+                      className={isScoresVisible ? styles.active : ''} 
+                      onClick={() => {
+                        setIsReportVisible(false)
+                        setIsDownloadVisible(false)
+                        setIsScoresVisible(true)
+                      }}
+                    >
+                      SCORES
+                    </a>
 
-                        <a 
-                          href="#" 
-                          className={isDownloadVisible ? styles.active : ''}
-                          onClick={() => {
-                            setIsScoresVisible(false)
-                            setIsDownloadVisible(true)
-                            setIsReportVisible(false)
-                          }}>DOWNLOAD</a>
-                      </>
-                    )}
+                    <a 
+                      href="#" 
+                      className={isDownloadVisible ? styles.active : ''}
+                      onClick={() => {
+                        setIsScoresVisible(false)
+                        setIsDownloadVisible(true)
+                        setIsReportVisible(false)
+                      }}>
+                        DOWNLOAD
+                    </a>
                 </div>
-                : ''
-              }
-              
-              {(licenseType == 'free') ? 
+              )}
+
+              {((licenseType == 'free') && (assessmentScores.purchasedDate == null)) && (
                 <div>
                   <div className={styles.result_pricing_section}>
-                    {showOneTimePayment && (
-                      <div className={styles.result_pricing_section_item}>
-                        <h4>Full Report</h4>
+                    <div className={styles.result_pricing_section_item}>
+                      <h4>Full Report</h4>
 
-                        <h3>$14</h3>
-                        <p>One-time</p>
+                      <h3>$14</h3>
+                      <p>One-time</p>
 
-                        <Button 
-                          size="large" 
-                          className={styles.report_btn} 
-                          variant="contained" 
-                          onClick={() => selectPlan('payment', null)} 
-                          style={{
-                            marginBottom: '15px',
-                            fontSize: '18px',
-                            fontWeight: '500',
-                            fontFamily: 'Circular STD'
-                          }} 
-                        >
-                          Buy
-                        </Button>  
-                      </div> 
-                    )}
+                      <Button 
+                        size="large" 
+                        className={styles.report_btn} 
+                        variant="contained" 
+                        onClick={() => selectPlan('payment', null)} 
+                        style={{
+                          marginBottom: '15px',
+                          fontSize: '18px',
+                          fontWeight: '500',
+                          fontFamily: 'Circular STD'
+                        }} 
+                      >
+                        Buy
+                      </Button>  
+                    </div> 
 
                     <div className={styles.result_pricing_section_item}>
                       <h4>Unlimited Reports &amp; Mooditude App</h4>
@@ -847,7 +859,9 @@ export default function AssessmentReport(props) {
                     </ul>
                   </div>
                 </div>
-                : 
+              )}
+
+              {((licenseType == 'premium') || (assessmentScores.purchasedDate != null)) && (
                 <div className={styles.report_main_section_wrap}>
                   <div className={styles.report_content_wrap}>
                     {isReportVisible && (
@@ -893,125 +907,126 @@ export default function AssessmentReport(props) {
                               <h3>Are you in crisis?</h3>
                               <p>Please call National Suicide Prevention Lifeline or proceed <br/>directly to an emergency room.</p>
                             </div>
-                              {((licenseType == 'free') && (!assessmentScores.hasOwnProperty('purchasedDate'))) && (
-                                <>
-                                  { buyPremium ? 
-                                  <div className={styles.bold_text_wrap}
-                                    style={{
-                                      background: '#F3F4F6',
-                                      padding: '22px 18px 32px',
-                                      borderRadius: '8px',
-                                      marginBottom: '70px',
-                                      filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))'
-                                    }}
-                                  >
-                                    <div>
-                                      <img src="/crown.svg" />
-                                    </div>
+                            
+                            {((licenseType == 'free') && (!assessmentScores.hasOwnProperty('purchasedDate'))) && (
+                              <>
+                                { buyPremium ? 
+                                <div className={styles.bold_text_wrap}
+                                  style={{
+                                    background: '#F3F4F6',
+                                    padding: '22px 18px 32px',
+                                    borderRadius: '8px',
+                                    marginBottom: '70px',
+                                    filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))'
+                                  }}
+                                >
+                                  <div>
+                                    <img src="/crown.svg" />
+                                  </div>
 
-                                    <p style={{ fontSize: '16px', fontWeight: 'normal' }}>Buy Mooditude Premium to get your complete report showing your mental health risks and recommendations to overcome those risks.</p>
+                                  <p style={{ fontSize: '16px', fontWeight: 'normal' }}>Buy Mooditude Premium to get your complete report showing your mental health risks and recommendations to overcome those risks.</p>
 
-                                    <p style={{ fontSize: '16px', fontWeight: 'normal' }}>Your purchase includes:</p>
+                                  <p style={{ fontSize: '16px', fontWeight: 'normal' }}>Your purchase includes:</p>
 
-                                    <ul style={{
-                                      fontFamily: 'Circular STD',
-                                      fontWeight: 'normal',
-                                      color: '#072B4F',
-                                      listStyle: 'none',
-                                      paddingLeft: '0'
+                                  <ul style={{
+                                    fontFamily: 'Circular STD',
+                                    fontWeight: 'normal',
+                                    color: '#072B4F',
+                                    listStyle: 'none',
+                                    paddingLeft: '0'
+                                  }}>
+                                    <li style={{ 
+                                      marginBottom: '18px',
+                                      position: 'relative',
+                                      paddingLeft: '40px'
                                     }}>
-                                      <li style={{ 
-                                        marginBottom: '18px',
-                                        position: 'relative',
-                                        paddingLeft: '40px'
-                                      }}>
-                                        <img 
-                                          src="/check.svg" 
-                                          style={{
-                                            position: 'absolute',
-                                            top: '0',
-                                            left: '0'
-                                          }}
-                                        />
-                                        Unlimited quiz so you can track your progress over time
-                                      </li>
+                                      <img 
+                                        src="/check.svg" 
+                                        style={{
+                                          position: 'absolute',
+                                          top: '0',
+                                          left: '0'
+                                        }}
+                                      />
+                                      Unlimited quiz so you can track your progress over time
+                                    </li>
 
-                                      <li style={{ 
-                                        marginBottom: '18px',
-                                        position: 'relative',
-                                        paddingLeft: '40px'
-                                      }}>
-                                        <img 
-                                          src="/check.svg" 
-                                          style={{
-                                            position: 'absolute',
-                                            top: '0',
-                                            left: '0'
-                                          }}
-                                        />
-                                        Access to 800+ minutes of self-care activities, and
-                                      </li>
+                                    <li style={{ 
+                                      marginBottom: '18px',
+                                      position: 'relative',
+                                      paddingLeft: '40px'
+                                    }}>
+                                      <img 
+                                        src="/check.svg" 
+                                        style={{
+                                          position: 'absolute',
+                                          top: '0',
+                                          left: '0'
+                                        }}
+                                      />
+                                      Access to 800+ minutes of self-care activities, and
+                                    </li>
 
-                                      <li style={{ 
-                                        marginBottom: '18px',
-                                        position: 'relative',
-                                        paddingLeft: '40px'
-                                      }}>
-                                        <img 
-                                          src="/check.svg" 
-                                          style={{
-                                            position: 'absolute',
-                                            top: '0',
-                                            left: '0'
-                                          }}
-                                        /> Goal Settings and Habit building features
-                                      </li>
-                                    </ul>
+                                    <li style={{ 
+                                      marginBottom: '18px',
+                                      position: 'relative',
+                                      paddingLeft: '40px'
+                                    }}>
+                                      <img 
+                                        src="/check.svg" 
+                                        style={{
+                                          position: 'absolute',
+                                          top: '0',
+                                          left: '0'
+                                        }}
+                                      /> Goal Settings and Habit building features
+                                    </li>
+                                  </ul>
 
-                                    <Button 
-                                      size="large" 
-                                      className={styles.report_btn} 
-                                      variant="contained" 
-                                      href={'/buy'}
-                                      style={{
-                                        marginBottom: '15px',
+                                  <Button 
+                                    size="large" 
+                                    className={styles.report_btn} 
+                                    variant="contained" 
+                                    href={'/buy'}
+                                    style={{
+                                      marginBottom: '15px',
+                                      fontSize: '14px',
+                                      fontWeight: '300',
+                                      fontFamily: 'Circular STD'
+                                    }} 
+                                  >
+                                    BUY MOODITUDE PREMIUM
+                                  </Button>
+                                  
+                                  {/*<div>
+                                    <Link href="#" >
+                                      <a onClick={e => {e.preventDefault();setBuyPremium(false)}} style={{
                                         fontSize: '14px',
                                         fontWeight: '300',
                                         fontFamily: 'Circular STD'
-                                      }} 
-                                    >
-                                      BUY MOODITUDE PREMIUM
-                                    </Button>
-                                    
-                                    {/*<div>
-                                      <Link href="#" >
-                                        <a onClick={e => {e.preventDefault();setBuyPremium(false)}} style={{
-                                          fontSize: '14px',
-                                          fontWeight: '300',
-                                          fontFamily: 'Circular STD'
-                                        }}>NO THANKS</a>
-                                      </Link>
-                                    </div>*/}
+                                      }}>NO THANKS</a>
+                                    </Link>
+                                  </div>*/}
+                                </div>
+                                : '' }
+                                <div className={styles.download_app_wrap}>
+                                  <h4>Download</h4>
+                                  <p>For the full experience download Mooditude’s mobile app and login with your credentials. </p>
+
+                                  <div className={styles.app_btns}>
+                                    <a href="https://apps.apple.com/us/app/mooditude-cbt-therapy/id1450661800" target="_blank">
+                                      <img src="/Apple.png" alt="" />
+                                    </a>  
+
+                                    <a href="https://play.google.com/store/apps/details?id=com.health.mental.mooditude" target="_blank">
+                                      <img src="/Android.png" alt="" />
+                                    </a>  
                                   </div>
-                                   : '' }
-                                  <div className={styles.download_app_wrap}>
-                                    <h4>Download</h4>
-                                    <p>For the full experience download Mooditude’s mobile app and login with your credentials. </p>
+                                </div>
+                              </>
+                            )}
 
-                                    <div className={styles.app_btns}>
-                                      <a href="https://apps.apple.com/us/app/mooditude-cbt-therapy/id1450661800" target="_blank">
-                                        <img src="/Apple.png" alt="" />
-                                      </a>  
-
-                                      <a href="https://play.google.com/store/apps/details?id=com.health.mental.mooditude" target="_blank">
-                                        <img src="/Android.png" alt="" />
-                                      </a>  
-                                    </div>
-                                  </div>
-                                </>
-                              )}
-
-                            {((licenseType == 'premium') || (userProfile.customerType == 'premium') || (assessmentScores.hasOwnProperty('purchasedDate') && (assessmentScores.purchasedDate != null))) && (
+                            {(licenseType == 'premium') && (
                               <>
                                 <div className={styles.report_risks_wrap} >
                                   {/*<img src="/warning.svg" alt="Disorder Risks" />*/}
@@ -1538,7 +1553,7 @@ export default function AssessmentReport(props) {
 
                     {isDownloadVisible && (
                       <div className={styles.report_content_item} key={'report_content_paid_wrap'}>
-                        {/* {assessmentScores.pdfDoc == null && ( */}
+                        {assessmentScores.pdfDoc == null && (
                           <>
                             <p className={styles.download_text}>Click here to download full report as a PDF.</p>
 
@@ -1557,22 +1572,16 @@ export default function AssessmentReport(props) {
                               <a href={reportLink} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>
                             )}
                           </>
-                        {/* )} */}
+                        )}
                         
-                        {/* {assessmentScores.pdfDoc != null && (
+                        {assessmentScores.pdfDoc != null && (
                           <a href={assessmentScores.pdfDoc} target="_blank" style={{ fontFamily: 'Circular Std', fontWeight: 'normal', fontSize: '14px' }}>Download Report</a>
-                        )} */}
+                        )}
                       </div>
                     )}
-
-                    {/* <div className={styles.report_content_item} key={'report_content_paid_scores_wrap'}>
-                    </div> 
-
-                    <div className={styles.report_content_item} key={'report_content_download_wrap'}>
-                    </div> */}
                   </div>
                 </div>
-              }
+              )}
                
             </div>
           </div>

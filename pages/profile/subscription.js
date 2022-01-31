@@ -19,7 +19,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import MoonLoader from "react-spinners/MoonLoader"
 import { FormLabel } from '@mui/material';
 
-import { format } from 'date-fns'
+import { format, isAfter } from 'date-fns'
 
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -234,6 +234,7 @@ export default function profileSubscription() {
                   <h4>ACCOUNT</h4>
                   <h1>Manage Subscription</h1>
                 </div>
+
                 <div className={styles.profileInnerPage}>
                   <div className={styles.subscriptionInnerPage}>
                     {((paymentProcessor == null) || (paymentProcessor == undefined) || (paymentProcessor == '')) && (
@@ -244,23 +245,29 @@ export default function profileSubscription() {
                       <>
                         <div className={styles.subscriptionInnerItem}>
                           <p><strong>Subscription Period:</strong></p>
-                          {paymentProcessor == 'stripe' && <p>{subscription.plan && subscription.plan.interval.charAt(0).toUpperCase() + subscription.plan.interval.slice(1) + 'ly'}</p>}
+                          <p>{grant.duration}</p>
+                          {/* {paymentProcessor == 'stripe' && <p>{subscription.plan && subscription.plan.interval.charAt(0).toUpperCase() + subscription.plan.interval.slice(1) + 'ly'}</p>} */}
                         </div> 
 
                         <div className={styles.subscriptionInnerItem}>
                           <p><strong>Status:</strong></p>
                           {paymentProcessor == 'stripe' && <p>{subscription.status && subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}</p>}
+
+                          {paymentProcessor != 'stripe' && <p>{isAfter(grant.expiryDate.toMillis(), Firebase.firestore.Timestamp.now().toMillis()) ? 'Inactive' : 'Active'}</p>}
                         </div> 
 
-                        <div className={styles.subscriptionInnerItem}>
+                        {/* <div className={styles.subscriptionInnerItem}>
                           <p><strong>Auto Renewal On:</strong></p>
                           {paymentProcessor == 'stripe' && <p>{subscription.status == 'active' ? 'Yes' : 'No'}</p>}
-                        </div> 
+                        </div>  */}
 
 
                         <div className={styles.subscriptionInnerItem}>
                           <p><strong>Renewal Date:</strong></p>
+
                           {paymentProcessor == 'stripe' && <p>{format(new Date(parseInt(subscription.current_period_end) * 1000), 'LLLL dd, yyyy')}</p>}
+
+                          {paymentProcessor != 'stripe' && <p>{format(grant.expiryDate.toMillis(), 'LLLL dd, yyyy')}</p>}
                         </div> 
 
                         <div className={styles.subscriptionInnerItem}>

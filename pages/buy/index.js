@@ -56,7 +56,7 @@ export default function OnboardingWelcomePage() {
   const [name, setName] = useState('')
   const [showCoupon, setShowCoupon] = useState(false)
   const [showCouponApplied, setShowCouponApplied] = useState(false)
-  const [duration, setDuration] = useState('')
+  const [duration, setDuration] = useState(3)
 
   const [error, setError] = useState('')
 
