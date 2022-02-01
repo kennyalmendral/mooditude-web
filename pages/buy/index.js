@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
+const config = require('../../functions/config/config.json')
+
 import Layout from '@/components/Layout'
 import { SITE_NAME } from '@/config/index'
 
@@ -45,7 +47,6 @@ const PrevArrow = (props) => {
   );
 }
 
-
 export default function OnboardingWelcomePage() {
   const router = useRouter()
 
@@ -68,6 +69,8 @@ export default function OnboardingWelcomePage() {
   const [paymentFailed, setPaymentFailed] = useState(false)
   const [paymentSuccess, setPaymentSuccess] = useState(false)
 
+  const [plans, setPlans] = useState([])
+
   const [activeProductPrice, setActiveProductPrice] = useState(null)
 
   const settings = {
@@ -89,6 +92,46 @@ export default function OnboardingWelcomePage() {
 
   useEffect(() => {
     if (authUser) {
+      for (const plan in config.stripe.plan) {
+        const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
+
+        getStripeProduct({
+          price: config.stripe.plan[plan]
+        }).then(result => {
+          let productPrice = result.data.productPrice
+          let planObj = {}
+
+          planObj['id'] = productPrice.id
+          planObj['amount'] = parseInt(productPrice.unit_amount_decimal) / 100
+          planObj['interval'] = productPrice.recurring != null && productPrice.recurring.interval
+          planObj['interval_count'] = productPrice.recurring != null && productPrice.recurring.interval_count
+
+          if (
+            (productPrice.type == 'recurring') && 
+            (productPrice.recurring.interval == 'month') && 
+            (productPrice.recurring.interval_count == 1)
+          ) {
+            planObj['duration_in_months'] = 1
+          } else if (
+            (productPrice.type == 'recurring') && 
+            (productPrice.recurring.interval == 'month') && 
+            (productPrice.recurring.interval_count == 3)
+          ) {
+            planObj['duration_in_months'] = 3
+          } else if (
+            (productPrice.type == 'recurring') && 
+            (productPrice.recurring.interval == 'year') && 
+            (productPrice.recurring.interval_count == 1)
+          ) {
+            planObj['duration_in_months'] = 12
+          } else if (productPrice.type == 'one_time') {
+            planObj['duration_in_months'] = null
+          }
+
+          setPlans(plans => [...plans, planObj])
+        })
+      }
+      
       firebaseStore
         .collection('Subscribers')
         .doc(authUser.uid)
@@ -97,11 +140,18 @@ export default function OnboardingWelcomePage() {
           if (doc && doc.data()) {
             doc.data().grant && setLicenseType(doc.data().grant.licenseType)
           }
-
-          setChecking(false)
         })
     }
   }, [authUser])
+
+  useEffect(() => {
+    if (plans.length >= 4) {
+      console.log(plans)
+      setChecking(false)
+    } else {
+      setChecking(true)
+    }
+  }, [plans])
 
   useEffect(() => {
     console.log(router.query)
@@ -140,18 +190,20 @@ export default function OnboardingWelcomePage() {
 
     setChecking(true)
 
-    const processStripeSubscription = firebaseFunctions.httpsCallable('processStripeSubscription')
+    if (authUser) {
+      const processStripeSubscription = firebaseFunctions.httpsCallable('processStripeSubscription')
   
-    processStripeSubscription({
-      type: 'subscription',
-      duration: duration,
-      mode: 'subscription',
-      customerEmail: authUser && authUser.email,
-      redirectUrl: window.location.origin + '/buy/thank-you',
-      cancelUrl: window.location.origin
-    }).then(result => {
-      location.href = result.data.session.url
-    })
+      processStripeSubscription({
+        type: 'subscription',
+        duration: duration,
+        mode: 'subscription',
+        customerEmail: authUser.email,
+        redirectUrl: window.location.origin + '/buy/thank-you',
+        cancelUrl: window.location.origin
+      }).then(result => {
+        location.href = result.data.session.url
+      })
+    }
   }
   
   return (
@@ -251,25 +303,20 @@ export default function OnboardingWelcomePage() {
 
               <div className={styles.buy_selection_wrap}>
                 <div className={styles.buy_selection_inner_wrap}>
-                  <div className={`${styles.buy_selection_item} ${ duration == 1 ? styles.active : '' }`} onClick={e => {setDuration(1)}}>
-                    <span className={styles.buy_circle}>{ duration == 1 ? <CheckRoundedIcon /> : '' }</span>
+                  {plans.map(plan => (
+                    <>
+                      {plan.duration_in_months != null && (
+                        <div className={`${styles.buy_selection_item} ${ duration == plan.duration_in_months ? styles.active : '' }`} onClick={e => {setDuration(plan.duration_in_months)}}>
+                          <span className={styles.buy_circle}>{ duration == plan.duration_in_months ? <CheckRoundedIcon /> : '' }</span>
 
-                    <p>$14.99 <span>/ MONTH</span></p>
-                  </div>
+                          {plan.interval_count == 1 && <p>{plan.amount} <span>/ {`${plan.interval_count} ${plan.interval}`}</span></p>}
 
-                  <div className={`${styles.buy_selection_item} ${ duration == 3 ? styles.active : '' }`} onClick={e => {setDuration(3)}}>
-                    <span className={styles.buy_circle}>{ duration == 3 ? <CheckRoundedIcon /> : '' }</span>
-
-                    <p>$39.00 <span>/ 3-MONTH</span></p>
-                  </div>
-
-                  <div className={`${styles.buy_selection_item} ${ duration == null ? styles.active : '' }`} onClick={e => {setDuration(null)}}>
-                    <span className={styles.buy_circle}>{ duration == null ? <CheckRoundedIcon /> : '' }</span>
-
-                    <p>$89.99 <span>/ YEAR  — <b>Save $65</b></span> <br/> <span className={styles.trial_text}>with 3-day free trial</span></p>
-                  </div>
+                          {plan.interval_count == 3 && <p>{plan.amount} <span>/ {`${plan.interval_count} ${plan.interval}s`}</span></p>}
+                        </div>
+                      )}
+                    </>
+                  ))}
                 </div>
-
 
                 <form onSubmit={handleSubscription} className={styles.buy_button_form}>
                   <button
@@ -303,10 +350,6 @@ export default function OnboardingWelcomePage() {
                 {/* <p>Manage or cancel your subscription from your iTunes Account settings.</p> */}
               </div>
             </div>
-
-
-            
-            
           </div>
         </>
       }

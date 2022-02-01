@@ -6,6 +6,8 @@ import Link from 'next/link'
 import Layout from '@/components/Layout'
 import { SITE_NAME } from '@/config/index'
 
+const config = require('../../functions/config/config.json')
+
 import styles from '@/styles/Assessment.module.css'
 import onboardingStyles from '@/styles/Onboarding.module.css'
 
@@ -90,7 +92,62 @@ export default function AssessmentReport(props) {
 
   const [showOneTimePayment, setShowOneTimePayment] = useState(true)
 
+  const [plans, setPlans] = useState([])
+
   const [grant, setGrant] = useState({})
+
+  useEffect(() => {
+    if (authUser) {
+      for (const plan in config.stripe.plan) {
+        const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
+
+        getStripeProduct({
+          price: config.stripe.plan[plan]
+        }).then(result => {
+          let productPrice = result.data.productPrice
+          let planObj = {}
+
+          planObj['id'] = productPrice.id
+          planObj['amount'] = parseInt(productPrice.unit_amount_decimal) / 100
+          planObj['interval'] = productPrice.recurring != null && productPrice.recurring.interval
+          planObj['interval_count'] = productPrice.recurring != null && productPrice.recurring.interval_count
+
+          if (
+            (productPrice.type == 'recurring') && 
+            (productPrice.recurring.interval == 'month') && 
+            (productPrice.recurring.interval_count == 1)
+          ) {
+            planObj['duration_in_months'] = 1
+          } else if (
+            (productPrice.type == 'recurring') && 
+            (productPrice.recurring.interval == 'month') && 
+            (productPrice.recurring.interval_count == 3)
+          ) {
+            planObj['duration_in_months'] = 3
+          } else if (
+            (productPrice.type == 'recurring') && 
+            (productPrice.recurring.interval == 'year') && 
+            (productPrice.recurring.interval_count == 1)
+          ) {
+            planObj['duration_in_months'] = 12
+          } else if (productPrice.type == 'one_time') {
+            planObj['duration_in_months'] = null
+          }
+
+          setPlans(plans => [...plans, planObj])
+        })
+      }
+    }
+  }, [authUser])
+
+  useEffect(() => {
+    if (plans.length >= 4) {
+      console.log(plans)
+      setChecking(false)
+    } else {
+      setChecking(true)
+    }
+  }, [plans])
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -778,74 +835,42 @@ export default function AssessmentReport(props) {
               {((licenseType == 'free') && (assessmentScores.purchasedDate == null)) && (
                 <div>
                   <div className={styles.result_pricing_section}>
-                    <div className={styles.result_pricing_section_item}>
-                      <h4>Full Report</h4>
+                    {plans.map(plan => (
+                      <>
+                        {(plan.id != 'price_1K09ueAuTlAR8JLMqv6RVsh8') && (
+                          <div className={styles.result_pricing_section_item}>
+                            {plan.duration_in_months == 12 && <div className={styles.discount}>Best Value — Save $80</div>}
 
-                      <h3>$14</h3>
-                      <p>One-time</p>
+                            {((plan.duration_in_months == 3) || (plan.duration_in_months == 12)) && <h4>Unlimited Reports &amp; Mooditude App</h4>}
+                            {plan.duration_in_months == null && <h4>Full Report</h4>}
 
-                      <Button 
-                        size="large" 
-                        className={styles.report_btn} 
-                        variant="contained" 
-                        onClick={() => selectPlan('payment', null)} 
-                        style={{
-                          marginBottom: '15px',
-                          fontSize: '18px',
-                          fontWeight: '500',
-                          fontFamily: 'Circular STD'
-                        }} 
-                      >
-                        Buy
-                      </Button>  
-                    </div> 
+                            <h3>${plan.amount}</h3>
+                            
+                            {plan.duration_in_months == 3 && <p>per 3-month</p>}
+                            {plan.duration_in_months == 12 && <p>per year</p>}
+                            {plan.duration_in_months == null && <p>One-time</p>}
 
-                    <div className={styles.result_pricing_section_item}>
-                      <h4>Unlimited Reports &amp; Mooditude App</h4>
-
-                      <h3>$39</h3>
-                      <p>per 3-month</p>
-
-                      <Button 
-                        size="large" 
-                        className={styles.report_btn} 
-                        variant="contained" 
-                        onClick={() => selectPlan('subscription', 3)} 
-                        style={{
-                          marginBottom: '15px',
-                          fontSize: '18px',
-                          fontWeight: '500',
-                          fontFamily: 'Circular STD'
-                        }} 
-                      >
-                        SUBSCRIBE
-                      </Button>  
-                    </div>  
-
-                    <div className={styles.result_pricing_section_item}>
-                      <div className={styles.discount}>Best Value — Save $80</div>
-
-                      <h4>Unlimited Reports &amp; Mooditude App</h4>
-
-                      <h3>$89</h3>
-                      <p>per year</p>
-
-                      <Button 
-                        size="large" 
-                        className={styles.report_btn} 
-                        variant="contained" 
-                        onClick={() => selectPlan('subscription', 12)} 
-                        style={{
-                          marginBottom: '15px',
-                          fontSize: '18px',
-                          fontWeight: '500',
-                          fontFamily: 'Circular STD'
-                        }} 
-                      >
-                        SUBSCRIBE
-                      </Button>  
-                    </div>  
+                            <Button 
+                              size="large" 
+                              className={styles.report_btn} 
+                              variant="contained" 
+                              onClick={() => selectPlan(plan.duration_in_months == null ? 'payment' : 'subscription', plan.duration_in_months)} 
+                              style={{
+                                marginBottom: '15px',
+                                fontSize: '18px',
+                                fontWeight: '500',
+                                fontFamily: 'Circular STD'
+                              }} 
+                            >
+                              {plan.duration_in_months == null && <>BUY</>}
+                              {plan.duration_in_months != null && <>SUBSCRIBE</>}
+                            </Button>  
+                          </div>
+                        )}
+                      </>
+                    ))}
                   </div>
+
                   <div className={styles.pricing_section_text}>
                     <ul>
                       <li>
