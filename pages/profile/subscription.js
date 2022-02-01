@@ -253,14 +253,13 @@ export default function profileSubscription() {
                           <p><strong>Status:</strong></p>
                           {paymentProcessor == 'stripe' && <p>{subscription.status && subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}</p>}
 
-                          {paymentProcessor != 'stripe' && <p>{isAfter(grant.expiryDate.toMillis(), Firebase.firestore.Timestamp.now().toMillis()) ? 'Inactive' : 'Active'}</p>}
+                          {paymentProcessor != 'stripe' && <p>{isAfter(Firebase.firestore.Timestamp.now().toMillis(), grant.expiryDate.toMillis()) ? 'Inactive' : 'Active'}</p>}
                         </div> 
 
                         {/* <div className={styles.subscriptionInnerItem}>
                           <p><strong>Auto Renewal On:</strong></p>
                           {paymentProcessor == 'stripe' && <p>{subscription.status == 'active' ? 'Yes' : 'No'}</p>}
                         </div>  */}
-
 
                         <div className={styles.subscriptionInnerItem}>
                           <p><strong>Renewal Date:</strong></p>

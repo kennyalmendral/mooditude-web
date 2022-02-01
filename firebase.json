@@ -16,5 +16,7 @@
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
-  }
+  },
+  "appAssociation": "AUTO",
+  "rewrites": [{"source":"/a/**", "dynamicLinks": true}]
 }

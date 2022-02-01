@@ -8,6 +8,8 @@ import styles from '@/styles/Auth.module.css'
 import Layout from '@/components/Layout'
 import { SITE_NAME } from '@/config/index'
 
+const config = require('functions/config/config.json')
+
 import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
@@ -42,7 +44,51 @@ export default function SignUp(props) {
   const [btnDisabled, setBtnDisabled] = useState(true)
   const [showLoader, setShowLoader] = useState(false)
 
+  const [plans, setPlans] = useState([])
+
   const { authUser, createUserWithEmailAndPassword } = useAuth()
+
+  useEffect(() => {
+    for (const plan in config.stripe.plan) {
+      const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
+
+      getStripeProduct({
+        price: config.stripe.plan[plan]
+      }).then(result => {
+        let productPrice = result.data.productPrice
+        let planObj = {}
+
+        planObj['id'] = productPrice.id
+        planObj['amount'] = parseInt(productPrice.unit_amount_decimal) / 100
+        planObj['interval'] = productPrice.recurring != null && productPrice.recurring.interval
+        planObj['interval_count'] = productPrice.recurring != null && productPrice.recurring.interval_count
+
+        if (
+          (productPrice.type == 'recurring') && 
+          (productPrice.recurring.interval == 'month') && 
+          (productPrice.recurring.interval_count == 1)
+        ) {
+          planObj['duration_in_months'] = 1
+        } else if (
+          (productPrice.type == 'recurring') && 
+          (productPrice.recurring.interval == 'month') && 
+          (productPrice.recurring.interval_count == 3)
+        ) {
+          planObj['duration_in_months'] = 3
+        } else if (
+          (productPrice.type == 'recurring') && 
+          (productPrice.recurring.interval == 'year') && 
+          (productPrice.recurring.interval_count == 1)
+        ) {
+          planObj['duration_in_months'] = 12
+        } else if (productPrice.type == 'one_time') {
+          planObj['duration_in_months'] = null
+        }
+
+        setPlans(plans => [...plans, planObj])
+      })
+    }
+  }, [])
 
   useEffect(() => {
     if (authUser) {
@@ -51,6 +97,12 @@ export default function SignUp(props) {
       }
     }
   }, [authUser])
+
+  useEffect(() => {
+    if (plans.length >= 4) {
+      console.log(plans)
+    }
+  }, [plans])
 
   const checkPass = (p1 = '', p2 = '', policy = false) => {
     
@@ -163,9 +215,9 @@ export default function SignUp(props) {
                       localStorage.setItem(`${user.uid}_onboardingStep`, 'accountCreated')
 
                       if (router.query.type != undefined) {
-                        const processStripeSubscriptionOnSignUp = firebaseFunctions.httpsCallable('processStripeSubscriptionOnSignUp')
+                        const processStripeSubscription = firebaseFunctions.httpsCallable('processStripeSubscription')
   
-                        processStripeSubscriptionOnSignUp({
+                        processStripeSubscription({
                           type: router.query.type,
                           duration: router.query.duration,
                           mode: router.query.type == 'subscription' ? 'subscription' : 'payment',
@@ -243,34 +295,6 @@ export default function SignUp(props) {
           
         </div>
         <div className={styles.authBg}>
-          {/* {((router.query.type != 'subscription') && (router.query.type != 'payment')) && (
-            <div className={styles.free}>
-              {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3-checklist.png" className="m3" alt="M3Information" />}
-
-              <br/>
-              <br/>
-                <div className={`${styles.oneTime} ${styles.no_padding}`}>
-                  <div className={styles.mobile_hidden}>
-                    <div className={`${styles.mobile_steps} ${styles.desktop}`}>
-                        <div className={`${styles.step_item} ${styles.step_active_item}`}>
-                          <div className={styles.step_number}>1</div>
-                          <p>Account</p>
-                        </div>
-
-    
-
-                        <div className={styles.step_item}>
-                          <div className={styles.step_number}>2</div>
-                          <p>Assessment</p>
-                        </div>
-                    </div>
-                  </div>
-              
-                </div>
-              
-            </div>
-          )} */}
-
           {router.query.type == 'subscription' && (
             <div className={styles.mooditudePremium}>
               
@@ -300,29 +324,38 @@ export default function SignUp(props) {
 
                 <div>
                   {router.query.duration == 1 && (
-                    <>
-                      <div>
-                        <strong>$14.99</strong>/<span>month</span>
-                      </div>
-
-                      
-                    </>
+                    <div>
+                      {plans.filter(plan => plan.id == 'price_1K09ueAuTlAR8JLMqv6RVsh8').map(plan => (
+                        <>
+                          <strong>${plan.amount}</strong> / 
+                          <span>{plan.interval}</span>
+                        </>                       
+                      ))}
+                    </div>
                   )}
 
                   {router.query.duration == 3 && (
-                    <>
-                      <div>
-                        <strong>$14.99</strong>/<span>3 months</span>
-                      </div>
-                      
-                    </>
+                    <div>
+                      {plans.filter(plan => plan.id == 'price_1KHXXoAuTlAR8JLM1hdixwNI').map(plan => (
+                        <>
+                          <strong>${plan.amount}</strong> / 
+                          <span>{plan.interval_count} {plan.interval}s</span>
+                        </>                       
+                      ))}
+                    </div>
                   )}
 
-                  {router.query.duration == null && (
+                  {router.query.duration == 12 && (
                     <>
                       <div>
-                        <strong>$89.99</strong>/<span>year</span>
+                        {plans.filter(plan => plan.id == 'price_1K09ueAuTlAR8JLM3JmfvSgj').map(plan => (
+                          <>
+                            <strong>${plan.amount}</strong> / 
+                            <span>{plan.interval}</span>
+                          </>                       
+                        ))}
                       </div>
+                      
                       <div className={styles.trial_text}>after 3-day free trial</div>
                     </>
                   )}
@@ -360,7 +393,7 @@ export default function SignUp(props) {
 
                 <div>
                   <div>
-                    <strong>$14</strong>
+                    <strong>${plans.filter(plan => plan.id == 'price_1KGzeLAuTlAR8JLMWqvaSIE0')[0].amount}</strong>
                   </div>
 
                   <div>One-time charge</div>
