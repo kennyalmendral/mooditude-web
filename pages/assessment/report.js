@@ -440,46 +440,47 @@ export default function AssessmentReport(props) {
                   }).then(result => {
                     console.log(result.data)
 
-                    // const updateSubscriptionData = firebaseFunctions.httpsCallable('updateSubscriptionData')
+                    const addSubscriptionData = firebaseFunctions.httpsCallable('addSubscriptionData')
     
-                    // updateSubscriptionData({
-                    //   userId: userId,
-                    //   platform: 'web',
-                    //   productId: subscription.plan.id,
-                    //   expiryDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
-                    //   trialDurationInDays: subscription.plan.trial_period_days || 0,
-                    //   duration: `${result.data.productPrice.recurring.interval_count} ${result.data.productPrice.recurring.interval}`,
-                    //   transactionId: subscription.id,
-                    //   transactionDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.created * 1000))
-                    // }).then(result => {
-                    //   console.log(result)
+                    addSubscriptionData({
+                      userId: authUser.uid,
+                      platform: 'web',
+                      productId: subscription.plan.id,
+                      paymentProcessor: 'stripe',
+                      expiryDate: subscription.current_period_end * 1000,
+                      trialDurationInDays: subscription.plan.trial_period_days || 0,
+                      duration: `${result.data.productPrice.recurring.interval_count} ${result.data.productPrice.recurring.interval}`,
+                      transactionId: subscription.id,
+                      transactionDate: subscription.created * 1000
+                    }).then(result => {
+                      console.log(result)
 
-                    //   setPaymentSuccess(true)
-                    //   setLicenseType('premium')
-                    // })
+                      setPaymentSuccess(true)
+                      setLicenseType('premium')
+                    })
 
-                    firebaseStore
-                      .collection('Subscribers')
-                      .doc(authUser.uid)
-                      .set({
-                        grant: {
-                          expiryDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
-                          grantType: 'Purchase',
-                          licenseType: 'Premium',
-                          productType: 'Subscription',
-                          paymentProcessor: 'stripe',
-                          platform: 'web',
-                          productId: subscription.plan.id,
-                          trialDurationInDays: subscription.plan.trial_period_days || 0,
-                          duration: `${result.data.productPrice.recurring.interval_count} ${result.data.productPrice.recurring.interval}`,
-                          transactionDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.created * 1000)),
-                          transactionId: subscription.id
-                        }
-                      })
-                      .then(() => {
-                        setPaymentSuccess(true)
-                        setLicenseType('premium')
-                      })
+                    // firebaseStore
+                    //   .collection('Subscribers')
+                    //   .doc(authUser.uid)
+                    //   .set({
+                    //     grant: {
+                    //       expiryDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
+                    //       grantType: 'Purchase',
+                    //       licenseType: 'Premium',
+                    //       productType: 'Subscription',
+                    //       paymentProcessor: 'stripe',
+                    //       platform: 'web',
+                    //       productId: subscription.plan.id,
+                    //       trialDurationInDays: subscription.plan.trial_period_days || 0,
+                    //       duration: `${result.data.productPrice.recurring.interval_count} ${result.data.productPrice.recurring.interval}`,
+                    //       transactionDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.created * 1000)),
+                    //       transactionId: subscription.id
+                    //     }
+                    //   })
+                    //   .then(() => {
+                    //     setPaymentSuccess(true)
+                    //     setLicenseType('premium')
+                    //   })
                   })
                 })
             })
