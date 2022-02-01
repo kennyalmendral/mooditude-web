@@ -273,8 +273,7 @@ export default function SignUp(props) {
 
           {router.query.type == 'subscription' && (
             <div className={styles.mooditudePremium}>
-              {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
-              {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3.svg" className="m3" alt="M3Information" />}
+              
               <div className={styles.mobile_hidden}>
                 <div className={`${styles.mobile_steps} ${styles.desktop}`}>
                     <div className={`${styles.step_item} ${styles.step_active_item}`}>
@@ -294,7 +293,9 @@ export default function SignUp(props) {
                 </div>
               </div>
               <div>
-                
+                {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
+                {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3.svg" className="m3" alt="M3Information" />}
+                <br/>
                 <h2>MOODITUDE PREMIUM</h2>
 
                 <div>
@@ -332,8 +333,6 @@ export default function SignUp(props) {
 
           {router.query.type == 'payment' && (
             <div className={styles.oneTime}>
-              {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
-              {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3.svg" className="m3" alt="M3Information" />}
               
               <div className={styles.mobile_hidden}>
                 <div className={`${styles.mobile_steps} ${styles.desktop}`}>
@@ -354,7 +353,9 @@ export default function SignUp(props) {
                 </div>
               </div>
               <div>
-                
+                {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
+                {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3.svg" className="m3" alt="M3Information" />}
+                <br/>
                 <h2>FULL REPORT</h2>
 
                 <div>
