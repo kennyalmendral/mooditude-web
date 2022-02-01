@@ -309,9 +309,9 @@ export default function OnboardingWelcomePage() {
                         <div className={`${styles.buy_selection_item} ${ duration == plan.duration_in_months ? styles.active : '' }`} onClick={e => {setDuration(plan.duration_in_months)}}>
                           <span className={styles.buy_circle}>{ duration == plan.duration_in_months ? <CheckRoundedIcon /> : '' }</span>
 
-                          {plan.interval_count == 1 && <p>{plan.amount} <span>/ {`${plan.interval_count} ${plan.interval}`}</span></p>}
+                          {plan.interval_count == 1 && <p>${plan.amount} <span>/ {`${plan.interval_count} ${plan.interval}`}</span></p>}
 
-                          {plan.interval_count == 3 && <p>{plan.amount} <span>/ {`${plan.interval_count} ${plan.interval}s`}</span></p>}
+                          {plan.interval_count == 3 && <p>${plan.amount} <span>/ {`${plan.interval_count} ${plan.interval}s`}</span></p>}
                         </div>
                       )}
                     </>
