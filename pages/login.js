@@ -85,65 +85,69 @@ export default function Login(props) {
 
   const handleLogin = e => {
     e.preventDefault()
-
     
     setIsLoggingIn(true)
     setError(false) 
     setShowLoader(true)
-    signInWithEmailAndPassword(email, password)
-      .then(user => {
-        setIsLoggingIn(false)
-        props.loginLoaderHandler(true)
-        // router.push('/onboarding/welcome')
-        setError(false) 
-        if (user) {
-          firebaseDatabase
-            .ref()
-            .child('users')
-            .child(user.user.uid)
-            .once('value')
-            .then((snapshot) => {
-              const snapshotValue = snapshot.val()
 
-              if (snapshotValue != null) {
-                if (snapshotValue.onboardingStep == null) {
-                  location.href = '/onboarding/welcome'
-                }
-  
-                if (snapshotValue.onboardingStep == 'accountCreated' || snapshotValue.onboardingStep == 0) {
-                  if (snapshotValue.committedToSelfhelp == true || snapshotValue.committedToSelfhelp == false) {
-                    location.href = '/onboarding/get-started'
+    firebaseAuth
+      .setPersistence(Firebase.auth.Auth.Persistence.SESSION)
+      .then(() => {
+        signInWithEmailAndPassword(email, password)
+          .then(user => {
+            setIsLoggingIn(false)
+            props.loginLoaderHandler(true)
+            // router.push('/onboarding/welcome')
+            setError(false) 
+            if (user) {
+              firebaseDatabase
+                .ref()
+                .child('users')
+                .child(user.user.uid)
+                .once('value')
+                .then((snapshot) => {
+                  const snapshotValue = snapshot.val()
+
+                  if (snapshotValue != null) {
+                    if (snapshotValue.onboardingStep == null) {
+                      location.href = '/onboarding/welcome'
+                    }
+      
+                    if (snapshotValue.onboardingStep == 'accountCreated' || snapshotValue.onboardingStep == 0) {
+                      if (snapshotValue.committedToSelfhelp == true || snapshotValue.committedToSelfhelp == false) {
+                        location.href = '/onboarding/get-started'
+                      } else {
+                        location.href = '/onboarding/welcome'
+                      }
+                    } else if (snapshotValue.onboardingStep == 'profileCreated' || snapshotValue.onboardingStep == 1) {
+                      firebaseStore
+                        .collection('M3Assessment')
+                        .doc(user.user.uid)
+                        .collection('scores')
+                        .get()
+                        .then(doc => {
+                          if (doc.docs.length > 0) {
+                            location.href = '/assessment/dashboard'
+                          } else {
+                            location.href = '/onboarding/get-started'
+                          }
+                        })
+                    } else if (snapshotValue.onboardingStep == 'tookAssessment' || snapshotValue.onboardingStep == 2) {
+                      location.href = '/assessment/dashboard'
+                    }
                   } else {
                     location.href = '/onboarding/welcome'
                   }
-                } else if (snapshotValue.onboardingStep == 'profileCreated' || snapshotValue.onboardingStep == 1) {
-                  firebaseStore
-                    .collection('M3Assessment')
-                    .doc(user.user.uid)
-                    .collection('scores')
-                    .get()
-                    .then(doc => {
-                      if (doc.docs.length > 0) {
-                        location.href = '/assessment/dashboard'
-                      } else {
-                        location.href = '/onboarding/get-started'
-                      }
-                    })
-                } else if (snapshotValue.onboardingStep == 'tookAssessment' || snapshotValue.onboardingStep == 2) {
-                  location.href = '/assessment/dashboard'
-                }
-              } else {
-                location.href = '/onboarding/welcome'
-              }
-            })
-        }
-      })
-      .catch(error => {
-        console.log('error')
-        
-        setIsLoggingIn(false)
-        setShowLoader(false)
-        setError(true)
+                })
+            }
+          })
+          .catch(error => {
+            console.log('error')
+            
+            setIsLoggingIn(false)
+            setShowLoader(false)
+            setError(true)
+          })
       })
   }
 

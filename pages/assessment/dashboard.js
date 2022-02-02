@@ -49,6 +49,8 @@ export default function AssessmentWelcomePage() {
 
   const [weekDifference, setWeekDifference] = useState('')
 
+  const [currentRiskColor, setCurrentRiskColor] = useState('')
+
   // useEffect(() => {
   //   currentChartData && console.log(currentChartData.datasets[4])
   // }, [currentChartData])
@@ -139,6 +141,18 @@ export default function AssessmentWelcomePage() {
       setChecking(false)
     }
   }, [assessments])
+
+  useEffect(() => {
+    if (currentAllRiskLevel == 'high') {
+      setCurrentRiskColor('#EB5757')
+    } else if (currentAllRiskLevel == 'medium') {
+      setCurrentRiskColor('#F9982C')
+    } else if (currentAllRiskLevel == 'low') {
+      setCurrentRiskColor('#22A1D1')
+    } else if (currentAllRiskLevel == 'unlikely') {
+      setCurrentRiskColor('#5AA240')
+    }
+  }, [currentAllRiskLevel])
 
   useEffect(() => {
     if (!loading && !authUser) { 
@@ -328,7 +342,7 @@ export default function AssessmentWelcomePage() {
 
                 {(currentRiskScore > -1) && (
                   <>
-                    <div className={styles.rating_wrap}>
+                    <div className={styles.rating_wrap} style={{ backgroundColor: currentRiskColor }}>
                       <div className={styles.rating_outer_wrap}>
                         <div className={styles.rating_inner_wrap}>
                           {currentRiskScore}
@@ -480,9 +494,13 @@ export default function AssessmentWelcomePage() {
                         onClick={() => router.push(`/assessment/report?user=${authUser.uid}&score=${assessment.id}`)}
                       >
                         <div className={styles.ai_score}>
-                          <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`}>
-                            {assessment.allScore}
-                          </div>
+                          {assessment.allRiskLevel == 'high' && <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`} style={{ backgroundColor: '#EB5757' }}>{assessment.allScore}</div>}
+
+                          {assessment.allRiskLevel == 'medium' && <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`} style={{ backgroundColor: '#F9982C' }}>{assessment.allScore}</div>}
+
+                          {assessment.allRiskLevel == 'low' && <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`} style={{ backgroundColor: '#22A1D1' }}>{assessment.allScore}</div>}
+
+                          {assessment.allRiskLevel == 'unlikely' && <div className={`${styles.rating_wrap} ${styles.rating_wrap_small}`} style={{ backgroundColor: '#5AA240' }}>{assessment.allScore}</div>}
                         </div>
         
                         <div className={styles.ai_details} style={{ textAlign: 'left' }}>

@@ -354,6 +354,10 @@ exports.processStripeSubscription = functions.https.onCall(async (data, context)
     successUrl = `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&type=${data.type}&duration=${data.duration}&payment_success=true`;
   }
 
+  if (data.signUp != null && data.signUp == true) {
+    successUrl += `&signup=true`;
+  }
+
   let stripeData = {
     line_items: [
       {
@@ -668,6 +672,34 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .fillColor('#072B4F')
       .text(gender, col2LeftPos, colTop + 27, { width: colWidth * 2 });
 
+    let allRiskLevel;
+    let allRiskLevelShortDescription;
+    let riskLevelFillColor;
+
+    if (assessment.allScore <= 1) {
+      allRiskLevel = 'unlikely';
+    } else if ((assessment.allScore >= 2) && (assessment.allScore <= 32)) {
+      allRiskLevel = 'low';
+    } else if ((assessment.allScore >= 33) && (assessment.allScore <= 50)) {
+      allRiskLevel = 'medium';
+    } else if ((assessment.allScore >= 51) && (assessment.allScore <= 108)) {
+      allRiskLevel = 'high';
+    }
+
+    if (allRiskLevel == 'unlikely') {
+      riskLevelFillColor = '#5AA240';
+      allRiskLevelShortDescription = `Score of ${assessment.allScore} shows that it is unlikely you are suffering from a mental health condition at this time.`;
+    } else if (allRiskLevel == 'low') {
+      riskLevelFillColor = '#22A1D1';
+      allRiskLevelShortDescription = `Score of ${assessment.allScore} suggests that you have a low risk of a mental health condition.`;
+    } else if (allRiskLevel == 'medium') {
+      riskLevelFillColor = '#F9982C';
+      allRiskLevelShortDescription = `Score of ${assessment.allScore} suggests that you have a medium risk of a mental health condition.`;
+    } else if (allRiskLevel == 'high') {
+      riskLevelFillColor = '#EB5757';
+      allRiskLevelShortDescription = `Score of ${assessment.allScore} suggests that you have a high risk of a mental health condition.`;
+    }
+
     colWidth = 160;
     col1LeftPos = doc.x;
     col2LeftPos = col1LeftPos + 20;
@@ -677,7 +709,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .circle(col1LeftPos - 40, colTop + 104, 30)
       .lineWidth(3)
       .fillOpacity(1)
-      .fillAndStroke('#EB5757', '#F8E71C');
+      .fillAndStroke(riskLevelFillColor, '#F8E71C');
 
     let allScoreMarginLeft;
 
@@ -713,29 +745,6 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
         .text(assessment.allScore, (40 / 2) + parseInt(doc.widthOfString(assessment.allScore.toString())), colTop + 88);
-    }
-
-    let allRiskLevel;
-    let allRiskLevelShortDescription;
-
-    if (assessment.allScore <= 1) {
-      allRiskLevel = 'unlikely';
-    } else if ((assessment.allScore >= 2) && (assessment.allScore <= 32)) {
-      allRiskLevel = 'low';
-    } else if ((assessment.allScore >= 33) && (assessment.allScore <= 50)) {
-      allRiskLevel = 'medium';
-    } else if ((assessment.allScore >= 51) && (assessment.allScore <= 108)) {
-      allRiskLevel = 'high';
-    }
-
-    if (allRiskLevel == 'unlikely') {
-      allRiskLevelShortDescription = `Score of ${assessment.allScore} shows that it is unlikely you are suffering from a mental health condition at this time.`;
-    } else if (allRiskLevel == 'low') {
-      allRiskLevelShortDescription = `Score of ${assessment.allScore} suggests that you have a low risk of a mental health condition.`;
-    } else if (allRiskLevel == 'medium') {
-      allRiskLevelShortDescription = `Score of ${assessment.allScore} suggests that you have a medium risk of a mental health condition.`;
-    } else if (allRiskLevel == 'high') {
-      allRiskLevelShortDescription = `Score of ${assessment.allScore} suggests that you have a high risk of a mental health condition.`;
     }
 
     doc
@@ -1197,7 +1206,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .circle(col1LeftPos - 40, colTop + 20, 30)
       .lineWidth(3)
       .fillOpacity(1)
-      .fillAndStroke('#EB5757', '#F8E71C');
+      .fillAndStroke(riskLevelFillColor, '#F8E71C');
 
     if (assessment.allScore > 9) {
       allScoreMarginLeft = col1LeftPos - 54;

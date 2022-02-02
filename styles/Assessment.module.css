@@ -190,9 +190,8 @@
 	color: #516B84;
 }
 
-.rating_wrap{
+.rating_wrap {
 	border:  5px solid #F8E71C;
-	background: #EB5757;
 	color: white;
 	font-style: normal;
 	font-weight: bold;
@@ -206,7 +205,23 @@
 	justify-content: center;
 	color: #FFFFFF;
 	border-radius: 50%;
-}	
+}
+
+.rating_wrap.risk_high {
+	background: #EB5757;
+}
+
+.rating_wrap.risk_medium {
+	background: #F9982C;
+}
+
+.rating_wrap.risk_low {
+	background: #22A1D1;
+}
+
+.rating_wrap.risk_unlikely {
+	background: #5AA240;
+}
 
 .rating_wrap.rating_wrap_small{
 	width: 42px;

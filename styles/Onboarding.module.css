@@ -528,7 +528,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: #EB5757;
+	/* background: #EB5757; */
 	border: 2px solid #F8E71C;
 	border-radius: 50%;
 	font-size: 25px;
