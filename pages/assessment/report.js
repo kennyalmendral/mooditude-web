@@ -92,6 +92,8 @@ export default function AssessmentReport(props) {
 
   const [showOneTimePayment, setShowOneTimePayment] = useState(true)
 
+  const [riskColor, setRiskColor] = useState('')
+
   const [plans, setPlans] = useState([])
 
   const [grant, setGrant] = useState({})
@@ -181,6 +183,18 @@ export default function AssessmentReport(props) {
   useEffect(() => {
     // console.log(`usedDrug: ${usedDrug}`, `usedAlcohol: ${usedAlcohol}`)
   }, [usedDrug, usedAlcohol])
+
+  useEffect(() => {
+    if (allRiskLevel == 'high') {
+      setRiskColor('#EB5757')
+    } else if (allRiskLevel == 'medium') {
+      setRiskColor('#F9982C')
+    } else if (allRiskLevel == 'low') {
+      setRiskColor('#22A1D1')
+    } else if (allRiskLevel == 'unlikely') {
+      setRiskColor('#5AA240')
+    }
+  }, [allRiskLevel])
 
   useEffect(() => {
     if ((allRiskLevel == 'high') && (weekDifference >= 2)) {
@@ -706,12 +720,12 @@ export default function AssessmentReport(props) {
 
                 {riskScore > -1 && (
                   <>
-                    <div className={styles.rating_wrap}>
+                    <div className={styles.rating_wrap} style={{ backgroundColor: riskColor }}>
                       <div className={styles.rating_outer_wrap}>
                         <div className={styles.rating_inner_wrap}>
                           {riskScore}
-                        </div> 
-                      </div>  
+                        </div>
+                      </div>
                     </div>
 
                     {allRiskLevel == 'unlikely' && (
@@ -1052,7 +1066,7 @@ export default function AssessmentReport(props) {
                               </>
                             )}
 
-                            {(licenseType == 'premium') && (
+                            {((licenseType == 'premium' || assessmentScores.purchasedDate != null)) && (
                               <>
                                 <div className={styles.report_risks_wrap} >
                                   {/*<img src="/warning.svg" alt="Disorder Risks" />*/}

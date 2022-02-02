@@ -49,6 +49,8 @@ export default function OnboardingWelcomePage() {
 
   const [checking, setChecking] = useState(true)
 
+  const [riskColor, setRiskColor] = useState('')
+
   useEffect(() => {
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
       setIsMobileView(true)
@@ -110,6 +112,18 @@ export default function OnboardingWelcomePage() {
   // useEffect(() => {
   //   console.log(activeProduct, activeProductPrice)
   // }, [activeProduct, activeProductPrice])
+
+  useEffect(() => {
+    if (riskLevel == 'high') {
+      setRiskColor('#EB5757')
+    } else if (riskLevel == 'medium') {
+      setRiskColor('#F9982C')
+    } else if (riskLevel == 'low') {
+      setRiskColor('#22A1D1')
+    } else if (riskLevel == 'unlikely') {
+      setRiskColor('#5AA240')
+    }
+  }, [riskLevel])
 
   useEffect(() => {
     if (authUser) {
@@ -273,7 +287,7 @@ export default function OnboardingWelcomePage() {
                   <div className={`${styles.content_col} ${styles.score}`}>
                     <Link href={latestAssessmentReportUrl}>
                       <a>
-                        <div>
+                        <div style={{ backgroundColor: riskColor }}>
                           <strong>{riskScore}</strong>
                         </div>
 
