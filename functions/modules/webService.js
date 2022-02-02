@@ -354,6 +354,10 @@ exports.processStripeSubscription = functions.https.onCall(async (data, context)
     successUrl = `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&type=${data.type}&duration=${data.duration}&payment_success=true`;
   }
 
+  if (data.signUp != null && data.signUp == true) {
+    successUrl += `&signup=true`;
+  }
+
   let stripeData = {
     line_items: [
       {

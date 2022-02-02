@@ -220,6 +220,7 @@ export default function SignUp(props) {
                         processStripeSubscription({
                           type: router.query.type,
                           duration: router.query.duration,
+                          signUp: true,
                           mode: router.query.type == 'subscription' ? 'subscription' : 'payment',
                           customerEmail: user.email,
                           redirectUrl: window.location.origin + '/buy/thank-you',

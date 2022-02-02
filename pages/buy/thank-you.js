@@ -38,6 +38,8 @@ export default function OnboardingWelcomePage() {
     if (!loading && !authUser) { 
       router.push('/login')
     }
+
+    console.log(router)
   }, [authUser, loading, router])
 
   useEffect(() => {
@@ -95,7 +97,11 @@ export default function OnboardingWelcomePage() {
 
                       setExpiryDate(subscription.current_period_end)
 
-                      router.push('/?payment_success=true')
+                      if (router.query.signup) {
+                        router.push(`/onboarding/welcome`)
+                      } else {
+                        router.push('/?payment_success=true')
+                      }
                     })
 
                     // firebaseStore
@@ -163,7 +169,11 @@ export default function OnboardingWelcomePage() {
                       }
                     })
                     .then(() => {
-                      router.push('/?payment_success=true')
+                      if (router.query.signup) {
+                        router.push(`/onboarding/welcome`)
+                      } else {
+                        router.push('/?payment_success=true')
+                      }
                     })
                 })              
             })
