@@ -352,7 +352,7 @@ export default function SignUp(props) {
                           <>
                             <strong>${plan.amount}</strong> / 
                             <span>{plan.interval}</span>
-                          </>                       
+                          </>
                         ))}
                       </div>
                       
@@ -393,7 +393,9 @@ export default function SignUp(props) {
 
                 <div>
                   <div>
-                    <strong>${plans.filter(plan => plan.id == 'price_1KGzeLAuTlAR8JLMWqvaSIE0')[0].amount}</strong>
+                    {plans.filter(plan => plan.id == 'price_1KGzeLAuTlAR8JLMWqvaSIE0').map(plan => (
+                      <strong>${plan.amount}</strong>
+                    ))}
                   </div>
 
                   <div>One-time charge</div>
