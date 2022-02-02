@@ -242,7 +242,7 @@ export default function Menu(props) {
                         <a 
                             className={styles.logout} 
                             href="#" 
-                            onClick={() => {props.logoutLoaderHandler(true);signOut}}
+                            onClick={() => {props.logoutLoaderHandler(true);signOut()}}
                         >
                             Logout
                         </a>
