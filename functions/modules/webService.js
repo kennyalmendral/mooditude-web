@@ -347,11 +347,14 @@ exports.processStripeSubscription = functions.https.onCall(async (data, context)
   }
 
   let successUrl;
+  let cancelUrl;
 
   if ((data.userId != null) && (data.scoreId != null)) {
     successUrl = `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&type=${data.type}&duration=${data.duration}&payment_success=true&user=${data.userId}&score=${data.scoreId}`;
+    cancelUrl = `${data.cancelUrl}?checkout_cancelled=true&price=${price}&user=${data.userId}&score=${data.scoreId}`;
   } else {
     successUrl = `${data.redirectUrl}?session_id={CHECKOUT_SESSION_ID}&type=${data.type}&duration=${data.duration}&payment_success=true`;
+    cancelUrl = `${data.cancelUrl}?checkout_cancelled=true&price=${price}`;
   }
 
   if (data.signUp != null && data.signUp == true) {
@@ -368,7 +371,7 @@ exports.processStripeSubscription = functions.https.onCall(async (data, context)
     mode: data.mode == 'subscription' ? 'subscription' : 'payment',
     customer_email: data.customerEmail,
     success_url: successUrl,
-    cancel_url: `${data.cancelUrl}?checkout_cancelled=true&price=${price}`,
+    cancel_url: cancelUrl
   };
 
   const session = await stripe.checkout.sessions.create(stripeData);
