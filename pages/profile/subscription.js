@@ -251,9 +251,7 @@ export default function profileSubscription() {
 
                         <div className={styles.subscriptionInnerItem}>
                           <p><strong>Status:</strong></p>
-                          {paymentProcessor == 'stripe' && <p>{subscription.status && subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}</p>}
-
-                          {paymentProcessor != 'stripe' && <p>{isAfter(Firebase.firestore.Timestamp.now().toMillis(), grant.expiryDate.toMillis()) ? 'Inactive' : 'Active'}</p>}
+                          <p>{isAfter(Firebase.firestore.Timestamp.now().toMillis(), grant.expiryDate.toMillis()) ? 'Inactive' : 'Active'}</p>
                         </div> 
 
                         {/* <div className={styles.subscriptionInnerItem}>
@@ -261,41 +259,65 @@ export default function profileSubscription() {
                           {paymentProcessor == 'stripe' && <p>{subscription.status == 'active' ? 'Yes' : 'No'}</p>}
                         </div>  */}
 
-                        <div className={styles.subscriptionInnerItem}>
-                          <p><strong>Renewal Date:</strong></p>
+                        {!isAfter(Firebase.firestore.Timestamp.now().toMillis(), grant.expiryDate.toMillis()) && (
+                          <div className={styles.subscriptionInnerItem}>
+                            <p><strong>Renewal Date:</strong></p>
 
-                          {paymentProcessor == 'stripe' && <p>{format(new Date(parseInt(subscription.current_period_end) * 1000), 'LLLL dd, yyyy')}</p>}
+                            {/* {paymentProcessor == 'stripe' && <p>{format(new Date(parseInt(subscription.current_period_end) * 1000), 'LLLL dd, yyyy')}</p>} */}
 
-                          {paymentProcessor != 'stripe' && <p>{format(grant.expiryDate.toMillis(), 'LLLL dd, yyyy')}</p>}
-                        </div> 
-
-                        <div className={styles.subscriptionInnerItem}>
-                          <p><strong>Cancel Subscription:</strong></p>
-
-                          <div>
-                            {paymentProcessor == 'apple' && <p>You purchased Mooditude Premium from Apple App Store, cancel your subscription from the App Store.</p>}
-
-                            {paymentProcessor == 'google' && <p>You purchased Mooditude Premium from Google Play Store, cancel your subscription from the Google Play Store.</p>}
-
-                            {paymentProcessor == 'Mooditude' && <p>You purchased Mooditude Premium from Mooditude, cancel your subscription from Mooditude.</p>}
-
-                            {paymentProcessor == 'stripe' && (
-                              <>
-                                {cancelAt != '' && (
-                                  <p>
-                                    Your subscription will be canceled on {format(new Date(parseInt(cancelAt) * 1000), 'LLLL dd, yyyy')}.
-                                    {' '}
-                                    <a onClick={() => setOpenRenewConfirmationDialog(true)} style={{ cursor: 'pointer' }}>Click here to renew</a>
-                                  </p>
-                                )}
-
-                                {cancelAt == '' && (
-                                  <p><a onClick={() => setOpenCancelConfirmationDialog(true)} style={{ cursor: 'pointer' }}>Click here to cancel your subscription</a></p>
-                                )}
-                              </>
-                            )}
+                            <p>{format(grant.expiryDate.toMillis(), 'LLLL dd, yyyy')}</p>
                           </div> 
-                        </div> 
+                        )}
+
+                        {isAfter(Firebase.firestore.Timestamp.now().toMillis(), grant.expiryDate.toMillis()) && (
+                          <div className={styles.subscriptionInnerItem}>
+                            <p><strong>Renew Subscription:</strong></p>
+
+                            <div>
+                              {paymentProcessor == 'apple' && <p>You subscribed to Mooditude Premium from the Apple App Store, renew your subscription from the App Store.</p>}
+
+                              {paymentProcessor == 'google' && <p>You subscribed to Mooditude Premium from Google Play Store, renew your subscription from the Google Play Store.</p>}
+
+                              {paymentProcessor == 'Mooditude' && <p>You subscribed to Mooditude Premium from Mooditude, renew your subscription from Mooditude.</p>}
+
+                              {paymentProcessor == 'stripe' && (
+                                <p>
+                                  <a onClick={() => setOpenRenewConfirmationDialog(true)} style={{ cursor: 'pointer' }}>Click here to renew</a>
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {!isAfter(Firebase.firestore.Timestamp.now().toMillis(), grant.expiryDate.toMillis()) && (
+                          <div className={styles.subscriptionInnerItem}>
+                            <p><strong>Cancel Subscription:</strong></p>
+
+                            <div>
+                              {paymentProcessor == 'apple' && <p>You subscribed to Mooditude Premium from the Apple App Store, cancel your subscription from the App Store.</p>}
+
+                              {paymentProcessor == 'google' && <p>You subscribed to Mooditude Premium from Google Play Store, cancel your subscription from the Google Play Store.</p>}
+
+                              {paymentProcessor == 'Mooditude' && <p>You subscribed to Mooditude Premium from Mooditude, cancel your subscription from Mooditude.</p>}
+
+                              {paymentProcessor == 'stripe' && (
+                                <>
+                                  {cancelAt != '' && (
+                                    <p>
+                                      Your subscription will be canceled on {format(new Date(parseInt(cancelAt) * 1000), 'LLLL dd, yyyy')}.
+                                      {' '}
+                                      <a onClick={() => setOpenRenewConfirmationDialog(true)} style={{ cursor: 'pointer' }}>Click here to renew</a>
+                                    </p>
+                                  )}
+
+                                  {cancelAt == '' && (
+                                    <p><a onClick={() => setOpenCancelConfirmationDialog(true)} style={{ cursor: 'pointer' }}>Click here to cancel your subscription</a></p>
+                                  )}
+                                </>
+                              )}
+                            </div> 
+                          </div> 
+                        )}
                       </>
                     )}
                   </div>

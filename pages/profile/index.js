@@ -10,7 +10,7 @@ import styles from '@/styles/Profile.module.css'
 
 import { useAuth } from '@/context/AuthUserContext'
 
-import { format } from 'date-fns'
+import { format, isAfter } from 'date-fns'
 
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
@@ -61,6 +61,8 @@ export default function Profile(props) {
   const [crownsCount, setCrownsCount] = useState('')
 
   const [profilePicture, setProfilePicture] = useState('')
+
+  const [isSubscriptionExpired, setIsSubscriptionExpired] = useState(false)
 
   const fileEl = useRef(null)
 
@@ -114,6 +116,16 @@ export default function Profile(props) {
         })
     }
   }, [authUser])
+
+  useEffect(() => {
+    if (Object.keys(grant).length > 0) {
+      if (isAfter(Firebase.firestore.Timestamp.now().toMillis(), grant.expiryDate.toMillis())) {
+        setIsSubscriptionExpired(true)
+      } else {
+        setIsSubscriptionExpired(false)
+      }
+    }
+  }, [grant])
 
   useEffect(() => {
     if (Object.keys(profile).length > 0) {
@@ -324,7 +336,7 @@ export default function Profile(props) {
 
                     {Object.keys(grant).length > 0 && (
                       <>
-                        {grant.licenseType == 'Premium' && (
+                        {(grant.licenseType == 'Premium' && !isSubscriptionExpired) && (
                           <>
                             {grant.expiryDate.hasOwnProperty('seconds') && (
                               <p>{grant.licenseType.charAt(0).toUpperCase() + grant.licenseType.slice(1)} — Expires {format(new Date(grant.expiryDate.toMillis()), 'LLLL dd, yyyy')}</p>
@@ -334,6 +346,10 @@ export default function Profile(props) {
                               <p>{grant.licenseType.charAt(0).toUpperCase() + grant.licenseType.slice(1)} — Expires {format(new Date(grant.expiryDate), 'LLLL dd, yyyy')}</p>
                             )}
                           </>
+                        )}
+
+                        {(grant.licenseType == 'Premium' && isSubscriptionExpired) && (
+                          <p>{grant.licenseType.charAt(0).toUpperCase() + grant.licenseType.slice(1)} — Expired</p>
                         )}
 
                         {grant.licenseType != 'Premium' && (

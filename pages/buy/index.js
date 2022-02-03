@@ -12,6 +12,8 @@ import styles from '@/styles/Buy.module.css'
 
 import { useAuth } from '@/context/AuthUserContext'
 
+import { format, isAfter } from 'date-fns'
+
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import GridLoader from "react-spinners/GridLoader"
@@ -23,6 +25,7 @@ import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import Slider from "react-slick";
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
+import { FormatColorResetTwoTone } from '@mui/icons-material'
 
 const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
@@ -62,7 +65,8 @@ export default function OnboardingWelcomePage() {
   const [error, setError] = useState('')
 
   const [promoCode, setPromoCode] = useState('')
-  const [licenseType, setLicenseType] = useState('Free')
+  const [licenseType, setLicenseType] = useState(null)
+  const [expiryDate, setExpiryDate] = useState(null)
 
   const [subscription, setSubscription] = useState({})
 
@@ -72,6 +76,8 @@ export default function OnboardingWelcomePage() {
   const [plans, setPlans] = useState([])
 
   const [activeProductPrice, setActiveProductPrice] = useState(null)
+
+  const [isSubscriptionExpired, setIsSubscriptionExpired] = useState(false)
 
   const settings = {
     dots: true,
@@ -138,11 +144,24 @@ export default function OnboardingWelcomePage() {
         .get()
         .then(doc => {
           if (doc && doc.data()) {
-            doc.data().grant && setLicenseType(doc.data().grant.licenseType)
+            if (doc.data().grant) {
+              setLicenseType(doc.data().grant.licenseType)
+              setExpiryDate(doc.data().grant.expiryDate)
+            }
           }
         })
     }
   }, [authUser])
+
+  useEffect(() => {
+    if (expiryDate != null) {
+      if (isAfter(Firebase.firestore.Timestamp.now().toMillis(), expiryDate.toMillis())) {
+        setIsSubscriptionExpired(true)
+      } else {
+        setIsSubscriptionExpired(false)
+      }
+    }
+  }, [expiryDate])
 
   useEffect(() => {
     if (plans.length >= 4) {
@@ -229,8 +248,7 @@ export default function OnboardingWelcomePage() {
         : 
         <>
           
-          {
-            licenseType == 'Premium' ? 
+          {(licenseType == 'Premium' && !isSubscriptionExpired) && (
             <div className={styles.promoCodeWrapper}>
               <div className={styles.promoCodeAppliedInner}>
                 <div className={styles.promoCodeInnerTop}>
@@ -242,8 +260,9 @@ export default function OnboardingWelcomePage() {
                   <img src="/buy_icon.svg" />
                 </div>
               </div>
-            </div> : ''
-          }
+            </div>
+          )}
+
           <div className={styles.buy_wrapper}>
             <div className={styles.new_buy_wrapper}>
               {paymentFailed && (

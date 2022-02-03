@@ -7,7 +7,10 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Link from "next/link"
 import Router from 'next/router';
 
+import { format, isAfter } from 'date-fns'
+
 import Firebase from 'lib/Firebase'
+
 const firebaseAuth = Firebase.auth()
 const firebaseStore = Firebase.firestore()
 const firebaseDatabase = Firebase.database()
@@ -19,12 +22,15 @@ export default function Menu(props) {
     const [showMenu, setShowMenu] = React.useState(false);
     const [mainMenuCollapse, setMainMenuCollapse] = React.useState(true);
     const [customerType, setCustomerType] = React.useState('free')
+
+    const [licenseType, setLicenseType] = useState(null)
+    const [expiryDate, setExpiryDate] = useState(null)
+    const [isSubscriptionExpired, setIsSubscriptionExpired] = useState(false)
+
     const [onboardingStep, setOnboardingStep] = React.useState('')
     const { authUser, loading, signInWithEmailAndPassword } = useAuth()
 
     useEffect(() => {
-      
-
       if (authUser) {
         setShowMenu(true)
       } else{
@@ -37,17 +43,33 @@ export default function Menu(props) {
     }, [window])
 
     useEffect(() => {
+      if (expiryDate != null) {
+        if (isAfter(Firebase.firestore.Timestamp.now().toMillis(), expiryDate.toMillis())) {
+          setIsSubscriptionExpired(true)
+        } else {
+          setIsSubscriptionExpired(false)
+        }
+      }
+    }, [expiryDate])
+
+    useEffect(() => {
+      console.log(isSubscriptionExpired)
+    }, [isSubscriptionExpired])
+
+    useEffect(() => {
       if (authUser) {
         firebaseStore
-          .collection('Users')
+          .collection('Subscribers')
           .doc(authUser.uid)
           .get()
           .then(doc => {
-            if (doc.data()) {
-              setCustomerType(doc.data().customerType)
+            if (doc && doc.data()) {
+              if (doc.data().grant) {
+                setLicenseType(doc.data().grant.licenseType)
+                setExpiryDate(doc.data().grant.expiryDate)
+              }
             }
-          }) 
-
+          })
 
           firebaseAuth.onAuthStateChanged(user => {
             if (user) {
@@ -67,8 +89,6 @@ export default function Menu(props) {
                 }, error => {
                   console.log(error)
                 })
-
-              
             } else {
               unsubscribe && unsubscribe()
             }
@@ -143,7 +163,7 @@ export default function Menu(props) {
                                     </Link>
                                 </div>
 
-                                {customerType == 'free' && (
+                                {(licenseType == null || isSubscriptionExpired) && (
                                   <div>
                                     <Link href="/buy"> 
                                       <a className={styles.menu_item} >
@@ -221,7 +241,7 @@ export default function Menu(props) {
                                             </Link>
                                         </div>
 
-                                        {customerType == 'free' && (
+                                        {(licenseType == null || isSubscriptionExpired) && (
                                           <div>
                                             <Link href="/buy"> 
                                               <a className={styles.menu_item} >

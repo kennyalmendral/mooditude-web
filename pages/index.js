@@ -10,7 +10,7 @@ import styles from '@/styles/Onboarding.module.css'
 
 import { useAuth } from '@/context/AuthUserContext'
 
-import { format, differenceInWeeks } from 'date-fns'
+import { format, differenceInWeeks, isAfter } from 'date-fns'
 
 import Button from '@mui/material/Button'
 
@@ -45,6 +45,11 @@ export default function OnboardingWelcomePage() {
   const [activeProduct, setActiveProduct] = useState(null)
   const [activeProductPrice, setActiveProductPrice] = useState(null)
 
+  const [licenseType, setLicenseType] = useState(null)
+  const [expiryDate, setExpiryDate] = useState(null)
+
+  const [isSubscriptionExpired, setIsSubscriptionExpired] = useState(false)
+
   const [customerType, setCustomerType] = useState(null)
 
   const [checking, setChecking] = useState(true)
@@ -57,32 +62,9 @@ export default function OnboardingWelcomePage() {
     } else {
       setIsMobileView(false)
     }
-
-    // console.log(Firebase.firestore.Timestamp.fromDate(new Date(1643260753)))
-
-    // const updateSubscriptionData = firebaseFunctions.httpsCallable('updateSubscriptionData')
-    
-    // updateSubscriptionData({
-    //   userId: userId,
-    //   platform: 'web',
-    //   productId: subscription.plan.id,
-    //   expiryDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
-    //   trialDurationInDays: subscription.plan.trial_period_days || 0,
-    //   duration: `${result.data.productPrice.recurring.interval_count} ${result.data.productPrice.recurring.interval}`,
-    //   transactionId: subscription.id,
-    //   transactionDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.created * 1000))
-    // }).then(result => {
-    //   console.log(result)
-    // })
   }, [])
 
   useEffect(() => {
-    // if (router.query.score && router.query.user) {
-    //   setChecking(true)
-
-    //   router.push(`/assessment/report?user=${router.query.user}&score=${router.query.score}&session_id=${router.query.session_id}&type=${router.query.type}&duration=${router.query.duration}&payment_success=true`)
-    // }
-
     if (router.query.checkout_cancelled) {
       setPaymentFailed(true)
 
@@ -92,8 +74,6 @@ export default function OnboardingWelcomePage() {
         getStripeProduct({
           price: router.query.price
         }).then(result => {
-          // console.log(result.data)
-
           setActiveProduct(result.data.product.name)
           setActiveProductPrice(result.data.productPrice.id)
         })
@@ -109,10 +89,6 @@ export default function OnboardingWelcomePage() {
     }
   }, [router])
 
-  // useEffect(() => {
-  //   console.log(activeProduct, activeProductPrice)
-  // }, [activeProduct, activeProductPrice])
-
   useEffect(() => {
     if (riskLevel == 'high') {
       setRiskColor('#EB5757')
@@ -126,8 +102,35 @@ export default function OnboardingWelcomePage() {
   }, [riskLevel])
 
   useEffect(() => {
+    if (expiryDate != null) {
+      if (isAfter(Firebase.firestore.Timestamp.now().toMillis(), expiryDate.toMillis())) {
+        setIsSubscriptionExpired(true)
+      } else {
+        setIsSubscriptionExpired(false)
+      }
+    }
+  }, [expiryDate])
+
+  useEffect(() => {
+    console.log(isSubscriptionExpired)
+  }, [isSubscriptionExpired])
+
+  useEffect(() => {
     if (authUser) {
       let assessments = []
+
+      firebaseStore
+        .collection('Subscribers')
+        .doc(authUser.uid)
+        .get()
+        .then(doc => {
+          if (doc && doc.data()) {
+            if (doc.data().grant) {
+              setLicenseType(doc.data().grant.licenseType)
+              setExpiryDate(doc.data().grant.expiryDate)
+            }
+          }
+        })
 
       firebaseStore
         .collection('Users')
@@ -385,7 +388,7 @@ export default function OnboardingWelcomePage() {
                   </div>
                 )}
                 
-                {(customerType == 'free') && (
+                {(licenseType == null || isSubscriptionExpired) && (
                   <div className={`${styles.content_col} ${styles.buy}`}>
                     <Link href="/buy">
                       <a>
