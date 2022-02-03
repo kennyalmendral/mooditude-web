@@ -13,7 +13,7 @@ import { useAuth } from '@/context/AuthUserContext'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 
-import { format, differenceInWeeks } from 'date-fns'
+import { format, differenceInWeeks, isAfter } from 'date-fns'
 
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
@@ -50,6 +50,8 @@ export default function AssessmentWelcomePage() {
   const [weekDifference, setWeekDifference] = useState('')
 
   const [currentRiskColor, setCurrentRiskColor] = useState('')
+
+  const [grant, setGrant] = useState(null)
 
   // useEffect(() => {
   //   currentChartData && console.log(currentChartData.datasets[4])
@@ -160,6 +162,22 @@ export default function AssessmentWelcomePage() {
     }
 
   }, [authUser, loading, router])
+
+  useEffect(() => {
+    if (authUser) {
+      firebaseStore
+        .collection('Subscribers')
+        .doc(authUser.uid)
+        .get()
+        .then(doc => {
+          if (doc && doc.data()) {
+            if (doc.data().grant) {
+              setGrant(doc.data().grant)
+            }
+          }
+        })
+    }
+  }, [authUser])
 
   useEffect(() => {
     setChecking(true)
@@ -402,14 +420,27 @@ export default function AssessmentWelcomePage() {
                   </Button>
                 )} */}
 
-                <Button 
-                  size="large" 
-                  className={styles.full_report_btn} 
-                  variant="contained" 
-                  onClick={handleTakeAssessment}
-                >
-                  TAKE ASSESSMENT
-                </Button>
+                {(grant == null && !hasNoAssessment) && (
+                  <Button 
+                    size="large" 
+                    className={styles.full_report_btn} 
+                    variant="contained" 
+                    onClick={() => router.push(currentFullReportLink)}
+                  >
+                    FULL REPORT
+                  </Button>
+                )}
+
+                {(hasNoAssessment || grant != null) && (
+                  <Button 
+                    size="large" 
+                    className={styles.full_report_btn} 
+                    variant="contained" 
+                    onClick={handleTakeAssessment}
+                  >
+                    TAKE ASSESSMENT
+                  </Button>
+                )}
               </>
              }
               
