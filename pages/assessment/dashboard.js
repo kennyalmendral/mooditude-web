@@ -380,7 +380,7 @@ export default function AssessmentWelcomePage() {
                   </>
                 )}
 
-                {weekDifference < 2 && (
+                {/* {weekDifference < 2 && (
                   <Button 
                     size="large" 
                     className={styles.full_report_btn} 
@@ -400,7 +400,16 @@ export default function AssessmentWelcomePage() {
                   >
                     TAKE ASSESSMENT
                   </Button>
-                )}
+                )} */}
+
+                <Button 
+                  size="large" 
+                  className={styles.full_report_btn} 
+                  variant="contained" 
+                  onClick={handleTakeAssessment}
+                >
+                  TAKE ASSESSMENT
+                </Button>
               </>
              }
               

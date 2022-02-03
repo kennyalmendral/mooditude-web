@@ -632,11 +632,11 @@ export default function AssessmentReport(props) {
             .collection('scores')
             .doc(router.query.score)
             .update({
-              pdfDoc: result.data.url[0]
+              pdfDoc: result.data.url
             })     
         }
         
-        setReportLink(result.data.url[0])
+        setReportLink(result.data.url)
       }).catch(err => {
         setIsDownloading(false)
         

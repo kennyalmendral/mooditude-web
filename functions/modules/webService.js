@@ -15,6 +15,8 @@ const stripe = require('stripe')(config.stripe.secretKey);
 
 const needle = require('needle');
 
+const turl = require('turl');
+
 const mailjetOptions = {
   'json': true,
   'username': config.mailJet.apiKey,
@@ -1963,9 +1965,11 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     action: 'read',
     expires: Date.now() + 24 * 60 * 60 * 1000
   });
-    
+  
+  const shortUrl = await turl.shorten(url);
+
   return {
-    url
+    url: shortUrl
   };
 });
 
