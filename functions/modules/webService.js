@@ -771,19 +771,27 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     let allRiskLevelDesciption;
 
     if (allRiskLevel == 'unlikely') {
-      allRiskLevelDesciption = `Your score is below the level usually found for individuals already known to be suffering from a mood or anxiety disorder. Despite this low score, it is still important to refer to the information and recommendations below concerning your risk for each of the four conditions described.`;
+      allRiskLevelDesciption = `Your score of ${assessment.allScore} is below the level usually found for individuals already known to be suffering from a mood or anxiety disorder. Despite this low score, it is still important to refer to the information and recommendations below concerning your risk for each of the four conditions described.`;
     } else if (allRiskLevel == 'low') {
-      allRiskLevelDesciption = `Your score is in the lower range as compared to individuals already known to be suffering from a mood or anxiety disorder. Despite this relatively low score, your symptoms may be impacting your life, livelihood, and general well-being. Read closely the information and recommendations below concerning your risk of each of the four conditions described.`;
+      allRiskLevelDesciption = `Your score of ${assessment.allScore} is in the lower range as compared to individuals already known to be suffering from a mood or anxiety disorder. Despite this relatively low score, your symptoms may be impacting your life, livelihood, and general well-being.`;
     } else if (allRiskLevel == 'medium') {
-      allRiskLevelDesciption = `Your score is in the mid-range as compared to individuals already known to be suffering from a mood or anxiety disorder. This is a significant finding, as it suggests that your symptoms are probably impacting your life and general well-being. Read carefully the information and recommendations below concerning your risk of each of the four conditions described.`;
+      allRiskLevelDesciption = `Your score of ${assessment.allScore} is in the mid-range as compared to individuals already known to be suffering from a mood or anxiety disorder. This is a significant finding, as it suggests that your symptoms are probably impacting your life and general well-being.`;
     } else if (allRiskLevel == 'high') {
-      allRiskLevelDesciption = `Your score is in the high range as compared to individuals already known to be suffering from a mood or anxiety disorder. This is cause for real concern, as it suggests that your symptoms are impacting your life and general health. Read carefully the information and recommendations below concerning your risk of each of the four conditions described.`;
+      allRiskLevelDesciption = `Your score of ${assessment.allScore} is in the high range as compared to individuals already known to be suffering from a mood or anxiety disorder. This is cause for real concern, as it suggests that your symptoms are impacting your life and general health.`;
     }
 
     doc
       .fillColor('#072B4F')
       .fontSize(9)
-      .text(allRiskLevelDesciption, defaultMarginLeft, doc.y + 75);
+      .text(`Your responses have been analyzed and compared to the responses of other individuals with and without mood and anxiety disorders.`, defaultMarginLeft, doc.y + 65);
+
+    doc
+      .moveDown()
+      .text(allRiskLevelDesciption, defaultMarginLeft, doc.y);
+    
+    doc
+      .moveDown()
+      .text(`Read carefully the information and recommendations below concerning your risk of each of the four conditions described.`, defaultMarginLeft, doc.y);
     // End Page 1
 
     doc.addPage()
