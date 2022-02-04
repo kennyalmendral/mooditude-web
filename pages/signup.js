@@ -34,7 +34,7 @@ export default function SignUp(props) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
-  const [isPrivacyPolicyChecked, setIsPrivacyPolicyChecked] = useState(false)
+  const [isPrivacyPolicyChecked, setIsPrivacyPolicyChecked] = useState(true)
   const [error, setError] = useState(null)
   const [isSigningUp, setIsSigningUp] = useState(false)
   const [isMinChar, setIsMinChar] = useState(false)
@@ -308,20 +308,17 @@ export default function SignUp(props) {
 
                     <div className={styles.step_item}>
                       <div className={styles.step_number}>2</div>
-                      <p>Buy</p>
-                    </div>
-
-                    <div className={styles.step_item}>
-                      <div className={styles.step_number}>3</div>
                       <p>Assessment</p>
                     </div>
                 </div>
               </div>
               <div>
                 {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
-                {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3.svg" className="m3" alt="M3Information" />}
+                {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3.svg" width="55" height="55" className="m3" alt="M3Information" />}
                 <br/>
-                <h2>MOODITUDE PREMIUM</h2>
+
+                
+                <h2>{router.query.referrer == 'm3' ? 'M3 ASSESSMENT REPORT' : 'MOODITUDE PREMIUM'}</h2>
 
                 <div>
                   {router.query.duration == 1 && (
@@ -388,9 +385,9 @@ export default function SignUp(props) {
               </div>
               <div>
                 {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
-                {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3.svg" className="m3" alt="M3Information" />}
+                {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3.svg" width="55" height="55" className="m3" alt="M3Information" />}
                 <br/>
-                <h2>FULL REPORT</h2>
+                <h2>{router.query.referrer == 'm3' ? 'M3 ASSESSMENT REPORT' : 'MOODITUDE PREMIUM'}</h2>
 
                 <div>
                   <div>
@@ -400,6 +397,35 @@ export default function SignUp(props) {
                   </div>
 
                   <div>One-time charge</div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+           {((router.query.type != 'subscription' && router.query.type != 'payment') && (router.query.type != 'subscription') && (router.query.type != 'payment') && router.query.referrer == 'm3') && (
+            <div className={styles.oneTime}>
+              
+              <div className={styles.mobile_hidden}>
+                <div className={`${styles.mobile_steps} ${styles.desktop}`}>
+                    <div className={`${styles.step_item} ${styles.step_active_item}`}>
+                      <div className={styles.step_number}>1</div>
+                      <p>Account</p>
+                    </div>
+
+                    <div className={styles.step_item}>
+                      <div className={styles.step_number}>2</div>
+                      <p>Assessment</p>
+                    </div>
+                </div>
+              </div>
+              <div>
+                {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
+                {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3.svg" width="55" height="55" className="m3" alt="M3Information" />}
+                <br/>
+                <h2>M3 Assesment Score</h2>
+
+                <div>
+                  <div><strong>$0</strong></div>
                 </div>
               </div>
             </div>
@@ -548,7 +574,7 @@ export default function SignUp(props) {
                         label={false}
                       />
 
-                      <label htmlFor="privacy-policy" style={{ marginLeft: '-16px' }}>
+                      <label htmlFor="privacy-policy" >
                         <div className={styles.privacyPolicyText}>
                           <span>By continuing you agree to Mooditude's</span>
                           <br />
