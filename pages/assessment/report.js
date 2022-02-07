@@ -26,6 +26,7 @@ const firebaseStore = Firebase.firestore()
 const firebaseAuth = Firebase.auth()
 const firebaseDatabase = Firebase.database()
 const firebaseFunctions = Firebase.functions()
+const firebaseStorage = Firebase.storage()
 
 import GridLoader from "react-spinners/GridLoader"
 
@@ -622,21 +623,25 @@ export default function AssessmentReport(props) {
       generatePDFReport({
         userId: router.query.user,
         assessmentId: router.query.score
-      }).then(result => {
-        setIsDownloading(false)
-        
-        if (authUser) {
-          firebaseStore
-            .collection('M3Assessment')
-            .doc(router.query.user)
-            .collection('scores')
-            .doc(router.query.score)
-            .update({
-              pdfDoc: result.data.url
-            })     
-        }
-        
-        setReportLink(result.data.url)
+      }).then(result => {        
+        firebaseStorage
+          .ref(result.data.url)
+          .getDownloadURL()
+          .then(url => {
+            firebaseStore
+              .collection('M3Assessment')
+              .doc(router.query.user)
+              .collection('scores')
+              .doc(router.query.score)
+              .update({
+                pdfDoc: url
+              })
+              .then(() => {
+                setReportLink(url)
+
+                setIsDownloading(false)
+              })
+          })
       }).catch(err => {
         setIsDownloading(false)
         
