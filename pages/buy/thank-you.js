@@ -165,7 +165,7 @@ export default function OnboardingWelcomePage() {
                     .update({
                       assessmentCredit: {
                         stripeInvoiceId: paymentIntent.id,
-                        purchasedDate: Firebase.firestore.Timestamp.fromDate(new Date(paymentIntent.created * 1000))
+                        purchasedDate: paymentIntent.created * 1000
                       }
                     })
                     .then(() => {

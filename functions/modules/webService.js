@@ -2239,7 +2239,7 @@ exports.applyReportCredit = functions.https.onCall((data, context) => {
             .collection('scores')
             .doc(data.score)
             .update({
-              purchasedDate: assessmentCredit.purchasedDate,
+              purchasedDate: admin.firestore.Timestamp.fromDate(new Date(assessmentCredit.purchasedDate)),
               stripeInvoiceId: assessmentCredit.stripeInvoiceId
             })
             .then(() => {
