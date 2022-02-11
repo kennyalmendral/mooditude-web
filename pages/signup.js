@@ -257,12 +257,21 @@ export default function SignUp(props) {
     <Layout title={`Join ${SITE_NAME} | ${SITE_NAME}`}>
       <div className={`${styles.container} auth_page_wrapper`}>
         <div className={styles.mobile_visible}>
+          {
+            router.query.referrer == 'm3' ? 
+              <div className={styles.blue_banner}>
+                Welcome M3 Checklist user. Mooditude is powered by M3 Checklist. 
+              </div> : ''  
+          }
+          
+
           <div className={styles.mobile_logo}>
               <img src={`/logo-small.svg`}  />
           </div>
 
           {((router.query.type != 'subscription') && (router.query.type != 'payment')) && (
-            <div className={`${styles.mobile_steps} ${styles.mobile_steps_small}`}>
+
+            <div className={`${styles.mobile_steps} ${styles.two_steps} ${styles.mobile_steps_small}`}>
                 <div className={`${styles.step_item} ${styles.step_active_item}`}>
                   <div className={styles.step_number}>1</div>
                   <p>Account</p>
@@ -313,12 +322,30 @@ export default function SignUp(props) {
                 </div>
               </div>
               <div>
-                {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
-                {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3.svg" width="55" height="55" className="m3" alt="M3Information" />}
-                <br/>
+
+                { router.query.referrer == 'm3' && (router.query.duration == 12 || router.query.duration == 3) ?
+
+                <>
+                  <div className={styles.mobile_logo_mix}>
+                    <img src="/m3.svg" width="55" height="55" className="m3" alt="M3Information" />  + <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" /> 
+                  </div>
+                </> : 
+                <>
+                  {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
+                  {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3.svg" width="55" height="55" className="m3" alt="M3Information" /> }
+                  <br/>
+                </>
+
+                }
+                
 
                 
-                <h2>{router.query.referrer == 'm3' ? 'M3 ASSESSMENT REPORT' : 'MOODITUDE PREMIUM'}</h2>
+
+                { router.query.referrer == 'm3' && (router.query.duration == 12 || router.query.duration == 3) ?
+                  <h2 className={styles.m3_title}>Mooditude PREMIUM & ULIMETED M3 Assessment Reports</h2>
+                  : <h2 className={styles.m3_title}>{router.query.referrer == 'm3' ? 'M3 ASSESSMENT REPORT' : 'MOODITUDE PREMIUM'}</h2>
+                }
+                
 
                 <div>
                   {router.query.duration == 1 && (
@@ -348,7 +375,7 @@ export default function SignUp(props) {
                       <div>
                         {plans.filter(plan => plan.id == 'price_1K09ueAuTlAR8JLM3JmfvSgj').map(plan => (
                           <>
-                            <strong>${plan.amount}</strong> / 
+                            <strong>${plan.amount}.00</strong> / 
                             <span>{plan.interval}</span>
                           </>
                         ))}
@@ -387,16 +414,16 @@ export default function SignUp(props) {
                 {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
                 {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3.svg" width="55" height="55" className="m3" alt="M3Information" />}
                 <br/>
-                <h2>{router.query.referrer == 'm3' ? 'M3 ASSESSMENT REPORT' : 'MOODITUDE PREMIUM'}</h2>
+                <h2 className={styles.m3_title}>{router.query.referrer == 'm3' ? 'M3 ASSESSMENT REPORT' : 'MOODITUDE PREMIUM'}</h2>
 
                 <div>
                   <div>
                     {plans.filter(plan => plan.id == 'price_1KGzeLAuTlAR8JLMWqvaSIE0').map(plan => (
-                      <strong>${plan.amount}</strong>
+                      <strong>${plan.amount}.00</strong>
                     ))}
                   </div>
 
-                  <div>One-time charge</div>
+                  <div>One-time</div>
                 </div>
               </div>
             </div>
@@ -406,7 +433,7 @@ export default function SignUp(props) {
             <div className={styles.oneTime}>
               
               <div className={styles.mobile_hidden}>
-                <div className={`${styles.mobile_steps} ${styles.desktop}`}>
+                <div className={`${styles.mobile_steps} ${styles.two_steps} ${styles.desktop}`}>
                     <div className={`${styles.step_item} ${styles.step_active_item}`}>
                       <div className={styles.step_number}>1</div>
                       <p>Account</p>
@@ -422,10 +449,11 @@ export default function SignUp(props) {
                 {router.query.referrer == undefined && <img src="/crown.svg" width="55" height="55" alt="Mooditude Premium" />}
                 {(router.query.referrer != undefined && router.query.referrer == 'm3') && <img src="/m3.svg" width="55" height="55" className="m3" alt="M3Information" />}
                 <br/>
-                <h2>M3 Assesment Score</h2>
+                <h2 className={styles.m3_title}>M3 Score</h2>
 
                 <div>
                   <div><strong>$0</strong></div>
+                  <div>One-time</div>
                 </div>
               </div>
             </div>

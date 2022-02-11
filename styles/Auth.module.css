@@ -275,7 +275,7 @@
 }
 
 .trial_text{
-  font-family: Circular Std;
+  font-family: 'Circular Std';
   font-style: normal;
   font-weight: normal;
   font-size: 18px;
@@ -321,7 +321,7 @@
 
   height: 30px;
   width: 30px;
-  font-family: Circular Std;
+  font-family: 'Circular Std';
   font-style: normal;
   font-weight: 900;
   font-size: 16px;
@@ -336,7 +336,7 @@
 .desktop .step_item p{
   margin-top: 0;
   margin-top: 7px;
-  font-family: Circular Std;
+  font-family: 'Circular Std';
   font-style: normal;
   font-weight: bold;
   font-size: 18px;
@@ -362,6 +362,30 @@
   position: absolute;
   z-index: 1;
   top: 15px;
+}
+
+.mobile_logo_mix{
+  display: flex;
+  align-items: center!important;
+  font-style: normal!important;
+  font-weight: bold!important;
+  font-size: 20px!important;
+  line-height: 18px!important;
+  
+  font-family: 'Circular Std'!important;
+  text-transform: uppercase!important;
+
+  /* Primary */
+  margin-bottom: 20px;
+  color: #072B4F;
+}
+
+.mobile_logo_mix img:first-child{
+  margin-right: 10px;
+}
+
+.mobile_logo_mix img:last-child{
+  margin-left: 10px;
 }
 
 /*Responsive*/
@@ -394,11 +418,26 @@
   .authBg .mooditudePremium,
   .authBg .free,
   .authBg .oneTime {
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 40px;
+    padding-bottom: 40px;
     padding-left: 20px;
     align-items: flex-start;
     
+  }
+
+  .m3_title{
+    font-family: 'Circular Std';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 18px;
+    /* identical to box height */
+
+    text-transform: uppercase;
+
+    /* Primary */
+
+    color: #072B4F;
   }
 
   .container {
@@ -463,7 +502,11 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    width: 80px;
+    width: 110px;
+  }
+
+  .two_steps .step_item{
+    width: 150px;
   }
 
   .step_number{
@@ -472,7 +515,7 @@
 
     height: 30px;
     width: 30px;
-    font-family: Circular Std;
+    font-family: 'Circular Std';
     font-style: normal;
     font-weight: 900;
     font-size: 14px;
@@ -487,7 +530,7 @@
   .step_item p{
     margin-top: 0;
     margin-top: 7px;
-    font-family: Circular Std;
+    font-family: 'Circular Std';
     font-style: normal;
     font-weight: bold;
     font-size: 16px;
@@ -501,7 +544,7 @@
   .mobile_steps:before{
     content: '';
     height: 2px;
-    width: 40%;
+    width: 50%;
     margin-left: auto;
     margin-right: auto;
     left: 0;
@@ -516,6 +559,30 @@
     width: 100px;
   }
 
+  .two_steps.mobile_steps.mobile_steps_small:before{
+    width: 130px;
+  }
+
+  .blue_banner{
+    padding: 17px;
+
+    background: #40A3F8;
+    border-radius: 8px;
+    font-family: 'Circular Std';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 18px;
+
+    /* White */
+
+    color: #FFFFFF;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
+  }
+
   .step_active_item .step_number{
     background: #F8E71C;
     color: #000000;
@@ -527,13 +594,37 @@
   }
 
   .authBg .mooditudePremium img{
-    height: 30px;
-    width: 30px;
+    height: 55px;
+    width: 55px;
 
   }
 
+  .mobile_logo_mix{
+    display: flex;
+    align-items: center!important;
+    font-style: normal!important;
+    font-weight: bold!important;
+    font-size: 14px!important;
+    line-height: 18px!important;
+    
+    font-family: 'Circular Std'!important;
+    text-transform: uppercase!important;
+
+    /* Primary */
+    margin-bottom: 20px;
+    color: #072B4F;
+  }
+
+  .mobile_logo_mix img:first-child{
+    margin-right: 10px;
+  }
+
+  .mobile_logo_mix img:last-child{
+    margin-left: 10px;
+  }
+
   .authBg .mooditudePremium h2{
-    font-family: Circular Std;
+    font-family: 'Circular Std';
     font-style: normal;
     font-weight: bold;
     font-size: 14px;
@@ -548,7 +639,7 @@
   }
 
   .authBg .mooditudePremium  div{
-    font-family: Circular Std;
+    font-family: 'Circular Std';
     font-style: normal;
     font-weight: bold;
     font-size: 32px;
@@ -561,7 +652,7 @@
   }
 
   .authBg .mooditudePremium  div.trial_text{
-    font-family: Circular Std;
+    font-family: 'Circular Std';
     font-style: normal;
     font-weight: normal;
     font-size: 12px;
