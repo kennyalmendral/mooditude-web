@@ -6,8 +6,8 @@ const admin = require('firebase-admin');
 var serviceAccount = require('../config/mooditudetesting-firebase-adminsdk-8rj5u-80e3e017b1.json');
 
 admin.initializeApp({
-  databaseURL: 'https://mooditudetesting.firebaseio.com',
-  storageBucket: 'mooditudetesting.appspot.com',
+  databaseURL: config.firebase.databaseURL,
+  storageBucket: config.firebase.storageBucket,
   credential: admin.credential.cert(serviceAccount)
 });
 

@@ -1,5 +1,7 @@
 {
     "firebase": {
+        "databaseURL": "https://mooditudetesting.firebaseio.com",
+        "storageBucket": "mooditudetesting.appspot.com",
         "userProfilePictureDir": "https://firebasestorage.googleapis.com/v0/b/mooditudetesting.appspot.com/o/Profile/Images",
         "webApiKey": "AIzaSyAo3hvhWT6BFurFr6ws4ERzVnb4L17M2OU",
         "dynamicLinkSubDomain": "https://pyntail.page.link",
