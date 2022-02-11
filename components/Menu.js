@@ -43,11 +43,13 @@ export default function Menu(props) {
     }, [window])
 
     useEffect(() => {
-      if (expiryDate != null) {
-        if (isAfter(Firebase.firestore.Timestamp.now().toMillis(), expiryDate.toMillis())) {
-          setIsSubscriptionExpired(true)
-        } else {
-          setIsSubscriptionExpired(false)
+      if (expiryDate != null) {        
+        if (typeof expiryDate == 'object') {
+          if (isAfter(Firebase.firestore.Timestamp.now().toMillis(), expiryDate.toMillis())) {
+            setIsSubscriptionExpired(true)
+          } else {
+            setIsSubscriptionExpired(false)
+          }
         }
       }
     }, [expiryDate])

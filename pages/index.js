@@ -103,10 +103,12 @@ export default function OnboardingWelcomePage() {
 
   useEffect(() => {
     if (expiryDate != null) {
-      if (isAfter(Firebase.firestore.Timestamp.now().toMillis(), expiryDate.toMillis())) {
-        setIsSubscriptionExpired(true)
-      } else {
-        setIsSubscriptionExpired(false)
+      if (typeof expiryDate == 'object') {
+        if (isAfter(Firebase.firestore.Timestamp.now().toMillis(), expiryDate.toMillis())) {
+          setIsSubscriptionExpired(true)
+        } else {
+          setIsSubscriptionExpired(false)
+        }
       }
     }
   }, [expiryDate])
