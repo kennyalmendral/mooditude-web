@@ -18,7 +18,7 @@ import Stack from '@mui/material/Stack'
 
 import RingLoader from "react-spinners/RingLoader"
 
-import { format, differenceInWeeks, startOfDay } from 'date-fns'
+import { format, differenceInWeeks, startOfDay, addDays } from 'date-fns'
 
 import Firebase from 'lib/Firebase'
 
@@ -466,36 +466,14 @@ export default function AssessmentReport(props) {
                       trialDurationInDays: subscription.plan.trial_period_days || 0,
                       duration: `${result.data.productPrice.recurring.interval_count} ${result.data.productPrice.recurring.interval}`,
                       transactionId: subscription.id,
-                      transactionDate: subscription.created * 1000
+                      transactionDate: subscription.created * 1000,
+                      trialExpiryDate: Firebase.firestore.Timestamp.fromDate(new Date(addDays(new Date(), subscription.plan.trial_period_days))).toMillis()
                     }).then(result => {
                       console.log(result)
 
                       setPaymentSuccess(true)
                       setLicenseType('premium')
                     })
-
-                    // firebaseStore
-                    //   .collection('Subscribers')
-                    //   .doc(authUser.uid)
-                    //   .set({
-                    //     grant: {
-                    //       expiryDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
-                    //       grantType: 'Purchase',
-                    //       licenseType: 'Premium',
-                    //       productType: 'Subscription',
-                    //       paymentProcessor: 'stripe',
-                    //       platform: 'web',
-                    //       productId: subscription.plan.id,
-                    //       trialDurationInDays: subscription.plan.trial_period_days || 0,
-                    //       duration: `${result.data.productPrice.recurring.interval_count} ${result.data.productPrice.recurring.interval}`,
-                    //       transactionDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.created * 1000)),
-                    //       transactionId: subscription.id
-                    //     }
-                    //   })
-                    //   .then(() => {
-                    //     setPaymentSuccess(true)
-                    //     setLicenseType('premium')
-                    //   })
                   })
                 })
             })
@@ -537,7 +515,7 @@ export default function AssessmentReport(props) {
                   .doc(router.query.score)
                   .update({
                     purchasedDate: Firebase.firestore.Timestamp.fromDate(new Date(paymentIntent.created * 1000)),
-                    stripeInvoiceId: paymentIntent.id
+                    invoiceId: paymentIntent.id
                   })
                   .then(() => {
                     setPaymentSuccess(true)
@@ -623,25 +601,41 @@ export default function AssessmentReport(props) {
       generatePDFReport({
         userId: router.query.user,
         assessmentId: router.query.score
-      }).then(result => {        
-        firebaseStorage
-          .ref(result.data.url)
-          .getDownloadURL()
-          .then(url => {
-            firebaseStore
-              .collection('M3Assessment')
-              .doc(router.query.user)
-              .collection('scores')
-              .doc(router.query.score)
-              .update({
-                pdfDoc: url
-              })
-              .then(() => {
-                setReportLink(url)
+      }).then(result => {
+        console.log(result.data)
 
-                setIsDownloading(false)
-              })
+        firebaseStore
+          .collection('M3Assessment')
+          .doc(router.query.user)
+          .collection('scores')
+          .doc(router.query.score)
+          .update({
+            pdfDoc: result.data.url
           })
+          .then(() => {
+            setReportLink(result.data.url)
+
+            setIsDownloading(false)
+          })
+        
+        // firebaseStorage
+        //   .ref(result.data.url)
+        //   .getDownloadURL()
+        //   .then(url => {
+        //     firebaseStore
+        //       .collection('M3Assessment')
+        //       .doc(router.query.user)
+        //       .collection('scores')
+        //       .doc(router.query.score)
+        //       .update({
+        //         pdfDoc: url
+        //       })
+        //       .then(() => {
+        //         setReportLink(url)
+
+        //         setIsDownloading(false)
+        //       })
+        //   })
       }).catch(err => {
         setIsDownloading(false)
         

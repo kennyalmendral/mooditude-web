@@ -3,7 +3,13 @@ const functions = require('firebase-functions');
 
 const admin = require('firebase-admin');
 
-admin.initializeApp(functions.config().firebase);
+var serviceAccount = require('../config/mooditudetesting-firebase-adminsdk-8rj5u-80e3e017b1.json');
+
+admin.initializeApp({
+  databaseURL: 'https://mooditudetesting.firebaseio.com',
+  storageBucket: 'mooditudetesting.appspot.com',
+  credential: admin.credential.cert(serviceAccount)
+});
 
 const fs = require('fs');
 const stream = require('stream');
@@ -14,6 +20,8 @@ const PDFDocument = require('pdfkit');
 const stripe = require('stripe')(config.stripe.secretKey);
 
 const needle = require('needle');
+
+const { v4: uuidv4 } = require('uuid');
 
 const mailjetOptions = {
   'json': true,
@@ -281,6 +289,7 @@ exports.addSubscriptionData = functions.https.onCall(async (data, context) => {
   const transactionId = data.transactionId;
   const transactionDate = data.transactionDate;
   const paymentProcessor = data.paymentProcessor;
+  const trialExpiryDate = data.trialExpiryDate;
 
   let grantObj = {};
 
@@ -314,6 +323,10 @@ exports.addSubscriptionData = functions.https.onCall(async (data, context) => {
   
   if (transactionDate) {
     grantObj['transactionDate'] = admin.firestore.Timestamp.fromDate(new Date(transactionDate));
+  }
+
+  if (trialExpiryDate) {
+    grantObj['trialExpiryDate'] = admin.firestore.Timestamp.fromDate(new Date(trialExpiryDate));
   }
 
   grantObj['grantType'] = 'Purchase';
@@ -494,6 +507,10 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     bufferPages: true,
   });
 
+  const downloadTokens = uuidv4();
+
+  functions.logger.log(downloadTokens);
+
   const file = admin
     .storage()
     .bucket()
@@ -566,6 +583,11 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     const writeStream = file.createWriteStream({
       resumable: false,
       contentType: 'application/pdf',
+      metadata: {
+        metadata: {
+          firebaseStorageDownloadTokens: downloadTokens,
+        }
+      }
     });
 
     writeStream.on('finish', () => resolve());
@@ -1965,9 +1987,35 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc.end();
   });
+
+  const assessmentUrl = `https://firebasestorage.googleapis.com/v0/b/${encodeURIComponent(file.metadata.bucket)}/o/${encodeURIComponent(file.metadata.name)}?alt=media&token=${downloadTokens}`;
+
+  const axios = require('axios').create({
+    baseURL: 'https://firebasedynamiclinks.googleapis.com/v1',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+
+  const dynamicLink = await axios.post(`/shortLinks?key=${config.firebase.webApiKey}`, {
+    dynamicLinkInfo: {
+      domainUriPrefix: config.firebase.dynamicLinkSubDomain,
+      link: assessmentUrl,
+      androidInfo: {
+        androidPackageName: 'com.health.mental.mooditude'
+      },
+      iosInfo: {
+        iosBundleId: 'id1450661800'
+      }
+    },
+    suffix: {
+      option: 'SHORT'
+    }
+  });
   
   return {
-    url: `reports/${data.userId}/${assessment.id}.pdf`
+    url: dynamicLink.data.shortLink
   };
 });
 
@@ -2216,61 +2264,49 @@ exports.stripeWebhooks = functions.https.onRequest((req, res) => {
   }
 });
 
-exports.applyReportCredit = functions.https.onCall((data, context) => {
+exports.applyReportCredit = functions.https.onCall(async (data, context) => {
   functions.logger.log(data)
 
-  admin
+  const usersRef = admin
     .database()
-    .ref()
-    .child('users')
-    .child(data.user)
-    .get()
-    .then(snapshot => {
-      if (snapshot.val() != null) {
-        if (snapshot.val().assessmentCredit) {
-          let assessmentCredit = snapshot.val().assessmentCredit
+    .ref(`users/${data.user}`);
 
-          functions.logger.log(assessmentCredit)
+  const snapshot = await usersRef.once('value');
+  
+  if (snapshot.val().assessmentCredit) {
+    let assessmentCreditPurchasedDate = snapshot.val().assessmentCredit.purchasedDate;
 
-          admin
-            .firestore()
-            .collection('M3Assessment')
-            .doc(data.user)
-            .collection('scores')
-            .doc(data.score)
-            .update({
-              purchasedDate: admin.firestore.Timestamp.fromDate(new Date(assessmentCredit.purchasedDate)),
-              stripeInvoiceId: assessmentCredit.stripeInvoiceId
-            })
-            .then(() => {
-              functions.logger.log(assessmentCredit.purchasedDate)
-              functions.logger.log(assessmentCredit.stripeInvoiceId)
+    functions.logger.log(assessmentCreditPurchasedDate);
 
-              admin
-                .database()
-                .ref()
-                .child('users')
-                .child(data.user)
-                .child('assessmentCredit')
-                .remove()
-                .then(() => {
-                  return true;
-                })
-                .catch(error => {
-                  return false;
-                });
-            })
-            .catch(error => {
-              return false;
-            });
-        }
-      }
-    })
-    .catch(error => {
-      return false;
-    });
+    await admin
+      .firestore()
+      .collection('M3Assessment')
+      .doc(data.user)
+      .collection('scores')
+      .doc(data.score)
+      .update({
+        purchasedDate: admin.firestore.Timestamp.fromDate(new Date(snapshot.val().assessmentCredit.purchasedDate)),
+        invoiceId: snapshot.val().assessmentCredit.invoiceId
+      });
 
-    return true;
+    await admin
+      .database()
+      .ref()
+      .child('users')
+      .child(data.user)
+      .child('assessmentCredit')
+      .remove();
+    
+    return {
+      status: true,
+      purchasedDate: admin.firestore.Timestamp.fromDate(new Date(assessmentCreditPurchasedDate)).toMillis()
+    };
+  } else {
+    return {
+      status: false,
+      purchasedDate: null
+    };
+  }
 });
 
 exports.updateUserProfileOnboarding = functions.https.onCall(async (data, context) => {

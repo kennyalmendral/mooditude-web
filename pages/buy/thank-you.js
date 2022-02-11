@@ -10,6 +10,8 @@ import styles from '@/styles/Buy.module.css'
 
 import { useAuth } from '@/context/AuthUserContext'
 
+import { addDays } from 'date-fns'
+
 import { format } from 'date-fns'
 
 import Button from '@mui/material/Button'
@@ -91,7 +93,8 @@ export default function OnboardingWelcomePage() {
                       trialDurationInDays: subscription.plan.trial_period_days || 0,
                       duration: `${result.data.productPrice.recurring.interval_count} ${result.data.productPrice.recurring.interval}`,
                       transactionId: subscription.id,
-                      transactionDate: subscription.created * 1000
+                      transactionDate: subscription.created * 1000,
+                      trialExpiryDate: Firebase.firestore.Timestamp.fromDate(new Date(addDays(new Date(), subscription.plan.trial_period_days))).toMillis()
                     }).then(result => {
                       console.log(result)
 
@@ -103,30 +106,6 @@ export default function OnboardingWelcomePage() {
                         router.push('/?payment_success=true')
                       }
                     })
-
-                    // firebaseStore
-                    //   .collection('Subscribers')
-                    //   .doc(authUser.uid)
-                    //   .set({
-                    //     grant: {
-                    //       expiryDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.current_period_end * 1000)),
-                    //       grantType: 'Purchase',
-                    //       licenseType: 'Premium',
-                    //       productType: 'Subscription',
-                    //       paymentProcessor: 'stripe',
-                    //       platform: 'web',
-                    //       productId: subscription.plan.id,
-                    //       trialDurationInDays: subscription.plan.trial_period_days || 0,
-                    //       duration: `${result.data.productPrice.recurring.interval_count} ${result.data.productPrice.recurring.interval}`,
-                    //       transactionDate: Firebase.firestore.Timestamp.fromDate(new Date(subscription.created * 1000)),
-                    //       transactionId: subscription.id
-                    //     }
-                    //   })
-                    //   .then(() => {
-                    //     setExpiryDate(subscription.current_period_end)
-
-                    //     router.push('/?payment_success=true')
-                    //   })
                   })
                 })
             })
@@ -164,7 +143,7 @@ export default function OnboardingWelcomePage() {
                   usersDbRef
                     .update({
                       assessmentCredit: {
-                        stripeInvoiceId: paymentIntent.id,
+                        invoiceId: paymentIntent.id,
                         purchasedDate: paymentIntent.created * 1000
                       }
                     })
