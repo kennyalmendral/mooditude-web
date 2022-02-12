@@ -94,7 +94,7 @@ export default function OnboardingWelcomePage() {
                       duration: `${result.data.productPrice.recurring.interval_count} ${result.data.productPrice.recurring.interval}`,
                       transactionId: subscription.id,
                       transactionDate: subscription.created * 1000,
-                      trialExpiryDate: Firebase.firestore.Timestamp.fromDate(new Date(addDays(new Date(), subscription.plan.trial_period_days))).toMillis()
+                      trialExpiryDate: subscription.plan.trial_period_days == null ? null : Firebase.firestore.Timestamp.fromDate(new Date(addDays(new Date(), subscription.plan.trial_period_days))).toMillis()
                     }).then(result => {
                       console.log(result)
 

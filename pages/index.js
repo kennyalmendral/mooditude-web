@@ -220,14 +220,14 @@ export default function OnboardingWelcomePage() {
     } else if (activeProductPrice == 'price_1K09ueAuTlAR8JLM3JmfvSgj') {
       duration = 12
       type = 'subscription'
-    } else {
+    } else if (activeProductPrice == 'price_1KS1B3AuTlAR8JLM0jZu1Wmi') {
       duration = null
       type = 'payment'
     }
 
-    const processStripeSubscriptionOnSignUp = firebaseFunctions.httpsCallable('processStripeSubscriptionOnSignUp')
+    const processStripeSubscription = firebaseFunctions.httpsCallable('processStripeSubscription')
   
-    processStripeSubscriptionOnSignUp({
+    processStripeSubscription({
       type: type,
       duration: duration,
       mode: type,

@@ -98,11 +98,11 @@ export default function OnboardingWelcomePage() {
 
   useEffect(() => {
     if (authUser) {
-      for (const plan in config.stripe.plan) {
+      for (const plan in config.stripe.plan.mooditudePremium) {
         const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
 
         getStripeProduct({
-          price: config.stripe.plan[plan]
+          price: config.stripe.plan.mooditudePremium[plan]
         }).then(result => {
           let productPrice = result.data.productPrice
           let planObj = {}

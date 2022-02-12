@@ -49,44 +49,78 @@ export default function SignUp(props) {
   const { authUser, createUserWithEmailAndPassword } = useAuth()
 
   useEffect(() => {
-    for (const plan in config.stripe.plan) {
-      const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
-
-      getStripeProduct({
-        price: config.stripe.plan[plan]
-      }).then(result => {
-        let productPrice = result.data.productPrice
-        let planObj = {}
-
-        planObj['id'] = productPrice.id
-        planObj['amount'] = parseInt(productPrice.unit_amount_decimal) / 100
-        planObj['interval'] = productPrice.recurring != null && productPrice.recurring.interval
-        planObj['interval_count'] = productPrice.recurring != null && productPrice.recurring.interval_count
-
-        if (
-          (productPrice.type == 'recurring') && 
-          (productPrice.recurring.interval == 'month') && 
-          (productPrice.recurring.interval_count == 1)
-        ) {
-          planObj['duration_in_months'] = 1
-        } else if (
-          (productPrice.type == 'recurring') && 
-          (productPrice.recurring.interval == 'month') && 
-          (productPrice.recurring.interval_count == 3)
-        ) {
-          planObj['duration_in_months'] = 3
-        } else if (
-          (productPrice.type == 'recurring') && 
-          (productPrice.recurring.interval == 'year') && 
-          (productPrice.recurring.interval_count == 1)
-        ) {
-          planObj['duration_in_months'] = 12
-        } else if (productPrice.type == 'one_time') {
-          planObj['duration_in_months'] = null
-        }
-
-        setPlans(plans => [...plans, planObj])
-      })
+    if (router.query.referrer == 'm3') {
+      for (const plan in config.stripe.plan.mentalHealthAssessment) {
+        const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
+  
+        getStripeProduct({
+          price: config.stripe.plan.mentalHealthAssessment[plan]
+        }).then(result => {
+          let productPrice = result.data.productPrice
+          let planObj = {}
+  
+          planObj['id'] = productPrice.id
+          planObj['amount'] = parseInt(productPrice.unit_amount_decimal) / 100
+          planObj['interval'] = productPrice.recurring != null && productPrice.recurring.interval
+          planObj['interval_count'] = productPrice.recurring != null && productPrice.recurring.interval_count
+  
+          if (
+            (productPrice.type == 'recurring') && 
+            (productPrice.recurring.interval == 'month') && 
+            (productPrice.recurring.interval_count == 3)
+          ) {
+            planObj['duration_in_months'] = 3
+          } else if (
+            (productPrice.type == 'recurring') && 
+            (productPrice.recurring.interval == 'year') && 
+            (productPrice.recurring.interval_count == 1)
+          ) {
+            planObj['duration_in_months'] = 12
+          } else if (productPrice.type == 'one_time') {
+            planObj['duration_in_months'] = null
+          }
+  
+          setPlans(plans => [...plans, planObj])
+        })
+      }
+    } else {
+      for (const plan in config.stripe.plan.mooditudePremium) {
+        const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
+  
+        getStripeProduct({
+          price: config.stripe.plan.mooditudePremium[plan]
+        }).then(result => {
+          let productPrice = result.data.productPrice
+          let planObj = {}
+  
+          planObj['id'] = productPrice.id
+          planObj['amount'] = parseInt(productPrice.unit_amount_decimal) / 100
+          planObj['interval'] = productPrice.recurring != null && productPrice.recurring.interval
+          planObj['interval_count'] = productPrice.recurring != null && productPrice.recurring.interval_count
+  
+          if (
+            (productPrice.type == 'recurring') && 
+            (productPrice.recurring.interval == 'month') && 
+            (productPrice.recurring.interval_count == 1)
+          ) {
+            planObj['duration_in_months'] = 1
+          } else if (
+            (productPrice.type == 'recurring') && 
+            (productPrice.recurring.interval == 'month') && 
+            (productPrice.recurring.interval_count == 3)
+          ) {
+            planObj['duration_in_months'] = 3
+          } else if (
+            (productPrice.type == 'recurring') && 
+            (productPrice.recurring.interval == 'year') && 
+            (productPrice.recurring.interval_count == 1)
+          ) {
+            planObj['duration_in_months'] = 12
+          }
+  
+          setPlans(plans => [...plans, planObj])
+        })
+      }
     }
   }, [])
 
@@ -221,6 +255,7 @@ export default function SignUp(props) {
                           type: router.query.type,
                           duration: router.query.duration,
                           signUp: true,
+                          referrer: router.query.referrer,
                           mode: router.query.type == 'subscription' ? 'subscription' : 'payment',
                           customerEmail: user.email,
                           redirectUrl: window.location.origin + '/buy/thank-you',
@@ -337,54 +372,82 @@ export default function SignUp(props) {
                 </>
 
                 }
-                
-
-                
-
+  
                 { router.query.referrer == 'm3' && (router.query.duration == 12 || router.query.duration == 3) ?
-                  <h2 className={styles.m3_title}>Mooditude PREMIUM & ULIMETED M3 Assessment Reports</h2>
+                  <h2 className={styles.m3_title}>Mooditude PREMIUM &amp; UNLIMITED M3 Assessment Reports</h2>
                   : <h2 className={styles.m3_title}>{router.query.referrer == 'm3' ? 'M3 ASSESSMENT REPORT' : 'MOODITUDE PREMIUM'}</h2>
                 }
-                
 
-                <div>
-                  {router.query.duration == 1 && (
-                    <div>
-                      {plans.filter(plan => plan.id == 'price_1K09ueAuTlAR8JLMqv6RVsh8').map(plan => (
-                        <>
-                          <strong>${plan.amount}</strong> / 
-                          <span>{plan.interval}</span>
-                        </>                       
-                      ))}
-                    </div>
-                  )}
-
-                  {router.query.duration == 3 && (
-                    <div>
-                      {plans.filter(plan => plan.id == 'price_1KHXXoAuTlAR8JLM1hdixwNI').map(plan => (
-                        <>
-                          <strong>${plan.amount}</strong> / 
-                          <span>{plan.interval_count} {plan.interval}s</span>
-                        </>                       
-                      ))}
-                    </div>
-                  )}
-
-                  {router.query.duration == 12 && (
-                    <>
+                {
+                  router.query.referrer == 'm3' && (router.query.duration == 12 || router.query.duration == 3) 
+                    ?
                       <div>
-                        {plans.filter(plan => plan.id == 'price_1K09ueAuTlAR8JLM3JmfvSgj').map(plan => (
+                        {router.query.duration == 3 && (
+                          <div>
+                            {plans.filter(plan => plan.id == 'price_1KS1BUAuTlAR8JLMVQ7gLjp0').map(plan => (
+                              <>
+                                <strong>${plan.amount}</strong> / 
+                                <span>{plan.interval_count} {plan.interval}s</span>
+                              </>                       
+                            ))}
+                          </div>
+                        )}
+
+                        {router.query.duration == 12 && (
                           <>
-                            <strong>${plan.amount}.00</strong> / 
-                            <span>{plan.interval}</span>
+                            <div>
+                              {plans.filter(plan => plan.id == 'price_1KS1BoAuTlAR8JLM4MDqAB7k').map(plan => (
+                                <>
+                                  <strong>${plan.amount}.00</strong> / 
+                                  <span>{plan.interval}</span>
+                                </>
+                              ))}
+                            </div>
+                            
+                            <div className={styles.trial_text}>after 3-day free trial</div>
                           </>
-                        ))}
+                        )}
                       </div>
-                      
-                      <div className={styles.trial_text}>after 3-day free trial</div>
-                    </>
-                  )}
-                </div>
+                    :
+                      <div>
+                        {router.query.duration == 1 && (
+                          <div>
+                            {plans.filter(plan => plan.id == 'price_1K09ueAuTlAR8JLMqv6RVsh8').map(plan => (
+                              <>
+                                <strong>${plan.amount}</strong> / 
+                                <span>{plan.interval}</span>
+                              </>                       
+                            ))}
+                          </div>
+                        )}
+
+                        {router.query.duration == 3 && (
+                          <div>
+                            {plans.filter(plan => plan.id == 'price_1KHXXoAuTlAR8JLM1hdixwNI').map(plan => (
+                              <>
+                                <strong>${plan.amount}</strong> / 
+                                <span>{plan.interval_count} {plan.interval}s</span>
+                              </>                       
+                            ))}
+                          </div>
+                        )}
+
+                        {router.query.duration == 12 && (
+                          <>
+                            <div>
+                              {plans.filter(plan => plan.id == 'price_1K09ueAuTlAR8JLM3JmfvSgj').map(plan => (
+                                <>
+                                  <strong>${plan.amount}.00</strong> / 
+                                  <span>{plan.interval}</span>
+                                </>
+                              ))}
+                            </div>
+                            
+                            <div className={styles.trial_text}>after 3-day free trial</div>
+                          </>
+                        )}
+                      </div>
+                }
               </div>
             </div>
           )}
@@ -416,15 +479,17 @@ export default function SignUp(props) {
                 <br/>
                 <h2 className={styles.m3_title}>{router.query.referrer == 'm3' ? 'M3 ASSESSMENT REPORT' : 'MOODITUDE PREMIUM'}</h2>
 
-                <div>
+                {router.query.referrer == 'm3' && (
                   <div>
-                    {plans.filter(plan => plan.id == 'price_1KGzeLAuTlAR8JLMWqvaSIE0').map(plan => (
-                      <strong>${plan.amount}.00</strong>
-                    ))}
-                  </div>
+                    <div>
+                      {plans.filter(plan => plan.id == 'price_1KS1B3AuTlAR8JLM0jZu1Wmi').map(plan => (
+                        <strong>${plan.amount}.00</strong>
+                      ))}
+                    </div>
 
-                  <div>One-time</div>
-                </div>
+                    <div>One-time</div>
+                  </div>
+                )}
               </div>
             </div>
           )}

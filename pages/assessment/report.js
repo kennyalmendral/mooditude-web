@@ -101,11 +101,11 @@ export default function AssessmentReport(props) {
 
   useEffect(() => {
     if (authUser) {
-      for (const plan in config.stripe.plan) {
+      for (const plan in config.stripe.plan.mooditudePremium) {
         const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
 
         getStripeProduct({
-          price: config.stripe.plan[plan]
+          price: config.stripe.plan.mooditudePremium[plan]
         }).then(result => {
           let productPrice = result.data.productPrice
           let planObj = {}
@@ -467,7 +467,7 @@ export default function AssessmentReport(props) {
                       duration: `${result.data.productPrice.recurring.interval_count} ${result.data.productPrice.recurring.interval}`,
                       transactionId: subscription.id,
                       transactionDate: subscription.created * 1000,
-                      trialExpiryDate: Firebase.firestore.Timestamp.fromDate(new Date(addDays(new Date(), subscription.plan.trial_period_days))).toMillis()
+                      trialExpiryDate: subscription.plan.trial_period_days == null ? null : Firebase.firestore.Timestamp.fromDate(new Date(addDays(new Date(), subscription.plan.trial_period_days))).toMillis()
                     }).then(result => {
                       console.log(result)
 

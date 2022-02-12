@@ -10,10 +10,17 @@
     "stripe": {
         "secretKey": "sk_test_51K09rjAuTlAR8JLMimh1DvJBksnM2A1L6LVeDqQQoeO55f62ocwVsD8nkXbV004WzIrE8LyRYidKNk6lyGSaJqSJ00YRntqU8e",
         "plan": {
-            "monthly": "price_1K09ueAuTlAR8JLMqv6RVsh8",
-            "everyThreeMonths": "price_1KHXXoAuTlAR8JLM1hdixwNI",
-            "yearly": "price_1K09ueAuTlAR8JLM3JmfvSgj",
-            "oneTime": "price_1KGzeLAuTlAR8JLMWqvaSIE0"
+            "mooditudePremium": {
+                "monthly": "price_1K09ueAuTlAR8JLMqv6RVsh8",
+                "everyThreeMonths": "price_1KHXXoAuTlAR8JLM1hdixwNI",
+                "yearly": "price_1K09ueAuTlAR8JLM3JmfvSgj",
+                "oneTime": "price_1KS1B3AuTlAR8JLM0jZu1Wmi"
+            },
+            "mentalHealthAssessment": {
+                "everyThreeMonths": "price_1KS1BUAuTlAR8JLMVQ7gLjp0",
+                "yearly": "price_1KS1BoAuTlAR8JLM4MDqAB7k",
+                "oneTime": "price_1KS1B3AuTlAR8JLM0jZu1Wmi"
+            }
         }
     },
     "mailJet": {
