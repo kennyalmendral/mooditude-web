@@ -116,6 +116,8 @@ export default function SignUp(props) {
             (productPrice.recurring.interval_count == 1)
           ) {
             planObj['duration_in_months'] = 12
+          } else if (productPrice.type == 'one_time') {
+            planObj['duration_in_months'] = null
           }
   
           setPlans(plans => [...plans, planObj])
