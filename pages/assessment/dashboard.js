@@ -398,7 +398,7 @@ export default function AssessmentWelcomePage() {
                   </>
                 )}
 
-                {/* {weekDifference < 2 && (
+                {!hasNoAssessment && (
                   <Button 
                     size="large" 
                     className={styles.full_report_btn} 
@@ -406,46 +406,25 @@ export default function AssessmentWelcomePage() {
                     onClick={() => router.push(currentFullReportLink)}
                   >
                     FULL REPORT
-                  </Button>
-                )}
-
-                {weekDifference > 2 && (
-                  <Button 
-                    size="large" 
-                    className={styles.full_report_btn} 
-                    variant="contained" 
-                    onClick={handleTakeAssessment}
-                  >
-                    TAKE ASSESSMENT
-                  </Button>
-                )} */}
-
-                {(grant == null && !hasNoAssessment) && (
-                  <Button 
-                    size="large" 
-                    className={styles.full_report_btn} 
-                    variant="contained" 
-                    onClick={() => router.push(currentFullReportLink)}
-                  >
-                    FULL REPORT
-                  </Button>
-                )}
-
-                {(hasNoAssessment || grant != null) && (
-                  <Button 
-                    size="large" 
-                    className={styles.full_report_btn} 
-                    variant="contained" 
-                    onClick={handleTakeAssessment}
-                  >
-                    TAKE ASSESSMENT
                   </Button>
                 )}
               </>
              }
               
             </div>
-            <div className={styles.dashboard_right}>
+            <div className={styles.dashboard_right} style={{ paddingTop: '40px' }}>
+              <div className={styles.dashboard_right_btn}>
+                <Button 
+                  size="large" 
+                  className={styles.full_report_btn} 
+                  variant="contained" 
+                  onClick={handleTakeAssessment} 
+                  style={{ marginTop: 0, marginBottom: '40px' }}
+                >
+                  TAKE ASSESSMENT
+                </Button>
+              </div>
+              
               {hasNoAssessment == true && (
                  <div>
                   <img src="/graph.svg" />

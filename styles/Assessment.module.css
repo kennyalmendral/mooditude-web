@@ -629,6 +629,11 @@
 	margin-top: 0;
 }
 
+.dashboard_right_btn {
+	display: flex;
+	justify-content: flex-end;
+}
+
 .dashboard_left p{
 	max-width: 60%;
 }
