@@ -152,7 +152,7 @@ export default function Menu(props) {
                                 <div>
                                     <Link href="/profile"> 
                                     <a className={styles.menu_item} >
-                                        Profile
+                                        PROFILE
                                     </a>
                                     </Link>
                                 </div>
@@ -160,7 +160,7 @@ export default function Menu(props) {
                                 <div>
                                     <Link href="/download"> 
                                     <a className={styles.menu_item} >
-                                        DOWNLOAD
+                                        APP
                                     </a>
                                     </Link>
                                 </div>
@@ -230,7 +230,7 @@ export default function Menu(props) {
                                         <div>
                                             <Link href="/profile"> 
                                             <a className={styles.menu_item} >
-                                                Profile
+                                                PROFILE
                                             </a>
                                             </Link>
                                         </div>
@@ -238,7 +238,7 @@ export default function Menu(props) {
                                         <div>
                                             <Link href="/download"> 
                                             <a className={styles.menu_item} >
-                                                DOWNLOAD
+                                                APP
                                             </a>
                                             </Link>
                                         </div>
