@@ -144,11 +144,13 @@ export default function AssessmentReport(props) {
   }, [authUser])
 
   useEffect(() => {
-    if (plans.length >= 4) {
-      console.log(plans)
-      setChecking(false)
-    } else {
-      setChecking(true)
+    if (!router.query.session_id) {
+      if (plans.length >= 4) {
+        console.log(plans)
+        setChecking(false)
+      } else {
+        setChecking(true)
+      }
     }
   }, [plans])
 
@@ -318,9 +320,7 @@ export default function AssessmentReport(props) {
                       if (router.query.session_id) {
                         setTimeout(() => {
                           setChecking(false)
-                        }, 5000)
-                      } else {
-                        setChecking(false)
+                        }, 6000)
                       }
                     })
                 })
