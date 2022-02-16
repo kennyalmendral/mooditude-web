@@ -59,8 +59,6 @@ export default function AssessmentWelcomePage() {
 
   useEffect(() => {
     if (Object.keys(assessments).length > 0) {
-      setHasNoAssessment(false)
-
       let sortedAssessments = assessments.sort((prevValue, nextValue) => new Date(nextValue.createDate.seconds * 1000) - new Date(prevValue.createDate.seconds * 1000))
 
       setWeekDifference(differenceInWeeks(new Date(), new Date(sortedAssessments[0].createDate.seconds * 1000)))
@@ -134,13 +132,15 @@ export default function AssessmentWelcomePage() {
       
       sortedAssessments[0] && setCurrentFullReportLink(`/assessment/report?user=${authUser.uid}&score=${sortedAssessments[0].id}`)
 
-      setTimeout(() => {
-        setChecking(false)
-      }, 1000)
+      setHasNoAssessment(false)
+
+      // setTimeout(() => {
+      //   setChecking(false)
+      // }, 4000)
     } else {
       setHasNoAssessment(true)
 
-      setChecking(false)
+      // setChecking(false)
     }
   }, [assessments])
 
@@ -180,7 +180,7 @@ export default function AssessmentWelcomePage() {
   }, [authUser])
 
   useEffect(() => {
-    setChecking(true)
+    // setChecking(true)
 
     firebaseAuth.onAuthStateChanged(user => {
       if (user) {
@@ -206,25 +206,26 @@ export default function AssessmentWelcomePage() {
                       ...result.data
                     }
 
-                    // setChecking(false)
                     setAssessments(assessments => [...assessments, mergedData])
+
+                    setChecking(false)
                   })
                 } else {
                   // setChecking(false)
                 }
               })
             } else {
-              // setChecking(false)
+              setChecking(false)
             }
           })
       } else {
-        setChecking(false)
+        // setChecking(false)
       }
     })
 
-    setTimeout(() => {
-      setChecking(false)
-    }, 1000)
+    // setTimeout(() => {
+    //   setChecking(false)
+    // }, 6000)
   }, [])
 
   const handleTakeAssessment = () => {

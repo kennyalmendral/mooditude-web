@@ -75,7 +75,7 @@ export default function Login(props) {
               } else if (snapshotValue.onboardingStep == 'tookAssessment' || snapshotValue.onboardingStep == 2) {
                 location.href = '/assessment/dashboard'
               } else {
-                location.href = '/assessment/dashboard'
+                location.href = '/'
               }
             }
           })
