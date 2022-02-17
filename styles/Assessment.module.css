@@ -625,6 +625,12 @@
 	width: 40%;
 }
 
+.dashboard_page > div.dashboard_right{
+	width: 40%;
+}
+
+
+
 .dashboard_right{
 	margin-top: 0;
 }

@@ -306,7 +306,7 @@ export default function SignUp(props) {
               <img src={`/logo-small.svg`}  />
           </div>
 
-          {((router.query.type != 'subscription') && (router.query.type != 'payment')) && (
+          {((router.query.type != 'subscription') && (router.query.type != 'payment') && router.query.referrer == 'm3') && (
 
             <div className={`${styles.mobile_steps} ${styles.two_steps} ${styles.mobile_steps_small}`}>
                 <div className={`${styles.step_item} ${styles.step_active_item}`}>
@@ -333,10 +333,19 @@ export default function SignUp(props) {
                   <p>Buy</p>
                 </div>
 
-                <div className={styles.step_item}>
-                  <div className={styles.step_number}>2</div>
-                  <p>Assessment</p>
-                </div>
+                { router.query.referrer == 'm3'  ?
+                  <div className={styles.step_item}>
+                    <div className={styles.step_number}>2</div>
+                    <p>Assessment</p>
+                  </div>
+                  : 
+                  <div className={styles.step_item}>
+                    <div className={styles.step_number}>2</div>
+                    <p>Enjoy</p>
+                  </div>
+                }
+
+                
             </div>
           )}
           
@@ -360,7 +369,7 @@ export default function SignUp(props) {
               </div>
               <div>
 
-                { router.query.referrer == 'm3' && (router.query.duration == 12 || router.query.duration == 3) ?
+                { router.query.referrer == 'm3' && (router.query.duration == 12 || router.query.duration == 3 || router.query.duration == 1) ?
 
                 <>
                   <div className={styles.mobile_logo_mix}>
@@ -375,21 +384,21 @@ export default function SignUp(props) {
 
                 }
   
-                { router.query.referrer == 'm3' && (router.query.duration == 12 || router.query.duration == 3) ?
-                  <h2 className={styles.m3_title}>Mooditude PREMIUM &amp; UNLIMITED M3 Assessment Reports</h2>
+                { router.query.referrer == 'm3' && (router.query.duration == 12 || router.query.duration == 3 || router.query.duration == 1) ?
+                  <h2 className={styles.m3_title}>Mooditude PREMIUM &amp; <br/> UNLIMITED M3 Assessment Reports</h2>
                   : <h2 className={styles.m3_title}>{router.query.referrer == 'm3' ? 'M3 ASSESSMENT REPORT' : 'MOODITUDE PREMIUM'}</h2>
                 }
 
                 {
-                  router.query.referrer == 'm3' && (router.query.duration == 12 || router.query.duration == 3) 
+                  router.query.referrer == 'm3' && (router.query.duration == 12 || router.query.duration == 3 || router.query.duration == 1) 
                     ?
                       <div>
                         {router.query.duration == 3 && (
                           <div>
                             {plans.filter(plan => plan.id == 'price_1KS1BUAuTlAR8JLMVQ7gLjp0').map(plan => (
                               <>
-                                <strong>${plan.amount}</strong> / 
-                                <span>{plan.interval_count} {plan.interval}s</span>
+                                <strong>${plan.amount}</strong> 
+                                <span>/{plan.interval_count} {plan.interval}s</span>
                               </>                       
                             ))}
                           </div>
@@ -400,8 +409,8 @@ export default function SignUp(props) {
                             <div>
                               {plans.filter(plan => plan.id == 'price_1KS1BoAuTlAR8JLM4MDqAB7k').map(plan => (
                                 <>
-                                  <strong>${plan.amount}.00</strong> / 
-                                  <span>{plan.interval}</span>
+                                  <strong>${plan.amount}</strong> 
+                                  <span>/{plan.interval}</span>
                                 </>
                               ))}
                             </div>
@@ -416,8 +425,8 @@ export default function SignUp(props) {
                           <div>
                             {plans.filter(plan => plan.id == 'price_1K09ueAuTlAR8JLMqv6RVsh8').map(plan => (
                               <>
-                                <strong>${plan.amount}</strong> / 
-                                <span>{plan.interval}</span>
+                                <strong>${plan.amount}</strong> 
+                                <span>/{plan.interval}</span>
                               </>                       
                             ))}
                           </div>
@@ -427,8 +436,8 @@ export default function SignUp(props) {
                           <div>
                             {plans.filter(plan => plan.id == 'price_1KHXXoAuTlAR8JLM1hdixwNI').map(plan => (
                               <>
-                                <strong>${plan.amount}</strong> / 
-                                <span>{plan.interval_count} {plan.interval}s</span>
+                                <strong>${plan.amount}</strong> 
+                                <span>/{plan.interval_count} {plan.interval}s</span>
                               </>                       
                             ))}
                           </div>
@@ -439,13 +448,15 @@ export default function SignUp(props) {
                             <div>
                               {plans.filter(plan => plan.id == 'price_1K09ueAuTlAR8JLM3JmfvSgj').map(plan => (
                                 <>
-                                  <strong>${plan.amount}.00</strong> / 
-                                  <span>{plan.interval}</span>
+                                  <strong>${plan.amount}</strong> 
+                                  <span>/{plan.interval}</span>
                                 </>
                               ))}
                             </div>
                             
                             <div className={styles.trial_text}>after 3-day free trial</div>
+
+                            <div className={styles.wont_charge}>Your card wouldn’t be charged during trial.</div>
                           </>
                         )}
                       </div>
@@ -485,7 +496,7 @@ export default function SignUp(props) {
                   <div>
                     <div>
                       {plans.filter(plan => plan.id == 'price_1KS1B3AuTlAR8JLM0jZu1Wmi').map(plan => (
-                        <strong>${plan.amount}.00</strong>
+                        <strong>${plan.amount}</strong>
                       ))}
                     </div>
 
@@ -496,7 +507,7 @@ export default function SignUp(props) {
             </div>
           )}
           
-           {((router.query.type != 'subscription' && router.query.type != 'payment') && (router.query.type != 'subscription') && (router.query.type != 'payment') && router.query.referrer == 'm3') && (
+           {((router.query.type != 'subscription' && router.query.type != 'payment') && router.query.referrer == 'm3') && (
             <div className={styles.oneTime}>
               
               <div className={styles.mobile_hidden}>
@@ -529,7 +540,7 @@ export default function SignUp(props) {
   
         </div>
 
-        <div className={styles.authForm}>
+        <div className={`${styles.authForm} ${router.query.type != 'subscription' && router.query.type != 'payment' && !router.query.referrer ? styles.nopadding : ''}`}>
           {
             showLoader ? 
               <div 
@@ -654,37 +665,7 @@ export default function SignUp(props) {
                   
                 </div>
 
-                <div className={styles.privacyPolicy}>
-
-                  <FormGroup>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <FormControlLabel 
-                        control={<Checkbox 
-                            className={`${styles.privacyPolicyLabel} no_bg`}
-                            type="checkbox" 
-                            id="privacy-policy" 
-                            checked={isPrivacyPolicyChecked} 
-                            onChange={e => {setIsPrivacyPolicyChecked(e.target.checked);checkPass(password, passwordConfirmation, e.target.checked)}}
-                          />} 
-                        label={false}
-                      />
-
-                      <label htmlFor="privacy-policy" >
-                        <div className={styles.privacyPolicyText}>
-                          <span>By continuing you agree to Mooditude's</span>
-                          <br />
-                          <a href="https://mooditude.app/terms" target="_blank">Terms &amp; Conditions</a>
-                          {' '}
-                          and 
-                          {' '}
-                          <a href="https://mooditude.app/privacy" target="_blank">Privacy Policy</a>
-                        </div>
-                      </label>
-                    </div>
-                  </FormGroup>
-              
-                </div>
-
+                
                 {
                   password.length > 0 ? 
 
@@ -739,6 +720,38 @@ export default function SignUp(props) {
                     )}
                   </button>
                 </div>
+
+                <div className={styles.privacyPolicy}>
+
+                  <FormGroup>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <FormControlLabel 
+                        control={<Checkbox 
+                            className={`${styles.privacyPolicyLabel} no_bg`}
+                            type="checkbox" 
+                            id="privacy-policy" 
+                            checked={isPrivacyPolicyChecked} 
+                            onChange={e => {setIsPrivacyPolicyChecked(e.target.checked);checkPass(password, passwordConfirmation, e.target.checked)}}
+                          />} 
+                        label={false}
+                      />
+
+                      <label htmlFor="privacy-policy" >
+                        <div className={styles.privacyPolicyText}>
+                          <span>By continuing you agree to Mooditude's</span>
+                          <br />
+                          <a href="https://mooditude.app/terms" target="_blank">Terms &amp; Conditions</a>
+                          {' '}
+                          and 
+                          {' '}
+                          <a href="https://mooditude.app/privacy" target="_blank">Privacy Policy</a>
+                        </div>
+                      </label>
+                    </div>
+                  </FormGroup>
+                
+                </div>
+
               </form>
             </div>
           </div>

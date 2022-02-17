@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -29,6 +29,12 @@ const firebaseFunctions = Firebase.functions()
 const firebaseStorage = Firebase.storage()
 
 import GridLoader from "react-spinners/GridLoader"
+
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 export default function AssessmentReport(props) {
   const router = useRouter()
@@ -98,6 +104,7 @@ export default function AssessmentReport(props) {
   const [plans, setPlans] = useState([])
 
   const [grant, setGrant] = useState({})
+  const [openDiag, setOpenDiag] = React.useState(false);
 
   useEffect(() => {
     if (authUser) {
@@ -1291,7 +1298,7 @@ export default function AssessmentReport(props) {
                                       fontFamily: 'Circular STD',
                                       
                                     }} 
-                                    onClick={() => alert('Coming soon...')}
+                                    onClick={() => {setOpenDiag(true)}}
                                   >
                                     FIND THE RIGHT THERAPIST
                                   </Button>
@@ -1622,10 +1629,30 @@ export default function AssessmentReport(props) {
                 </div>
               )}
                
+
             </div>
           </div>
         
       }
+
+      <Dialog
+       open={openDiag}
+       onClose={() => {setOpenDiag(false)}}
+     >
+       <DialogTitle>
+         {"Find the right therapist"}
+       </DialogTitle>
+       <DialogContent>
+         <DialogContentText >
+           This feature is coming soon. We will notify you once this is available.
+         </DialogContentText>
+       </DialogContent>
+       <DialogActions>
+         <Button onClick={() => {setOpenDiag(false)}} autoFocus>
+           Got it
+         </Button>
+       </DialogActions>
+     </Dialog>
     </Layout>
   )
 }
