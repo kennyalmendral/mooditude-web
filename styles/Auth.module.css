@@ -41,10 +41,16 @@
   font-size: 40px;
   font-weight: 600;
   margin-right: 3px;
+
+
+  /* Primary */
+
+  color: #072B4F!important;
 }
 
 .authBg .mooditudePremium > div span {
   margin-left: 3px;
+  font-family: 'Circular Std';
   font-size: 20px;
   font-weight: 300;
 }
@@ -235,16 +241,15 @@
 .privacyPolicyText span span{
   font-family: 'Circular Std';
   white-space: nowrap;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 18px;
-  /* identical to box height */
-
+ 
+  font-style: normal!important;
+  font-weight: normal!important;
+  font-size: 14px!important;
+  line-height: 18px!important;
 
   /* Primary */
 
-  color: #072B4F;
+  color: #072B4F!important;
 }
 
 .privacyPolicyTextInput,
@@ -388,6 +393,10 @@
   margin-left: 10px;
 }
 
+.wont_charge{
+  display: none;
+}
+
 /*Responsive*/
 
 @media(min-width:  768px) and (max-width:  991px){
@@ -409,6 +418,33 @@
 
 @media(max-width:  767px){
 
+  .authForm .authFormInner {
+    width: 100%;
+    padding: 0 21px;
+  }
+
+  .authBg .mooditudePremium > div strong,
+  .authBg .oneTime > div strong {
+    font-style: normal!important;
+    font-weight: bold!important;
+    font-size: 32px!important;
+    line-height: 40px!important;
+  }
+
+  .wont_charge{
+    font-family: 'Circular Std'!important;
+    display: block;
+    margin-top: 20px!important;
+    font-style: normal!important;
+    font-weight: normal!important;
+    font-size: 14px!important;
+    line-height: 18px!important;
+
+    /* Secondary */
+
+    color: #072B4F!important;
+  }
+
   .privacyPolicyText,
   .privacyPolicyText span span{
     white-space: normal;
@@ -427,17 +463,17 @@
 
   .m3_title{
     font-family: 'Circular Std';
-    font-style: normal;
-    font-weight: 700;
-    font-size: 14px;
-    line-height: 18px;
+    font-style: normal!important;
+    font-weight: 700!important;
+    font-size: 14px!important;
+    line-height: 18px!important;
     /* identical to box height */
 
-    text-transform: uppercase;
+    text-transform: uppercase!important;
 
     /* Primary */
 
-    color: #072B4F;
+    color: #072B4F!important;
   }
 
   .container {
@@ -483,6 +519,7 @@
   .authForm{
     width: 100%;
     padding-top: 50px;
+    padding-bottom: 70px;
   }
 
   .authForm button{
@@ -491,9 +528,14 @@
 
   .mobile_steps{
     display: flex;
-    justify-content: center;
-    
+    justify-content: space-between;
+    margin-bottom: 20px;
+    width: 251px;
     position: relative;
+    align-self: center;
+    margin-left: auto;
+    margin-right: auto;
+
   }
 
   .step_item{
@@ -502,11 +544,11 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    width: 110px;
+    width: auto;
   }
 
   .two_steps .step_item{
-    width: 150px;
+    width: auto;
   }
 
   .step_number{
@@ -544,7 +586,7 @@
   .mobile_steps:before{
     content: '';
     height: 2px;
-    width: 50%;
+    width: 80%;
     margin-left: auto;
     margin-right: auto;
     left: 0;
@@ -555,12 +597,17 @@
     top: 15px;
   }
 
-  .mobile_steps.mobile_steps_small:before{
+  /*.mobile_steps.mobile_steps_small:before{
     width: 100px;
   }
 
   .two_steps.mobile_steps.mobile_steps_small:before{
     width: 130px;
+  }*/
+
+  .nopadding{
+    margin-top: 0!important;
+    padding-top: 0!important;
   }
 
   .blue_banner{
@@ -664,6 +711,19 @@
 
 
   }
+
+  .authBg .mooditudePremium > div span {
+    margin-left: 0;
+    font-style: normal!important;
+    font-weight: normal!important;
+    font-size: 14px!important;
+    line-height: 18px!important;
+    /* identical to box height */
+
+
+    color: #000000!important;
+  }
+
 
 }
 
