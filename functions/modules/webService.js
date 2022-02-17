@@ -605,7 +605,91 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     
     doc.pipe(writeStream);
 
-    // Start Header 1
+    // Start Page 1
+    doc
+      .image('images/cover-bg.png', 0, 0, {
+        cover: [doc.page.width, doc.page.height]
+      });
+
+    doc
+      .image('images/m3logo.png', doc.x, doc.y + 40, {
+        width: 42,
+        height: 42
+      });
+
+    doc.fillColor('#000000');
+
+    doc
+      .font('fonts/CircularStd-Black.ttf')
+      .fontSize(25)
+      .text('Mental Health Assessment Report', doc.x, doc.y + 90, {
+        width: 260
+      });
+
+    doc.fillColor('#000000', 0.4);
+
+    doc
+      .moveDown(6)
+      .fontSize(10)
+      .text('BROUGHT TO YOU BY');
+    
+    doc.moveDown(0.5);
+
+    doc.fillColor('#000000', 1);
+
+    doc
+      .image('images/mooditude-logo.png', doc.x, doc.y, {
+        width: 42,
+        height: 42
+      });
+
+    doc
+      .font('fonts/CircularStd-Black.ttf')
+      .fontSize(17)
+      .text('MOODITUDE', doc.x + 52, doc.y - 40);
+
+    doc.fillColor('#4F4F4F');
+
+    doc
+      .moveDown()
+      .font('fonts/CircularStd-Medium.ttf')
+      .fontSize(11)
+      .text('A Happier You', doc.x, doc.y - 22);
+
+    doc.addPage();
+    // End Page 1
+    
+    // Start Page 2
+    doc
+      .rect(0, 0, 3508, 6)
+      .fillAndStroke('#F8E71C')
+      .stroke();
+
+    doc
+      .moveDown(14)
+      .fillColor('#000000')
+      .font('fonts/CircularStd-Bold.ttf')
+      .fontSize(14)
+      .text(`This M3 Mental Health Assessment Report is prepared for ${userProfile.name}`, {
+        align: 'center'
+      });
+
+    doc
+      .moveDown(0.5)
+      .font('fonts/CircularStd-Medium.ttf')
+      .fontSize(8)
+      .text(`Dated: ${new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      })}`, {
+        align: 'center'
+      });
+    
+    doc.addPage();
+    // End Page 2
+
+    // Start Header 3
     doc
       .rect(0, 0, 3508, 6)
       .fillAndStroke('#F8E71C')
@@ -615,6 +699,13 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .image('images/mooditude-logo.png', doc.x, 26, {
         width: 32,
         height: 32,
+        valign: 'bottom'
+      });
+
+    doc
+      .image('images/m3logo.png', (doc.page.width - 64), 26, {
+        width: 34,
+        height: 34,
         valign: 'bottom'
       });
 
@@ -631,11 +722,11 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .moveDown(0)
       .fontSize(7)
       .text('A Happier You!');
-    // End Header 2
+    // End Header 3
 
-    // Start Page 1
+    // Start Page 3
     doc.fillColor('#072B4F');
-    doc.fontSize(10);
+    doc.fontSize(13);
     
     doc
       .moveDown(3.2)
@@ -645,12 +736,12 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
         year: 'numeric'
       }));
 
-    doc.fontSize(14);
+    doc.fontSize(13);
     doc.font('fonts/CircularStd-Bold.ttf');
 
     doc
       .moveDown(0.3)
-      .text('Mental Well-being Score');
+      .text('M3 Mental Well-being Score');
 
     doc.fontSize(10);
     doc.font('fonts/CircularStd-Medium.ttf');
@@ -822,12 +913,12 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc
       .moveDown()
       .text(`Read carefully the information and recommendations below concerning your risk of each of the four conditions described.`, defaultMarginLeft, doc.y);
-    // End Page 1
+    // End Page 3
 
     doc.addPage()
 
-    // Start Page 2
-    // Start Header 2
+    // Start Page 4
+    // Start Header 4
     doc
       .rect(0, 0, 3508, 6)
       .fillAndStroke('#F8E71C')
@@ -837,6 +928,13 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .image('images/mooditude-logo.png', doc.x, 26, {
         width: 32,
         height: 32,
+        valign: 'bottom'
+      });
+
+    doc
+      .image('images/m3logo.png', (doc.page.width - 64), 26, {
+        width: 34,
+        height: 34,
         valign: 'bottom'
       });
 
@@ -853,7 +951,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .moveDown(0)
       .fontSize(7)
       .text('A Happier You!');
-    // End Header 2
+    // End Header 4
 
     doc
       .image('images/warning.png', doc.x, doc.y + 20, {
@@ -863,13 +961,14 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       });
 
     doc
-      .moveDown(5)
+      .moveDown(4.5)
       .fontSize(14)
       .font('fonts/CircularStd-Bold.ttf')
-      .text('Disorder Risks');
+      .text('Symptoms Risks');
 
     let depressionRiskLevel;
     let depressionRiskLevelText;
+    let depressionRiskLevelColor;
 
     if (assessment.depressionScore <= 4) {
       depressionRiskLevel = 'unlikely';
@@ -883,37 +982,47 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     if (depressionRiskLevel == 'unlikely') {
       depressionRiskLevelText = `This low score means you have few symptoms of depression at this time.`;
+      depressionRiskLevelColor = '#5BA23F';
     } else if (depressionRiskLevel == 'low') {
       depressionRiskLevelText = `People scoring in this range on the depression scale tend to have a 1 in 3 chance of suffering from depression.`;
+      depressionRiskLevelColor = '#22A1D1';
     } else if (depressionRiskLevel == 'medium') {
       depressionRiskLevelText = `People scoring in this range on the depression scale tend to have a 2 in 3 chance of suffering from depression.`;
+      depressionRiskLevelColor = '#F9982C';
     } else if (depressionRiskLevel == 'high') {
       depressionRiskLevelText = `People scoring in this range on the depression scale typically have a 90% chance of suffering from depression.`;
+      depressionRiskLevelColor = '#EB5757';
     }
+
+    doc
+      .moveTo(defaultMarginLeft + 5, doc.y + 25)
+      .circle(defaultMarginLeft + 5, doc.y + 25, 4)
+      .fillOpacity(1)
+      .fillAndStroke(depressionRiskLevelColor, depressionRiskLevelColor);
 
     doc
       .moveDown(1)
       .fillColor('#072B4F')
       .font('fonts/CircularStd-Medium.ttf')
       .fontSize(11)
-      .text(`Depression — ${depressionRiskLevel.charAt(0).toUpperCase() + depressionRiskLevel.slice(1)} Risk`);
-
+      .text('Depression', defaultMarginLeft + 20, doc.y);
+    
     doc
-      .image(`images/${depressionRiskLevel}-risk.png`, doc.x, doc.y + 3, {
-        // width: 227,
-        height: 3,
-        valign: 'bottom'
-      });
+      .moveDown(0)
+      .fillColor(depressionRiskLevelColor)
+      .fontSize(9)
+      .text(`${depressionRiskLevel.charAt(0).toUpperCase() + depressionRiskLevel.slice(1)} Risk`, defaultMarginLeft + 20);
     
     doc
       .moveDown(0.9)
-      .fontSize(9)
-      .text(depressionRiskLevelText);
+      .fillColor('#072B4F')
+      .text(depressionRiskLevelText, defaultMarginLeft + 20);
     
     let anxietyScore = assessment.gadScore + assessment.panicScore + assessment.socialAnxietyScore + assessment.ptsdScore + assessment.ocdScore;
     
     let anxietyRiskLevel;
     let anxietyRiskLevelText;
+    let anxietyRiskLevelColor;
 
     if (anxietyScore <= 2) {
       anxietyRiskLevel = 'unlikely';
@@ -927,32 +1036,43 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     if (anxietyRiskLevel == 'unlikely') {
       anxietyRiskLevelText = `This low score means you do not have symptoms of an anxiety disorder at this time.`;
+      anxietyRiskLevelColor = '#5BA23F';
     } else if (anxietyRiskLevel == 'low') {
       anxietyRiskLevelText = `People scoring in this range on the anxiety scale tend to have a 1 in 3 chance of suffering from an anxiety disorder.`;
+      anxietyRiskLevelColor = '#22A1D1';
     } else if (anxietyRiskLevel == 'medium') {
       anxietyRiskLevelText = `People scoring in this range on the anxiety scale tend to have about a 50% chance of suffering from an anxiety disorder.`;
+      anxietyRiskLevelColor = '#F9982C';
     } else if (anxietyRiskLevel == 'high') {
       anxietyRiskLevelText = `People scoring in this range on the anxiety scale tend to have a 90% chance of suffering from an anxiety disorder.`;
+      anxietyRiskLevelColor = '#EB5757';
     }
 
     doc
       .moveDown(1.6)
       .fontSize(11)
-      .text(`Anxiety — ${anxietyRiskLevel.charAt(0).toUpperCase() + anxietyRiskLevel.slice(1)} Risk`);
+      .text('Anxiety', defaultMarginLeft + 20);
 
     doc
-      .image(`images/${anxietyRiskLevel}-risk.png`, doc.x, doc.y + 3, {
-        height: 3,
-        valign: 'bottom'
-      });
+      .moveTo(defaultMarginLeft + 5, doc.y - 6.5)
+      .circle(defaultMarginLeft + 5, doc.y - 6.5, 4)
+      .fillOpacity(1)
+      .fillAndStroke(anxietyRiskLevelColor, anxietyRiskLevelColor);
+
+    doc
+      .moveDown(0)
+      .fillColor(anxietyRiskLevelColor)
+      .fontSize(9)
+      .text(`${anxietyRiskLevel.charAt(0).toUpperCase() + anxietyRiskLevel.slice(1)} Risk`, defaultMarginLeft + 20);
     
     doc
       .moveDown(0.9)
-      .fontSize(9)
-      .text(anxietyRiskLevelText);
+      .fillColor('#072B4F')
+      .text(anxietyRiskLevelText, defaultMarginLeft + 20);
     
     let ptsdRiskLevel;
     let ptsdRiskLevelText;
+    let ptsdRiskLevelColor;
 
     if (assessment.ptsdScore <= 1) {
       ptsdRiskLevel = 'unlikely';
@@ -966,32 +1086,43 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     if (ptsdRiskLevel == 'unlikely') {
       ptsdRiskLevelText = `This low score means you do not have symptoms of posttraumatic stress disorder (PTSD) at this time.`;
+      ptsdRiskLevelColor = '#5BA23F';
     } else if (ptsdRiskLevel == 'low') {
       ptsdRiskLevelText = `Many individuals who have posttraumatic stress disorder (PTSD) respond to the scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, your risk of PTSD is just 1 in 8, though there could be another underlying mood or anxiety condition. (Naturally, if you have experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)`;
+      ptsdRiskLevelColor = '#22A1D1';
     } else if (ptsdRiskLevel == 'medium') {
       ptsdRiskLevelText = `Most individuals who have posttraumatic stress disorder (PTSD) respond to the scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, your risk of PTSD is just 1 in 5, though there could be another underlying mood or anxiety condition. (Naturally, if you have experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)`;
+      ptsdRiskLevelColor = '#F9982C';
     } else if (ptsdRiskLevel == 'high') {
       ptsdRiskLevelText = `Most individuals who have posttraumatic stress disorder (PTSD) respond to the PTSD scale as you did. Yet, because PTSD is less common than other mood and anxiety disorders, the likelihood that you have PTSD is about 1 in 3, though there is a high likelihood of another underlying mood or anxiety condition. Further assessment may help clarify these results. (Naturally, if you are aware of having experienced a traumatic event or events, this fact increases the likelihood of a PTSD diagnosis.)`;
+      ptsdRiskLevelColor = '#EB5757';
     }
 
     doc
       .moveDown(1.6)
       .fontSize(11)
-      .text(`PTSD — ${ptsdRiskLevel.charAt(0).toUpperCase() + ptsdRiskLevel.slice(1)} Risk`);
+      .text('PTSD', defaultMarginLeft + 20);
+    
+    doc
+      .moveTo(defaultMarginLeft + 5, doc.y - 6.5)
+      .circle(defaultMarginLeft + 5, doc.y - 6.5, 4)
+      .fillOpacity(1)
+      .fillAndStroke(ptsdRiskLevelColor, ptsdRiskLevelColor);
 
     doc
-      .image(`images/${ptsdRiskLevel}-risk.png`, doc.x, doc.y + 3, {
-        height: 3,
-        valign: 'bottom'
-      });
+      .moveDown(0)
+      .fillColor(ptsdRiskLevelColor)
+      .fontSize(9)
+      .text(`${ptsdRiskLevel.charAt(0).toUpperCase() + ptsdRiskLevel.slice(1)} Risk`, defaultMarginLeft + 20);
     
     doc
       .moveDown(0.9)
-      .fontSize(9)
-      .text(ptsdRiskLevelText);
+      .fillColor('#072B4F')
+      .text(ptsdRiskLevelText, defaultMarginLeft + 20);
 
     let bipolarRiskLevel;
     let bipolarRiskLevelText;
+    let bipolarRiskLevelColor;
 
     if (assessment.bipolarScore <= 1) {
       bipolarRiskLevel = 'unlikely';
@@ -1005,35 +1136,46 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     if (bipolarRiskLevel == 'unlikely') {
       bipolarRiskLevelText = `This low score means you do not have symptoms of bipolar disorder at this time.`;
+      bipolarRiskLevelColor = '#5BA23F';
     } else if (bipolarRiskLevel == 'low') {
       bipolarRiskLevelText = `People scoring in this range of the bipolar scale tend to have a 1 in 9 chance of having bipolar disorder. Nonetheless, more than a third of people in this range have some type of mood or anxiety condition. Further assessment may help clarify these results.`;
+      bipolarRiskLevelColor = '#22A1D1';
     } else if (bipolarRiskLevel == 'medium') {
       bipolarRiskLevelText = `People scoring in this range of the bipolar scale tend to have a 1 in 3 chance of having bipolar disorder, or possible another mood or anxiety condition. Further assessment may help clarify these results.`;
+      bipolarRiskLevelColor = '#F9982C';
     } else if (bipolarRiskLevel == 'high') {
       bipolarRiskLevelText = `People scoring in this range of the bipolar scale tend to have a 50% likelihood of having bipolar disorder. Though the score is high, there is a high false positive rate, so further assessment may help clarify these results.`;
+      bipolarRiskLevelColor = '#EB5757';
     }
 
     doc
       .moveDown(1.6)
       .fontSize(11)
-      .text(`Bipolar Disorder — ${bipolarRiskLevel.charAt(0).toUpperCase() + bipolarRiskLevel.slice(1)} Risk`);
+      .text('Bipolar Disorder', defaultMarginLeft + 20);
 
     doc
-      .image(`images/${bipolarRiskLevel}-risk.png`, doc.x, doc.y + 3, {
-        height: 3,
-        valign: 'bottom'
-      });
+      .moveTo(defaultMarginLeft + 5, doc.y - 6.5)
+      .circle(defaultMarginLeft + 5, doc.y - 6.5, 4)
+      .fillOpacity(1)
+      .fillAndStroke(bipolarRiskLevelColor, bipolarRiskLevelColor);
+
+    doc
+      .moveDown(0)
+      .fillColor(bipolarRiskLevelColor)
+      .fontSize(9)
+      .text(`${bipolarRiskLevel.charAt(0).toUpperCase() + bipolarRiskLevel.slice(1)} Risk`, defaultMarginLeft + 20);
     
     doc
       .moveDown(0.9)
+      .fillColor('#072B4F')
       .fontSize(9)
       .text(bipolarRiskLevelText);
-    // End Page 2
+    // End Page 4
 
     doc.addPage()
 
-    // Start Page 3
-    // Start Header 3
+    // Start Page 5
+    // Start Header 5
     doc
       .rect(0, 0, 3508, 6)
       .fillAndStroke('#F8E71C')
@@ -1043,6 +1185,13 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .image('images/mooditude-logo.png', doc.x, 26, {
         width: 32,
         height: 32,
+        valign: 'bottom'
+      });
+
+    doc
+      .image('images/m3logo.png', (doc.page.width - 64), 26, {
+        width: 34,
+        height: 34,
         valign: 'bottom'
       });
 
@@ -1059,7 +1208,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .moveDown(0)
       .fontSize(7)
       .text('A Happier You!');
-    // End Header 3
+    // End Header 5
 
     let hasSuicidalThoughts = false;
     let usedDrug = false;
@@ -1117,10 +1266,24 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       }
     });
 
+    doc
+      .image('images/recommended-actions.png', doc.x, doc.y + 23, {
+        height: 18,
+        valign: 'bottom'
+      });
+
+    doc
+      .moveDown(4.7)
+      .fontSize(14)
+      .font('fonts/CircularStd-Bold.ttf')
+      .text('Recommendations', doc.x, doc.y);
+
+    doc.fontSize(9);
+
     if (hasSuicidalThoughts) {
       doc
         .moveDown(1.5)
-        .rect(doc.x + 60, doc.y, 240, 80)
+        .rect(doc.x + 60, doc.y, 240, 103)
         .fill('#FFFFAA');
 
       doc
@@ -1205,12 +1368,12 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .text(`Use of this assessment is not an adequate substitute for obtaining medical or other professional advice, diagnosis, or treatment from a qualified licensed health care provider.`, defaultMarginLeft)
       .moveDown()
       .text(`This assessment is not intended for anyone under eighteen (18) years of age and is provided "as is" without any warranties of any kind, either express or implied, and Mooditude disclaims all warranties, including liability for indirect or consequential damages.`, defaultMarginLeft);
-    // End Page 3
+    // End Page 5
 
     doc.addPage()
 
-    // Start Page 5
-    // Start Header 5
+    // Start Page 6
+    // Start Header 6
     doc
       .rect(0, 0, 3508, 6)
       .fillAndStroke('#F8E71C')
@@ -1220,6 +1383,13 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .image('images/mooditude-logo.png', doc.x, 26, {
         width: 32,
         height: 32,
+        valign: 'bottom'
+      });
+
+    doc
+      .image('images/m3logo.png', (doc.page.width - 64), 26, {
+        width: 34,
+        height: 34,
         valign: 'bottom'
       });
 
@@ -1236,7 +1406,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .moveDown(0)
       .fontSize(7)
       .text('A Happier You!');
-    // End Header 5
+    // End Header 6
 
     doc
       .moveDown(2)
@@ -1245,8 +1415,8 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .text('Scores');
 
     doc
-      .moveTo(col1LeftPos - 40, colTop + 20)
-      .circle(col1LeftPos - 40, colTop + 20, 30)
+      .moveTo(col1LeftPos - 40, colTop)
+      .circle(col1LeftPos - 40, colTop, 30)
       .lineWidth(3)
       .fillOpacity(1)
       .fillAndStroke(riskLevelFillColor, '#F8E71C');
@@ -1264,25 +1434,25 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
-        .text(assessment.allScore, col1LeftPos - 50, colTop + 4);
+        .text(assessment.allScore, col1LeftPos - 50, colTop - 15);
     } else if (assessment.allScore > 99) {
       doc
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
-        .text(assessment.allScore, col1LeftPos - 60, colTop + 4);
+        .text(assessment.allScore, col1LeftPos - 60, colTop - 15);
     } else if (assessment.allScore == 0) {
       doc
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
-        .text(assessment.allScore, col1LeftPos - 48, colTop + 4);
+        .text(assessment.allScore, col1LeftPos - 48, colTop - 15);
     } else {
       doc
         .fillColor('#fff')
         .fontSize(24)
         .font('fonts/CircularStd-Medium.ttf')
-        .text(assessment.allScore, (40 / 2) + parseInt(doc.widthOfString(assessment.allScore.toString())), colTop + 4);
+        .text(assessment.allScore, (40 / 2) + parseInt(doc.widthOfString(assessment.allScore.toString())), colTop - 15);
     }
 
     if (allRiskLevel == 'unlikely') {
@@ -1299,14 +1469,14 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .fillColor('#072B4F')
       .font('fonts/CircularStd-Bold.ttf')
       .fontSize(18)
-      .text((allRiskLevel.charAt(0).toUpperCase() + allRiskLevel.slice(1)) + ' Risk', col2LeftPos, colTop - 10, { width: colWidth })
+      .text((allRiskLevel.charAt(0).toUpperCase() + allRiskLevel.slice(1)) + ' Risk', col2LeftPos, colTop - 30, { width: colWidth })
       .fillColor('#516B84')
       .fontSize(10)
       .font('fonts/CircularStd-Medium.ttf')
-      .text(allRiskLevelShortDescription, col2LeftPos, colTop + 20, { width: colWidth });
+      .text(allRiskLevelShortDescription, col2LeftPos, colTop, { width: colWidth });
 
     doc
-      .image('images/scale.png', doc.x, doc.y + 15, {
+      .image('images/scale.png', doc.x, doc.y + 10, {
         width: 150,
         valign: 'bottom'
       });
@@ -1319,18 +1489,6 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .text('Diagnosis Risks', defaultMarginLeft);
     
     doc.moveDown(2);
-      
-    let depressionRiskLevelColor;
-
-    if (depressionRiskLevel == 'unlikely') {
-      depressionRiskLevelColor = '#5BA23F';
-    } else if (depressionRiskLevel == 'low') {
-      depressionRiskLevelColor = '#22A1D1';
-    } else if (depressionRiskLevel == 'medium') {
-      depressionRiskLevelColor = '#F9982C';
-    } else if (depressionRiskLevel == 'high') {
-      depressionRiskLevelColor = '#EB5757';
-    }
 
     doc
       .moveTo(defaultMarginLeft + 9, doc.y - 4)
@@ -1359,18 +1517,6 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc.moveDown(2);
 
-    let anxietyRiskLevelColor;
-
-    if (anxietyRiskLevel == 'unlikely') {
-      anxietyRiskLevelColor = '#5BA23F';
-    } else if (anxietyRiskLevel == 'low') {
-      anxietyRiskLevelColor = '#22A1D1';
-    } else if (anxietyRiskLevel == 'medium') {
-      anxietyRiskLevelColor = '#F9982C';
-    } else if (anxietyRiskLevel == 'high') {
-      anxietyRiskLevelColor = '#EB5757';
-    }
-
     doc
       .moveTo(defaultMarginLeft + 9, doc.y - 4)
       .circle(defaultMarginLeft + 9, doc.y - 4, 8)
@@ -1397,18 +1543,6 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .text(anxietyRiskLevel.charAt(0).toUpperCase() + anxietyRiskLevel.slice(1), defaultMarginLeft + 178, doc.y - 11);
   
     doc.moveDown(2);
-
-    let ptsdRiskLevelColor;
-
-    if (ptsdRiskLevel == 'unlikely') {
-      ptsdRiskLevelColor = '#5BA23F';
-    } else if (ptsdRiskLevel == 'low') {
-      ptsdRiskLevelColor = '#22A1D1';
-    } else if (ptsdRiskLevel == 'medium') {
-      ptsdRiskLevelColor = '#F9982C';
-    } else if (ptsdRiskLevel == 'high') {
-      ptsdRiskLevelColor = '#EB5757';
-    }
 
     doc
       .moveTo(defaultMarginLeft + 9, doc.y - 4)
@@ -1437,18 +1571,6 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc.moveDown(2);
 
-    let bipolarRiskLevelColor;
-
-    if (bipolarRiskLevel == 'unlikely') {
-      bipolarRiskLevelColor = '#5BA23F';
-    } else if (bipolarRiskLevel == 'low') {
-      bipolarRiskLevelColor = '#22A1D1';
-    } else if (bipolarRiskLevel == 'medium') {
-      bipolarRiskLevelColor = '#F9982C';
-    } else if (bipolarRiskLevel == 'high') {
-      bipolarRiskLevelColor = '#EB5757';
-    }
-
     doc
       .moveTo(defaultMarginLeft + 9, doc.y - 4)
       .circle(defaultMarginLeft + 9, doc.y - 4, 8)
@@ -1475,11 +1597,15 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .text(bipolarRiskLevel.charAt(0).toUpperCase() + bipolarRiskLevel.slice(1), defaultMarginLeft + 178, doc.y - 11);
 
     doc
+      .roundedRect(defaultMarginLeft, doc.page.height - 180, doc.page.width - 60, 130, 12)
+      .fill('#F3F4F6');
+
+    doc
       .moveDown(1.8)
       .fontSize(11)
       .fillColor('#072B4F')
       .font('fonts/CircularStd-Bold.ttf')
-      .text('Functional Impairments', defaultMarginLeft);
+      .text('Functional Impairments', defaultMarginLeft + 20, doc.y + 15);
     
     doc.moveDown(1.5);
 
@@ -1509,19 +1635,19 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc.font('fonts/CircularStd-Medium.ttf');
 
     doc
-      .moveTo(defaultMarginLeft + 10, doc.y - 5)
-      .circle(defaultMarginLeft + 10, doc.y - 5, 2)
+      .moveTo(defaultMarginLeft + 30, doc.y - 5)
+      .circle(defaultMarginLeft + 30, doc.y - 5, 2)
       .fillOpacity(1)
       .fillAndStroke(thoughtsOfSuicideAnswerColor, thoughtsOfSuicideAnswerColor);
     
     doc
       .fontSize(9)
       .fillColor('#072B4F')
-      .text('Thoughts of suicide', defaultMarginLeft + 28, doc.y - 11);
+      .text('Thoughts of suicide', defaultMarginLeft + 48, doc.y - 11);
 
     doc
       .fillColor('#516B84')
-      .text(thoughtsOfSuicideAnswerText, defaultMarginLeft + 178, doc.y - 11);
+      .text(thoughtsOfSuicideAnswerText, defaultMarginLeft + 198, doc.y - 11);
     
     doc.moveDown(1.4);
 
@@ -1549,19 +1675,19 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     }
 
     doc
-      .moveTo(defaultMarginLeft + 10, doc.y - 5)
-      .circle(defaultMarginLeft + 10, doc.y - 5, 2)
+      .moveTo(defaultMarginLeft + 30, doc.y - 5)
+      .circle(defaultMarginLeft + 30, doc.y - 5, 2)
       .fillOpacity(1)
       .fillAndStroke(impairsWorkSchoolAnswerColor, impairsWorkSchoolAnswerColor);
     
     doc
       .fontSize(9)
       .fillColor('#072B4F')
-      .text('Impairs work/school', defaultMarginLeft + 28, doc.y - 11);
+      .text('Impairs work/school', defaultMarginLeft + 48, doc.y - 11);
 
     doc
       .fillColor('#516B84')
-      .text(impairsWorkSchoolAnswerText, defaultMarginLeft + 178, doc.y - 11);
+      .text(impairsWorkSchoolAnswerText, defaultMarginLeft + 198, doc.y - 11);
     
     doc.moveDown(1.4);
 
@@ -1589,19 +1715,19 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     }
 
     doc
-      .moveTo(defaultMarginLeft + 10, doc.y - 5)
-      .circle(defaultMarginLeft + 10, doc.y - 5, 2)
+      .moveTo(defaultMarginLeft + 30, doc.y - 5)
+      .circle(defaultMarginLeft + 30, doc.y - 5, 2)
       .fillOpacity(1)
       .fillAndStroke(impairsFriendsFamilyAnswerColor, impairsFriendsFamilyAnswerColor);
     
     doc
       .fontSize(9)
       .fillColor('#072B4F')
-      .text('Impairs friends/family', defaultMarginLeft + 28, doc.y - 11);
+      .text('Impairs friends/family', defaultMarginLeft + 48, doc.y - 11);
 
     doc
       .fillColor('#516B84') 
-      .text(impairsFriendsFamilyAnswerText, defaultMarginLeft + 178, doc.y - 11);
+      .text(impairsFriendsFamilyAnswerText, defaultMarginLeft + 198, doc.y - 11);
 
     doc.moveDown(1.4);
 
@@ -1629,19 +1755,19 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     }
 
     doc
-      .moveTo(defaultMarginLeft + 10, doc.y - 5)
-      .circle(defaultMarginLeft + 10, doc.y - 5, 2)
+      .moveTo(defaultMarginLeft + 30, doc.y - 5)
+      .circle(defaultMarginLeft + 30, doc.y - 5, 2)
       .fillOpacity(1)
       .fillAndStroke(ledToUsingAlcoholAnswerColor, ledToUsingAlcoholAnswerColor);
     
     doc
       .fontSize(9)
       .fillColor('#072B4F')
-      .text('Led to using alcohol', defaultMarginLeft + 28, doc.y - 11);
+      .text('Led to using alcohol', defaultMarginLeft + 48, doc.y - 11);
 
     doc
       .fillColor('#516B84')
-      .text(ledToUsingAlcoholAnswerText, defaultMarginLeft + 178, doc.y - 11);
+      .text(ledToUsingAlcoholAnswerText, defaultMarginLeft + 198, doc.y - 11);
 
     doc.moveDown(1.4);
 
@@ -1669,25 +1795,25 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     }
 
     doc
-      .moveTo(defaultMarginLeft + 10, doc.y - 5)
-      .circle(defaultMarginLeft + 10, doc.y - 5, 2)
+      .moveTo(defaultMarginLeft + 30, doc.y - 5)
+      .circle(defaultMarginLeft + 30, doc.y - 5, 2)
       .fillOpacity(1)
       .fillAndStroke(ledToUsingDrugAnswerColor, ledToUsingDrugAnswerColor);
     
     doc
       .fontSize(9)
       .fillColor('#072B4F')
-      .text('Led to using drugs', defaultMarginLeft + 28, doc.y - 11);
+      .text('Led to using drugs', defaultMarginLeft + 48, doc.y - 11);
 
     doc
       .fillColor('#516B84')
-      .text(ledToUsingDrugAnswerText, defaultMarginLeft + 178, doc.y - 11);
-    // End Page 5
+      .text(ledToUsingDrugAnswerText, defaultMarginLeft + 198, doc.y - 11);
+    // End Page 6
 
     doc.addPage()
 
-    // Start Page 6
-    // Start Header 6
+    // Start Page 7
+    // Start Header 7
     doc
       .rect(0, 0, 3508, 6)
       .fillAndStroke('#F8E71C')
@@ -1697,6 +1823,13 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .image('images/mooditude-logo.png', doc.x, 26, {
         width: 32,
         height: 32,
+        valign: 'bottom'
+      });
+
+    doc
+      .image('images/m3logo.png', (doc.page.width - 64), 26, {
+        width: 34,
+        height: 34,
         valign: 'bottom'
       });
 
@@ -1713,13 +1846,13 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .moveDown(0)
       .fontSize(7)
       .text('A Happier You!');
-    // End Header 6
+    // End Header 7
 
     doc
       .moveDown(2)
       .fontSize(14)
       .font('fonts/CircularStd-Bold.ttf')
-      .text('Questions');
+      .text('Your Responses');
 
     let mostOfTheTimeAnswerCount = assessment.rawData.split(',').filter(x => x == 4).length;
     let mostOfTheTimeAnswerQuestions = [];
@@ -1871,9 +2004,10 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     }
 
     doc.addPage()
+    // End Page 7
 
-    // Start Page 7
-    // Start Header 7
+    // Start Page 8
+    // Start Header 8
     doc
       .rect(0, 0, 3508, 6)
       .fillAndStroke('#F8E71C')
@@ -1883,6 +2017,13 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .image('images/mooditude-logo.png', doc.x, 26, {
         width: 32,
         height: 32,
+        valign: 'bottom'
+      });
+
+    doc
+      .image('images/m3logo.png', doc.x + 158, 26, {
+        width: 34,
+        height: 34,
         valign: 'bottom'
       });
 
@@ -1899,7 +2040,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .moveDown(0)
       .fontSize(7)
       .text('A Happier You!');
-    // End Header 7
+    // End Header 8
     
     doc
       .fillColor('#072B4F')
@@ -1933,12 +2074,6 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     
     doc
       .moveDown(1.1)
-      .font('fonts/CircularStd-Medium.ttf')
-      .fontSize(8)
-      .text(`This assessment — M3 Checklist — is a  3-minute mental health symptom assessment tool designed by experts from the National Institute for Mental Health, Boston University, Columbia University, and Weill Cornell Medicine, and validated by researchers from the University of North Carolina, and published in the Annals of Family Medicine in 2010.`, defaultMarginLeft + 160);
-    
-    doc
-      .moveDown(1.1)
       .text(`It efficiently measures the pulse of your mental well-being, by combining common symptom areas — depression, bipolar, anxiety, and posttraumatic stress disorders — with substance use and functional impairments to produce a set of mental health vital signs that can be tracked over time to measure progress.`, defaultMarginLeft + 160);
 
     doc
@@ -1965,12 +2100,12 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     
     doc
       .fillColor('#516B84');
-    // End Page 7
+    // End Page 8
 
     // Start Footer
     let pages = doc.bufferedPageRange();
 
-    for (let i = 0; i < pages.count; i++) {
+    for (let i = 1; i < pages.count; i++) {
       doc.switchToPage(i);
 
       let oldBottomMargin = doc.page.margins.bottom;
@@ -1981,7 +2116,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
         .fillColor('#072B4F')
         .fontSize(8)
         .text(
-          `Page ${i + 1} of ${pages.count}`,
+          `Page ${(i + 1) - 1} of ${pages.count - 1}`,
           0,
           doc.page.height - (oldBottomMargin / 2),
           { align: 'right' }
