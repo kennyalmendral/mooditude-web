@@ -348,7 +348,7 @@
   line-height: 23px;
   /* identical to box height */
 
-
+  white-space: nowrap;
   /* Primary */
 
   color: #072B4F;

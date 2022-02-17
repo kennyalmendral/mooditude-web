@@ -358,13 +358,30 @@ export default function SignUp(props) {
                 <div className={`${styles.mobile_steps} ${styles.desktop}`}>
                     <div className={`${styles.step_item} ${styles.step_active_item}`}>
                       <div className={styles.step_number}>1</div>
-                      <p>Account</p>
+                      <p>Create Account</p>
                     </div>
 
-                    <div className={styles.step_item}>
-                      <div className={styles.step_number}>2</div>
-                      <p>Assessment</p>
-                    </div>
+                    {
+                      router.query.duration == 12 || router.query.duration == 3 || router.query.duration == 1 || router.query.type == 'payment' ? 
+                      <>
+                        <div className={styles.step_item}>
+                          <div className={styles.step_number}>2</div>
+                          <p>Buy</p>
+                        </div>
+                        <div className={styles.step_item}>
+                          <div className={styles.step_number}>3</div>
+                          <p>Take Assessment</p>
+                        </div>
+                      </>
+                      : 
+                      <div className={styles.step_item}>
+                        <div className={styles.step_number}>2</div>
+                        <p>Take Assessment</p>
+                      </div>
+
+                    }
+
+                    
                 </div>
               </div>
               <div>
