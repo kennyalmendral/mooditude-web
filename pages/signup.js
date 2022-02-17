@@ -124,7 +124,7 @@ export default function SignUp(props) {
         })
       }
     }
-  }, [])
+  }, [router])
 
   useEffect(() => {
     if (authUser) {
@@ -414,8 +414,8 @@ export default function SignUp(props) {
                           <div>
                             {plans.filter(plan => plan.id == 'price_1KS1BUAuTlAR8JLMVQ7gLjp0').map(plan => (
                               <>
-                                <strong>${plan.amount}</strong> 
-                                <span>/{plan.interval_count} {plan.interval}s</span>
+                                <strong>${parseFloat(plan.amount).toFixed(2)}</strong> 
+                                <span>/ {plan.interval_count} {plan.interval}s</span>
                               </>                       
                             ))}
                           </div>
@@ -426,8 +426,8 @@ export default function SignUp(props) {
                             <div>
                               {plans.filter(plan => plan.id == 'price_1KS1BoAuTlAR8JLM4MDqAB7k').map(plan => (
                                 <>
-                                  <strong>${plan.amount}</strong> 
-                                  <span>/{plan.interval}</span>
+                                  <strong>${parseFloat(plan.amount).toFixed(2)}</strong> 
+                                  <span>/ {plan.interval}</span>
                                 </>
                               ))}
                             </div>
@@ -442,8 +442,8 @@ export default function SignUp(props) {
                           <div>
                             {plans.filter(plan => plan.id == 'price_1K09ueAuTlAR8JLMqv6RVsh8').map(plan => (
                               <>
-                                <strong>${plan.amount}</strong> 
-                                <span>/{plan.interval}</span>
+                                <strong>${parseFloat(plan.amount).toFixed(2)}</strong> 
+                                <span>/ {plan.interval}</span>
                               </>                       
                             ))}
                           </div>
@@ -453,8 +453,8 @@ export default function SignUp(props) {
                           <div>
                             {plans.filter(plan => plan.id == 'price_1KHXXoAuTlAR8JLM1hdixwNI').map(plan => (
                               <>
-                                <strong>${plan.amount}</strong> 
-                                <span>/{plan.interval_count} {plan.interval}s</span>
+                                <strong>${parseFloat(plan.amount).toFixed(2)}</strong> 
+                                <span>/ {plan.interval_count} {plan.interval}s</span>
                               </>                       
                             ))}
                           </div>
@@ -465,8 +465,8 @@ export default function SignUp(props) {
                             <div>
                               {plans.filter(plan => plan.id == 'price_1K09ueAuTlAR8JLM3JmfvSgj').map(plan => (
                                 <>
-                                  <strong>${plan.amount}</strong> 
-                                  <span>/{plan.interval}</span>
+                                  <strong>${parseFloat(plan.amount).toFixed(2)}</strong> 
+                                  <span>/ {plan.interval}</span>
                                 </>
                               ))}
                             </div>
@@ -513,7 +513,7 @@ export default function SignUp(props) {
                   <div>
                     <div>
                       {plans.filter(plan => plan.id == 'price_1KS1B3AuTlAR8JLM0jZu1Wmi').map(plan => (
-                        <strong>${plan.amount}</strong>
+                        <strong>${parseFloat(plan.amount).toFixed(2)}</strong>
                       ))}
                     </div>
 
