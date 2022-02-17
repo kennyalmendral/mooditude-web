@@ -49,81 +49,85 @@ export default function SignUp(props) {
   const { authUser, createUserWithEmailAndPassword } = useAuth()
 
   useEffect(() => {
-    if (router.query.referrer == 'm3') {
-      for (const plan in config.stripe.plan.mentalHealthAssessment) {
-        const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
-  
-        getStripeProduct({
-          price: config.stripe.plan.mentalHealthAssessment[plan]
-        }).then(result => {
-          let productPrice = result.data.productPrice
-          let planObj = {}
-  
-          planObj['id'] = productPrice.id
-          planObj['amount'] = parseInt(productPrice.unit_amount_decimal) / 100
-          planObj['interval'] = productPrice.recurring != null && productPrice.recurring.interval
-          planObj['interval_count'] = productPrice.recurring != null && productPrice.recurring.interval_count
-  
-          if (
-            (productPrice.type == 'recurring') && 
-            (productPrice.recurring.interval == 'month') && 
-            (productPrice.recurring.interval_count == 3)
-          ) {
-            planObj['duration_in_months'] = 3
-          } else if (
-            (productPrice.type == 'recurring') && 
-            (productPrice.recurring.interval == 'year') && 
-            (productPrice.recurring.interval_count == 1)
-          ) {
-            planObj['duration_in_months'] = 12
-          } else if (productPrice.type == 'one_time') {
-            planObj['duration_in_months'] = null
-          }
-  
-          setPlans(plans => [...plans, planObj])
-        })
-      }
-    } else {
-      for (const plan in config.stripe.plan.mooditudePremium) {
-        const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
-  
-        getStripeProduct({
-          price: config.stripe.plan.mooditudePremium[plan]
-        }).then(result => {
-          let productPrice = result.data.productPrice
-          let planObj = {}
-  
-          planObj['id'] = productPrice.id
-          planObj['amount'] = parseInt(productPrice.unit_amount_decimal) / 100
-          planObj['interval'] = productPrice.recurring != null && productPrice.recurring.interval
-          planObj['interval_count'] = productPrice.recurring != null && productPrice.recurring.interval_count
-  
-          if (
-            (productPrice.type == 'recurring') && 
-            (productPrice.recurring.interval == 'month') && 
-            (productPrice.recurring.interval_count == 1)
-          ) {
-            planObj['duration_in_months'] = 1
-          } else if (
-            (productPrice.type == 'recurring') && 
-            (productPrice.recurring.interval == 'month') && 
-            (productPrice.recurring.interval_count == 3)
-          ) {
-            planObj['duration_in_months'] = 3
-          } else if (
-            (productPrice.type == 'recurring') && 
-            (productPrice.recurring.interval == 'year') && 
-            (productPrice.recurring.interval_count == 1)
-          ) {
-            planObj['duration_in_months'] = 12
-          } else if (productPrice.type == 'one_time') {
-            planObj['duration_in_months'] = null
-          }
-  
-          setPlans(plans => [...plans, planObj])
-        })
+    if (Object.keys(router.query).length > 0) {
+      if (router.query.referrer == 'm3') {
+        for (const plan in config.stripe.plan.mentalHealthAssessment) {
+          const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
+    
+          getStripeProduct({
+            price: config.stripe.plan.mentalHealthAssessment[plan]
+          }).then(result => {
+            let productPrice = result.data.productPrice
+            let planObj = {}
+    
+            planObj['id'] = productPrice.id
+            planObj['amount'] = parseInt(productPrice.unit_amount_decimal) / 100
+            planObj['interval'] = productPrice.recurring != null && productPrice.recurring.interval
+            planObj['interval_count'] = productPrice.recurring != null && productPrice.recurring.interval_count
+    
+            if (
+              (productPrice.type == 'recurring') && 
+              (productPrice.recurring.interval == 'month') && 
+              (productPrice.recurring.interval_count == 3)
+            ) {
+              planObj['duration_in_months'] = 3
+            } else if (
+              (productPrice.type == 'recurring') && 
+              (productPrice.recurring.interval == 'year') && 
+              (productPrice.recurring.interval_count == 1)
+            ) {
+              planObj['duration_in_months'] = 12
+            } else if (productPrice.type == 'one_time') {
+              planObj['duration_in_months'] = null
+            }
+    
+            setPlans(plans => [...plans, planObj])
+          })
+        }
+      } else {
+        for (const plan in config.stripe.plan.mooditudePremium) {
+          const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
+    
+          getStripeProduct({
+            price: config.stripe.plan.mooditudePremium[plan]
+          }).then(result => {
+            let productPrice = result.data.productPrice
+            let planObj = {}
+    
+            planObj['id'] = productPrice.id
+            planObj['amount'] = parseInt(productPrice.unit_amount_decimal) / 100
+            planObj['interval'] = productPrice.recurring != null && productPrice.recurring.interval
+            planObj['interval_count'] = productPrice.recurring != null && productPrice.recurring.interval_count
+    
+            if (
+              (productPrice.type == 'recurring') && 
+              (productPrice.recurring.interval == 'month') && 
+              (productPrice.recurring.interval_count == 1)
+            ) {
+              planObj['duration_in_months'] = 1
+            } else if (
+              (productPrice.type == 'recurring') && 
+              (productPrice.recurring.interval == 'month') && 
+              (productPrice.recurring.interval_count == 3)
+            ) {
+              planObj['duration_in_months'] = 3
+            } else if (
+              (productPrice.type == 'recurring') && 
+              (productPrice.recurring.interval == 'year') && 
+              (productPrice.recurring.interval_count == 1)
+            ) {
+              planObj['duration_in_months'] = 12
+            } else if (productPrice.type == 'one_time') {
+              planObj['duration_in_months'] = null
+            }
+    
+            setPlans(plans => [...plans, planObj])
+          })
+        }
       }
     }
+
+    console.log(router.query)
   }, [router])
 
   useEffect(() => {
