@@ -23,6 +23,8 @@ const needle = require('needle');
 
 const { v4: uuidv4 } = require('uuid');
 
+const fns = require('date-fns');
+
 const mailjetOptions = {
   'json': true,
   'username': config.mailJet.apiKey,
@@ -2199,6 +2201,92 @@ exports.uploadProfilePicture = functions.https.onCall(async (data, context) => {
   };
 });
 
+exports.applyReportCredit = functions.https.onCall(async (data, context) => {
+  functions.logger.log(data)
+
+  const usersRef = admin
+    .database()
+    .ref(`users/${data.user}`);
+
+  const snapshot = await usersRef.once('value');
+  
+  if (snapshot.val().assessmentCredit) {
+    let assessmentCreditPurchasedDate = snapshot.val().assessmentCredit.purchasedDate;
+
+    functions.logger.log(assessmentCreditPurchasedDate);
+
+    await admin
+      .firestore()
+      .collection('M3Assessment')
+      .doc(data.user)
+      .collection('scores')
+      .doc(data.score)
+      .update({
+        purchasedDate: admin.firestore.Timestamp.fromDate(new Date(snapshot.val().assessmentCredit.purchasedDate)),
+        invoiceId: snapshot.val().assessmentCredit.invoiceId
+      });
+
+    await admin
+      .database()
+      .ref()
+      .child('users')
+      .child(data.user)
+      .child('assessmentCredit')
+      .remove();
+    
+    return {
+      status: true,
+      purchasedDate: admin.firestore.Timestamp.fromDate(new Date(assessmentCreditPurchasedDate)).toMillis()
+    };
+  } else {
+    return {
+      status: false,
+      purchasedDate: null
+    };
+  }
+});
+
+exports.updateUserProfileOnboarding = functions.https.onCall(async (data, context) => {
+  await admin
+    .database()
+    .ref()
+    .child('users')
+    .child(data.userId)
+    .update({
+      ageGroup: data.ageGroup,
+      gender: data.gender,
+      topGoal: data.topGoal,
+      topChallenges: data.topChallenges,
+      goingToTherapy: data.goingToTherapy,
+      knowCbt: data.knowCbt,
+      committedToSelfhelp: data.committedToSelfhelp,
+      committedToSelfHelpScale: data.committedToSelfHelpScale,
+      onboardingStep: data.onboardingStep
+    });
+
+  await admin
+    .database()
+    .ref()
+    .child('userCollection')
+    .child('MakePromise')
+    .update({
+      [data.userId]: data.makePromiseReason,
+    });
+  
+  await admin
+    .database()
+    .ref()
+    .child('userCollection')
+    .child('TopGoal')
+    .update({
+      [data.userId]: data.topGoalOtherReason
+    });
+
+  return {
+    updated: true
+  };
+});
+
 exports.stripeWebhooks = functions.https.onRequest((req, res) => {
   let reqBody = req.body;
 
@@ -2409,88 +2497,93 @@ exports.stripeWebhooks = functions.https.onRequest((req, res) => {
   }
 });
 
-exports.applyReportCredit = functions.https.onCall(async (data, context) => {
-  functions.logger.log(data)
+exports.addUserToSendGrid = functions.database.ref('/users/{userId}').onCreate((snapshot, context) => {
+  const userId = context.params.userId;
+  const userProfile = snapshot.val();
 
-  const usersRef = admin
-    .database()
-    .ref(`users/${data.user}`);
+  functions.logger.log(userId);
+  functions.logger.log(userProfile);
 
-  const snapshot = await usersRef.once('value');
-  
-  if (snapshot.val().assessmentCredit) {
-    let assessmentCreditPurchasedDate = snapshot.val().assessmentCredit.purchasedDate;
-
-    functions.logger.log(assessmentCreditPurchasedDate);
-
-    await admin
-      .firestore()
-      .collection('M3Assessment')
-      .doc(data.user)
-      .collection('scores')
-      .doc(data.score)
-      .update({
-        purchasedDate: admin.firestore.Timestamp.fromDate(new Date(snapshot.val().assessmentCredit.purchasedDate)),
-        invoiceId: snapshot.val().assessmentCredit.invoiceId
-      });
-
-    await admin
-      .database()
-      .ref()
-      .child('users')
-      .child(data.user)
-      .child('assessmentCredit')
-      .remove();
-    
-    return {
-      status: true,
-      purchasedDate: admin.firestore.Timestamp.fromDate(new Date(assessmentCreditPurchasedDate)).toMillis()
-    };
+  if (
+    userProfile.email.includes('demo') || 
+    userProfile.email.includes('test') || 
+    userProfile.email.includes('demouser') || 
+    userProfile.email.includes('testuser')
+  ) {
+    return false;
   } else {
-    return {
-      status: false,
-      purchasedDate: null
-    };
-  }
-});
-
-exports.updateUserProfileOnboarding = functions.https.onCall(async (data, context) => {
-  await admin
-    .database()
-    .ref()
-    .child('users')
-    .child(data.userId)
-    .update({
-      ageGroup: data.ageGroup,
-      gender: data.gender,
-      topGoal: data.topGoal,
-      topChallenges: data.topChallenges,
-      goingToTherapy: data.goingToTherapy,
-      knowCbt: data.knowCbt,
-      committedToSelfhelp: data.committedToSelfhelp,
-      committedToSelfHelpScale: data.committedToSelfHelpScale,
-      onboardingStep: data.onboardingStep
+    const axios = require('axios').create({
+      baseURL: 'https://api.sendgrid.com/v3',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer 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'
+      }
     });
 
-  await admin
-    .database()
-    .ref()
-    .child('userCollection')
-    .child('MakePromise')
-    .update({
-      [data.userId]: data.makePromiseReason,
-    });
+    const customFields = {};
+
+    if (userProfile.userId) {
+      customFields['e5_T'] = userProfile.userId;
+    }
+
+    if (userProfile.memberSince) {
+      customFields['e2_D'] = fns.format(new Date(userProfile.memberSince), 'yyyy-MM-dd');
+    }
+
+    if (userProfile.userStatus) {
+      customFields['e4_T'] = userProfile.userStatus;
+    }
+
+    if (userProfile.statusValidTill) {
+      if (userProfile.userStatus == 'free') {
+        customFields['e6_D'] = '1000-01-01';
+      } else if (userProfile.userStatus == 'in-trial') {
+        customFields['e6_D'] = userProfile.trialExpiryDate;
+      } else if (
+        userProfile.userStatus == 'paid' || 
+        userProfile.userStatus == 'canceled' || 
+        userProfile.userStatus == 'expired'
+      ) {
+        customFields['e6_D'] = userProfile.expiryDate;
+      }
+    }
+
+    if (userProfile.assessmentScore) {
+      customFields['e7_N'] = ''
+    }
+
+    if (userProfile.assessmentDate) {
+      customFields['e8_D'] = ''
+    }
+
+    if (userProfile.nextAssessmentDate) {
+      customFields['e9_D'] = ''
+    }
+
+    if (userProfile.lastSeen) {
+      customFields['e10_D'] = fns.format(new Date(userProfile.memberSince), 'yyyy-MM-DD');
+    }
+
+    if (userProfile.platform) {
+      customFields['e11_T'] = userProfile.platform;
+    }
+
+    functions.logger.log(userProfile.name.split(' '));
+    functions.logger.log(customFields);
   
-  await admin
-    .database()
-    .ref()
-    .child('userCollection')
-    .child('TopGoal')
-    .update({
-      [data.userId]: data.topGoalOtherReason
-    });
+    // const contact = await axios.put('/marketing/contacts', {
+    //   'list_ids': ['a47e7a33-0643-42d8-b8cf-3b79e7b322d3'],
+    //   'contacts': [
+    //     {
+    //       'email': userProfile.email,
+    //       'first_name': userProfile.name.split(' ')[0],
+    //       'last_name': userProfile.name.split(' ')[1],
+    //       'custom_fields': customFields
+    //     }
+    //   ]
+    // });
 
-  return {
-    updated: true
-  };
+    return true;
+  }
 });
