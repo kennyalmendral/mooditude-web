@@ -466,7 +466,19 @@ export default function SignUp(props) {
                 <br/>
                 <h2 className={styles.m3_title}>{router.query.referrer == 'm3' ? 'M3 ASSESSMENT REPORT' : 'MOODITUDE PREMIUM'}</h2>
 
-                {router.query.referrer == 'm3' && (
+                {(router.query.type == 'payment' && router.query.referrer == 'm3') && (
+                  <div>
+                    <div>
+                      {plans.filter(plan => plan.id == 'price_1KS1B3AuTlAR8JLM0jZu1Wmi').map(plan => (
+                        <strong>${parseFloat(plan.amount).toFixed(2)}</strong>
+                      ))}
+                    </div>
+
+                    <div>One-time</div>
+                  </div>
+                )}
+
+                {(router.query.type == 'payment' && router.query.referrer == undefined) && (
                   <div>
                     <div>
                       {plans.filter(plan => plan.id == 'price_1KUZpzAuTlAR8JLMtwXIw7xL').map(plan => (
