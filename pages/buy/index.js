@@ -98,11 +98,11 @@ export default function OnboardingWelcomePage() {
 
   useEffect(() => {
     if (authUser) {
-      for (const plan in config.stripe.plan.mooditudePremium) {
+      for (const plan in config.stripe.plan) {
         const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
 
         getStripeProduct({
-          price: config.stripe.plan.mooditudePremium[plan]
+          price: config.stripe.plan[plan]
         }).then(result => {
           let productPrice = result.data.productPrice
           let planObj = {}
@@ -194,9 +194,9 @@ export default function OnboardingWelcomePage() {
 
   useEffect(() => {
     if (activeProductPrice) {
-      if (activeProductPrice == 'price_1K09ueAuTlAR8JLMqv6RVsh8') {
+      if (activeProductPrice == 'price_1KUZtpAuTlAR8JLMaSEej0uo') {
         setDuration(1)
-      } else if (activeProductPrice == 'price_1KHXXoAuTlAR8JLM1hdixwNI') {
+      } else if (activeProductPrice == 'price_1KUZx2AuTlAR8JLMaal6ifzP') {
         setDuration(3)
       } else if (activeProductPrice == 'price_1K09ueAuTlAR8JLM3JmfvSgj') {
         setDuration(12)

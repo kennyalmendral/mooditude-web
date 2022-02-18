@@ -108,11 +108,11 @@ export default function AssessmentReport(props) {
 
   useEffect(() => {
     if (authUser) {
-      for (const plan in config.stripe.plan.mooditudePremium) {
+      for (const plan in config.stripe.plan) {
         const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
 
         getStripeProduct({
-          price: config.stripe.plan.mooditudePremium[plan]
+          price: config.stripe.plan[plan]
         }).then(result => {
           let productPrice = result.data.productPrice
           let planObj = {}
@@ -858,7 +858,7 @@ export default function AssessmentReport(props) {
                   <div className={styles.result_pricing_section}>
                     {plans.map(plan => (
                       <>
-                        {(plan.id != 'price_1K09ueAuTlAR8JLMqv6RVsh8') && (
+                        {(plan.id != 'price_1KUZtpAuTlAR8JLMaSEej0uo') && (
                           <div className={styles.result_pricing_section_item}>
                             {plan.duration_in_months == 12 && <div className={styles.discount}>Best Value — Save $80</div>}
 

@@ -349,25 +349,23 @@ exports.addSubscriptionData = functions.https.onCall(async (data, context) => {
 });
 
 exports.processStripeSubscription = functions.https.onCall(async (data, context) => {
-  let price;
+  let price = config.stripe.plan.monthly;
 
   if (data.referrer != null && data.referrer == 'm3') {
     if ((data.type == 'subscription') && (data.duration == 3)) {
-      price = config.stripe.plan.mentalHealthAssessment.everyThreeMonths;
-    } else if ((data.type == 'subscription') && (data.duration == 12)) {
-      price = config.stripe.plan.mentalHealthAssessment.yearly;
+      price = config.stripe.plan.everyThreeMonthsM3; // every 3 months
     } else if (data.type == 'payment') {
-      price = config.stripe.plan.mentalHealthAssessment.oneTime;
+      price = config.stripe.plan.oneTime; // one-time
     }
   } else {
     if ((data.type == 'subscription') && (data.duration == 1)) {
-      price = config.stripe.plan.mooditudePremium.monthly;
+      price = config.stripe.plan.monthly; // monthly
     } else if ((data.type == 'subscription') && (data.duration == 3)) {
-      price = config.stripe.plan.mooditudePremium.everyThreeMonths;
+      price = config.stripe.plan.everyThreeMonths; // every 3 months
     } else if ((data.type == 'subscription') && (data.duration == 12)) {
-      price = config.stripe.plan.mooditudePremium.yearly;
+      price = config.stripe.plan.yearly; // yearly
     } else if (data.type == 'payment') {
-      price = config.stripe.plan.mooditudePremium.oneTime;
+      price = config.stripe.plan.oneTime; // one-time
     }
   }
 

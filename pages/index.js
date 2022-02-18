@@ -211,16 +211,16 @@ export default function OnboardingWelcomePage() {
     let duration
     let type
 
-    if (activeProductPrice == 'price_1K09ueAuTlAR8JLMqv6RVsh8') {
+    if (activeProductPrice == 'price_1KUZtpAuTlAR8JLMaSEej0uo') {
       duration = 1
       type = 'subscription'
-    } else if (activeProductPrice == 'price_1KHXXoAuTlAR8JLM1hdixwNI') {
+    } else if (activeProductPrice == 'price_1KUZx2AuTlAR8JLMaal6ifzP') {
       duration = 3
       type = 'subscription'
     } else if (activeProductPrice == 'price_1K09ueAuTlAR8JLM3JmfvSgj') {
       duration = 12
       type = 'subscription'
-    } else if (activeProductPrice == 'price_1KS1B3AuTlAR8JLM0jZu1Wmi') {
+    } else if (activeProductPrice == 'price_1KUZpzAuTlAR8JLMtwXIw7xL') {
       duration = null
       type = 'payment'
     }

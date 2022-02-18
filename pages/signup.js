@@ -49,85 +49,45 @@ export default function SignUp(props) {
   const { authUser, createUserWithEmailAndPassword } = useAuth()
 
   useEffect(() => {
-    if (Object.keys(router.query).length > 0) {
-      if (router.query.referrer == 'm3') {
-        for (const plan in config.stripe.plan.mentalHealthAssessment) {
-          const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
-    
-          getStripeProduct({
-            price: config.stripe.plan.mentalHealthAssessment[plan]
-          }).then(result => {
-            let productPrice = result.data.productPrice
-            let planObj = {}
-    
-            planObj['id'] = productPrice.id
-            planObj['amount'] = parseInt(productPrice.unit_amount_decimal) / 100
-            planObj['interval'] = productPrice.recurring != null && productPrice.recurring.interval
-            planObj['interval_count'] = productPrice.recurring != null && productPrice.recurring.interval_count
-    
-            if (
-              (productPrice.type == 'recurring') && 
-              (productPrice.recurring.interval == 'month') && 
-              (productPrice.recurring.interval_count == 3)
-            ) {
-              planObj['duration_in_months'] = 3
-            } else if (
-              (productPrice.type == 'recurring') && 
-              (productPrice.recurring.interval == 'year') && 
-              (productPrice.recurring.interval_count == 1)
-            ) {
-              planObj['duration_in_months'] = 12
-            } else if (productPrice.type == 'one_time') {
-              planObj['duration_in_months'] = null
-            }
-    
-            setPlans(plans => [...plans, planObj])
-          })
-        }
-      } else {
-        for (const plan in config.stripe.plan.mooditudePremium) {
-          const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
-    
-          getStripeProduct({
-            price: config.stripe.plan.mooditudePremium[plan]
-          }).then(result => {
-            let productPrice = result.data.productPrice
-            let planObj = {}
-    
-            planObj['id'] = productPrice.id
-            planObj['amount'] = parseInt(productPrice.unit_amount_decimal) / 100
-            planObj['interval'] = productPrice.recurring != null && productPrice.recurring.interval
-            planObj['interval_count'] = productPrice.recurring != null && productPrice.recurring.interval_count
-    
-            if (
-              (productPrice.type == 'recurring') && 
-              (productPrice.recurring.interval == 'month') && 
-              (productPrice.recurring.interval_count == 1)
-            ) {
-              planObj['duration_in_months'] = 1
-            } else if (
-              (productPrice.type == 'recurring') && 
-              (productPrice.recurring.interval == 'month') && 
-              (productPrice.recurring.interval_count == 3)
-            ) {
-              planObj['duration_in_months'] = 3
-            } else if (
-              (productPrice.type == 'recurring') && 
-              (productPrice.recurring.interval == 'year') && 
-              (productPrice.recurring.interval_count == 1)
-            ) {
-              planObj['duration_in_months'] = 12
-            } else if (productPrice.type == 'one_time') {
-              planObj['duration_in_months'] = null
-            }
-    
-            setPlans(plans => [...plans, planObj])
-          })
-        }
-      }
-    }
+    for (const plan in config.stripe.plan) {
+      const getStripeProduct = firebaseFunctions.httpsCallable('getStripeProduct')
 
-    console.log(router.query)
+      getStripeProduct({
+        price: config.stripe.plan[plan]
+      }).then(result => {
+        let productPrice = result.data.productPrice
+        let planObj = {}
+
+        planObj['id'] = productPrice.id
+        planObj['amount'] = parseInt(productPrice.unit_amount_decimal) / 100
+        planObj['interval'] = productPrice.recurring != null && productPrice.recurring.interval
+        planObj['interval_count'] = productPrice.recurring != null && productPrice.recurring.interval_count
+
+        if (
+          (productPrice.type == 'recurring') && 
+          (productPrice.recurring.interval == 'month') && 
+          (productPrice.recurring.interval_count == 1)
+        ) {
+          planObj['duration_in_months'] = 1
+        } else if (
+          (productPrice.type == 'recurring') && 
+          (productPrice.recurring.interval == 'month') && 
+          (productPrice.recurring.interval_count == 3)
+        ) {
+          planObj['duration_in_months'] = 3
+        } else if (
+          (productPrice.type == 'recurring') && 
+          (productPrice.recurring.interval == 'year') && 
+          (productPrice.recurring.interval_count == 1)
+        ) {
+          planObj['duration_in_months'] = 12
+        } else if (productPrice.type == 'one_time') {
+          planObj['duration_in_months'] = null
+        }
+
+        setPlans(plans => [...plans, planObj])
+      })
+    }
   }, [router])
 
   useEffect(() => {
@@ -411,67 +371,47 @@ export default function SignUp(props) {
                 }
 
                 {
-                  router.query.referrer == 'm3' && (router.query.duration == 12 || router.query.duration == 3 || router.query.duration == 1) 
+                  router.query.referrer == 'm3' && router.query.duration == 3 
                     ?
                       <div>
-                        {router.query.duration == 3 && (
-                          <>
-                          <div>
-                            {plans.filter(plan => plan.id == 'price_1KS1BUAuTlAR8JLMVQ7gLjp0').map(plan => (
-                              <>
-                                <strong>${parseFloat(plan.amount).toFixed(2)}</strong> 
-                                <span>/ {plan.interval_count} {plan.interval}s</span>
-                              </>                       
-                            ))}
+                        <div>
+                          {plans.filter(plan => plan.id == 'price_1KUZuaAuTlAR8JLM6rN67VQp').map(plan => (
+                            <>
+                              <strong>${parseFloat(plan.amount).toFixed(2)}</strong> 
+                              <span>/ {plan.interval_count} {plan.interval}s</span>
+                            </>                       
+                          ))}
+                        </div>
 
-                          </div>
-                          <div className={styles.wont_charge}>Your card wouldn’t be charged during trial.</div>
-                          </>
-                        )}
-
-                        {router.query.duration == 12 && (
-                          <>
-                            <div>
-                              {plans.filter(plan => plan.id == 'price_1KS1BoAuTlAR8JLM4MDqAB7k').map(plan => (
-                                <>
-                                  <strong>${parseFloat(plan.amount).toFixed(2)}</strong> 
-                                  <span>/ {plan.interval}</span>
-                                </>
-                              ))}
-                            </div>
-                            
-                            <div className={styles.trial_text}>with 3-day trial</div>
-                            <div className={styles.wont_charge}>Your card wouldn’t be charged during trial.</div>
-                          </>
-                        )}
+                        <div className={styles.wont_charge}>Your card wouldn't be charged during trial.</div>
                       </div>
                     :
                       <div>
                         {router.query.duration == 1 && (
                           <>
                           <div>
-                            {plans.filter(plan => plan.id == 'price_1K09ueAuTlAR8JLMqv6RVsh8').map(plan => (
+                            {plans.filter(plan => plan.id == 'price_1KUZtpAuTlAR8JLMaSEej0uo').map(plan => (
                               <>
                                 <strong>${parseFloat(plan.amount).toFixed(2)}</strong> 
                                 <span>/ {plan.interval}</span>
                               </>                       
                             ))}
                           </div>
-                          <div className={styles.wont_charge}>Your card wouldn’t be charged during trial.</div>
+                          <div className={styles.wont_charge}>Your card wouldn't be charged during trial.</div>
                           </>
                         )}
 
                         {router.query.duration == 3 && (
                           <>
                           <div>
-                            {plans.filter(plan => plan.id == 'price_1KHXXoAuTlAR8JLM1hdixwNI').map(plan => (
+                            {plans.filter(plan => plan.id == 'price_1KUZx2AuTlAR8JLMaal6ifzP').map(plan => (
                               <>
                                 <strong>${parseFloat(plan.amount).toFixed(2)}</strong> 
                                 <span>/ {plan.interval_count} {plan.interval}s</span>
                               </>                       
                             ))}
                           </div>
-                          <div className={styles.wont_charge}>Your card wouldn’t be charged during trial.</div>
+                          <div className={styles.wont_charge}>Your card wouldn't be charged during trial.</div>
                           </>
                         )}
 
@@ -488,7 +428,7 @@ export default function SignUp(props) {
                             
                             <div className={styles.trial_text}>with 3-day trial</div>
 
-                            <div className={styles.wont_charge}>Your card wouldn’t be charged during trial.</div>
+                            <div className={styles.wont_charge}>Your card wouldn't be charged during trial.</div>
                           </>
                         )}
                       </div>
@@ -527,7 +467,7 @@ export default function SignUp(props) {
                 {router.query.referrer == 'm3' && (
                   <div>
                     <div>
-                      {plans.filter(plan => plan.id == 'price_1KS1B3AuTlAR8JLM0jZu1Wmi').map(plan => (
+                      {plans.filter(plan => plan.id == 'price_1KUZpzAuTlAR8JLMtwXIw7xL').map(plan => (
                         <strong>${parseFloat(plan.amount).toFixed(2)}</strong>
                       ))}
                     </div>
