@@ -393,10 +393,24 @@
   margin-left: 10px;
 }
 
-.wont_charge{
+/*.wont_charge{
   display: none;
 }
+*/
 
+.wont_charge{
+  font-family: 'Circular Std'!important;
+  display: block;
+  margin-top: 20px!important;
+  font-style: normal!important;
+  font-weight: normal!important;
+  font-size: 14px!important;
+  line-height: 18px!important;
+
+  /* Secondary */
+
+  color: #072B4F!important;
+}
 /*Responsive*/
 
 @media(min-width:  768px) and (max-width:  991px){
@@ -431,19 +445,7 @@
     line-height: 40px!important;
   }
 
-  .wont_charge{
-    font-family: 'Circular Std'!important;
-    display: block;
-    margin-top: 20px!important;
-    font-style: normal!important;
-    font-weight: normal!important;
-    font-size: 14px!important;
-    line-height: 18px!important;
-
-    /* Secondary */
-
-    color: #072B4F!important;
-  }
+  
 
   .privacyPolicyText,
   .privacyPolicyText span span{

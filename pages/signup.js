@@ -362,7 +362,7 @@ export default function SignUp(props) {
                 <div className={`${styles.mobile_steps} ${styles.desktop}`}>
                     <div className={`${styles.step_item} ${styles.step_active_item}`}>
                       <div className={styles.step_number}>1</div>
-                      <p>Create Account</p>
+                      <p>Account</p>
                     </div>
 
                     {
@@ -374,13 +374,13 @@ export default function SignUp(props) {
                         </div>
                         <div className={styles.step_item}>
                           <div className={styles.step_number}>3</div>
-                          <p>Take Assessment</p>
+                          <p>Enjoy</p>
                         </div>
                       </>
                       : 
                       <div className={styles.step_item}>
                         <div className={styles.step_number}>2</div>
-                        <p>Take Assessment</p>
+                        <p>Assessment</p>
                       </div>
 
                     }
@@ -415,6 +415,7 @@ export default function SignUp(props) {
                     ?
                       <div>
                         {router.query.duration == 3 && (
+                          <>
                           <div>
                             {plans.filter(plan => plan.id == 'price_1KS1BUAuTlAR8JLMVQ7gLjp0').map(plan => (
                               <>
@@ -422,7 +423,10 @@ export default function SignUp(props) {
                                 <span>/ {plan.interval_count} {plan.interval}s</span>
                               </>                       
                             ))}
+
                           </div>
+                          <div className={styles.wont_charge}>Your card wouldn’t be charged during trial.</div>
+                          </>
                         )}
 
                         {router.query.duration == 12 && (
@@ -436,13 +440,15 @@ export default function SignUp(props) {
                               ))}
                             </div>
                             
-                            <div className={styles.trial_text}>after 3-day free trial</div>
+                            <div className={styles.trial_text}>with 3-day trial</div>
+                            <div className={styles.wont_charge}>Your card wouldn’t be charged during trial.</div>
                           </>
                         )}
                       </div>
                     :
                       <div>
                         {router.query.duration == 1 && (
+                          <>
                           <div>
                             {plans.filter(plan => plan.id == 'price_1K09ueAuTlAR8JLMqv6RVsh8').map(plan => (
                               <>
@@ -451,9 +457,12 @@ export default function SignUp(props) {
                               </>                       
                             ))}
                           </div>
+                          <div className={styles.wont_charge}>Your card wouldn’t be charged during trial.</div>
+                          </>
                         )}
 
                         {router.query.duration == 3 && (
+                          <>
                           <div>
                             {plans.filter(plan => plan.id == 'price_1KHXXoAuTlAR8JLM1hdixwNI').map(plan => (
                               <>
@@ -462,6 +471,8 @@ export default function SignUp(props) {
                               </>                       
                             ))}
                           </div>
+                          <div className={styles.wont_charge}>Your card wouldn’t be charged during trial.</div>
+                          </>
                         )}
 
                         {router.query.duration == 12 && (
@@ -475,7 +486,7 @@ export default function SignUp(props) {
                               ))}
                             </div>
                             
-                            <div className={styles.trial_text}>after 3-day free trial</div>
+                            <div className={styles.trial_text}>with 3-day trial</div>
 
                             <div className={styles.wont_charge}>Your card wouldn’t be charged during trial.</div>
                           </>
