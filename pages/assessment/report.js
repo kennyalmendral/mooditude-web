@@ -122,29 +122,31 @@ export default function AssessmentReport(props) {
           planObj['interval'] = productPrice.recurring != null && productPrice.recurring.interval
           planObj['interval_count'] = productPrice.recurring != null && productPrice.recurring.interval_count
 
-          if (
-            (productPrice.type == 'recurring') && 
-            (productPrice.recurring.interval == 'month') && 
-            (productPrice.recurring.interval_count == 1)
-          ) {
-            planObj['duration_in_months'] = 1
-          } else if (
-            (productPrice.type == 'recurring') && 
-            (productPrice.recurring.interval == 'month') && 
-            (productPrice.recurring.interval_count == 3)
-          ) {
-            planObj['duration_in_months'] = 3
-          } else if (
-            (productPrice.type == 'recurring') && 
-            (productPrice.recurring.interval == 'year') && 
-            (productPrice.recurring.interval_count == 1)
-          ) {
-            planObj['duration_in_months'] = 12
-          } else if (productPrice.type == 'one_time') {
-            planObj['duration_in_months'] = null
-          }
+          if (productPrice.id != 'price_1KUZuaAuTlAR8JLM6rN67VQp') {
+            if (
+              (productPrice.type == 'recurring') && 
+              (productPrice.recurring.interval == 'month') && 
+              (productPrice.recurring.interval_count == 1)
+            ) {
+              planObj['duration_in_months'] = 1
+            } else if (
+              (productPrice.type == 'recurring') && 
+              (productPrice.recurring.interval == 'month') && 
+              (productPrice.recurring.interval_count == 3)
+            ) {
+              planObj['duration_in_months'] = 3
+            } else if (
+              (productPrice.type == 'recurring') && 
+              (productPrice.recurring.interval == 'year') && 
+              (productPrice.recurring.interval_count == 1)
+            ) {
+              planObj['duration_in_months'] = 12
+            } else if (productPrice.type == 'one_time') {
+              planObj['duration_in_months'] = null
+            }
 
-          setPlans(plans => [...plans, planObj])
+            setPlans(plans => [...plans, planObj])
+          }
         })
       }
     }
@@ -315,13 +317,26 @@ export default function AssessmentReport(props) {
                   setRarelyAnswerCount(docData.rawData.split(',').filter(x => x == 1).length)
                   setNoneAnswerCount(docData.rawData.split(',').filter(x => x == 0).length)
 
+                  let days;
+
+                  if (result.data.allRiskLevel == 'unlikely') {
+                    days = 90;
+                  } else if (result.data.allRiskLevel == 'low') {
+                    days = 30;
+                  } else if (result.data.allRiskLevel == 'medium') {
+                    days = 20;
+                  } else if (result.data.allRiskLevel == 'high') {
+                    days = 10;
+                  }
+
                   firebaseDatabase
                     .ref()
                     .child('users')
                     .child(authUser.uid)
                     .update({
                       assessmentScore: result.data.allScore,
-                      assessmentDate: new Date(startOfDay(new Date(docData.createDate.toMillis()))).getTime()
+                      assessmentDate: new Date(startOfDay(new Date(docData.createDate.toMillis()))).getTime(),
+                      nextAssessmentDate: addDays(new Date(), days).getTime()
                     })
                     .then(() => {
                       if (router.query.session_id) {
@@ -858,7 +873,10 @@ export default function AssessmentReport(props) {
                   <div className={styles.result_pricing_section}>
                     {plans.map(plan => (
                       <>
-                        {(plan.id != 'price_1KUZtpAuTlAR8JLMaSEej0uo') && (
+                        {
+                          ((plan.id != 'price_1KUZtpAuTlAR8JLMaSEej0uo') &&  
+                          (plan.id != 'price_1KUZuaAuTlAR8JLM6rN67VQp') &&  
+                          (plan.id != 'price_1KS1B3AuTlAR8JLM0jZu1Wmi')) && (
                           <div className={styles.result_pricing_section_item}>
                             {plan.duration_in_months == 12 && <div className={styles.discount}>Best Value — Save $80</div>}
 

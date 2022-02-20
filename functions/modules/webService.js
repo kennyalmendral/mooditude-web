@@ -2495,93 +2495,213 @@ exports.stripeWebhooks = functions.https.onRequest((req, res) => {
   }
 });
 
-exports.addUserToSendGrid = functions.database.ref('/users/{userId}').onCreate((snapshot, context) => {
+exports.addUserToSendGrid = functions.database.ref('/users/{userId}').onCreate(async (snapshot, context) => {
   const userId = context.params.userId;
   const userProfile = snapshot.val();
 
-  functions.logger.log(userId);
-  functions.logger.log(userProfile);
+  if (userProfile) {
+    functions.logger.log(userId);
+    functions.logger.log(userProfile);
 
-  if (
-    userProfile.email.includes('demo') || 
-    userProfile.email.includes('test') || 
-    userProfile.email.includes('demouser') || 
-    userProfile.email.includes('testuser')
-  ) {
-    return false;
-  } else {
-    const axios = require('axios').create({
-      baseURL: 'https://api.sendgrid.com/v3',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer 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'
+    if (
+      userProfile.email.includes('demo') || 
+      userProfile.email.includes('test') || 
+      userProfile.email.includes('demouser') || 
+      userProfile.email.includes('testuser')
+    ) {
+      return false;
+    } else {
+      const axios = require('axios').create({
+        baseURL: 'https://api.sendgrid.com/v3',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer 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'
+        }
+      });
+
+      const customFields = {};
+
+      if (userProfile.userId) {
+        customFields['e5_T'] = userProfile.userId;
       }
-    });
 
-    const customFields = {};
-
-    if (userProfile.userId) {
-      customFields['e5_T'] = userProfile.userId;
-    }
-
-    if (userProfile.memberSince) {
-      customFields['e2_D'] = fns.format(new Date(userProfile.memberSince), 'yyyy-MM-dd');
-    }
-
-    if (userProfile.userStatus) {
-      customFields['e4_T'] = userProfile.userStatus;
-    }
-
-    if (userProfile.statusValidTill) {
-      if (userProfile.userStatus == 'free') {
-        customFields['e6_D'] = '1000-01-01';
-      } else if (userProfile.userStatus == 'in-trial') {
-        customFields['e6_D'] = userProfile.trialExpiryDate;
-      } else if (
-        userProfile.userStatus == 'paid' || 
-        userProfile.userStatus == 'canceled' || 
-        userProfile.userStatus == 'expired'
-      ) {
-        customFields['e6_D'] = userProfile.expiryDate;
+      if (userProfile.memberSince) {
+        customFields['e2_D'] = fns.format(new Date(userProfile.memberSince), 'MM/dd/yyyy');
       }
+
+      if (userProfile.userStatus) {
+        customFields['e4_T'] = userProfile.userStatus;
+      }
+
+      if (userProfile.statusValidTill) {
+        if (userProfile.userStatus == 'free') {
+          customFields['e6_D'] = fns.format(new Date('1000-01-01'), 'MM/dd/yyyy');
+        } else if (userProfile.userStatus == 'in-trial') {
+          customFields['e6_D'] = userProfile.trialExpiryDate;
+        } else if (
+          userProfile.userStatus == 'paid' || 
+          userProfile.userStatus == 'canceled' || 
+          userProfile.userStatus == 'expired'
+        ) {
+          customFields['e6_D'] = userProfile.expiryDate;
+        }
+      }
+
+      if (userProfile.assessmentScore == null) {
+        customFields['e7_N'] = -1;
+      } else {
+        customFields['e7_N'] = userProfile.assessmentScore;
+      }
+
+      if (userProfile.assessmentDate == null) {
+        customFields['e8_D'] = fns.format(new Date('1000-01-01'), 'MM/dd/yyyy');
+      } else {
+        customFields['e8_D'] = userProfile.assessmentDate;
+      }
+
+      if (userProfile.nextAssessmentDate) {
+        customFields['e9_D'] = userProfile.nextAssessmentDate;
+      }
+
+      if (userProfile.lastSeen) {
+        customFields['e10_D'] = fns.format(new Date(userProfile.memberSince), 'MM/dd/yyyy');
+      }
+
+      if (userProfile.platform) {
+        customFields['e11_T'] = userProfile.platform;
+      }
+
+      functions.logger.log(userProfile.name.split(' '));
+      functions.logger.log(customFields);
+    
+      const contact = await axios.put('/marketing/contacts', {
+        'list_ids': ['a47e7a33-0643-42d8-b8cf-3b79e7b322d3'],
+        'contacts': [
+          {
+            'email': userProfile.email,
+            'first_name': userProfile.name.split(' ')[0],
+            'last_name': userProfile.name.split(' ')[1],
+            'custom_fields': customFields
+          }
+        ]
+      });
+
+      functions.logger.log(contact.data);
+
+      return true;
     }
+  }
+});
 
-    if (userProfile.assessmentScore) {
-      customFields['e7_N'] = ''
+exports.updateSendGridContactFields = functions.database.ref('/users/{userId}').onUpdate(async (change, context) => {
+  const userId = context.params.userId;
+  const userProfile = change.after.val();
+
+  functions.logger.log(JSON.stringify(userProfile));
+
+  if (userProfile) {
+    if (
+      userProfile.email.includes('demo') || 
+      userProfile.email.includes('test') || 
+      userProfile.email.includes('demouser') || 
+      userProfile.email.includes('testuser')
+    ) {
+      return null;
+    } else {
+      const axios = require('axios').create({
+        baseURL: 'https://api.sendgrid.com/v3',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer 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'
+        }
+      });
+
+      const customFields = {};
+
+      if (userProfile.userId) {
+        customFields['e5_T'] = userProfile.userId;
+      }
+
+      if (userProfile.memberSince) {
+        customFields['e2_D'] = fns.format(new Date(userProfile.memberSince), 'MM/dd/yyyy');
+      }
+
+      if (userProfile.userStatus) {
+        customFields['e4_T'] = userProfile.userStatus;
+      }
+
+      if (userProfile.statusValidTill) {
+        if (userProfile.userStatus == 'free') {
+          customFields['e6_D'] = fns.format(new Date('1000-01-01'), 'MM/dd/yyyy');
+        } else if (userProfile.userStatus == 'in-trial') {
+          customFields['e6_D'] = userProfile.trialExpiryDate;
+        } else if (
+          userProfile.userStatus == 'paid' || 
+          userProfile.userStatus == 'canceled' || 
+          userProfile.userStatus == 'expired'
+        ) {
+          customFields['e6_D'] = userProfile.expiryDate;
+        }
+      }
+
+      if (userProfile.assessmentScore == null) {
+        customFields['e7_N'] = -1;
+      } else {
+        customFields['e7_N'] = userProfile.assessmentScore;
+      }
+
+      if (userProfile.nextAssessmentDate) {
+        customFields['e9_D'] = fns.format(new Date(userProfile.nextAssessmentDate), 'MM/dd/yyyy');
+      }
+
+      if (userProfile.assessmentDate == null) {
+        customFields['e8_D'] = fns.format(new Date('1000-01-01'), 'MM/dd/yyyy');
+      } else {
+        customFields['e8_D'] = fns.format(new Date(userProfile.assessmentDate), 'MM/dd/yyyy');
+
+        let days;
+
+        if (userProfile.assessmentScore <= 1) {
+          days = 90;
+        } else if ((userProfile.assessmentScore >= 2) && (userProfile.assessmentScore <= 32)) {
+          days = 30;
+        } else if ((userProfile.assessmentScore >= 33) && (userProfile.assessmentScore <= 50)) {
+          days = 20;
+        } else if ((userProfile.assessmentScore >= 51) && (userProfile.assessmentScore <= 108)) {
+          days = 10;
+        }
+
+        customFields['e9_D'] = fns.format(new Date(fns.addDays(new Date(), days).getTime()), 'MM/dd/yyyy');
+      }
+
+      if (userProfile.lastSeen) {
+        customFields['e10_D'] = fns.format(new Date(userProfile.lastSeen), 'MM/dd/yyyy');
+      }
+
+      if (userProfile.platform) {
+        customFields['e11_T'] = userProfile.platform;
+      }
+
+      functions.logger.log(userProfile.name.split(' '));
+      functions.logger.log(customFields);
+    
+      const contact = await axios.put('/marketing/contacts', {
+        'list_ids': ['a47e7a33-0643-42d8-b8cf-3b79e7b322d3'],
+        'contacts': [
+          {
+            'email': userProfile.email,
+            'first_name': userProfile.name.split(' ')[0],
+            'last_name': userProfile.name.split(' ')[1],
+            'custom_fields': customFields
+          }
+        ]
+      });
+
+      functions.logger.log(contact.data);
+
+      return true;
     }
-
-    if (userProfile.assessmentDate) {
-      customFields['e8_D'] = ''
-    }
-
-    if (userProfile.nextAssessmentDate) {
-      customFields['e9_D'] = ''
-    }
-
-    if (userProfile.lastSeen) {
-      customFields['e10_D'] = fns.format(new Date(userProfile.memberSince), 'yyyy-MM-DD');
-    }
-
-    if (userProfile.platform) {
-      customFields['e11_T'] = userProfile.platform;
-    }
-
-    functions.logger.log(userProfile.name.split(' '));
-    functions.logger.log(customFields);
-  
-    // const contact = await axios.put('/marketing/contacts', {
-    //   'list_ids': ['a47e7a33-0643-42d8-b8cf-3b79e7b322d3'],
-    //   'contacts': [
-    //     {
-    //       'email': userProfile.email,
-    //       'first_name': userProfile.name.split(' ')[0],
-    //       'last_name': userProfile.name.split(' ')[1],
-    //       'custom_fields': customFields
-    //     }
-    //   ]
-    // });
-
-    return true;
   }
 });

@@ -98,46 +98,56 @@ export default function Login(props) {
             setIsLoggingIn(false)
             props.loginLoaderHandler(true)
             // router.push('/onboarding/welcome')
-            setError(false) 
+            setError(false)
+
+            const usersRef = firebaseDatabase.ref()
+
             if (user) {
-              firebaseDatabase
-                .ref()
+              usersRef
                 .child('users')
                 .child(user.user.uid)
-                .once('value')
-                .then((snapshot) => {
-                  const snapshotValue = snapshot.val()
+                .update({
+                  lastSeen: new Date().getTime()
+                })
+                .then(() => {
+                  usersRef
+                    .child('users')
+                    .child(user.user.uid)
+                    .once('value')
+                    .then((snapshot) => {
+                      const snapshotValue = snapshot.val()
 
-                  if (snapshotValue != null) {
-                    if (snapshotValue.onboardingStep == null) {
-                      location.href = '/onboarding/welcome'
-                    }
-      
-                    if (snapshotValue.onboardingStep == 'accountCreated' || snapshotValue.onboardingStep == 0) {
-                      if (snapshotValue.committedToSelfhelp == true || snapshotValue.committedToSelfhelp == false) {
-                        location.href = '/onboarding/get-started'
+                      if (snapshotValue != null) {
+                        if (snapshotValue.onboardingStep == null) {
+                          location.href = '/onboarding/welcome'
+                        }
+          
+                        if (snapshotValue.onboardingStep == 'accountCreated' || snapshotValue.onboardingStep == 0) {
+                          if (snapshotValue.committedToSelfhelp == true || snapshotValue.committedToSelfhelp == false) {
+                            location.href = '/onboarding/get-started'
+                          } else {
+                            location.href = '/onboarding/welcome'
+                          }
+                        } else if (snapshotValue.onboardingStep == 'profileCreated' || snapshotValue.onboardingStep == 1) {
+                          firebaseStore
+                            .collection('M3Assessment')
+                            .doc(user.user.uid)
+                            .collection('scores')
+                            .get()
+                            .then(doc => {
+                              if (doc.docs.length > 0) {
+                                location.href = '/assessment/dashboard'
+                              } else {
+                                location.href = '/onboarding/get-started'
+                              }
+                            })
+                        } else if (snapshotValue.onboardingStep == 'tookAssessment' || snapshotValue.onboardingStep == 2) {
+                          location.href = '/assessment/dashboard'
+                        }
                       } else {
                         location.href = '/onboarding/welcome'
                       }
-                    } else if (snapshotValue.onboardingStep == 'profileCreated' || snapshotValue.onboardingStep == 1) {
-                      firebaseStore
-                        .collection('M3Assessment')
-                        .doc(user.user.uid)
-                        .collection('scores')
-                        .get()
-                        .then(doc => {
-                          if (doc.docs.length > 0) {
-                            location.href = '/assessment/dashboard'
-                          } else {
-                            location.href = '/onboarding/get-started'
-                          }
-                        })
-                    } else if (snapshotValue.onboardingStep == 'tookAssessment' || snapshotValue.onboardingStep == 2) {
-                      location.href = '/assessment/dashboard'
-                    }
-                  } else {
-                    location.href = '/onboarding/welcome'
-                  }
+                    })
                 })
             }
           })

@@ -112,29 +112,31 @@ export default function OnboardingWelcomePage() {
           planObj['interval'] = productPrice.recurring != null && productPrice.recurring.interval
           planObj['interval_count'] = productPrice.recurring != null && productPrice.recurring.interval_count
 
-          if (
-            (productPrice.type == 'recurring') && 
-            (productPrice.recurring.interval == 'month') && 
-            (productPrice.recurring.interval_count == 1)
-          ) {
-            planObj['duration_in_months'] = 1
-          } else if (
-            (productPrice.type == 'recurring') && 
-            (productPrice.recurring.interval == 'month') && 
-            (productPrice.recurring.interval_count == 3)
-          ) {
-            planObj['duration_in_months'] = 3
-          } else if (
-            (productPrice.type == 'recurring') && 
-            (productPrice.recurring.interval == 'year') && 
-            (productPrice.recurring.interval_count == 1)
-          ) {
-            planObj['duration_in_months'] = 12
-          } else if (productPrice.type == 'one_time') {
-            planObj['duration_in_months'] = null
+          if (productPrice.id != 'price_1KUZuaAuTlAR8JLM6rN67VQp') {
+            if (
+              (productPrice.type == 'recurring') && 
+              (productPrice.recurring.interval == 'month') && 
+              (productPrice.recurring.interval_count == 1)
+            ) {
+              planObj['duration_in_months'] = 1
+            } else if (
+              (productPrice.type == 'recurring') && 
+              (productPrice.recurring.interval == 'month') && 
+              (productPrice.recurring.interval_count == 3)
+            ) {
+              planObj['duration_in_months'] = 3
+            } else if (
+              (productPrice.type == 'recurring') && 
+              (productPrice.recurring.interval == 'year') && 
+              (productPrice.recurring.interval_count == 1)
+            ) {
+              planObj['duration_in_months'] = 12
+            } else if (productPrice.type == 'one_time') {
+              planObj['duration_in_months'] = null
+            }
+  
+            setPlans(plans => [...plans, planObj])
           }
-
-          setPlans(plans => [...plans, planObj])
         })
       }
       

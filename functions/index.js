@@ -15,3 +15,4 @@ exports.stripeWebhooks = webService.stripeWebhooks;
 exports.updateUserProfileOnboarding = webService.updateUserProfileOnboarding;
 exports.addSubscriptionData = webService.addSubscriptionData;
 exports.addUserToSendGrid = webService.addUserToSendGrid;
+exports.updateSendGridContactFields = webService.updateSendGridContactFields;

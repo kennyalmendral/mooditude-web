@@ -19,6 +19,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import MoonLoader from "react-spinners/MoonLoader"
 import { useAuth } from '@/context/AuthUserContext'
 
+import { format, addDays } from 'date-fns'
+
 import Firebase from 'lib/Firebase'
 
 const firebaseStore = Firebase.firestore()
@@ -157,6 +159,8 @@ export default function SignUp(props) {
           setIsSigningUp(false)
           props.loginLoaderHandler(true)
 
+          let joinDate = new Date().getTime()
+
           firebaseAuth.onAuthStateChanged(user => {
             if (user) {
               firebaseStore
@@ -184,7 +188,7 @@ export default function SignUp(props) {
                       photo: null,
                       topGoal: null,
                       topChallenges: null,
-                      memberSince: new Date().getTime(),
+                      memberSince: joinDate,
                       committedToSelfhelp: false,
                       committedToSelfHelpScale: null,
                       activatedReminderAtStartup: false,
@@ -210,7 +214,10 @@ export default function SignUp(props) {
                       nps: 0,
                       onboardingStep: 'accountCreated',
                       assessmentScore: null,
-                      assessmentDate: null
+                      assessmentDate: null,
+                      nextAssessmentDate: addDays(new Date(), 12).getTime(),
+                      lastSeen: joinDate,
+                      platform: 'web'
                     })
                     .then(() => {
                       localStorage.setItem(`${user.uid}_currentProfileStep`, 0)
