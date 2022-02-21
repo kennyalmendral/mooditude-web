@@ -2533,6 +2533,7 @@ exports.addUserToSendGrid = functions.database.ref('/users/{userId}').onCreate(a
 
       if (userProfile.memberSince) {
         customFields['e2_D'] = fns.format(new Date(userProfile.memberSince), 'MM/dd/yyyy');
+        customFields['e10_D'] = fns.format(new Date(userProfile.memberSince), 'MM/dd/yyyy');
       }
 
       if (userProfile.userStatus) {
@@ -2569,12 +2570,10 @@ exports.addUserToSendGrid = functions.database.ref('/users/{userId}').onCreate(a
         customFields['e9_D'] = userProfile.nextAssessmentDate;
       }
 
-      if (userProfile.lastSeen) {
-        customFields['e10_D'] = fns.format(new Date(userProfile.memberSince), 'MM/dd/yyyy');
-      }
-
       if (userProfile.platform) {
         customFields['e11_T'] = userProfile.platform;
+      } else {
+        customFields['e11_T'] = null;
       }
 
       functions.logger.log(userProfile.name.split(' '));

@@ -459,7 +459,9 @@ export default function AssessmentReport(props) {
             .update({
               customerType: 'premium',
               expiryDate: subscription.current_period_end * 1000,
-              paymentStatus: 'active',
+              userStatus: 'paid',
+              statusValidTill: subscription.current_period_end * 1000,
+              paymentStatus: subscription.status,
               paymentType: 'stripe'
             })
             .then(() => {

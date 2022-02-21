@@ -208,6 +208,8 @@ export default function SignUp(props) {
                       isAdmin: false,
                       freshChatRestoreID: null,
                       customerType: 'free',
+                      userStatus: 'free',
+                      statusValidTill: new Date('1000-01-01').getTime(),
                       paymentType: null,
                       expiryDate: null,
                       stats: null,
