@@ -392,7 +392,7 @@ export default function SignUp(props) {
                           ))}
                         </div>
 
-                        <div className={styles.wont_charge}>Your card wouldn't be charged during trial.</div>
+                        
                       </div>
                     :
                       <div>
@@ -406,7 +406,7 @@ export default function SignUp(props) {
                               </>                       
                             ))}
                           </div>
-                          <div className={styles.wont_charge}>Your card wouldn't be charged during trial.</div>
+                          
                           </>
                         )}
 
@@ -420,7 +420,7 @@ export default function SignUp(props) {
                               </>                       
                             ))}
                           </div>
-                          <div className={styles.wont_charge}>Your card wouldn't be charged during trial.</div>
+                          
                           </>
                         )}
 
