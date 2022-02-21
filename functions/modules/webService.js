@@ -2495,6 +2495,11 @@ exports.stripeWebhooks = functions.https.onRequest((req, res) => {
   }
 });
 
+exports.revenueCatWebhooks = functions.https.onRequest((req, res) => {
+  // res.status(400).json(errorData);
+  functions.logger.log('REQUEST', req.body);
+});
+
 exports.addUserToSendGrid = functions.database.ref('/users/{userId}').onCreate(async (snapshot, context) => {
   const userId = context.params.userId;
   const userProfile = snapshot.val();
