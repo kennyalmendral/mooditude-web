@@ -354,8 +354,21 @@ export default function OnboardingWelcomePage() {
               </div>
 
               <div className={styles.buy_text_wrap}>
+                {plans.length > 0 && (
+                  <>
+                    {duration == 1 && (
+                      <p>The monthly subscription is ${plans.filter(plan => plan.duration_in_months == duration)[0].amount} and renews <br /> each month. You can cancel it anytime.</p>
+                    )}
 
-                <p>The annual subscription is $89.99 and renew <br /> each year. You can cancel it anytime. You will <br/> be charged after the trial period.</p>
+                    {duration == 3 && (
+                      <p>The 3 months subscription is ${plans.filter(plan => plan.duration_in_months == duration)[0].amount} and renews <br /> every 3 months. You can cancel it anytime.</p>
+                    )}
+
+                    {duration == 12 && (
+                      <p>The annual subscription is ${plans.filter(plan => plan.duration_in_months == duration)[0].amount} and renews <br /> each year. You can cancel it anytime. You will <br/> be charged after the trial period.</p>
+                    )}
+                  </>
+                )}
               </div>
 
               <div className={styles.buy_disclaimer_wrap}>

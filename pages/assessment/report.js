@@ -99,6 +99,8 @@ export default function AssessmentReport(props) {
 
   const [showOneTimePayment, setShowOneTimePayment] = useState(true)
 
+  const [purchasedDate, setPurchasedDate] = useState(null)
+
   const [riskColor, setRiskColor] = useState('')
 
   const [plans, setPlans] = useState([])
@@ -320,13 +322,13 @@ export default function AssessmentReport(props) {
                   let days;
 
                   if (result.data.allRiskLevel == 'unlikely') {
-                    days = 90;
+                    days = 180;
                   } else if (result.data.allRiskLevel == 'low') {
-                    days = 30;
+                    days = 60;
                   } else if (result.data.allRiskLevel == 'medium') {
-                    days = 20;
+                    days = 30;
                   } else if (result.data.allRiskLevel == 'high') {
-                    days = 10;
+                    days = 12;
                   }
 
                   firebaseDatabase
@@ -342,7 +344,7 @@ export default function AssessmentReport(props) {
                       if (router.query.session_id) {
                         setTimeout(() => {
                           setChecking(false)
-                        }, 6000)
+                        }, 8000)
                       }
                     })
                 })
@@ -358,10 +360,12 @@ export default function AssessmentReport(props) {
   useEffect(() => {
     if (Object.keys(assessmentScores).length > 0) {
       if ((assessmentScores.hasOwnProperty('purchasedDate')) && (assessmentScores.purchasedDate != null)) {
-        setShowOneTimePayment(false)
+        setPurchasedDate(assessmentScores.purchasedDate)
       } else {
-        setShowOneTimePayment(true)
+        setPurchasedDate(null)
       }
+
+      // console.log(assessmentScores)
     }
   }, [assessmentScores])
 
@@ -729,8 +733,18 @@ export default function AssessmentReport(props) {
               {assessmentDate && (
                 <p className={styles.date_text}>{assessmentDate}</p> 
               )}
-
-              <h1>Your Mental Wellbeing Score</h1>
+          
+              <h1>Your Mental Wellbeing Score {purchasedDate && (<span style={{
+                fontSize: '12px',
+                fontWeight: '700',
+                color: '#fff',
+                backgroundColor: '#5aa240',
+                padding: '5px 10px',
+                borderRadius: '4px',
+                position: 'relative',
+                top: '-2px',
+                marginLeft: '5px' 
+              }}>PURCHASED</span>)}</h1>
             </div>
 
             <div className={`${styles.assessment_wrap} ${styles.report_page}`}>
@@ -832,7 +846,7 @@ export default function AssessmentReport(props) {
                 </div>
               )}
 
-              {((licenseType == 'premium') || (assessmentScores.purchasedDate != null)) && (
+              {(((licenseType == 'premium') && (Object.keys(grant).length > 0)) || (assessmentScores.purchasedDate != null) || paymentSuccess) && (
                 <div className={styles.report_btns_wrapper}>
                     <a
                       href="#" 
@@ -870,7 +884,7 @@ export default function AssessmentReport(props) {
                 </div>
               )}
 
-              {((licenseType == 'free') && (assessmentScores.purchasedDate == null)) && (
+              {((Object.keys(grant).length == 0) && (licenseType == 'free') && (assessmentScores.purchasedDate == null)) && (
                 <div>
                   <div className={styles.result_pricing_section}>
                     {plans.map(plan => (
@@ -927,7 +941,7 @@ export default function AssessmentReport(props) {
                 </div>
               )}
 
-              {((licenseType == 'premium') || (assessmentScores.purchasedDate != null)) && (
+              {(((Object.keys(grant).length > 0) && (licenseType == 'premium')) || (purchasedDate != null) || paymentSuccess) && (
                 <div className={styles.report_main_section_wrap}>
                   <div className={styles.report_content_wrap}>
                     {isReportVisible && (
@@ -1092,7 +1106,7 @@ export default function AssessmentReport(props) {
                               </>
                             )}
 
-                            {((licenseType == 'premium' || assessmentScores.purchasedDate != null)) && (
+                            {((licenseType == 'premium' || purchasedDate != null)) && (
                               <>
                                 <div className={styles.report_risks_wrap} >
                                   {/*<img src="/warning.svg" alt="Disorder Risks" />*/}

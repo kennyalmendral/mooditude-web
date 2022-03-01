@@ -219,7 +219,10 @@ export default function SignUp(props) {
                       assessmentDate: null,
                       nextAssessmentDate: addDays(new Date(), 12).getTime(),
                       lastSeen: joinDate,
-                      platform: 'web'
+                      userElapsingOn: addDays(new Date(joinDate), 20).getTime(),
+                      platform: 'web',
+                      platforms: 'web',
+                      referrer: router.query.referrer ? router.query.referrer : null
                     })
                     .then(() => {
                       localStorage.setItem(`${user.uid}_currentProfileStep`, 0)

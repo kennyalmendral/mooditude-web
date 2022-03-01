@@ -1,9 +1,9 @@
-const config = require('../config/config.json');
+ const config = require('../config/config.json');
 const functions = require('firebase-functions');
 
 const admin = require('firebase-admin');
 
-var serviceAccount = require('../config/mooditudetesting-firebase-adminsdk-8rj5u-80e3e017b1.json');
+const serviceAccount = require('../config/mooditudetesting-firebase-adminsdk-8rj5u-80e3e017b1.json');
 
 admin.initializeApp({
   databaseURL: config.firebase.databaseURL,
@@ -348,6 +348,35 @@ exports.addSubscriptionData = functions.https.onCall(async (data, context) => {
   };
 });
 
+exports.updateUserProfileSubscriptionData = functions.firestore.document('Subscribers/{userId}').onUpdate(async (change, context) => {
+  const userId = context.params.userId;
+  const subscriptionData = change.after.data();
+
+  functions.logger.log(userId);
+  functions.logger.log(subscriptionData);
+
+  if (userId && subscriptionData) {
+    let statusValidity;
+
+    if (subscriptionData.Status == 'free') {
+      statusValidity = fns.format(new Date('1000-01-01'), 'MM/dd/yyyy');
+    } else if (subscriptionData.Status == 'in-trial') {
+      statusValidity = subscriptionData.trialExpiryDate;
+    } else {
+      statusValidity = subscriptionData.expiryDate;
+    }
+
+    await admin.database()
+      .ref()
+      .child('users')
+      .child(userId)
+      .update({
+        userStatus: subscriptionData.Status,
+        statusValidTill: statusValidity
+      });
+  }
+});
+
 exports.processStripeSubscription = functions.https.onCall(async (data, context) => {
   let price = config.stripe.plan.monthly;
 
@@ -630,6 +659,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .moveDown(6)
+      .font('fonts/CircularStd-Book.ttf')
       .fontSize(10)
       .text('BROUGHT TO YOU BY');
     
@@ -676,7 +706,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .moveDown(0.5)
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .fontSize(8)
       .text(`Dated: ${new Date(assessment.createDate.seconds * 1000).toLocaleString('en-US', {
         month: 'long',
@@ -704,8 +734,8 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .image('images/m3logo.png', (doc.page.width - 64), 26, {
-        width: 34,
-        height: 34,
+        width: 26,
+        height: 26,
         valign: 'bottom'
       });
 
@@ -718,7 +748,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .text('MOODITUDE');
     
     doc
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .moveDown(0)
       .fontSize(7)
       .text('A Happier You!');
@@ -744,7 +774,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .text('M3 Mental Well-being Score');
 
     doc.fontSize(10);
-    doc.font('fonts/CircularStd-Medium.ttf');
+    doc.font('fonts/CircularStd-Book.ttf');
 
     doc.moveDown(1);
 
@@ -754,7 +784,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     let col1LeftPos = doc.x;
     let colTop = doc.y;
     let colWidth = 30;
-    let col2LeftPos = colWidth + col1LeftPos + 40;
+    let col2LeftPos = colWidth + col1LeftPos +  40;
 
     doc
       .fillColor('#516B84')
@@ -762,7 +792,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .fillColor('#072B4F')
-      .text(userProfile.name, col2LeftPos, colTop, { width: colWidth * 2 });
+      .text(userProfile.name, col2LeftPos, colTop, { width: doc.page.width - 90 });
 
     let age;
 
@@ -839,46 +869,30 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     let allScoreMarginLeft;
 
-    if (assessment.allScore > 9) {
-      allScoreMarginLeft = col1LeftPos - 54;
-    } else if (assessment.allScore == 0) {
-      allScoreMarginLeft = col1LeftPos - 48;
+    if ((assessment.allScore > 9) && (assessment.allScore < 20)) {
+      allScoreMarginLeft = col1LeftPos - 50;
+    } else if (assessment.allScore > 99) {
+      allScoreMarginLeft = col1LeftPos - 60;
+    } else if ((assessment.allScore >= 0) && (assessment.allScore <= 9)) {
+      allScoreMarginLeft = col1LeftPos - 46;
+    } else if (assessment.allScore == 51) {
+      allScoreMarginLeft = parseInt(doc.widthOfString(assessment.allScore.toString())) + 41;
     } else {
-      allScoreMarginLeft = col1LeftPos - 44;
+      allScoreMarginLeft = parseInt(doc.widthOfString(assessment.allScore.toString())) + 35;
     }
 
-    if ((assessment.allScore > 9) && (assessment.allScore < 20)) {
-      doc
-        .fillColor('#fff')
-        .fontSize(24)
-        .font('fonts/CircularStd-Medium.ttf')
-        .text(assessment.allScore, col1LeftPos - 50, colTop + 88);
-    } else if (assessment.allScore > 99) {
-      doc
-        .fillColor('#fff')
-        .fontSize(24)
-        .font('fonts/CircularStd-Medium.ttf')
-        .text(assessment.allScore, col1LeftPos - 60, colTop + 88);
-    } else if (assessment.allScore == 0) {
-      doc
-        .fillColor('#fff')
-        .fontSize(24)
-        .font('fonts/CircularStd-Medium.ttf')
-        .text(assessment.allScore, col1LeftPos - 48, colTop + 88);
-    } else {
-      doc
-        .fillColor('#fff')
-        .fontSize(24)
-        .font('fonts/CircularStd-Medium.ttf')
-        .text(assessment.allScore, (40 / 2) + parseInt(doc.widthOfString(assessment.allScore.toString())), colTop + 88);
-    }
+    doc
+      .fillColor('#fff')
+      .fontSize(24)
+      .font('fonts/CircularStd-Book.ttf')
+      .text(assessment.allScore, allScoreMarginLeft, colTop + 88);
 
     doc
       .fillColor('#072B4F')
       .font('fonts/CircularStd-Bold.ttf')
       .fontSize(18)
       .text((allRiskLevel.charAt(0).toUpperCase() + allRiskLevel.slice(1)) + ' Risk', col2LeftPos, colTop + 72, { width: colWidth })
-      .fillColor('#516B84')
+      // .fillColor('#516B84')
       .fontSize(10)
       .font('fonts/CircularStd-Medium.ttf')
       .text(allRiskLevelShortDescription, col2LeftPos, colTop + 102, { width: colWidth });
@@ -904,6 +918,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc
       .fillColor('#072B4F')
       .fontSize(9)
+      .font('fonts/CircularStd-Book.ttf')
       .text(`Your responses have been analyzed and compared to the responses of other individuals with and without mood and anxiety disorders.`, defaultMarginLeft, doc.y + 65);
 
     doc
@@ -933,8 +948,8 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .image('images/m3logo.png', (doc.page.width - 64), 26, {
-        width: 34,
-        height: 34,
+        width: 26,
+        height: 26,
         valign: 'bottom'
       });
 
@@ -947,7 +962,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .text('MOODITUDE');
     
     doc
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .moveDown(0)
       .fontSize(7)
       .text('A Happier You!');
@@ -1010,6 +1025,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc
       .moveDown(0)
       .fillColor(depressionRiskLevelColor)
+      .font('fonts/CircularStd-Book.ttf')
       .fontSize(9)
       .text(`${depressionRiskLevel.charAt(0).toUpperCase() + depressionRiskLevel.slice(1)} Risk`, defaultMarginLeft + 20);
     
@@ -1050,6 +1066,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .moveDown(1.6)
+      .font('fonts/CircularStd-Medium.ttf')
       .fontSize(11)
       .text('Anxiety', defaultMarginLeft + 20);
 
@@ -1062,6 +1079,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc
       .moveDown(0)
       .fillColor(anxietyRiskLevelColor)
+      .font('fonts/CircularStd-Book.ttf')
       .fontSize(9)
       .text(`${anxietyRiskLevel.charAt(0).toUpperCase() + anxietyRiskLevel.slice(1)} Risk`, defaultMarginLeft + 20);
     
@@ -1100,6 +1118,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .moveDown(1.6)
+      .font('fonts/CircularStd-Medium.ttf')
       .fontSize(11)
       .text('PTSD', defaultMarginLeft + 20);
     
@@ -1112,6 +1131,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc
       .moveDown(0)
       .fillColor(ptsdRiskLevelColor)
+      .font('fonts/CircularStd-Book.ttf')
       .fontSize(9)
       .text(`${ptsdRiskLevel.charAt(0).toUpperCase() + ptsdRiskLevel.slice(1)} Risk`, defaultMarginLeft + 20);
     
@@ -1150,6 +1170,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .moveDown(1.6)
+      .font('fonts/CircularStd-Medium.ttf')
       .fontSize(11)
       .text('Bipolar Disorder', defaultMarginLeft + 20);
 
@@ -1162,6 +1183,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc
       .moveDown(0)
       .fillColor(bipolarRiskLevelColor)
+      .font('fonts/CircularStd-Book.ttf')
       .fontSize(9)
       .text(`${bipolarRiskLevel.charAt(0).toUpperCase() + bipolarRiskLevel.slice(1)} Risk`, defaultMarginLeft + 20);
     
@@ -1190,8 +1212,8 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .image('images/m3logo.png', (doc.page.width - 64), 26, {
-        width: 34,
-        height: 34,
+        width: 26,
+        height: 26,
         valign: 'bottom'
       });
 
@@ -1204,7 +1226,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .text('MOODITUDE');
     
     doc
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .moveDown(0)
       .fontSize(7)
       .text('A Happier You!');
@@ -1315,6 +1337,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
         .fontSize(11)
         .text(`Substance Abuse`, defaultMarginLeft)
         .moveDown()
+        .font('fonts/CircularStd-Book.ttf')
         .fontSize(9)
         .text(`Your responses indicated that you have occasionally used alcohol and non-prescribed drugs to manage some of the symptoms.`, defaultMarginLeft)
         .moveDown()
@@ -1330,6 +1353,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
         .fontSize(11)
         .text(`Drug Abuse`, defaultMarginLeft)
         .moveDown()
+        .font('fonts/CircularStd-Book.ttf')
         .fontSize(9)
         .text(`Your responses indicated that you have occasionally used non-prescribed drugs to manage some of the symptoms.`, defaultMarginLeft)
         .moveDown()
@@ -1345,6 +1369,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
         .fontSize(11)
         .text(`Alcohol Abuse`, defaultMarginLeft)
         .moveDown()
+        .font('fonts/CircularStd-Book.ttf')
         .fontSize(9)
         .text(`Your responses suggest that you have occasionally used alcohol to manage some of the symptoms.`, defaultMarginLeft)
         .moveDown()
@@ -1362,6 +1387,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .moveDown()
+      .font('fonts/CircularStd-Book.ttf')
       .fontSize(9)
       .text(`Mooditude is not engaged in rendering medical or other professional services, and the use of the assessment is not intended to create and does not create any medical or other professional services relationship.`, defaultMarginLeft)
       .moveDown()
@@ -1388,8 +1414,8 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .image('images/m3logo.png', (doc.page.width - 64), 26, {
-        width: 34,
-        height: 34,
+        width: 26,
+        height: 26,
         valign: 'bottom'
       });
 
@@ -1402,7 +1428,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .text('MOODITUDE');
     
     doc
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .moveDown(0)
       .fontSize(7)
       .text('A Happier You!');
@@ -1421,39 +1447,11 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .fillOpacity(1)
       .fillAndStroke(riskLevelFillColor, '#F8E71C');
 
-    if (assessment.allScore > 9) {
-      allScoreMarginLeft = col1LeftPos - 54;
-    } else if (assessment.allScore == 0) {
-      allScoreMarginLeft = col1LeftPos - 48;
-    } else {
-      allScoreMarginLeft = col1LeftPos - 44;
-    }
-
-    if ((assessment.allScore > 9) && (assessment.allScore < 20)) {
-      doc
-        .fillColor('#fff')
-        .fontSize(24)
-        .font('fonts/CircularStd-Medium.ttf')
-        .text(assessment.allScore, col1LeftPos - 50, colTop - 15);
-    } else if (assessment.allScore > 99) {
-      doc
-        .fillColor('#fff')
-        .fontSize(24)
-        .font('fonts/CircularStd-Medium.ttf')
-        .text(assessment.allScore, col1LeftPos - 60, colTop - 15);
-    } else if (assessment.allScore == 0) {
-      doc
-        .fillColor('#fff')
-        .fontSize(24)
-        .font('fonts/CircularStd-Medium.ttf')
-        .text(assessment.allScore, col1LeftPos - 48, colTop - 15);
-    } else {
-      doc
-        .fillColor('#fff')
-        .fontSize(24)
-        .font('fonts/CircularStd-Medium.ttf')
-        .text(assessment.allScore, (40 / 2) + parseInt(doc.widthOfString(assessment.allScore.toString())), colTop - 15);
-    }
+    doc
+      .fillColor('#fff')
+      .fontSize(24)
+      .font('fonts/CircularStd-Book.ttf')
+      .text(assessment.allScore, allScoreMarginLeft, colTop - 15);
 
     if (allRiskLevel == 'unlikely') {
       allRiskLevelShortDescription = `Score of ${assessment.allScore} shows that it is unlikely you are suffering from a mental health condition at this time.`;
@@ -1470,7 +1468,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .font('fonts/CircularStd-Bold.ttf')
       .fontSize(18)
       .text((allRiskLevel.charAt(0).toUpperCase() + allRiskLevel.slice(1)) + ' Risk', col2LeftPos, colTop - 30, { width: colWidth })
-      .fillColor('#516B84')
+      // .fillColor('#516B84')
       .fontSize(10)
       .font('fonts/CircularStd-Medium.ttf')
       .text(allRiskLevelShortDescription, col2LeftPos, colTop, { width: colWidth });
@@ -1498,7 +1496,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .fontSize(10)
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .fillColor('#ffffff')
       .text(
         assessment.depressionScore, 
@@ -1525,7 +1523,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .fontSize(10)
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .fillColor('#ffffff')
       .text(
         anxietyScore, 
@@ -1552,7 +1550,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .fontSize(10)
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .fillColor('#ffffff')
       .text(
         assessment.ptsdScore, 
@@ -1579,7 +1577,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .fontSize(10)
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .fillColor('#ffffff')
       .text(
         assessment.bipolarScore, 
@@ -1632,7 +1630,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       thoughtsOfSuicideAnswerText = 'Most of the time';
     }
 
-    doc.font('fonts/CircularStd-Medium.ttf');
+    doc.font('fonts/CircularStd-Book.ttf');
 
     doc
       .moveTo(defaultMarginLeft + 30, doc.y - 5)
@@ -1828,8 +1826,8 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .image('images/m3logo.png', (doc.page.width - 64), 26, {
-        width: 34,
-        height: 34,
+        width: 26,
+        height: 26,
         valign: 'bottom'
       });
 
@@ -1842,7 +1840,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .text('MOODITUDE');
     
     doc
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .moveDown(0)
       .fontSize(7)
       .text('A Happier You!');
@@ -1867,12 +1865,13 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
 
     doc
       .moveDown(1)
+      .font('fonts/CircularStd-Medium.ttf')
       .fontSize(9)
       .text(`Most of the time (${mostOfTheTimeAnswerCount})`);
 
     doc
       .fillColor('#516B84')
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .fontSize(8);
 
     if (mostOfTheTimeAnswerQuestions.length > 0) {
@@ -1897,12 +1896,13 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc
       .moveDown(1.5)
       .fillColor('#072B4F')
+      .font('fonts/CircularStd-Medium.ttf')
       .fontSize(9)
       .text(`None (${noneAnswerCount})`, defaultMarginLeft);
 
     doc
       .fillColor('#516B84')
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .fontSize(8);
 
     if (noneAnswerQuestions.length > 0) {
@@ -1927,12 +1927,13 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc
       .moveDown(1.5)
       .fillColor('#072B4F')
+      .font('fonts/CircularStd-Medium.ttf')
       .fontSize(9)
       .text(`Often (${oftenAnswerCount})`, defaultMarginLeft);
 
     doc
       .fillColor('#516B84')
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .fontSize(8);
 
     if (oftenAnswerQuestions.length > 0) {
@@ -1957,12 +1958,13 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc
       .moveDown(1.5)
       .fillColor('#072B4F')
+      .font('fonts/CircularStd-Medium.ttf')
       .fontSize(9)
       .text(`Sometimes (${sometimesAnswerCount})`, defaultMarginLeft);
 
     doc
       .fillColor('#516B84')
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .fontSize(8);
 
     if (sometimesAnswerQuestions.length > 0) {
@@ -1987,12 +1989,13 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc
       .moveDown(1.5)
       .fillColor('#072B4F')
+      .font('fonts/CircularStd-Medium.ttf')
       .fontSize(9)
       .text(`Rarely (${rarelyAnswerCount})`, defaultMarginLeft);
 
     doc
       .fillColor('#516B84')
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .fontSize(8);
 
     if (rarelyAnswerQuestions.length > 0) {
@@ -2036,7 +2039,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
       .text('MOODITUDE');
     
     doc
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .moveDown(0)
       .fontSize(7)
       .text('A Happier You!');
@@ -2051,7 +2054,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     doc
       .moveDown(1.1)
       .fontSize(8)
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .text(`https://mooditude.app`)
       .link(doc.x, doc.y, 100, 5, `https://mooditude.app`);
 
@@ -2068,7 +2071,7 @@ exports.generatePDFReport = functions.https.onCall(async (data, context) => {
     
     doc
       .moveDown(0.8)
-      .font('fonts/CircularStd-Medium.ttf')
+      .font('fonts/CircularStd-Book.ttf')
       .fontSize(8)
       .text(`This assessment — M3 Checklist — is a  3-minute mental health symptom assessment tool designed by experts from the National Institute for Mental Health, Boston University, Columbia University, and Weill Cornell Medicine, and validated by researchers from the University of North Carolina, and published in the Annals of Family Medicine in 2010.`, defaultMarginLeft + 160);
     
@@ -2495,18 +2498,155 @@ exports.stripeWebhooks = functions.https.onRequest((req, res) => {
   }
 });
 
-exports.revenueCatWebhooks = functions.https.onRequest((req, res) => {
-  // res.status(400).json(errorData);
+exports.revenueCatWebhook = functions.https.onRequest(async (req, res) => {
   functions.logger.log('REQUEST', req.body);
+  functions.logger.log('REQUEST EVENT', req.body.event);
+
+  let auth;
+
+  const eventStore = req.body.event.store;
+
+  switch (eventStore) {
+    case 'STRIPE':
+      auth = await admin.auth().getUserByEmail(req.body.event.subscriber_attributes.$email.value);
+      break;
+    case 'APP_STORE':
+      auth = { uid: req.body.event.app_user_id };
+      break;
+    case 'PLAY_STORE':
+      auth = await admin.auth().getUserByEmail(req.body.event.subscriber_attributes.$email.value);
+      break;
+    default:
+      break;
+  }
+
+  functions.logger.log('AUTH: ', JSON.stringify(auth));
+
+  const eventType = req.body.event.type;
+
+  functions.logger.log('EVENT TYPE: ', eventType);
+
+  const eventPeriodType = req.body.event.period_type;
+
+  functions.logger.log('EVENT PERIOD TYPE: ', eventPeriodType);
+
+  switch (eventType) {
+    case 'INITIAL_PURCHASE':
+      await admin.database()
+        .ref()
+        .child('users')
+        .child(auth.uid)
+        .update({
+          customerType: 'premium',
+          expiryDate: req.body.event.expiration_at_ms
+        });
+      
+      await admin.firestore()
+        .collection('Users')
+        .doc(auth.uid)
+        .update({
+          customerType: 'premium'
+        });
+
+      await admin
+        .firestore()
+        .collection('Subscribers')
+        .doc(auth.uid)
+        .update({
+          ['grant.expiryDate']: admin.firestore.Timestamp.fromDate(new Date(req.body.event.expiration_at_ms)),
+          ['grant.transactionDate']: admin.firestore.Timestamp.fromDate(new Date(req.body.event.purchased_at_ms)),
+          ['grant.Status']: eventPeriodType == 'TRIAL' ? 'in-trial' : 'paid'
+        });
+      break;
+    case 'RENEWAL':
+      await admin.database()
+        .ref()
+        .child('users')
+        .child(auth.uid)
+        .update({
+          customerType: 'premium',
+          expiryDate: req.body.event.expiration_at_ms
+        });
+      
+      await admin.firestore()
+        .collection('Users')
+        .doc(auth.uid)
+        .update({
+          customerType: 'premium'
+        });
+
+      await admin
+        .firestore()
+        .collection('Subscribers')
+        .doc(auth.uid)
+        .update({
+          ['grant.expiryDate']: admin.firestore.Timestamp.fromDate(new Date(req.body.event.expiration_at_ms)),
+          ['grant.transactionDate']: admin.firestore.Timestamp.fromDate(new Date(req.body.event.purchased_at_ms)),
+          ['grant.Status']: 'paid'
+        });
+      break;
+    case 'CANCELLATION':
+      await admin.database()
+        .ref()
+        .child('users')
+        .child(auth.uid)
+        .update({
+          customerType: 'free',
+          expiryDate: req.body.event.expiration_at_ms
+        });
+      
+      await admin.firestore()
+        .collection('Users')
+        .doc(auth.uid)
+        .update({
+          customerType: 'free'
+        });
+
+      await admin
+        .firestore()
+        .collection('Subscribers')
+        .doc(auth.uid)
+        .update({
+          ['grant.expiryDate']: admin.firestore.Timestamp.fromDate(new Date(req.body.event.expiration_at_ms)),
+          ['grant.Status']: 'canceled'
+        });
+      break;
+    case 'EXPIRATION':
+      await admin.database()
+        .ref()
+        .child('users')
+        .child(auth.uid)
+        .update({
+          expiryDate: req.body.event.expiration_at_ms
+        });
+
+      await admin
+        .firestore()
+        .collection('Subscribers')
+        .doc(auth.uid)
+        .update({
+          ['grant.expiryDate']: admin.firestore.Timestamp.fromDate(new Date(req.body.event.expiration_at_ms)),
+          ['grant.Status']: 'expired'
+        });
+      break;
+    default:
+      break;
+  }
+
+  res.status(200).json(true);
 });
 
-exports.addUserToSendGrid = functions.database.ref('/users/{userId}').onCreate(async (snapshot, context) => {
+exports.createOrUpdateSendGridContact = functions.database.ref('/users/{userId}').onWrite(async (change, context) => {
   const userId = context.params.userId;
-  const userProfile = snapshot.val();
+  const userProfile = change.after.val();
 
   if (userProfile) {
     functions.logger.log(userId);
     functions.logger.log(userProfile);
+
+    if (userProfile.deleted) {
+      return false;
+    }
 
     if (
       userProfile.email.includes('demo') || 
@@ -2531,11 +2671,6 @@ exports.addUserToSendGrid = functions.database.ref('/users/{userId}').onCreate(a
         customFields['e5_T'] = userProfile.userId;
       }
 
-      if (userProfile.memberSince) {
-        customFields['e2_D'] = fns.format(new Date(userProfile.memberSince), 'MM/dd/yyyy');
-        customFields['e10_D'] = fns.format(new Date(userProfile.memberSince), 'MM/dd/yyyy');
-      }
-
       if (userProfile.userStatus) {
         customFields['e4_T'] = userProfile.userStatus;
       }
@@ -2544,13 +2679,13 @@ exports.addUserToSendGrid = functions.database.ref('/users/{userId}').onCreate(a
         if (userProfile.userStatus == 'free') {
           customFields['e6_D'] = fns.format(new Date('1000-01-01'), 'MM/dd/yyyy');
         } else if (userProfile.userStatus == 'in-trial') {
-          customFields['e6_D'] = userProfile.trialExpiryDate;
+          customFields['e6_D'] = fns.format(new Date(userProfile.trialExpiryDate), 'MM/dd/yyyy');
         } else if (
           userProfile.userStatus == 'paid' || 
           userProfile.userStatus == 'canceled' || 
           userProfile.userStatus == 'expired'
         ) {
-          customFields['e6_D'] = userProfile.expiryDate;
+          customFields['e6_D'] = fns.format(new Date(userProfile.expiryDate), 'MM/dd/yyyy');
         }
       }
 
@@ -2558,134 +2693,53 @@ exports.addUserToSendGrid = functions.database.ref('/users/{userId}').onCreate(a
         customFields['e7_N'] = -1;
       } else {
         customFields['e7_N'] = userProfile.assessmentScore;
-      }
 
-      if (userProfile.assessmentDate == null) {
-        customFields['e8_D'] = fns.format(new Date('1000-01-01'), 'MM/dd/yyyy');
-      } else {
-        customFields['e8_D'] = userProfile.assessmentDate;
-      }
+        let assessmentRisk;
 
-      if (userProfile.nextAssessmentDate) {
-        customFields['e9_D'] = userProfile.nextAssessmentDate;
-      }
-
-      if (userProfile.platform) {
-        customFields['e11_T'] = userProfile.platform;
-      } else {
-        customFields['e11_T'] = null;
-      }
-
-      functions.logger.log(userProfile.name.split(' '));
-      functions.logger.log(customFields);
-    
-      const contact = await axios.put('/marketing/contacts', {
-        'list_ids': ['a47e7a33-0643-42d8-b8cf-3b79e7b322d3'],
-        'contacts': [
-          {
-            'email': userProfile.email,
-            'first_name': userProfile.name.split(' ')[0],
-            'last_name': userProfile.name.split(' ')[1],
-            'custom_fields': customFields
-          }
-        ]
-      });
-
-      functions.logger.log(contact.data);
-
-      return true;
-    }
-  }
-});
-
-exports.updateSendGridContactFields = functions.database.ref('/users/{userId}').onUpdate(async (change, context) => {
-  const userId = context.params.userId;
-  const userProfile = change.after.val();
-
-  functions.logger.log(JSON.stringify(userProfile));
-
-  if (userProfile) {
-    if (
-      userProfile.email.includes('demo') || 
-      userProfile.email.includes('test') || 
-      userProfile.email.includes('demouser') || 
-      userProfile.email.includes('testuser')
-    ) {
-      return null;
-    } else {
-      const axios = require('axios').create({
-        baseURL: 'https://api.sendgrid.com/v3',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer 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'
+        if (userProfile.assessmentScore <= 1) {
+          assessmentRisk = 'unlikely';
+        } else if ((userProfile.assessmentScore >= 2) && (userProfile.assessmentScore <= 32)) {
+          assessmentRisk = 'low';
+        } else if ((userProfile.assessmentScore >= 33) && (userProfile.assessmentScore <= 50)) {
+          assessmentRisk = 'medium';
+        } else if ((userProfile.assessmentScore >= 51) && (userProfile.assessmentScore <= 108)) {
+          assessmentRisk = 'high';
         }
-      });
 
-      const customFields = {};
-
-      if (userProfile.userId) {
-        customFields['e5_T'] = userProfile.userId;
-      }
-
-      if (userProfile.memberSince) {
-        customFields['e2_D'] = fns.format(new Date(userProfile.memberSince), 'MM/dd/yyyy');
-      }
-
-      if (userProfile.userStatus) {
-        customFields['e4_T'] = userProfile.userStatus;
-      }
-
-      if (userProfile.statusValidTill) {
-        if (userProfile.userStatus == 'free') {
-          customFields['e6_D'] = fns.format(new Date('1000-01-01'), 'MM/dd/yyyy');
-        } else if (userProfile.userStatus == 'in-trial') {
-          customFields['e6_D'] = userProfile.trialExpiryDate;
-        } else if (
-          userProfile.userStatus == 'paid' || 
-          userProfile.userStatus == 'canceled' || 
-          userProfile.userStatus == 'expired'
-        ) {
-          customFields['e6_D'] = userProfile.expiryDate;
-        }
-      }
-
-      if (userProfile.assessmentScore == null) {
-        customFields['e7_N'] = -1;
-      } else {
-        customFields['e7_N'] = userProfile.assessmentScore;
-      }
-
-      if (userProfile.nextAssessmentDate) {
-        customFields['e9_D'] = fns.format(new Date(userProfile.nextAssessmentDate), 'MM/dd/yyyy');
+        customFields['e15_T'] = assessmentRisk;
       }
 
       if (userProfile.assessmentDate == null) {
         customFields['e8_D'] = fns.format(new Date('1000-01-01'), 'MM/dd/yyyy');
       } else {
         customFields['e8_D'] = fns.format(new Date(userProfile.assessmentDate), 'MM/dd/yyyy');
+      }
 
-        let days;
+      if (userProfile.nextAssessmentDate) {
+        customFields['e9_D'] = fns.format(new Date(userProfile.nextAssessmentDate), 'MM/dd/yyyy');
+      } else {
+        customFields['e9_D'] = fns.format(new Date(fns.addDays(new Date(), 12).getTime()), 'MM/dd/yyyy');
+      }
 
-        if (userProfile.assessmentScore <= 1) {
-          days = 90;
-        } else if ((userProfile.assessmentScore >= 2) && (userProfile.assessmentScore <= 32)) {
-          days = 30;
-        } else if ((userProfile.assessmentScore >= 33) && (userProfile.assessmentScore <= 50)) {
-          days = 20;
-        } else if ((userProfile.assessmentScore >= 51) && (userProfile.assessmentScore <= 108)) {
-          days = 10;
-        }
+      if (userProfile.platforms) {
+        customFields['e11_T'] = userProfile.platforms;
+      } else {
+        customFields['e11_T'] = null;
+      }
 
-        customFields['e9_D'] = fns.format(new Date(fns.addDays(new Date(), days).getTime()), 'MM/dd/yyyy');
+      if (userProfile.memberSince) {
+        customFields['e2_D'] = fns.format(new Date(userProfile.memberSince), 'MM/dd/yyyy');
+        customFields['e10_D'] = fns.format(new Date(userProfile.memberSince), 'MM/dd/yyyy');
+        customFields['e14_D'] = fns.format(new Date(fns.addDays(new Date(userProfile.memberSince), 12).getTime()), 'MM/dd/yyyy');
+      }
+
+      if (userProfile.referrer) {
+        customFields['e12_T'] = userProfile.referrer;
       }
 
       if (userProfile.lastSeen) {
         customFields['e10_D'] = fns.format(new Date(userProfile.lastSeen), 'MM/dd/yyyy');
-      }
-
-      if (userProfile.platform) {
-        customFields['e11_T'] = userProfile.platform;
+        customFields['e14_D'] = fns.format(new Date(fns.addDays(new Date(userProfile.lastSeen), 12).getTime()), 'MM/dd/yyyy');
       }
 
       functions.logger.log(userProfile.name.split(' '));

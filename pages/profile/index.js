@@ -351,16 +351,16 @@ export default function Profile(props) {
                         {(grant.licenseType == 'Premium' && isSubscriptionExpired) && (
                           <p>{grant.licenseType.charAt(0).toUpperCase() + grant.licenseType.slice(1)} — Expired</p>
                         )}
-
-                        {grant.licenseType != 'Premium' && (
-                          <p>Free</p>
-                        )}
                       </>
                     )}
 
-                    {((Object.keys(grant).length == 0) && (customerType != '')) && (
-                      <p>{customerType.charAt(0).toUpperCase() + customerType.slice(1)}</p>
+                    {Object.keys(grant).length == 0 && (
+                      <p>Free</p>
                     )}
+
+                    {/* {((Object.keys(grant).length == 0) && (customerType != '')) && (
+                      <p>{customerType.charAt(0).toUpperCase() + customerType.slice(1)}</p>
+                    )} */}
                   </div>  
 
                   <div className={styles.profileButtons}>

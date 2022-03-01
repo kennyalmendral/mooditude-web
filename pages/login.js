@@ -9,7 +9,9 @@ import Layout from '@/components/Layout'
 import { SITE_NAME } from '@/config/index'
 
 import { useAuth } from '@/context/AuthUserContext'
-import TextField from '@mui/material/TextField';
+import TextField from '@mui/material/TextField'
+
+import { format, addDays } from 'date-fns'
 
 import Firebase from 'lib/Firebase'
 
@@ -102,12 +104,15 @@ export default function Login(props) {
 
             const usersRef = firebaseDatabase.ref()
 
+            let dateNow = new Date().getTime();
+
             if (user) {
               usersRef
                 .child('users')
                 .child(user.user.uid)
                 .update({
-                  lastSeen: new Date().getTime()
+                  lastSeen: dateNow,
+                  userElapsingOn: addDays(new Date(dateNow), 20).getTime(),
                 })
                 .then(() => {
                   usersRef
